@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="AllTests" tests="2" assertions="4" failures="0" errors="0" time="0.018687">
+    <testsuite name="JInboundHelperTest" file="/home/jeff/workspace/JInbound/0.x/tests/suite/component/admin/helpers/JInboundHelperTest.php" tests="2" assertions="4" failures="0" errors="0" time="0.018687">
+      <testsuite name="JInboundHelperTest::testConfig" tests="0" assertions="0" failures="0" errors="0" time="0.000000"/>
+      <testcase name="testDebugger" class="JInboundHelperTest" file="/home/jeff/workspace/JInbound/0.x/tests/suite/component/admin/helpers/JInboundHelperTest.php" line="47" assertions="2" time="0.016328"/>
+      <testcase name="testVersion" class="JInboundHelperTest" file="/home/jeff/workspace/JInbound/0.x/tests/suite/component/admin/helpers/JInboundHelperTest.php" line="73" assertions="2" time="0.002359"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

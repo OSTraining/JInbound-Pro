@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="2.5" method="upgrade">
+	<name>PKG_JINBOUND</name>
+	<packagename>jinbound</packagename>
+	<version>@ant_version_number@</version>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<creationDate>@ant_current_date@</creationDate>
+	<description>PKG_JINBOUND_DESCRIPTION</description>
+	<files folder="packages">
+		<file type="component" id="@ant_component_id@">@ant_component_package@</file>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.pkg_jinbound.sys.ini</language>
+	</languages>
+</extension>

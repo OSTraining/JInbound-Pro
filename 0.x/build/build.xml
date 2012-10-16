@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+###################################################################
+# Builder script for JInbound+
+#
+# @version      $Id: build.xml 1473 2010-06-15 22:25:16Z silianacom-svn $
+# @copyright    Copyright (C) 2009 Yannick Gaultier. All rights reserved.
+# @copyright    Copyright (C) 2011 Anything Digital. All rights reserved.
+# @license      GNU/GPL
+###################################################################
+-->
+<project name="jinbound" default="dist" basedir=".">
+	<property file="config.ini" />
+	<target name="dist" depends="init,copyFiles,promptUser,doChangelog,cleanprev,zipFiles,deldir,info" />
+	<target name="init">
+
+		<!-- update marker in xml file for correct display of build number -->
+		<buildnumber />
+
+		<!-- temporary dirs used for search/replace operations -->
+		<mkdir dir="${cfg.packages}/temp" />
+		<mkdir dir="${cfg.packages}/temp/staging" />
+		<mkdir dir="${cfg.packages}/temp/staging/component" />
+		<mkdir dir="${cfg.packages}/temp/packages" />
+		
+		<!-- calculate version strings -->
+		<condition property="str.versionforxml" value="${cfg.version}.${build.number}${cfg.versionsuffix}" else="${cfg.version}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<tstamp>
+			<format property="str.datefmt" pattern="${cfg.datefmt}" locale="${cfg.dateloc}" />
+		</tstamp>
+		
+		<!-- build up various strings -->
+		<condition property="str.build" value="${cfg.buildprefix}${build.number}" else="">
+			<istrue value="${cfg.addbuild}" />
+		</condition>
+		<condition property="str.version" value="${cfg.versionprefix}${cfg.version}" else="${cfg.version}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
+		<condition property="str.date" value="_${str.datefmt}" else="">
+			<istrue value="${cfg.adddate}" />
+		</condition>
+		<property name="str.pkg.filename" value="${cfg.pkgprefix}Joomla_2.5_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.pkg.file" value="${cfg.packages}/current/${str.pkg.filename}" />
+		<property name="str.com.filename" value="${cfg.comprefix}${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.com.file" value="${cfg.packages}/temp/packages/${str.com.filename}" />
+		
+		<!-- perform filtering -->
+		<filter token="ant_version_number" value="${str.versionforxml}" />
+		<filter token="ant_current_date" value="${str.datefmt}" />
+		<filter token="ant_copyright_header" value="${cfg.copyright}" />
+		<filter token="ant_component_id" value="${cfg.comprefix}${cfg.name}" />
+		<filter token="ant_component_package" value="${str.com.filename}.zip" />
+	
+		<condition property="do.zip">
+			<istrue value="${cfg.zip}" />
+		</condition>
+
+		<!-- Init of changelog automatic build up -->
+		<property name="svn.rootDir" value="/home/jeff/workspace/JInbound/0.x/src/" />
+		<property name="svn.buildDir" value="/home/jeff/workspace/JInbound/0.x/build/" />
+		<property name="svn.executable" value="/usr/bin/svn" />
+		<property name="php.executable" value="/usr/bin/php" />
+
+		<property name="svn.url" value="https://anythingdigital.repositoryhosting.com" />
+		<property name="svn.title" value="JInbound Changelog" />
+		<property name="svn.username" value="jeffchannell" />
+		<property name="svn.password" value="q5atw07u" />
+		<property name="svn.destFile" value="jChangelog.xml" />
+		<property name="svn.destLogFile" value="jChangelog.log" />
+		<property name="svn.destDir" value="${svn.buildDir}logs/changelog" />
+		<property name="svn.targetPath" value="/svn/anythingdigital_jinbound/0.x" />
+
+		<property name="ext.targetFile" value="${svn.rootDir}/changelog.log" />
+
+		<!-- Sample : value = "-r HEAD" or value = "-r 230 or leave empty " -->
+		<property name="svn.startingRevision" value="-r HEAD" />
+
+		<!-- Sample : value = ":HEAD" or value = ":230" or leave empty -->
+		<property name="svn.endingRevision" value="" />
+
+		<!-- Sample : value = "-r {2008-07-26}" or leave empty-->
+		<property name="svn.startingDate" value="" />
+
+		<!-- Sample : value = ":{2008-07-26}" or leave empty-->
+		<property name="svn.endingDate" value=":0" />
+
+		<property name="svn.authors" value="authors.xml" />
+	
+	</target>
+	
+	<target name="copyFiles">
+		<!-- start filtering (ALL media will be in /media so we're ok to filter ALL the files!) -->
+		<copy todir="${cfg.packages}/temp/staging/component" filtering="true">
+			<fileset
+				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}"
+				includes="${cfg.name}.xml,${cfg.name}.install.php,admin/,language/"
+			/>
+		</copy>
+		<!-- now read xml file (the one in temp directory, after search/replace operation -->
+		<xmlproperty file="${cfg.packages}/temp/staging/component/${cfg.name}.xml" collapseAttributes="true" prefix="xml" keepRoot="false" />
+		
+		<!-- filter package manifest -->
+		<copy todir="${cfg.packages}/temp/staging" filtering="true">
+			<fileset dir="${cfg.dir}" includes="${cfg.pkgprefix}${cfg.name}.xml,language/" />
+		</copy>
+	</target>
+
+	<!-- prompt user if need to rebuild changelog - useful when not online, as would -->
+	<!-- make whole build process fail otherwise -->
+	<target name="promptUser">
+		<input message="Build changelogs (needs be online) (y/n)?" validargs="y,n" addproperty="do.buildchangelog" />
+		<condition property="do.changelog">
+			<equals arg1="y" arg2="${do.buildchangelog}" />
+		</condition>
+	</target>
+
+
+	<!-- Automatic changelog from svn commits comments -->
+	<target name="doChangelog" if="do.changelog">
+		<echo message="Building    | ${svn.title}" />
+		<echo message="--------------------------------------------" />
+
+		<!-- use command line svn. Nothing else works -->
+
+		<echo>Making changelog for revisions ${svn.startingRevision}${svn.startingDate}:${svn.endingRevision}${svn.startingDate}</echo>
+		<echo>from ${svn.url}</echo>
+		<echo>to ${svn.destLogFile}</echo>
+		<echo>Processing ...</echo>
+
+		<mkdir dir="${svn.destDir}" />
+		<echo>Created destination dir</echo>
+
+		<!-- need svn installed and in classpath -->
+		<echo>Spawning subversion exec with log --xml -v  ${svn.startingRevision}${svn.startingDate}${svn.endingRevision}${svn.endingDate} ${svn.url}${svn.targetPath}</echo>
+		<!-- creates log in an xml file for revision x to xx -->
+		<exec executable="${svn.executable}" outputproperty="svnlog.out" output="${svn.destDir}/${svn.destFile}">
+			<arg line="log --xml --username ${svn.username} --password ${svn.password} -v ${svn.startingRevision}${svn.startingDate}${svn.endingRevision}${svn.endingDate} ${svn.url}${svn.targetPath}" />
+		</exec>
+		<echo>Raw data fetched from repository</echo>
+
+		<!-- use php logformat script to format raw xml svn log file-->
+		<echo>Spawning logformat script using ${php.executable}</echo>
+		<!-- creates log in an xml file for revision x to xx -->
+		<exec executable="${php.executable}">
+			<arg line=' changelog/logformat.php --title="${svn.title}" --build=${build.number}' />
+		</exec>
+		<echo>Raw svn log processed</echo>
+
+		<!-- Copy changelog to extension dir -->
+		<copy file="${svn.destDir}/${svn.destLogFile}" tofile="${ext.targetFile}" />
+
+		<echo message="Done ---------------------------------------" />
+	</target>
+	
+	<target name="cleanprev">
+		<!-- move current build to ../previous directory -->
+		<move todir="${cfg.packages}/previous">
+			<fileset dir="${cfg.packages}/current" includes="*.zip" />
+		</move>
+	</target>
+	
+	<target name="zipFiles" depends="mkdir">
+		<echo message="Building    | ${str.pkg.file}.zip" />
+		<echo message="xml file    | ${cfg.dir}/${cfg.comprefix}${cfg.name}/${cfg.name}.xml" />
+		<echo message="xml version | ${str.version}" />
+		<echo message="target      | Joomla" />
+		<echo message="--------------------------------------------" />
+		<echo message="    o base dir  - ${cfg.dir}" />
+		<echo message="    o unver dir - ${cfg.unver}" />
+		<echo message="--------------------------------------------" />
+		
+		<!-- create zip and include all files needed -->
+
+		<!-- files with updated build and date number -->
+		<zip destfile="${str.com.file}.zip" update="false">
+			<!-- files which have been subject to search/replace operations, to update date and version numbers -->
+			<zipfileset dir="${cfg.packages}/temp/staging/component" excludes="" />
+		</zip>
+
+		<!-- media -->
+		<zip destfile="${str.com.file}.zip" update="true">
+			<zipfileset dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media" excludes="**/.svn , **/.project" prefix="media" />
+		</zip>
+		
+		<!-- create starter pkg -->
+		<zip destfile="${str.pkg.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp" includes="packages/" />
+		</zip>
+		<zip destfile="${str.pkg.file}.zip" update="true">
+			<zipfileset dir="${cfg.packages}/temp/staging" includes="${cfg.pkgprefix}${cfg.name}.xml,language/" />
+		</zip>
+		<zip destfile="${str.pkg.file}.zip" update="true">
+			<zipfileset dir="${svn.rootDir}" includes="changelog.log" />
+		</zip>
+	</target>
+	
+	<!-- create target directory if does not exist -->
+	<target name="mkdir">
+		<mkdir dir="${cfg.packages}" />
+	</target>
+
+	<!-- delete temp dirs -->
+	<target name="deldir">
+		<delete dir="${cfg.packages}/temp" />
+	</target>
+
+	<!-- display information -->
+	<target name="info" depends="init">
+		<echo message="Ant Version: ${ant.version}" />
+		<echo message="Project:     ${cfg.name}" />
+		<echo message="Version:     ${xml.version}" />
+		<echo message="Build:       ${build.number}" />
+		<echo message="Date:        ${TODAY}" />
+	</target>
+</project>

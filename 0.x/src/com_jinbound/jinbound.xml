@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5" method="upgrade">
+	<name>COM_JINBOUND</name>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_version_number@</version>
+	<description>COM_JINBOUND_DESCRIPTION</description>
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+	<scriptfile>jinbound.install.php</scriptfile>
+	<media destination="jinbound" folder="media">
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>js</folder>
+		<filename>index.html</filename>
+	</media>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.com_jinbound.ini</language>
+	</languages>
+	<administration>
+		<menu img="../media/jinbound/images/jinbound.png">COM_JINBOUND</menu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>jinbound.php</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>libraries</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files> 
+		<languages folder="language">
+			<language tag="en-GB">en-GB/en-GB.com_jinbound.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_jinbound.sys.ini</language>
+		</languages>
+	</administration>
+</extension>
