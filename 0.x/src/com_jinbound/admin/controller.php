@@ -16,7 +16,7 @@ class JInboundController extends JInboundBaseController
 	function display($cachable = false, $urlparams = false) {
 		$app        = JFactory::getApplication();
 		$view       = $app->input->get('view', 'Dashboard', 'cmd');
-		$helpurl    = JCalPro::config('jinbound_help_url');
+		$helpurl    = JInbound::config('help_url');
 		$configured = preg_match('/^https?\:\/{2}/', $helpurl);
 		if (!$configured) {
 			$app->enqueuemessage(JText::_('COM_JINBOUND_SAVE_CONFIG_WARNING'), 'warning');
@@ -25,7 +25,7 @@ class JInboundController extends JInboundBaseController
 		// we only really use this in the main component submenu,
 		// as any link we can handle via code will just use the config option
 		if ('help' == strtolower($view)) {
-			$app->redirect($configured ? JInbound::config('jinbound_help_url') : 'index.php?option=com_jinbound');
+			$app->redirect($configured ? JInbound::config('help_url') : 'index.php?option=com_jinbound');
 			// tear down the application
 			jexit();
 		}

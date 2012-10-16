@@ -22,6 +22,8 @@
 		<mkdir dir="${cfg.packages}/temp/staging" />
 		<mkdir dir="${cfg.packages}/temp/staging/component" />
 		<mkdir dir="${cfg.packages}/temp/packages" />
+		<mkdir dir="${cfg.packages}/temp/packages/current" />
+		<mkdir dir="${cfg.packages}/temp/packages/previous" />
 		
 		<!-- calculate version strings -->
 		<condition property="str.versionforxml" value="${cfg.version}.${build.number}${cfg.versionsuffix}" else="${cfg.version}${cfg.versionsuffix}">

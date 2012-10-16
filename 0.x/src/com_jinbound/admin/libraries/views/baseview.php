@@ -11,8 +11,8 @@ defined('JPATH_PLATFORM') or die;
 // include the path helper
 JLoader::register('JInboundHelperPath', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/path.php');
 // include the html helper here
-jimport('joomla.html.html');
-JHtml::addIncludePath(JInboundHelperPath::site('helpers/html'));
+//jimport('joomla.html.html');
+//JHtml::addIncludePath(JInboundHelperPath::site('helpers/html'));
 // include core libs
 jimport('joomla.error.profiler');
 jimport('joomla.filesystem.file');
@@ -20,6 +20,7 @@ jimport('joomla.filesystem.folder');
 // include other helpers
 JLoader::register('JInbound', JInboundHelperPath::helper('jinbound'));
 JLoader::register('JInboundHelperFilter', JInboundHelperPath::helper('filter'));
+JLoader::register('JInboundHelperUrl', JInboundHelperPath::helper('url'));
 // we have to always load the language file for com_categories
 JCalPro::language('com_categories', JPATH_ADMINISTRATOR);
 

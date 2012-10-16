@@ -16,7 +16,7 @@
 			section="component"
 		/>
 		<field
-			name="jinbound_help_url"
+			name="help_url"
 			type="hidden"
 			default="http://anything-digital.com/jinbound/learn-more/user-manual.html"
 			readonly="true"
