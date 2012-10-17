@@ -22,7 +22,7 @@ JLoader::register('JInbound', JInboundHelperPath::helper('jinbound'));
 JLoader::register('JInboundHelperFilter', JInboundHelperPath::helper('filter'));
 JLoader::register('JInboundHelperUrl', JInboundHelperPath::helper('url'));
 // we have to always load the language file for com_categories
-JCalPro::language('com_categories', JPATH_ADMINISTRATOR);
+JInbound::language('com_categories', JPATH_ADMINISTRATOR);
 
 // create an intermediary dummy class
 if (jimport('joomla.application.component.view')) {
@@ -53,7 +53,7 @@ class JInboundView extends JInboundBaseView
 		$app = JFactory::getApplication();
 		
 		$this->viewClass = 'jinbound_component';
-		if (JCalPro::version()->isCompatible('3.0')) {
+		if (JInbound::version()->isCompatible('3.0')) {
 			$this->viewClass .= ' jinbound_bootstrap';
 		}
 		
@@ -161,9 +161,6 @@ class JInboundView extends JInboundBaseView
 		
 		// load js framework
 		JHtml::_('behavior.framework', true);
-		
-		// load the jcal framework helper
-		$this->document->addScript(JInboundHelperUrl::media('js/jcalpro.js'));
 		
 		// we don't want to run this whole function in admin,
 		// but there's still a bit we need - specifically, styles for header icons
