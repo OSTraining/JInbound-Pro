@@ -46,7 +46,7 @@ abstract class JInboundHelperUrl
 				if (array_key_exists('Itemid', $urlparams)) unset($urlparams['Itemid']);
 			}
 			else {
-				$Itemid = self::findItemid($needles);
+				$Itemid = false;//self::findItemid($needles);
 				if ($Itemid && !array_key_exists('Itemid', $urlparams)) $urlparams['Itemid'] = $Itemid;
 			}
 		}
