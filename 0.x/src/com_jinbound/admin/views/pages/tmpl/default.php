@@ -8,7 +8,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-<div id="jinbound_component">
-	DASHBOARD
-</div>
+echo $this->loadTemplate('list');

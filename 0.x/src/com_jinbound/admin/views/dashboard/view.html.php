@@ -17,8 +17,15 @@ JLoader::register('JInboundView', "$base/libraries/views/baseview.php");
 
 class JInboundViewDashboard extends JInboundView
 {
+
+	function display($tpl = null, $echo = true) {
+		$this->addToolBar();
+		$this->addMenuBar();
+		parent::display($tpl);
+	}
+	
 	function addToolBar() {
-		JToolBarHelper::title(JText::_(parent::$option . '_DASHBOARD_TITLE'), 'jinbound');
+		JToolBarHelper::title(JText::_(JInbound::COM . '_DASHBOARD_TITLE'), 'jinbound');
 		parent::addToolBar();
 	}
 }

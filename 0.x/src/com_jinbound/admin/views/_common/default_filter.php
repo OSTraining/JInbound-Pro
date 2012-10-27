@@ -9,6 +9,6 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-<div id="jinbound_component">
-	DASHBOARD
+<div class="filter-select fltrt">
+	<?php echo $this->currentFilter; ?>
 </div>

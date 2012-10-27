@@ -57,8 +57,11 @@ class JInboundView extends JInboundBaseView
 			$this->viewClass .= ' jinbound_bootstrap';
 		}
 		
+		$base = $app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
 		// add the common tmpl path so we can load our commonly shared files
-		$this->addTemplatePath(($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views/common/tmpl');
+		$this->addTemplatePath($base . '/views/_common');
+		// re-add our view path so it's ahead of the common files
+		$this->addTemplatePath($base . '/views/' . basename($app->input->get('view', 'dashboard')) . '/tmpl');
 		
 		// are we in component view?
 		$this->tpl = 'component' == $app->input->get('tmpl', '', 'cmd');
@@ -143,7 +146,7 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(self::$option)), JInboundHelperUrl::_(), $option == self::$option && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('help');
+		$subMenuItems = array('pages');
 		foreach ($subMenuItems as $sub) {
 			$label = JText::_(strtoupper(self::$option . "_$sub"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));

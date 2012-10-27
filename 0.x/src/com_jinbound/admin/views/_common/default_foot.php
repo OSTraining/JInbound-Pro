@@ -9,6 +9,6 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-<div id="jinbound_component">
-	DASHBOARD
-</div>
+<tr>
+	<td colspan="99"><?php echo $this->pagination->getListFooter(); ?></td>
+</tr>

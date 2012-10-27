@@ -121,6 +121,20 @@ abstract class JInboundHelperUrl
 	}
 	
 	/**
+	 * static method to generate a JInbound url based on edit task
+	 * 
+	 * @param $view
+	 * @param $id
+	 * @param $sef
+	 * @param $extra
+	 */
+	public static function edit($view, $id, $sef = true, $extra = array()) {
+		$url = array('task'=>"$view.edit", 'id'=>$id);
+		if (!empty($extra)) $url = array_merge($url, $extra);
+		return self::_($url, $sef);
+	}
+	
+	/**
 	 * static method to generate a JInbound url with a slug from "alias"
 	 * 
 	 * @param unknown_type $id
