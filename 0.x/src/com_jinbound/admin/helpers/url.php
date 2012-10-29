@@ -3,7 +3,25 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-@ant_copyright_header@
+
+**********************************************
+JInbound
+Copyright (c) 2012 Anything-Digital.com
+**********************************************
+JInbound is some kind of marketing thingy
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This header must not be removed. Additional contributions/changes
+may be added to this header as long as no information is deleted.
+**********************************************
+Get the latest version of JInbound at:
+http://anything-digital.com/
+**********************************************
+
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -116,20 +134,6 @@ abstract class JInboundHelperUrl
 	 */
 	public static function task($task, $sef = true, $extra = array()) {
 		$url = array('task'=>$task);
-		if (!empty($extra)) $url = array_merge($url, $extra);
-		return self::_($url, $sef);
-	}
-	
-	/**
-	 * static method to generate a JInbound url based on edit task
-	 * 
-	 * @param $view
-	 * @param $id
-	 * @param $sef
-	 * @param $extra
-	 */
-	public static function edit($view, $id, $sef = true, $extra = array()) {
-		$url = array('task'=>"$view.edit", 'id'=>$id);
 		if (!empty($extra)) $url = array_merge($url, $extra);
 		return self::_($url, $sef);
 	}

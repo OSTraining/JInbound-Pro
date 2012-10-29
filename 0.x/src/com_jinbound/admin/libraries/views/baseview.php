@@ -3,7 +3,25 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-@ant_copyright_header@
+
+**********************************************
+JInbound
+Copyright (c) 2012 Anything-Digital.com
+**********************************************
+JInbound is some kind of marketing thingy
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This header must not be removed. Additional contributions/changes
+may be added to this header as long as no information is deleted.
+**********************************************
+Get the latest version of JInbound at:
+http://anything-digital.com/
+**********************************************
+
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -57,11 +75,8 @@ class JInboundView extends JInboundBaseView
 			$this->viewClass .= ' jinbound_bootstrap';
 		}
 		
-		$base = $app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
 		// add the common tmpl path so we can load our commonly shared files
-		$this->addTemplatePath($base . '/views/_common');
-		// re-add our view path so it's ahead of the common files
-		$this->addTemplatePath($base . '/views/' . basename($app->input->get('view', 'dashboard')) . '/tmpl');
+		$this->addTemplatePath(($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views/common/tmpl');
 		
 		// are we in component view?
 		$this->tpl = 'component' == $app->input->get('tmpl', '', 'cmd');
@@ -146,7 +161,7 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(self::$option)), JInboundHelperUrl::_(), $option == self::$option && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('pages');
+		$subMenuItems = array('help');
 		foreach ($subMenuItems as $sub) {
 			$label = JText::_(strtoupper(self::$option . "_$sub"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
