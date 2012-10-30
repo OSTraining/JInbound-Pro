@@ -11,6 +11,9 @@ defined('JPATH_PLATFORM') or die;
 JHtml::_('behavior.tooltip');
 $listOrder	= $this->state->get('list.ordering');
 $listDirn	= $this->state->get('list.direction');
+
+echo $this->loadTemplate('listbuttons');
+
 ?>
 <form action="<?php echo JInboundHelperUrl::view($this->viewsName); ?>" method="post" name="adminForm" id="adminForm">
 <?php

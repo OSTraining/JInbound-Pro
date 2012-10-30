@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldpath="/administrator/components/com_jinbound/models/fields">
+	<fieldset
+		name="main"
+		label="COM_JINBOUND_PAGE_FIELDSET_MAIN"
+	>
+		<field
+			id="title" name="title"
+			type="text"
+			label="JGLOBAL_TITLE"
+			description="JFIELD_TITLE_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+		<field
+			id="alias" name="alias"
+			type="text"
+			label="JFIELD_ALIAS_LABEL"
+			description="JFIELD_ALIAS_DESC"
+			class="inputbox"
+		/>
+		<field
+			id="id" name="id"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_ID"
+			default="0"
+			readonly="true"
+		/>
+		<field
+			id="created" name="created"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_CREATED"
+			default=""
+			readonly="true"
+		/>
+		<field
+			id="created_by" name="created_by"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_CREATED_BY"
+			default="0"
+			readonly="true"
+		/>
+		<field
+			id="modified" name="modified"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_MODIFIED"
+			default=""
+			readonly="true"
+		/>
+		<field
+			id="modified_by" name="modified_by"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_MODIFIED_BY"
+			default="0"
+			readonly="true"
+		/>
+	</fieldset>
+	
+	<fieldset
+		name="content"
+		label="COM_JINBOUND_PAGE_FIELDSET_CONTENT"
+	>
+		<field
+			id="heading" name="heading"
+			type="text"
+			label="COM_JINBOUND_HEADING"
+			description="COM_JINBOUND_HEADING_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+		<field
+			id="subheading" name="subheading"
+			type="text"
+			label="COM_JINBOUND_SUBHEADING"
+			description="COM_JINBOUND_SUBHEADING_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+	</fieldset>
+	
+	<fieldset
+		name="image"
+		label="COM_JINBOUND_PAGE_FIELDSET_IMAGE"
+	>
+		<field
+			id="alttext" name="alttext"
+			type="text"
+			label="COM_JINBOUND_ALTTEXT"
+			description="COM_JINBOUND_ALTTEXT_DESC"
+			class="inputbox"
+		/>
+	</fieldset>
+</form>
