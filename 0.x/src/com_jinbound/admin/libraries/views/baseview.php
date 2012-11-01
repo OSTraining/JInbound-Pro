@@ -76,7 +76,7 @@ class JInboundView extends JInboundBaseView
 		}
 		
 		// add the common tmpl path so we can load our commonly shared files
-		$this->addTemplatePath(($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views/common/tmpl');
+		$this->addTemplatePath(($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views/_common');
 		
 		// are we in component view?
 		$this->tpl = 'component' == $app->input->get('tmpl', '', 'cmd');
