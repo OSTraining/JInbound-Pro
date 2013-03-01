@@ -33,14 +33,14 @@ abstract class JInboundHelperUrl
 {
 	/**
 	 * array of known Itemids, for creating our own internal urls
-	 * 
+	 *
 	 * @var array
 	 */
 	protected static $lookup;
-	
+
 	/**
 	 * creates an internal (Joomla) url string
-	 * 
+	 *
 	 * @param unknown_type $params
 	 * @param unknown_type $sef
 	 */
@@ -59,7 +59,7 @@ abstract class JInboundHelperUrl
 		if (JInbound::COM == $urlparams['option']) {
 			// here comes some fun - we can't just call this method without constructing a needles array :(
 			$needles = null;
-			// apparently we can only append the Itemid if we don't have a task 
+			// apparently we can only append the Itemid if we don't have a task
 			if (array_key_exists('task', $urlparams)) {
 				if (array_key_exists('Itemid', $urlparams)) unset($urlparams['Itemid']);
 			}
@@ -80,10 +80,10 @@ abstract class JInboundHelperUrl
 		}
 		return $url;
 	}
-	
+
 	/**
 	 * static method to return the current url, with optional parameters
-	 * 
+	 *
 	 * @param unknown_type $extra
 	 * @param unknown_type $remove
 	 */
@@ -111,10 +111,10 @@ abstract class JInboundHelperUrl
 		// send back the URI as a string
 		return $uri->toString();
 	}
-	
+
 	/**
 	 * static method to generate a JInbound url based on "view"
-	 * 
+	 *
 	 * @param unknown_type $view
 	 * @param unknown_type $sef
 	 * @param unknown_type $extra
@@ -124,10 +124,16 @@ abstract class JInboundHelperUrl
 		if (!empty($extra)) $url = array_merge($url, $extra);
 		return self::_($url, $sef);
 	}
-	
+
+	public static function edit($view, $id, $sef = true, $extra = array()) {
+		$url = array('task'=>"$view.edit", 'id' => $id);
+		if (!empty($extra)) $url = array_merge($url, $extra);
+		return self::_($url, $sef);
+	}
+
 	/**
 	 * static method to generate a JInbound url based on "task"
-	 * 
+	 *
 	 * @param $task
 	 * @param $sef
 	 * @param $extra
@@ -137,10 +143,10 @@ abstract class JInboundHelperUrl
 		if (!empty($extra)) $url = array_merge($url, $extra);
 		return self::_($url, $sef);
 	}
-	
+
 	/**
 	 * static method to generate a JInbound url with a slug from "alias"
-	 * 
+	 *
 	 * @param unknown_type $id
 	 * @param unknown_type $view
 	 * @param unknown_type $sef
@@ -183,10 +189,10 @@ abstract class JInboundHelperUrl
 		// return our url
 		return self::_($url, $sef);
 	}
-	
+
 	/**
 	 * static method to fetch the media url
-	 * 
+	 *
 	 * @param bool true for full, false for relative
 	 */
 	public static function media($relative = true) {
@@ -194,10 +200,10 @@ abstract class JInboundHelperUrl
 		$root   = rtrim(JUri::base(), '/');
 		return str_replace('/administrator/..', '', (($relative ? '' : "{$root}/") . "{$prefix}media/jinbound"));
 	}
-	
+
 	/**
 	 * static method to force a relative url to an absolute one
-	 * 
+	 *
 	 * @param string $url
 	 * @return string the absolute url
 	 */

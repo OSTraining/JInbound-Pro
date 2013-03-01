@@ -3,7 +3,25 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-@ant_copyright_header@
+
+**********************************************
+JInbound
+Copyright (c) 2012 Anything-Digital.com
+**********************************************
+JInbound is some kind of marketing thingy
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This header must not be removed. Additional contributions/changes
+may be added to this header as long as no information is deleted.
+**********************************************
+Get the latest version of JInbound at:
+http://anything-digital.com/
+**********************************************
+
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -12,48 +30,14 @@ jimport('joomla.database.table');
 
 class JInboundTablePage extends JTable
 {
-	public $id;
-	public $catid;
-	public $title;
-	public $alias;
-	public $heading;
-	public $subheading;
-	public $buttons;
-	public $maintext;
-	public $image;
-	public $imagealt;
-	public $metatitle;
-	public $metadesc;
-	public $created;
-	public $created_by;
-	public $modified;
-	public $modified_by;
-	public $published;
-	public $checked_out;
-	public $checked_out_time;
 
 	function __construct(&$db) {
 		parent::__construct('#__jinbound_pages', 'id', $db);
 	}
 
-	protected function _getAssetName() {
-		$k = $this->_tbl_key;
-		return 'com_jinbound.page.'.(int) $this->$k;
-	}
-
-	protected function _getAssetTitle() {
-		return $this->title;
-	}
-
-	protected function _getAssetParentId($table = null, $id = null) {
-		$asset = JTable::getInstance('Asset');
-		$asset->loadByName('com_jinbound');
-		return $asset->id;
-	}
-	
 	/**
 	 * Overload the store method
-	 * 
+	 *
 	 * @param       boolean Toggle whether null values should be updated.
 	 * @return      boolean True on success, false on failure.
 	 */
@@ -70,7 +54,7 @@ class JInboundTablePage extends JTable
 			$this->created = $date->toSql();
 			$this->created_by = $user->get('id');
 		}
-		
+
 		return parent::store($updateNulls);
 	}
 }

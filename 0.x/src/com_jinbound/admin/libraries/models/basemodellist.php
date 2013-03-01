@@ -3,7 +3,25 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-@ant_copyright_header@
+
+**********************************************
+JInbound
+Copyright (c) 2012 Anything-Digital.com
+**********************************************
+JInbound is some kind of marketing thingy
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This header must not be removed. Additional contributions/changes
+may be added to this header as long as no information is deleted.
+**********************************************
+Get the latest version of JInbound at:
+http://anything-digital.com/
+**********************************************
+
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -36,7 +54,7 @@ class JInboundListModel extends JModelList
 	private $_parent = null;
 
 	private $_items = null;
-	
+
 	function __construct($config = array()) {
 		parent::__construct($config);
 	}
@@ -49,9 +67,9 @@ class JInboundListModel extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		parent::populateState($ordering, $direction);
-		
+
 		$this->setState('filter.extension', $this->_extension);
-		
+
 		$user = JFactory::getUser();
 		// get published status
 		$published = $this->getUserStateFromRequest($this->context.'.filter.published', 'filter_published', '', 'string');
@@ -62,7 +80,7 @@ class JInboundListModel extends JModelList
 		else {
 			$this->setState('filter.published', $published);
 		}
-		
+
 		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search', '', 'string');
 		$this->setState('filter.search', $search);
 
@@ -90,10 +108,10 @@ class JInboundListModel extends JModelList
 
 		return parent::getStoreId($id);
 	}
-	
+
 	/**
 	 * The core "state" jhtml crap uses "archive" and we don't need that
-	 * 
+	 *
 	 */
 	public function getPublishedStatus() {
 		$list = array(
@@ -104,15 +122,15 @@ class JInboundListModel extends JModelList
 		);
 		return $list;
 	}
-	
+
 	/**
 	 * give public read access to the model's context
-	 * 
+	 *
 	 */
 	public function getContext() {
 		return (string) $this->_context;
 	}
-	
+
 	public function appendAuthorToQuery(&$query, $tablename, $created_by = 'created_by') {
 		// clean our table name
 		$tablename = JFilterInput::getInstance()->clean($tablename, 'cmd');

@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
+
+	<fieldset name="general"
+		label="General Parameters">
+
+		<field
+			name="date_format" type="list"
+			label="Date Format"
+			description="Date Format"
+			default="0" >
+			<option value="0">Format</option>
+		</field>
+
+		<field
+			name="time_zone" type="timezone"
+			label="Time Zone"
+			description="Time Zone"
+			default="America/Chicago" >
+		</field>
+
+		<field
+			name="frontend_editing" type="radio"
+			label="Enable Frontend Editing"
+			description="Frontend Editing"
+			default="0">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</field>
+
+		<field
+			name="social_networks" type="text"
+			label="Social Networks"
+			description=""
+			default="???">
+		</field>
+
+		<field
+			name="load_jquery" type="radio"
+			label="Load jQuery"
+			description="jQuery is required if running Joomla v2.5. This option is ignored in Joomla 3."
+			default="1">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
+		</field>
+
+	</fieldset>
+
+	<fieldset name="categories"
+		label="Categories"
+		addfieldpath="/administrator/components/com_jinbound/models/fields"
+		>
+
+		<field type="JinboundCategories"
+			label="Categories"
+	        description="Categories"
+	         />
+
+	</fieldset>
+
+	<fieldset name="lead_status"
+		label="Lead Status"
+		addfieldpath="/administrator/components/com_jinbound/models/fields"
+		>
+
+		<field type="JinboundStatuses" label="Lead Statuses"
+		        description="Lead Statuses"
+		         />
+
+
+	</fieldset>
+
+
+	<fieldset name="lead_priorities"
+		label="Lead Priorities"
+		addfieldpath="/administrator/components/com_jinbound/models/fields"
+		>
+
+		<field type="JinboundPriorities" label="Lead Priorities"
+	        description="Lead Priorities"
+	         />
+
+
+
+	</fieldset>
+
+
+
 	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"

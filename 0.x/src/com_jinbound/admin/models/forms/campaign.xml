@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset
+		name="top"
+		label="COM_JINBOUND_PAGE_FIELDSET_TOP"
+	>
+		<field
+			id="name" name="name"
+			type="text"
+			label="COM_JINBOUND_CAMPAIGN_NAME"
+			description="COM_JINBOUND_CAMPAIGN_NAME_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="fromname" name="fromname"
+			type="text"
+			label="COM_JINBOUND_CAMPAIGN_FROM_NAME"
+			description="COM_JINBOUND_CAMPAIGN_FROM_NAME_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="fromemail" name="fromemail"
+			type="text"
+			label="COM_JINBOUND_CAMPAIGN_FROM_EMAIL"
+			description="COM_JINBOUND_CAMPAIGN_FROM_EMAIL_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="sendafter" name="sendafter"
+			type="text"
+			label="COM_JINBOUND_CAMPAIGN_SEND_AFTER"
+			description="COM_JINBOUND_CAMPAIGN_SEND_AFTER_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="subject" name="subject"
+			type="text"
+			label="COM_JINBOUND_CAMPAIGN_SUBJECT"
+			description="COM_JINBOUND_CAMPAIGN_SUBJECT_DESC"
+			class="inputbox"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="htmlbody" name="htmlbody"
+			type="editor"
+			filter="safehtml"
+			label="COM_JINBOUND_CAMPAIGN_HTMLBODY"
+			description="COM_JINBOUND_CAMPAIGN_HTMLBODY_DESC"
+			class="inputbox"
+			cols="60" rows="12"
+			buttons="0"
+		/>
+
+		<field
+			id="plainbody" name="plainbody"
+			type="textarea"
+			label="COM_JINBOUND_CAMPAIGN_PLAINBODY"
+			description="COM_JINBOUND_CAMPAIGN_PLAINBODY_DESC"
+			class="inputbox"
+			cols="100" rows="14"
+		/>
+
+	</fieldset>
+
+	<fieldset
+		name="hidden"
+		label="COM_JINBOUND_PAGE_FIELDSET_HIDDEN"
+	>
+
+		<field
+			id="id" name="id"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_ID"
+			default="0"
+			readonly="true"
+		/>
+
+		<field
+			id="created" name="created"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_CREATED"
+			default=""
+			readonly="true"
+		/>
+		<field
+			id="created_by" name="created_by"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_CREATED_BY"
+			default="0"
+			readonly="true"
+		/>
+		<field
+			id="modified" name="modified"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_MODIFIED"
+			default=""
+			readonly="true"
+		/>
+		<field
+			id="modified_by" name="modified_by"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_MODIFIED_BY"
+			default="0"
+			readonly="true"
+		/>
+	</fieldset>
+
+
+</form>

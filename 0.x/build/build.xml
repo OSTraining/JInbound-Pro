@@ -22,8 +22,6 @@
 		<mkdir dir="${cfg.packages}/temp/staging" />
 		<mkdir dir="${cfg.packages}/temp/staging/component" />
 		<mkdir dir="${cfg.packages}/temp/packages" />
-		<mkdir dir="${cfg.packages}/temp/packages/current" />
-		<mkdir dir="${cfg.packages}/temp/packages/previous" />
 		
 		<!-- calculate version strings -->
 		<condition property="str.versionforxml" value="${cfg.version}.${build.number}${cfg.versionsuffix}" else="${cfg.version}${cfg.versionsuffix}">
@@ -97,7 +95,20 @@
 		<copy todir="${cfg.packages}/temp/staging/component" filtering="true">
 			<fileset
 				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}"
-				includes="${cfg.name}.xml,${cfg.name}.install.php,admin/,language/"
+				includes="${cfg.name}.xml,${cfg.name}.install.php,admin/,language/,site/"
+			/>
+		</copy>
+		<mkdir dir="${cfg.packages}/temp/staging/component/media" />
+		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="true">
+			<fileset
+				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media"
+				includes="index.html,css/,js/"
+			/>
+		</copy>
+		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="false">
+			<fileset
+				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media"
+				includes="images/"
 			/>
 		</copy>
 		<!-- now read xml file (the one in temp directory, after search/replace operation -->
@@ -177,16 +188,10 @@
 
 		<!-- files with updated build and date number -->
 		<zip destfile="${str.com.file}.zip" update="false">
-			<!-- files which have been subject to search/replace operations, to update date and version numbers -->
 			<zipfileset dir="${cfg.packages}/temp/staging/component" excludes="" />
 		</zip>
-
-		<!-- media -->
-		<zip destfile="${str.com.file}.zip" update="true">
-			<zipfileset dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media" excludes="**/.svn , **/.project" prefix="media" />
-		</zip>
 		
-		<!-- create starter pkg -->
+		<!-- create pkg -->
 		<zip destfile="${str.pkg.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp" includes="packages/" />
 		</zip>

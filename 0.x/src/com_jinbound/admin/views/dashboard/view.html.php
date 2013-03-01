@@ -31,7 +31,7 @@ jimport('joomla.html.pane');
 $base = JPATH_ADMINISTRATOR . '/components/com_jinbound';
 
 JLoader::register('JInbound', "$base/helpers/jinbound.php");
-JLoader::register('JInboundView', "$base/libraries/views/baseview.php");
+JLoader::register('JInboundView', "$base/libraries/views/allpages.php");
 
 class JInboundViewDashboard extends JInboundView
 {
@@ -39,48 +39,11 @@ class JInboundViewDashboard extends JInboundView
 	public function display($tpl = null)
 	{
 
-		JHtml::stylesheet('admin.stylesheet.css', 'media/jinbound/css/');
+		JToolBarHelper::title(JText::_(parent::$option . '_DASHBOARD_TITLE'), 'jinbound');
 
-		$jversion = new JVersion();
-		if( version_compare( $jversion->getShortVersion(), "3", 'lt' ) ) {
-			JHtml::stylesheet('bootstrap.legacy.css', 'media/jinbound/css/');
-			JHtml::stylesheet('bootstrap-responsive.min.css', 'media/jinbound/css/');
-			JHtml::script('bootstrap.min.js', 'media/jinbound/js/');
-		}
 
-		JSubMenuHelper::addEntry(
-				JText::_(parent::$option.'_DASHBOARD'),
-				'index.php?option=com_jinbound',
-				false
-			);
-
-		JSubMenuHelper::addEntry(
-				JText::_(parent::$option.'_PAGES'),
-				'index.php?option=com_jinbound&view=pages',
-				false
-			);
-		JSubMenuHelper::addEntry(
-				JText::_(parent::$option.'_CAMPAIGNS'),
-				'index.php?option=com_jinbound&view=campaigns',
-				false
-			);
-		JSubMenuHelper::addEntry(
-				JText::_(parent::$option.'_LEADS'),
-				'index.php?option=com_jinbound&view=leads',
-				false
-			);
-		JSubMenuHelper::addEntry(
-				JText::_(parent::$option.'_REPORTS'),
-				'index.php?option=com_jinbound&view=reports',
-				false
-			);
-
-		$this->addToolbar();
 		parent::display($tpl);
 	}
 
-	function addToolBar() {
-		JToolBarHelper::title(JText::_(parent::$option . '_DASHBOARD_TITLE'), 'jinbound');
-		parent::addToolBar();
-	}
+
 }

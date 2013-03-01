@@ -1,3 +1,44 @@
 .icon-48-jinbound {
 	background: url('../images/icon-48-jinbound.png') 0 0 no-repeat;
 }
+
+.layout_select_button {
+
+	width:100px;
+	height:150px;
+	border: 1px solid;
+	text-align:center;
+	padding-top:10px;
+	margin-left:15px;
+	float:left;
+}
+
+
+* html .jinbound_listbuttons{
+	height: 1%;
+	overflow: visible;
+}
+
+/* float clearing for IE7 */
+*+html .jinbound_listbuttons{
+	min-height: 1%;
+}
+
+/* float clearing for everyone else */
+.jinbound_listbuttons:after{
+	clear: both;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	font-size: 0;
+}
+
+.jinbound_addfield {
+	border:1px solid;
+	margin-bottom:3px;
+	padding:5px;
+	cursor: hand;
+	cursor: pointer;
+
+}

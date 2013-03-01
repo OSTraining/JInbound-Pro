@@ -4,23 +4,23 @@
  * @package		JInbound
  * @subpackage	com_jinbound
 
-**********************************************
-JInbound
-Copyright (c) 2012 Anything-Digital.com
-**********************************************
-JInbound is some kind of marketing thingy
+ **********************************************
+ JInbound
+ Copyright (c) 2012 Anything-Digital.com
+ **********************************************
+ JInbound is some kind of marketing thingy
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-This header must not be removed. Additional contributions/changes
-may be added to this header as long as no information is deleted.
-**********************************************
-Get the latest version of JInbound at:
-http://anything-digital.com/
-**********************************************
+ This header must not be removed. Additional contributions/changes
+ may be added to this header as long as no information is deleted.
+ **********************************************
+ Get the latest version of JInbound at:
+ http://anything-digital.com/
+ **********************************************
 
  */
 
@@ -36,25 +36,27 @@ defined('JPATH_PLATFORM') or die;
 
       <div class="row-fluid" id="welcome_message">
       	<div class="span12">
-      		Welcome Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      		<strong>
+      			Welcome to jInbound, ...
+      		</strong>
       	</div>
       </div>
 
       <div class="row-fluid">
       	<div class="span2" style="border:1px solid;">
-      		Langing Page ico
+      		48px x 48px Landing Page Image
       		<br /><br /><br />
       	</div>
       	<div class="span2" style="border:1px solid;">
-      		Lead Nurturing ico
+      		48px x 48px Lead Nurturing Image
       		<br /><br /><br />
       	</div>
       	<div class="span2" style="border:1px solid;">
-      		Lead Management ico
+      		48px x 48px Lead Management Image
       		<br /><br /><br />
       	</div>
       	<div class="span2" style="border:1px solid;">
-      		Reporting ico
+      		48px x 48px Reporting Image
       		<br /><br /><br />
       	</div>
       </div>
@@ -64,7 +66,8 @@ defined('JPATH_PLATFORM') or die;
       <br />
       <div class="row-fluid">
       	<div class="span12" style="border:1px solid;">
-      		<div style="width:100%; font-weight:bold; text-align:center;">
+      		<br />
+      		<div style="width:100%; font-weight:bold; text-align:center; font-size:200%;">
       			Monthly Reporting Snapshot
 			</div>
 			<br />
@@ -84,17 +87,18 @@ defined('JPATH_PLATFORM') or die;
 			<div style="float:left; width:5%; text-align:center;">
 				<span style="font-size:300%;">&rarr;</span>
 			</div>
-			<div style="float:left; width:30%; text-align:center;">
+			<div style="float:left; width:30%; text-align:center; clear:right;">
 				<span style="font-size:300%;">10%</span>
 				<br/><br />
-				Copnversion Rates
+				Conversion Rates
 			</div>
+			<br style="clear:both;" /><br />
       	</div>
       	<div style="width:100%; text-align:right;"><?=JHtml::link('index.php?option=com_jinbound&view=reports', 'See More')?></div>
       </div>
 
 
-	<strong>Recent Leads</strong>
+	<h3>Recent Leads</h3>
 	<table border="1" width="100%">
 		<tr>
 			<th>Name</th>
@@ -114,7 +118,7 @@ defined('JPATH_PLATFORM') or die;
 	<div style="width:100%; text-align:right;"><?=JHtml::link('index.php?option=com_jinbound&view=leads', 'See More')?></div>
 
 
-    <strong>Top Performing Landing Pages</strong>
+    <h3>Top Performing Landing Pages</h3>
 	<table border="1" width="100%">
 		<tr>
 			<th>Landing Page</th>
@@ -145,16 +149,16 @@ defined('JPATH_PLATFORM') or die;
 
 	  	Create a New:<br />
 	  	<ul>
-	  		<li>Landing Page</li>
-			<li>Lead Nurturing Campaign</li>
-			<li>Lead</li>
+	  		<li><a href="#">Landing Page</a></li>
+			<li><a href="#">Lead Nurturing Campaign</a></li>
+			<li><a href="#">Lead</a></li>
 		</ul>
 
 	  	View Reports:<br />
 	  	<ul>
-	  		<li>Conversions</li>
-			<li>Landing Page Report</li>
-			<li>Lead Nurturing Campaign</li>
+	  		<li><a href="#">Conversions</a></li>
+			<li><a href="#">Landing Page Report</a></li>
+			<li><a href="#">Lead Nurturing Campaign</a></li>
 		</ul>
 
 
@@ -200,10 +204,38 @@ defined('JPATH_PLATFORM') or die;
 	  <!-- lms ad -->
 	  <div class="m">
 
-      	<div style="width:100%; text-align:center; font-size:200%;">inbound LMS Ad Banner</div>
+      	<div style="width:100%; text-align:center; font-size:200%;">255px x 30px+ inbound LMS Ad Banner Image</div>
 
       </div>
+      <br />
       <!-- end lms ad -->
+
+	  <!-- links -->
+	  <div class="m">
+
+      	<strong>Education</strong> <br />
+      	<ul>
+      		<li><a href="#">Title Blog #1 from RSS feed</a></li>
+      		<li><a href="#">Title Blog #2 from RSS feed</a></li>
+      		<li><a href="#">Title Blog #3 from RSS feed</a></li>
+      		<li><a href="#">Title Blog #4 from RSS feed</a></li>
+		</ul>
+		<div style="width:100%; text-align:right;"><?=JHtml::link('index.php?option=com_jinbound', 'See More')?></div>
+
+
+		<strong>Downloads</strong> <br />
+      	<ul>
+      		<li><a href="#">Download link #1</a></li>
+      		<li><a href="#">Download link #2</a></li>
+      		<li><a href="#">Download link #3</a></li>
+      		<li><a href="#">Download link #4</a></li>
+		</ul>
+		<div style="width:100%; text-align:right;"><?=JHtml::link('index.php?option=com_jinbound', 'See More')?></div>
+      </div>
+      <!-- end links -->
+
+
+
 
 
       <!--end Sidebar content-->

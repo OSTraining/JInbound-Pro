@@ -25,15 +25,20 @@
 		</schemas>
 	</update>
 	<scriptfile>jinbound.install.php</scriptfile>
+	<files folder="site">
+		<filename>jinbound.php</filename>
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		<folder>controllers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
 	<media destination="jinbound" folder="media">
 		<folder>css</folder>
 		<folder>images</folder>
 		<folder>js</folder>
 		<filename>index.html</filename>
 	</media>
-	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.com_jinbound.ini</language>
-	</languages>
 	<administration>
 		<menu img="../media/jinbound/images/jinbound.png">COM_JINBOUND</menu>
 		<files folder="admin">
@@ -49,7 +54,7 @@
 			<folder>sql</folder>
 			<folder>tables</folder>
 			<folder>views</folder>
-		</files> 
+		</files>
 		<languages folder="language">
 			<language tag="en-GB">en-GB/en-GB.com_jinbound.ini</language>
 			<language tag="en-GB">en-GB/en-GB.com_jinbound.sys.ini</language>

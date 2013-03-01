@@ -29,7 +29,9 @@ defined('JPATH_PLATFORM') or die;
 abstract class JInbound
 {
 	const COM = 'com_jinbound';
-	
+	private static $_actions = array('core.admin', 'core.manage', 'core.create', 'core.create.private', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete', 'core.moderate');
+
+
 	/**
 	 * static method to get either the component parameters,
 	 * or when a key is supplied the value of that key
@@ -58,7 +60,7 @@ abstract class JInbound
 		if (is_null($val)) return $params->get($key);
 		return $params->def($key, $val);
 	}
-	
+
 	/**
 	 * loads language files, english first then configured language
 	 *
@@ -85,7 +87,7 @@ abstract class JInbound
 		// return the value :)
 		return $langs[$key];
 	}
-	
+
 	/**
 	 * static method to keep track of debug info
 	 *
@@ -99,7 +101,7 @@ abstract class JInbound
 		if (!is_null($name)) $debug[$name] = $data;
 		return $debug;
 	}
-	
+
 	/**
 	 * static method to aide in debugging
 	 *
@@ -119,7 +121,7 @@ abstract class JInbound
 				echo $output; return;
 		}
 	}
-	
+
 	/**
 	 * gets an instance of JVersion
 	 *
@@ -130,5 +132,19 @@ abstract class JInbound
 			$version = new JVersion;
 		}
 		return $version;
+	}
+
+	public static function getActions($categoryId = 0)
+	{
+		$user	= JFactory::getUser();
+		$result	= new JObject;
+
+		$assetName = self::COM . (empty($categoryId) ? '' : '.category.'.(int) $categoryId);
+
+		foreach (self::$_actions as $action) {
+			$result->set($action,	$user->authorise($action, $assetName));
+		}
+
+		return $result;
 	}
 }
