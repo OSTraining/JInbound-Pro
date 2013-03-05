@@ -3,34 +3,47 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-
-**********************************************
-JInbound
-Copyright (c) 2012 Anything-Digital.com
-**********************************************
-JInbound is some kind of marketing thingy
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This header must not be removed. Additional contributions/changes
-may be added to this header as long as no information is deleted.
-**********************************************
-Get the latest version of JInbound at:
-http://anything-digital.com/
-**********************************************
-
+@ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
 
+JLoader::register('JInboundHelperPath', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/path.php');
+
 abstract class JInbound
 {
 	const COM = 'com_jinbound';
+	
 	private static $_actions = array('core.admin', 'core.manage', 'core.create', 'core.create.private', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete', 'core.moderate');
-
+	
+	/**
+	 * static method to register a helper
+	 *
+	 * @param string $helper
+	 */
+	public static function registerHelper($helper) {
+		JLoader::register('JInboundHelper' . ucwords($helper), JInboundHelperPath::helper($helper));
+	}
+	
+	/**
+	 * static method to register a library
+	 *
+	 * @param string $class
+	 * @param string $file
+	 */
+	public static function registerLibrary($class, $file) {
+		static $libraries;
+		if (!is_array($libraries)) {
+			$libraries = array();
+		}
+		if (array_key_exists($class, $libraries)) {
+			return;
+		}
+		if (false === JString::strpos($file, '.php')) {
+			$file = "$file.php";
+		}
+		JLoader::register($class, JInboundHelperPath::library($file));
+	}
 
 	/**
 	 * static method to get either the component parameters,

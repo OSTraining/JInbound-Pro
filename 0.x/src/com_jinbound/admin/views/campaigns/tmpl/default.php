@@ -3,27 +3,16 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-
- **********************************************
- jInbound
- Copyright (c) 2012 Anything-Digital.com
- **********************************************
- jInbound is some kind of marketing thingy
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This header must not be removed. Additional contributions/changes
- may be added to this header as long as no information is deleted.
- **********************************************
- Get the latest version of JInbound at:
- http://anything-digital.com/
- **********************************************
-
+@ant_copyright_header@
  */
 
+defined('JPATH_PLATFORM') or die;
+
+$this->cols = 5;
+
+echo $this->loadTemplate('list');
+
+/*
 defined('JPATH_PLATFORM') or die;
 $user      = JFactory::getUser();
 
@@ -199,3 +188,4 @@ $floatButtons = JInbound::version()->isCompatible('3.0');
 
 </div>
 
+*/

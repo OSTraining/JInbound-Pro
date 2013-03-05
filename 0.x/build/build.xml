@@ -11,7 +11,8 @@
 -->
 <project name="jinbound" default="dist" basedir=".">
 	<property file="config.ini" />
-	<target name="dist" depends="init,copyFiles,promptUser,doChangelog,cleanprev,zipFiles,deldir,info" />
+	<!-- <target name="dist" depends="init,copyFiles,promptUser,doChangelog,cleanprev,zipFiles,deldir,info" /> -->
+	<target name="dist" depends="init,copyFiles,cleanprev,zipFiles,deldir,info" />
 	<target name="init">
 
 		<!-- update marker in xml file for correct display of build number -->
@@ -109,6 +110,19 @@
 			<fileset
 				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media"
 				includes="images/"
+			/>
+		</copy>
+		<mkdir dir="${cfg.packages}/temp/staging/component/media/bootstrap" />
+		<copy todir="${cfg.packages}/temp/staging/component/media/bootstrap" filtering="true">
+			<fileset
+				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media/bootstrap"
+				includes="index.html,css/,js/"
+			/>
+		</copy>
+		<copy todir="${cfg.packages}/temp/staging/component/media/bootstrap" filtering="false">
+			<fileset
+				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media/bootstrap"
+				includes="img/"
 			/>
 		</copy>
 		<!-- now read xml file (the one in temp directory, after search/replace operation -->

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset
-		name="top"
-		label="COM_JINBOUND_CATEGORY_FIELDSET_TOP"
+		name="default"
+		label="COM_JINBOUND_CATEGORY_FIELDSET_DEFAULT"
 	>
 		<field
 			id="name" name="name"
@@ -30,14 +30,7 @@
 			class="inputbox"
 			default="1"
 		/>
-
-	</fieldset>
-
-	<fieldset
-		name="hidden"
-		label="COM_JINBOUND_CATEGORY_FIELDSET_HIDDEN"
-	>
-
+		
 		<field
 			id="id" name="id"
 			type="hidden"
@@ -48,5 +41,4 @@
 		/>
 
 	</fieldset>
-
 </form>

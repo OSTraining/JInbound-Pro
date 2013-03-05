@@ -1,85 +1,102 @@
 <?php
 /**
  * @version		$Id$
- * @package		JCalPro
- * @subpackage	com_jcalpro
-
-**********************************************
-JCal Pro
-Copyright (c) 2006-2011 Anything-Digital.com
-**********************************************
-JCalPro is a native Joomla! calendar component for Joomla!
-
-JCal Pro was once a fork of the existing Extcalendar component for Joomla!
-(com_extcal_0_9_2_RC4.zip from mamboguru.com).
-Extcal (http://sourceforge.net/projects/extcal) was renamed
-and adapted to become a Mambo/Joomla! component by
-Matthew Friedman, and further modified by David McKinnis
-(mamboguru.com) to repair some security holes.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This header must not be removed. Additional contributions/changes
-may be added to this header as long as no information is deleted.
-**********************************************
-Get the latest version of JCal Pro at:
-http://anything-digital.com/
-**********************************************
-
+ * @package		JInbound
+ * @subpackage	com_jinbound
+@ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
-jimport('joomla.application.component.modellist');
-JLoader::register('JInboundListModel', JPATH_ADMINISTRATOR.'/components/com_jinbound/libraries/models/basemodellist.php');
+
+JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
 
 /**
  * This models supports retrieving lists of locations.
  *
- * @package		JCalPro
- * @subpackage	com_jcalpro
+ * @package		JInbound
+ * @subpackage	com_jinbound
  */
-class JInboundModelCategories extends JModelList
+class JInboundModelCategories extends JInboundListModel
 {
-
-	public function __construct($config = array())
+	/**
+	 * Model context string.
+	 *
+	 * @var		string
+	 */
+	protected $context  = 'com_jinbound.categories';
+	
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 */
+	protected function populateState($ordering = null, $direction = null)
 	{
-
-		parent::__construct($config);
+		parent::populateState($ordering, $direction);
+		
+		$app = JFactory::getApplication();
+		$value = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+		$limit = $value;
+		$this->setState('list.limit', $limit);
+		
+		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search', '', 'string');
+		$this->setState('filter.search', $search);
 	}
 
-
-	protected function getListQuery()
+	/**
+	 * Method to get a store id based on model configuration state.
+	 *
+	 * This is necessary because the model is used by the component and
+	 * different modules that might need different sets of data or different
+	 * ordering requirements.
+	 *
+	 * @param	string		$id	A prefix for the store id.
+	 *
+	 * @return	string		A store id.
+	 */
+	protected function getStoreId($id = '')
 	{
+		// Compile the store id.
+		$id	.= ':'.$this->getState('filter.search');
+
+		return parent::getStoreId($id);
+	}
+
+	protected function getListQuery() {
 		// Create a new query object.
 		$db = $this->getDbo();
-
-		// main query
-		$query = $db->getQuery(true)
-		// Select the required fields from the table.
-		->select('*')
-		->from('#__jinbound_categories AS Category')
-		;
-
-		return $query;
-	}
-
-	protected function getCategories() {
-
-		$db = $this->getDbo();
-
+	
 		// main query
 		$query = $db->getQuery(true)
 			// Select the required fields from the table.
-			->select('*')
+			->select($this->getState('list.select', 'Category.*'))
 			->from('#__jinbound_categories AS Category')
-			;
+		;
+		// add author to query
+		$this->appendAuthorToQuery($query, 'Category');
 
+		// Filter by search.
+		$search = $this->getState('filter.search');
+		if (!empty($search)) {
+			if (stripos($search, 'id:') === 0) {
+				$query->where('Category.id = '.(int) substr($search, 3));
+			}
+			else {
+				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
+				$query->where('Category.title LIKE '.$search);
+			}
+		}
+
+		// Add the list ordering clause.
+		$orderCol = trim($this->state->get('list.ordering'));
+		$orderDirn = trim($this->state->get('list.direction'));
+		if (strlen($orderCol)) {
+			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		}
+
+		// Group by filter
+		$query->group('Category.id');
 		return $query;
-
 	}
-
-
 }

@@ -4,45 +4,75 @@
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` datetime NOT NULL,
   `name` varchar(255) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
   `fromname` varchar(255) NOT NULL,
   `fromemail` varchar(255) NOT NULL,
   `sendafter` int(11) NOT NULL,
   `subject` int(11) NOT NULL,
   `htmlbody` blob NOT NULL,
   `plainbody` blob NOT NULL,
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of event - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of form creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was last modified in UTC, deprecates last_updated',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time event was checked out',
+	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` datetime NOT NULL,
-  `published` tinyint(1) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
   `description` mediumtext NOT NULL,
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of event - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of form creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was last modified in UTC, deprecates last_updated',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time event was checked out',
+	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` datetime NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
   `heading` varchar(255) NOT NULL,
   `subheading` varchar(255) NOT NULL,
   `socialmedia` tinyint(1) NOT NULL,
   `maintext` blob NOT NULL,
   `sidebartext` blob NOT NULL,
   `alias` varchar(255) NOT NULL,
-  `published` tinyint(1) NOT NULL,
   `name` varchar(255) NOT NULL,
   `image` varchar(255) NOT NULL,
   `imagealttext` varchar(255) NOT NULL,
@@ -61,31 +91,87 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
   `send_to_url` varchar(255) NOT NULL,
   `sendto_message` text NOT NULL,
   `template` text NOT NULL,
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of event - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of form creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was last modified in UTC, deprecates last_updated',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time event was checked out',
+	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_priorities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` datetime NOT NULL,
-  `published` tinyint(1) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
   `description` mediumtext NOT NULL,
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of event - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of form creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was last modified in UTC, deprecates last_updated',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time event was checked out',
+	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_stages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` datetime NOT NULL,
-  `published` tinyint(1) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `modified` datetime NOT NULL,
   `description` mediumtext NOT NULL,
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of event - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of form creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when event was last modified in UTC, deprecates last_updated',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time event was checked out',
+	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

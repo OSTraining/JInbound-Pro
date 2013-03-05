@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form addfieldpath="/administrator/components/com_jinbound/models/fields">
 	<fieldset
-		name="top"
-		label="COM_JINBOUND_PAGE_FIELDSET_TOP"
+		name="default"
+		label="COM_JINBOUND_PAGE_FIELDSET_DEFAULT"
 	>
+		<field
+			id="id" name="id"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_ID"
+			default="0"
+			readonly="true"
+		/>
+		
 		<field
 			id="name" name="name"
 			type="text"
@@ -40,55 +49,7 @@
 		/>
 
 	</fieldset>
-
-	<fieldset
-		name="hidden"
-		label="COM_JINBOUND_PAGE_FIELDSET_HIDDEN"
-	>
-
-		<field
-			id="id" name="id"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_ID"
-			default="0"
-			readonly="true"
-		/>
-
-		<field
-			id="created" name="created"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_CREATED"
-			default=""
-			readonly="true"
-		/>
-		<field
-			id="created_by" name="created_by"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_CREATED_BY"
-			default="0"
-			readonly="true"
-		/>
-		<field
-			id="modified" name="modified"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_MODIFIED"
-			default=""
-			readonly="true"
-		/>
-		<field
-			id="modified_by" name="modified_by"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_MODIFIED_BY"
-			default="0"
-			readonly="true"
-		/>
-	</fieldset>
-
+	
 	<fieldset
 		name="content"
 		label="COM_JINBOUND_PAGE_FIELDSET_CONTENT"
@@ -111,12 +72,12 @@
 		/>
 		<field
 			id="socialmedia" name="socialmedia"
-			type="radio"
+			type="list"
 			label="COM_JINBOUND_SOCIALMEDIA"
 			description="COM_JINBOUND_SOCIALMEDIA_DESC"
 			default="0">
-			<option value="1">Yes</option>
-			<option value="0">No</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 		<field
 			id="maintext" name="maintext"
@@ -218,13 +179,13 @@
 
 		<field
 			id="notify_form_submits" name="notify_form_submits"
-			type="radio"
+			type="list"
 			label="COM_JINBOUND_NOTIFY_FORM_SUBMITS"
 			description="COM_JINBOUND_NOTIFY_FORM_SUBMITS_CAMPAIGN_DESC"
-			default="yes"
+			default="1"
 		>
-			<option value="yes">Yes</option>
-			<option value="no">No</option>
+			<option value="1">Yes</option>
+			<option value="0">No</option>
 		</field>
 
 		<field
