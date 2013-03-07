@@ -29,6 +29,11 @@ class JInboundModelLeads extends JModelList
 			// Select the required fields from the table.
 			->select('Lead.*')
 			->from('#__jinbound_leads AS Lead')
+			->select('User.email AS email')
+			->select('User.name AS name')
+			->select('User.username AS username')
+			->leftJoin('#__users AS User ON User.id = Lead.user_id')
+			->group('Lead.id')
 		;
 
 		return $query;

@@ -1,31 +1,17 @@
 <?php
 /**
- * @package		Joomla.Site
- * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @version		$Id$
+ * @package		JInbound
+ * @subpackage	com_jinbound
+@ant_copyright_header@
  */
 
-defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
-/**
- * Login view class for Users.
- *
- * @package		Joomla.Site
- * @subpackage	com_users
- * @since		1.5
- */
-class JinboundViewPage extends JViewLegacy
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
+JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
+
+class JInboundViewPage extends JInboundItemView
 {
-	protected $item = null;
-
-	public function display($tpl = null)
-	{
-
-		$this->item = $this->get('Item');
-
-
-		parent::display($tpl);
-	}
-
+	
 }

@@ -3,35 +3,17 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-
-**********************************************
-JInbound
-Copyright (c) 2012 Anything-Digital.com
-**********************************************
-JInbound is some kind of marketing thingy
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This header must not be removed. Additional contributions/changes
-may be added to this header as long as no information is deleted.
-**********************************************
-Get the latest version of JInbound at:
-http://anything-digital.com/
-**********************************************
-
+@ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
 
 $user      = JFactory::getUser();
 $userId    = $user->get('id');
-$listOrder = ''; //$this->state->get('list.ordering');
-$listDirn  = ''; //$this->state->get('list.direction');
-$saveOrder = ''; //($listOrder == 'Page.id');
-$trashed   = ''; //(-2 == $this->state->get('filter.published'));
+$listOrder = $this->state->get('list.ordering');
+$listDirn  = $this->state->get('list.direction');
+$saveOrder = ($listOrder == 'Priority.id');
+$trashed   = (-2 == $this->state->get('filter.published'));
 
 if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 
@@ -58,10 +40,10 @@ if (!empty($this->items)) :
 				<?php endif; ?>
 				<?php if ($canEdit || $canEditOwn) : ?>
 					<a href="<?php echo JInboundHelperUrl::edit('priority', $item->id); ?>">
-						<?php echo $this->escape($item->user_name); ?>
+						<?php echo $this->escape($item->name); ?>
 					</a>
 				<?php else : ?>
-					<?php echo $this->escape($item->user_name); ?>
+					<?php echo $this->escape($item->name); ?>
 				<?php endif; ?>
 				<?php  echo $item->name   ?>
 			</div>

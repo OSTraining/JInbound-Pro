@@ -10,6 +10,9 @@
 	<description>PKG_JINBOUND_DESCRIPTION</description>
 	<files folder="packages">
 		<file type="component" id="@ant_component_id@">@ant_component_package@</file>
+		<file type="template" id="@ant_template_id@" client="site">@ant_template_package@</file>
+		<file type="plugin" id="@ant_plugin_system_id@" group="system">@ant_plugin_system_package@</file>
+		<file type="plugin" id="@ant_plugin_user_id@" group="user">@ant_plugin_user_package@</file>
 	</files>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.pkg_jinbound.sys.ini</language>

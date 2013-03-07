@@ -13,5 +13,5 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewLeads extends JInboundListView
 {
-	public $viewItemName = 'lead';
+	
 }

@@ -18,7 +18,7 @@
 			type="text"
 			label="COM_JINBOUND_NAME"
 			description="COM_JINBOUND_NAME_DESC"
-			class="inputbox"
+			class="input-block-level"
 			size="30"
 			required="true"
 		/>
@@ -28,7 +28,7 @@
 			type="text"
 			label="JFIELD_ALIAS_LABEL"
 			description="JFIELD_ALIAS_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
@@ -36,7 +36,7 @@
 			type="JinboundCategorylist"
 			label="COM_JINBOUND_CATEGORY"
 			description="COM_JINBOUND_CATEGORY_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
@@ -44,7 +44,7 @@
 			type="jinboundpublished"
 			label="COM_JINBOUND_PUBLISHED"
 			description="COM_JINBOUND_PUBLISHED_DESC"
-			class="inputbox"
+			class="input-block-level"
 			default="1"
 		/>
 
@@ -55,11 +55,15 @@
 		label="COM_JINBOUND_PAGE_FIELDSET_CONTENT"
 	>
 		<field
+			id="content_tips" name="content_tips"
+			type="jinboundtips"
+		/>
+		<field
 			id="heading" name="heading"
 			type="text"
 			label="COM_JINBOUND_HEADING"
 			description="COM_JINBOUND_HEADING_DESC"
-			class="inputbox"
+			class="input-block-level"
 			size="30"
 		/>
 		<field
@@ -67,7 +71,7 @@
 			type="text"
 			label="COM_JINBOUND_SUBHEADING"
 			description="COM_JINBOUND_SUBHEADING_DESC"
-			class="inputbox"
+			class="input-block-level"
 			size="30"
 		/>
 		<field
@@ -75,7 +79,9 @@
 			type="list"
 			label="COM_JINBOUND_SOCIALMEDIA"
 			description="COM_JINBOUND_SOCIALMEDIA_DESC"
-			default="0">
+			default="0"
+			class="input-medium"
+		>
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
@@ -85,7 +91,7 @@
 			filter="safehtml"
 			label="COM_JINBOUND_MAINTEXT"
 			description="COM_JINBOUND_MAINTEXT_DESC"
-			class="inputbox"
+			class="input-block-level"
 			cols="60" rows="12"
 			buttons="0"
 		/>
@@ -95,6 +101,7 @@
 			label="COM_JINBOUND_SIDEBARTEXT"
 			description="COM_JINBOUND_SIDEBARTEXT_DESC"
 			cols="60" rows="12"
+			class="input-block-level"
 		/>
 
 
@@ -105,25 +112,29 @@
 		label="COM_JINBOUND_PAGE_FIELDSET_IMAGE"
 	>
 		<field
+			id="imagetab_tips" name="imagetab_tips"
+			type="jinboundtips"
+		/>
+		<field
 			id="image" name="image"
 			type="media"
 			hide_none="1"
 			label="COM_JINBOUND_IMAGE"
 			description="COM_JINBOUND_IMAGE_DESC"
-			class="inputbox"
+			class="input-large"
 		/>
 		<field
 			id="imagealttext" name="imagealttext"
 			type="text"
 			label="COM_JINBOUND_ALTTEXT"
 			description="COM_JINBOUND_ALTTEXT_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 	</fieldset>
 
 	<fieldset
-		name="formtop"
+		name="forms"
 		label="COM_JINBOUND_PAGE_FIELDSET_FORMS"
 	>
 		<field
@@ -131,7 +142,7 @@
 			type="text"
 			label="COM_JINBOUND_PAGE_FORMNAME"
 			description="COM_JINBOUND_PAGE_FORMNAME_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
@@ -147,6 +158,7 @@
 			label="COM_JINBOUND_PAGE_CONVERTS_ON_ANOTHER_FORM"
 			description="COM_JINBOUND_PAGE_CONVERTS_ON_ANOTHER_FORM_DESC"
 			default="stop"
+			class="input-block-level"
 		>
 			<option value="stop">Stop This Lead Nurturing Campaign</option>
 			<option value="donotsend">Do Not Send Lead Nurturing Campaign</option>
@@ -158,34 +170,38 @@
 			label="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CAMPAIGN"
 			description="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CMAPAIGN_DESC"
 			default="donotsend"
+			class="input-block-level"
 		>
 			<option value="stop">Stop This Lead Nurturing Campaign</option>
 			<option value="donotsend">Do Not Send Lead Nurturing Campaign</option>
 		</field>
-
-	</fieldset>
-
-	<fieldset
-		name="formbottom"
-		label="COM_JINBOUND_PAGE_FIELDSET_FORMS"
-	>
+		
+		<field
+			id="formbuilder" name="formbuilder"
+			type="jinboundformbuilder"
+			label="COM_JINBOUND_PAGE_FORMBUILDER"
+			description="COM_JINBOUND_PAGE_FORMBUILDER_DESC"
+			default=""
+		/>
+		
 		<field
 			id="submit_text" name="submit_text"
 			type="text"
 			label="COM_JINBOUND_PAGE_SUBMIT_TEXT"
 			description="COM_JINBOUND_PAGE_SUBMIT_TEXT_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
 			id="notify_form_submits" name="notify_form_submits"
 			type="list"
-			label="COM_JINBOUND_NOTIFY_FORM_SUBMITS"
-			description="COM_JINBOUND_NOTIFY_FORM_SUBMITS_CAMPAIGN_DESC"
+			label="COM_JINBOUND_PAGE_NOTIFY_FORM_SUBMITS"
+			description="COM_JINBOUND_PAGE_NOTIFY_FORM_SUBMITS_CAMPAIGN_DESC"
 			default="1"
+			class="input-medium"
 		>
-			<option value="1">Yes</option>
-			<option value="0">No</option>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
 		</field>
 
 		<field
@@ -193,7 +209,7 @@
 			type="text"
 			label="COM_JINBOUND_PAGE_NOTIFICATION_EMAIL"
 			description="COM_JINBOUND_PAGE_NOTIFICATION_EMAIL_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
@@ -202,6 +218,7 @@
 			label="COM_JINBOUND_PAGE_AFTER_SUBMIT_SENDTO"
 			description="COM_JINBOUND_PAGE_AFTER_SUBMIT_SENDTO_DESC"
 			default="message"
+			class="input-large"
 		>
 			<option value="menuitem">Menu Item</option>
 			<option value="url">Redirect to URL</option>
@@ -213,6 +230,7 @@
 			type="list"
 			label="COM_JINBOUND_PAGE_MENU_ITEM"
 			description="COM_JINBOUND_PAGE_MENU_ITEM_DESC"
+			class="input-large"
 		>
 			<option value=""></option>
 		</field>
@@ -222,7 +240,7 @@
 			type="text"
 			label="COM_JINBOUND_PAGE_SEND_TO_URL"
 			description="COM_JINBOUND_PAGE_SEND_TO_URL_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
@@ -230,7 +248,7 @@
 			type="textarea"
 			label="COM_JINBOUND_PAGE_SENDTO_MESSAGE"
 			description="COM_JINBOUND_PAGE_SENDTO_MESSAGE_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 	</fieldset>
@@ -241,11 +259,15 @@
 		label="COM_JINBOUND_PAGE_FIELDSET_SEO"
 	>
 		<field
+			id="seo_tips" name="seo_tips"
+			type="jinboundtips"
+		/>
+		<field
 			id="metatitle" name="metatitle"
 			type="text"
 			label="COM_JINBOUND_PAGE_METATITLE"
 			description="COM_JINBOUND_PAGE_METATITLE_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 		<field
@@ -254,6 +276,7 @@
 			label="COM_JINBOUND_PAGE_METADESCRIPTION"
 			description="COM_JINBOUND_PAGE_METADESCRIPTION_DESC"
 			cols="60" rows="12"
+			class="input-block-level"
 		/>
 
 	</fieldset>
@@ -263,11 +286,15 @@
 		label="COM_JINBOUND_PAGE_FIELDSET_TEMPLATE"
 	>
 		<field
+			id="template_tips" name="template_tips"
+			type="jinboundtips"
+		/>
+		<field
 			id="template" name="template"
 			type="editor"
 			label="COM_JINBOUND_PAGE_TEMPLATE"
 			description="COM_JINBOUND_PAGE_TEMPLATE_DESC"
-			class="inputbox"
+			class="input-block-level"
 		/>
 
 	</fieldset>

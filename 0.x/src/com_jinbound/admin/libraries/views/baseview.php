@@ -14,6 +14,7 @@ JInbound::registerHelper('filter');
 JInbound::registerHelper('path');
 JInbound::registerHelper('toolbar');
 JInbound::registerHelper('url');
+JInbound::registerLibrary('JInboundInflector', 'inflector');
 // include the html helper here
 jimport('joomla.html.html');
 //JHtml::addIncludePath(JInboundHelperPath::site().'/helpers/html');
@@ -159,7 +160,7 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('pages', 'categories', 'campaigns', 'leads', 'reports', 'settings');
+		$subMenuItems = array('pages', 'categories', 'campaigns', 'leads', 'statuses', 'priorities', 'reports', 'settings');
 		foreach ($subMenuItems as $sub) {
 			$label = JText::_(strtoupper(JInbound::COM . "_$sub"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
@@ -178,8 +179,17 @@ class JInboundView extends JInboundBaseView
 		$app = JFactory::getApplication();
 		$doc = JFactory::getDocument();
 		
-		// load js framework
-		JHtml::_('behavior.framework', true);
+		if (method_exists($doc, 'addStyleSheet')) {
+			if (!JInbound::version()->isCompatible('3.0.0')) {
+				$ext = (defined('JDEBUG') && JDEBUG ? '.min' : '');
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/ui/css/jinbound_component/jquery-ui-1.10.1.custom' . $ext . '.css');
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
+				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
+				$doc->addScript(JInboundHelperUrl::media() . '/ui/js/jquery-ui-1.10.1.custom' . $ext . '.js');
+				$doc->addScript(JInboundHelperUrl::media() . '/bootstrap/js/bootstrap' . $ext . '.js');
+			}
+		}
 		
 		// we don't want to run this whole function in admin,
 		// but there's still a bit we need - specifically, styles for header icons
@@ -187,13 +197,6 @@ class JInboundView extends JInboundBaseView
 		if ($app->isAdmin()) {
 			if (method_exists($doc, 'addStyleSheet')) {
 				$doc->addStyleSheet(JInboundHelperUrl::media() . '/css/admin.stylesheet.css');
-				if (!JInbound::version()->isCompatible('3.0.0')) {
-					$ext = (defined('JDEBUG') && JDEBUG ? '.min' : '');
-					$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
-					$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
-					$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
-					$doc->addScript(JInboundHelperUrl::media() . '/bootstrap/js/bootstrap' . $ext . '.js');
-				}
 			}
 			return;
 		}
@@ -262,5 +265,21 @@ class JInboundView extends JInboundBaseView
 	
 	public function getCrumb($title, $url = '') {
 		return array('title' => $title, 'url' => $url);
+	}
+	
+	/**
+	 * overload this with an extra param to choose layout
+	 * 
+	 * (non-PHPdoc)
+	 * @see JView::loadTemplate()
+	 */
+	public function loadTemplate($tpl = null, $layout = null) {
+		$oldLayout = $this->_layout;
+		if (!is_null($layout)) {
+			$this->_layout = $layout;
+		}
+		$return = parent::loadTemplate($tpl);
+		$this->_layout = $oldLayout;
+		return $return;
 	}
 }

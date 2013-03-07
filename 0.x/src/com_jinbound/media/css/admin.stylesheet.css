@@ -1,4 +1,18 @@
-.icon-48-jinbound {
+.icon-48-jinbound,
+.icon-48-jinbound-campaign,
+.icon-48-jinbound-campaigns,
+.icon-48-jinbound-categories,
+.icon-48-jinbound-category,
+.icon-48-jinbound-dashboard,
+.icon-48-jinbound-lead,
+.icon-48-jinbound-leads,
+.icon-48-jinbound-page,
+.icon-48-jinbound-pages,
+.icon-48-jinbound-priorities,
+.icon-48-jinbound-priority,
+.icon-48-jinbound-reports,
+.icon-48-jinbound-status,
+.icon-48-jinbound-statuses {
 	background: url('../images/icon-48-jinbound.png') 0 0 no-repeat;
 }
 

@@ -1,26 +1,21 @@
 <?php
 /**
- * @package		Joomla.Site
- * @subpackage	com_users
- * @copyright	Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @version		$Id$
+ * @package		JInbound
+ * @subpackage	com_jinbound
+@ant_copyright_header@
  */
 
-defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
-/**
- * Base controller class for Users.
- *
- * @package		Joomla.Site
- * @subpackage	com_users
- * @since		1.5
- */
-class JinboundController extends JControllerLegacy
+JLoader::register('JInboundBaseController', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/controllers/basecontroller.php');
+JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+
+class JInboundController extends JInboundBaseController
 {
 	function display($cachable = false, $urlparams = false) {
-		$app        = JFactory::getApplication();
-		$view       = $app->input->get('view', 'Page', 'cmd');
-
+		$app  = JFactory::getApplication();
+		$view = $app->input->get('view', 'page', 'cmd');
 		$app->input->set('view', $view);
 		parent::display($cachable);
 	}

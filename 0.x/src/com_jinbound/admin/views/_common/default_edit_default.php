@@ -8,16 +8,26 @@
 
 defined('JPATH_PLATFORM') or die;
 
-foreach ($this->form->getFieldset('default') as $field) :
-	$label = trim($field->label . '');
-	if (empty($label)) :
-		echo $field->input;
-	else :
-	?>
-<div class="row-fluid">
-	<div class="span1"><?php echo $label; ?></div>
-<div class="span10 offset1"><?php echo $field->input; ?></div>
-</div>
-		<?php
+$fieldset = $this->form->getFieldset('default');
+$well = false;
+// do we have a well?
+foreach ($fieldset as $field) :
+	if (empty($well) && method_exists($field, 'getSidebar')) :
+		$well = $field->getSidebar();
 	endif;
 endforeach;
+
+?>
+<div class="row-fluid">
+	<div class="span<?php echo $well ? 9 : 12; ?>">
+<?php
+$this->_currentFieldset = $fieldset;
+$this->loadTemplate('edit_fields');
+?>
+	</div>
+<?php if (!empty($well)) : ?>
+	<div class="span3 well">
+		<?php echo $well; ?>
+	</div>
+<?php endif; ?>
+</div>

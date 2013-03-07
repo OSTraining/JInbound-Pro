@@ -12,9 +12,9 @@ $floatButtons = JInbound::version()->isCompatible('3.0');
 
 ?>
 <fieldset id="filter-bar">
-	<div class="filter-search fltlft btn-group pull-left">
+	<div class="filter-search fltlft btn-group pull-left input-append">
 		<label class="filter-search-lbl element-invisible" for="filter_search"><?php echo JText::_('JSEARCH_FILTER_LABEL'); ?></label>
-		<input type="text" name="filter_search" id="filter_search" class="input-medium search-query" value="<?php echo JInboundHelperFilter::escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_JINBOUND_FILTER_SEARCH_DESC'); ?>" placeholder="<?php echo JText::_('COM_JINBOUND_FILTER_SEARCH_DESC'); ?>" />
+		<input type="text" name="filter_search" id="filter_search" class="input-medium" value="<?php echo JInboundHelperFilter::escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('COM_JINBOUND_FILTER_SEARCH_DESC'); ?>" placeholder="<?php echo JText::_('COM_JINBOUND_FILTER_SEARCH_DESC'); ?>" />
 		
 <?php if (!$floatButtons) : ?>
 		<button type="submit" class="btn btn-primary"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>

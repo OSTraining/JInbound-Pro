@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset
+		name="profile"
+		label="COM_JINBOUND_LEAD_FIELDSET_PROFILE"
+	>
+		<field
+			id="phone" name="phone"
+			type="text"
+			label="COM_JINBOUND_PHONE"
+			description="COM_JINBOUND_PHONE_DESC"
+			class="input-block-level"
+		/>
+		<field
+			id="email" name="email"
+			type="text"
+			label="COM_JINBOUND_EMAIL"
+			description="COM_JINBOUND_EMAIL_DESC"
+			class="input-block-level"
+		/>
+		<field
+			id="company" name="company"
+			type="text"
+			label="COM_JINBOUND_COMPANY"
+			description="COM_JINBOUND_COMPANY_DESC"
+			class="input-block-level"
+		/>
+		<field
+			id="website" name="website"
+			type="text"
+			label="COM_JINBOUND_WEBSITE"
+			description="COM_JINBOUND_WEBSITE_DESC"
+			class="input-block-level"
+		/>
+		<field
+			id="address" name="address"
+			type="textarea"
+			label="COM_JINBOUND_ADDRESS"
+			description="COM_JINBOUND_ADDRESS_DESC"
+			class="input-block-level"
+		/>
+	</fieldset>
+	
+	<fieldset
+		name="social"
+		label="COM_JINBOUND_LEAD_FIELDSET_SOCIAL"
+	>
+		<field
+			id="facebook" name="facebook"
+			type="jinboundicontext"
+			label="COM_JINBOUND_FACEBOOK"
+			description="COM_JINBOUND_FACEBOOK_DESC"
+			class="input-block-level"
+			icon="media/jinbound/images/facebook.jpg"
+		/>
+		<field
+			id="twitter" name="twitter"
+			type="jinboundicontext"
+			label="COM_JINBOUND_TWITTER"
+			description="COM_JINBOUND_TWITTER_DESC"
+			class="input-block-level"
+			icon="media/jinbound/images/twitter.jpg"
+		/>
+		<field
+			id="linkedin" name="linkedin"
+			type="jinboundicontext"
+			label="COM_JINBOUND_LINKEDIN"
+			description="COM_JINBOUND_LINKEDIN_DESC"
+			class="input-block-level"
+			icon="media/jinbound/images/linkedin.jpg"
+		/>
+	</fieldset>
+	
+	<fieldset
+		name="details"
+		label="COM_JINBOUND_LEAD_FIELDSET_DETAILS"
+	>
+		<field
+			id="user_id" name="user_id"
+			type="user"
+			label="COM_JINBOUND_USER"
+			description="COM_JINBOUND_USER_DESC"
+			class="input-block-level"
+			required="true"
+		/>
+
+		<field
+			id="id" name="id"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_ID"
+			default="0"
+			readonly="true"
+		/>
+		
+		<field
+			id="published" name="published"
+			type="jinboundpublished"
+			label="COM_JINBOUND_PUBLISHED"
+			description="COM_JINBOUND_PUBLISHED_DESC"
+			class="input-medium"
+			default="1"
+		/>
+
+		<field
+			id="priority_id" name="priority_id"
+			type="jinboundpriority"
+			label="COM_JINBOUND_PRIORITY"
+			description="COM_JINBOUND_PRIORITY_DESC"
+			class="input-block-level"
+		/>
+
+		<field
+			id="status_id" name="status_id"
+			type="jinboundstatus"
+			label="COM_JINBOUND_STATUS"
+			description="COM_JINBOUND_STATUS_DESC"
+			class="input-block-level"
+		/>
+	</fieldset>
+
+</form>

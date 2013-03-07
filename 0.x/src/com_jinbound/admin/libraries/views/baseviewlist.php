@@ -72,11 +72,7 @@ class JInboundListView extends JInboundView
 		static $set;
 		
 		if (is_null($set)) {
-			// yuk - fix this later :P
-			// TAKE NOTE: so far all the views in JInbound have single names that are pluralized by adding an 's'
-			// except for categories, which is handled by core
-			// if this ever changes, this needs to be replaced with more comprehensive inflector code
-			$single = preg_replace('/s$/', '', $this->_name);
+			$single = JInboundInflector::singularize($this->_name);
 			// set the toolbar title
 			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name.'_MANAGER')), 'jinbound-'.strtolower($this->_name));
 			if (JFactory::getUser()->authorise('core.create')) {

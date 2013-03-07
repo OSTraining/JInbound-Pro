@@ -13,5 +13,5 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewCategories extends JInboundListView
 {
-	public $viewItemName = 'category';
+	
 }

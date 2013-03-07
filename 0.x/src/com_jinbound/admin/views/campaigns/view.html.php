@@ -13,5 +13,5 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewCampaigns extends JInboundListView
 {
-	public $viewItemName = 'campaign';
+	
 }

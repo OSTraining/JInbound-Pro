@@ -22,6 +22,10 @@
 		<mkdir dir="${cfg.packages}/temp" />
 		<mkdir dir="${cfg.packages}/temp/staging" />
 		<mkdir dir="${cfg.packages}/temp/staging/component" />
+		<mkdir dir="${cfg.packages}/temp/staging/template" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/system" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/user" />
 		<mkdir dir="${cfg.packages}/temp/packages" />
 		
 		<!-- calculate version strings -->
@@ -42,17 +46,29 @@
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
-		<property name="str.pkg.filename" value="${cfg.pkgprefix}Joomla_2.5_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.pkg.filename" value="${cfg.pfx.pkg}Joomla_2.5_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.pkg.file" value="${cfg.packages}/current/${str.pkg.filename}" />
-		<property name="str.com.filename" value="${cfg.comprefix}${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.com.filename" value="${cfg.pfx.com}${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.com.file" value="${cfg.packages}/temp/packages/${str.com.filename}" />
+		<property name="str.tpl.filename" value="${cfg.pfx.tpl}${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.tpl.file" value="${cfg.packages}/temp/packages/${str.tpl.filename}" />
+		<property name="str.plg.sys.filename" value="${cfg.pfx.plg}system_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sys.file" value="${cfg.packages}/temp/packages/${str.plg.sys.filename}" />
+		<property name="str.plg.user.filename" value="${cfg.pfx.plg}user_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
 		
 		<!-- perform filtering -->
 		<filter token="ant_version_number" value="${str.versionforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
-		<filter token="ant_component_id" value="${cfg.comprefix}${cfg.name}" />
+		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
 		<filter token="ant_component_package" value="${str.com.filename}.zip" />
+		<filter token="ant_template_id" value="${cfg.name}" />
+		<filter token="ant_template_package" value="${str.tpl.filename}.zip" />
+		<filter token="ant_plugin_system_id" value="${cfg.name}" />
+		<filter token="ant_plugin_system_package" value="${str.plg.sys.filename}.zip" />
+		<filter token="ant_plugin_user_id" value="${cfg.name}" />
+		<filter token="ant_plugin_user_package" value="${str.plg.user.filename}.zip" />
 	
 		<condition property="do.zip">
 			<istrue value="${cfg.zip}" />
@@ -95,42 +111,53 @@
 		<!-- start filtering (ALL media will be in /media so we're ok to filter ALL the files!) -->
 		<copy todir="${cfg.packages}/temp/staging/component" filtering="true">
 			<fileset
-				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}"
+				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.install.php,admin/,language/,site/"
 			/>
 		</copy>
 		<mkdir dir="${cfg.packages}/temp/staging/component/media" />
 		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="true">
 			<fileset
-				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media"
+				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/media"
 				includes="index.html,css/,js/"
 			/>
 		</copy>
 		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="false">
 			<fileset
-				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media"
-				includes="images/"
-			/>
-		</copy>
-		<mkdir dir="${cfg.packages}/temp/staging/component/media/bootstrap" />
-		<copy todir="${cfg.packages}/temp/staging/component/media/bootstrap" filtering="true">
-			<fileset
-				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media/bootstrap"
-				includes="index.html,css/,js/"
-			/>
-		</copy>
-		<copy todir="${cfg.packages}/temp/staging/component/media/bootstrap" filtering="false">
-			<fileset
-				dir="${cfg.dir}/${cfg.comprefix}${cfg.name}/media/bootstrap"
-				includes="img/"
+				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/media"
+				includes="images/,bootstrap/,ui/"
 			/>
 		</copy>
 		<!-- now read xml file (the one in temp directory, after search/replace operation -->
 		<xmlproperty file="${cfg.packages}/temp/staging/component/${cfg.name}.xml" collapseAttributes="true" prefix="xml" keepRoot="false" />
+
+		<!-- template -->
+		<copy todir="${cfg.packages}/temp/staging/template" filtering="true">
+			<fileset
+				dir="${cfg.dir}/${cfg.pfx.tpl}${cfg.name}"
+				includes="templateDetails.xml,index.php,index.html,language/"
+			/>
+		</copy>
+
+		<!-- system plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/system" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/system/${cfg.name}"
+				includes="${cfg.name}.xml,${cfg.name}.php,index.html,language/"
+			/>
+		</copy>
+
+		<!-- user plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/user" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/user/${cfg.name}"
+				includes="${cfg.name}.xml,${cfg.name}.php,index.html,forms/,language/"
+			/>
+		</copy>
 		
 		<!-- filter package manifest -->
 		<copy todir="${cfg.packages}/temp/staging" filtering="true">
-			<fileset dir="${cfg.dir}" includes="${cfg.pkgprefix}${cfg.name}.xml,language/" />
+			<fileset dir="${cfg.dir}" includes="${cfg.pfx.pkg}${cfg.name}.xml,language/" />
 		</copy>
 	</target>
 
@@ -190,7 +217,7 @@
 	
 	<target name="zipFiles" depends="mkdir">
 		<echo message="Building    | ${str.pkg.file}.zip" />
-		<echo message="xml file    | ${cfg.dir}/${cfg.comprefix}${cfg.name}/${cfg.name}.xml" />
+		<echo message="xml file    | ${cfg.dir}/${cfg.pfx.com}${cfg.name}/${cfg.name}.xml" />
 		<echo message="xml version | ${str.version}" />
 		<echo message="target      | Joomla" />
 		<echo message="--------------------------------------------" />
@@ -204,13 +231,22 @@
 		<zip destfile="${str.com.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/component" excludes="" />
 		</zip>
+		<zip destfile="${str.tpl.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/template" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.sys.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/system" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.user.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/user" excludes="" />
+		</zip>
 		
 		<!-- create pkg -->
 		<zip destfile="${str.pkg.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp" includes="packages/" />
 		</zip>
 		<zip destfile="${str.pkg.file}.zip" update="true">
-			<zipfileset dir="${cfg.packages}/temp/staging" includes="${cfg.pkgprefix}${cfg.name}.xml,language/" />
+			<zipfileset dir="${cfg.packages}/temp/staging" includes="${cfg.pfx.pkg}${cfg.name}.xml,language/" />
 		</zip>
 		<zip destfile="${str.pkg.file}.zip" update="true">
 			<zipfileset dir="${svn.rootDir}" includes="changelog.log" />

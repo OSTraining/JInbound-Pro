@@ -14,7 +14,7 @@ $listDirn  = $this->state->get('list.direction');
 ?>
 
 <div id="jinbound_component" class="<?php echo $this->viewClass; ?>">
-	<form action="<?php echo JInboundHelperUrl::view($this->viewName); ?>" method="post" name="adminForm" id="adminForm" class="form-search">
+	<form action="<?php echo JInboundHelperUrl::view($this->viewName); ?>" method="post" name="adminForm" id="adminForm">
 <?php echo $this->loadTemplate('list_top'); ?>
 		<div class="row-fluid">
 			<?php
