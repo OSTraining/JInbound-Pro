@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die;
 		<div class="pull-right">
 			<?php echo $this->loadTemplate('social'); ?>
 		</div>
-		<h2>TODO subheadline here</h2>
+		<h2><?php echo $this->escape($this->item->subheading); ?></h2>
 	</div>
 </div>
 <div class="row-fluid">

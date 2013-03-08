@@ -8,5 +8,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-form template
+?><pre><?php echo htmlspecialchars(print_r($this->item->formbuilder, 1)); ?></pre>

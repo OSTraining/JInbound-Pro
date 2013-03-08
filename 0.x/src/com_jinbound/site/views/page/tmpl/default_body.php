@@ -8,5 +8,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-body template
+echo $this->item->maintext;

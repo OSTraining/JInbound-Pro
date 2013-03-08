@@ -8,5 +8,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-sidebar template
+echo $this->item->sidebartext;

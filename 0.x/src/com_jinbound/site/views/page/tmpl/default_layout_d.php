@@ -11,7 +11,7 @@ defined('JPATH_PLATFORM') or die;
 ?>
 <div class="row-fluid">
 	<div class="span12">
-		<h2 class="text-center">TODO subheadline here</h2>
+		<h2 class="text-center"><?php echo $this->escape($this->item->subheading); ?></h2>
 	</div>
 </div>
 <div class="row-fluid">
