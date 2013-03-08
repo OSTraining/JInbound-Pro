@@ -160,7 +160,7 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('pages', 'categories', 'campaigns', 'leads', 'statuses', 'priorities', 'reports', 'settings');
+		$subMenuItems = array('pages', 'categories', 'campaigns', 'leads', 'statuses', 'priorities', 'reports');
 		foreach ($subMenuItems as $sub) {
 			$label = JText::_(strtoupper(JInbound::COM . "_$sub"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
@@ -180,13 +180,18 @@ class JInboundView extends JInboundBaseView
 		$doc = JFactory::getDocument();
 		
 		if (method_exists($doc, 'addStyleSheet')) {
-			if (!JInbound::version()->isCompatible('3.0.0')) {
-				$ext = (defined('JDEBUG') && JDEBUG ? '.min' : '');
+			$sfx = $app->isAdmin() ? 'back' : 'front';
+			$ext = (defined('JDEBUG') && JDEBUG ? '.min' : '');
+			if (JInbound::config("load_jquery_$sfx", 1)) {
+				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
+			}
+			if (JInbound::config("load_jquery_ui_$sfx", 1)) {
 				$doc->addStyleSheet(JInboundHelperUrl::media() . '/ui/css/jinbound_component/jquery-ui-1.10.1.custom' . $ext . '.css');
+				$doc->addScript(JInboundHelperUrl::media() . '/ui/js/jquery-ui-1.10.1.custom' . $ext . '.js');
+			}
+			if (JInbound::config("load_bootstrap_$sfx", 1)) {
 				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
 				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
-				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
-				$doc->addScript(JInboundHelperUrl::media() . '/ui/js/jquery-ui-1.10.1.custom' . $ext . '.js');
 				$doc->addScript(JInboundHelperUrl::media() . '/bootstrap/js/bootstrap' . $ext . '.js');
 			}
 		}

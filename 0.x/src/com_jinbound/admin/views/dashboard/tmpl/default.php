@@ -93,10 +93,20 @@ defined('JPATH_PLATFORM') or die;
 				</div>
 				<a href="javascript:alert('need a jed url');" class="btn btn-block"><?php echo JText::_('COM_JINBOUND_PLEASE_RATE_US_ON_JED'); ?></a>
 				<h4><?php echo JText::_('COM_JINBOUND_CONNECT_FOR_GREAT_INBOUND_CONTENT'); ?></h4>
-				<span class="3">twi</span>
-				<span class="3">rss</span>
-				<span class="3">fbk</span>
-				<span class="3">ytb</span>
+				<div class="row-fluid">
+					<div class="span3 text-center">
+						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/twitter.jpg'); ?>" /></a>
+					</div>
+					<div class="span3 text-center">
+						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/rss.jpg'); ?>" /></a>
+					</div>
+					<div class="span3 text-center">
+						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/facebook.jpg'); ?>" /></a>
+					</div>
+					<div class="span3 text-center">
+						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/youtube.jpg'); ?>" /></a>
+					</div>
+				</div>
 			</div>
 			<!-- Row 3 - banner -->
 			<div class="well">

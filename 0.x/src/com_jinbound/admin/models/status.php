@@ -18,7 +18,13 @@ JLoader::register('JInboundAdminModel', JPATH_ADMINISTRATOR.'/components/com_jin
  */
 class JInboundModelStatus extends JInboundAdminModel
 {
-
+	/**
+	 * Model context string.
+	 *
+	 * @var		string
+	 */
+	protected $context  = 'com_jinbound.status';
+	
 	public function getForm($data = array(), $loadData = true) {
 		// Get the form.
 		$form = $this->loadForm($this->option.'.'.$this->name, $this->name, array('control' => 'jform', 'load_data' => $loadData));

@@ -13,5 +13,8 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewCampaigns extends JInboundListView
 {
-	
+	function display($tpl = null, $echo = true) {
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_STATUS'), 'filter_status', $this->get('StatusOptions'), $this->get('State')->get('filter.status'));
+		return parent::display($tpl, $echo);
+	}
 }

@@ -59,8 +59,8 @@ abstract class JInbound
 		if (!isset($params)) {
 			$app = JFactory::getApplication();
 			// get the params, either from the helper or the application
-			if ($app->isAdmin() || self::COM != $app->input->get('option', '', 'cmd')) {
-				$params = JComponentHelper::getParams(self::COM);
+			if ($app->isAdmin() || JInbound::COM != $app->input->get('option', '', 'cmd')) {
+				$params = JComponentHelper::getParams(JInbound::COM);
 			} else {
 				$params = $app->getParams();
 			}
@@ -152,7 +152,7 @@ abstract class JInbound
 		$user	= JFactory::getUser();
 		$result	= new JObject;
 
-		$assetName = self::COM . (empty($categoryId) ? '' : '.category.'.(int) $categoryId);
+		$assetName = JInbound::COM . (empty($categoryId) ? '' : '.category.'.(int) $categoryId);
 
 		foreach (self::$_actions as $action) {
 			$result->set($action,	$user->authorise($action, $assetName));

@@ -13,5 +13,9 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewPages extends JInboundListView
 {
-	
+	function display($tpl = null, $echo = true) {
+		// add category filter
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_CATEGORY'), 'filter_category', $this->get('CategoryOptions'), $this->get('State')->get('filter.category'));
+		return parent::display($tpl, $echo);
+	}
 }

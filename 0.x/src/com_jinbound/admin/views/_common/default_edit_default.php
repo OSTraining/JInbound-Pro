@@ -22,7 +22,7 @@ endforeach;
 	<div class="span<?php echo $well ? 9 : 12; ?>">
 <?php
 $this->_currentFieldset = $fieldset;
-$this->loadTemplate('edit_fields');
+echo $this->loadTemplate('edit_fields');
 ?>
 	</div>
 <?php if (!empty($well)) : ?>

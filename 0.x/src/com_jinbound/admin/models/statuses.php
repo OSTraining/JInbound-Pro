@@ -8,8 +8,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.application.component.modellist');
-JLoader::register('JInboundListModel', JPATH_ADMINISTRATOR.'/components/com_jinbound/libraries/models/basemodellist.php');
+JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
 
 /**
  * This models supports retrieving lists of statuses.
@@ -17,8 +17,15 @@ JLoader::register('JInboundListModel', JPATH_ADMINISTRATOR.'/components/com_jinb
  * @package		JInbound
  * @subpackage	com_jinbound
  */
-class JInboundModelStatuses extends JModelList
+class JInboundModelStatuses extends JInboundListModel
 {
+	/**
+	 * Model context string.
+	 *
+	 * @var		string
+	 */
+	protected $context  = 'com_jinbound.statuses';
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.

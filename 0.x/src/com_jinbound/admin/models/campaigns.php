@@ -8,8 +8,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.application.component.modellist');
-JLoader::register('JInboundListModel', JPATH_ADMINISTRATOR.'/components/com_jinbound/libraries/models/basemodellist.php');
+JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
 
 /**
  * This models supports retrieving lists of locations.
@@ -17,16 +17,15 @@ JLoader::register('JInboundListModel', JPATH_ADMINISTRATOR.'/components/com_jinb
  * @package		JInbound
  * @subpackage	com_jinbound
  */
-class JInboundModelCampaigns extends JModelList
+class JInboundModelCampaigns extends JInboundListModel
 {
-
-	public function __construct($config = array())
-	{
-
-		parent::__construct($config);
-	}
-
-
+	/**
+	 * Model context string.
+	 *
+	 * @var		string
+	 */
+	protected $context  = 'com_jinbound.campaigns';
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.
@@ -40,6 +39,16 @@ class JInboundModelCampaigns extends JModelList
 		;
 
 		return $query;
+	}
+	
+	public function getStatusOptions() {
+		$query = $this->getDbo()->getQuery(true)
+		->select('Status.name AS text, Status.id AS value')
+		->from('#__jinbound_lead_statuses AS Status')
+		->where('Status.published = 1')
+		->order('Status.name ASC')
+		;
+		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_STATUS'));
 	}
 
 

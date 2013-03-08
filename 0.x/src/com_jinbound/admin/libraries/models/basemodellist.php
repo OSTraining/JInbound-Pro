@@ -104,6 +104,24 @@ class JInboundListModel extends JModelList
 		);
 		return $list;
 	}
+	
+	public function getOptionsFromQuery($query, $defaultText) {
+		$default = json_decode(json_encode(array(
+			'value' => ''
+		,	'text' => $defaultText
+		)));
+		// Create a new query object.
+		$db = $this->getDbo();
+		$db->setQuery($query);
+		try {
+			$options = $db->loadObjectList();
+			array_unshift($options, $default);
+			return $options;
+		}
+		catch (Exception $e) {
+			return array($default);
+		}
+	}
 
 	/**
 	 * give public read access to the model's context

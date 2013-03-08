@@ -1,91 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
-
-	<fieldset name="general"
-		label="General Parameters">
-
+	<fieldset
+		name="frontend"
+		label="COM_JINBOUND_CONFIG_FIELDSET_FRONTEND"
+	>
 		<field
-			name="date_format" type="list"
-			label="Date Format"
-			description="Date Format"
-			default="0" >
-			<option value="0">Format</option>
-		</field>
-
-		<field
-			name="time_zone" type="timezone"
-			label="Time Zone"
-			description="Time Zone"
-			default="America/Chicago" >
-		</field>
-
-		<field
-			name="frontend_editing" type="radio"
-			label="Enable Frontend Editing"
-			description="Frontend Editing"
-			default="0">
-			<option value="1">Yes</option>
-			<option value="0">No</option>
-		</field>
-
-		<field
-			name="social_networks" type="text"
-			label="Social Networks"
-			description=""
-			default="???">
-		</field>
-
-		<field
-			name="load_jquery" type="radio"
-			label="Load jQuery"
-			description="jQuery is required if running Joomla v2.5. This option is ignored in Joomla 3."
-			default="1">
-			<option value="1">Yes</option>
-			<option value="0">No</option>
-		</field>
-
-	</fieldset>
-
-	<fieldset name="categories"
-		label="Categories"
-		addfieldpath="/administrator/components/com_jinbound/models/fields"
+			name="load_jquery_front" id="load_jquery_front"
+			type="list"
+			label="COM_JINBOUND_LOAD_JQUERY"
+			description="COM_JINBOUND_LOAD_JQUERY_DESC"
+			default="1"
 		>
-
-		<field type="JinboundCategories"
-			label="Categories"
-	        description="Categories"
-	         />
-
-	</fieldset>
-
-	<fieldset name="lead_status"
-		label="Lead Status"
-		addfieldpath="/administrator/components/com_jinbound/models/fields"
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+			name="load_jquery_ui_front" id="load_jquery_ui_front"
+			type="list"
+			label="COM_JINBOUND_LOAD_JQUERY_UI"
+			description="COM_JINBOUND_LOAD_JQUERY_UI_DESC"
+			default="1"
 		>
-
-		<field type="JinboundStatuses" label="Lead Statuses"
-		        description="Lead Statuses"
-		         />
-
-
-	</fieldset>
-
-
-	<fieldset name="lead_priorities"
-		label="Lead Priorities"
-		addfieldpath="/administrator/components/com_jinbound/models/fields"
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+			name="load_bootstrap_front" id="load_bootstrap_front"
+			type="list"
+			label="COM_JINBOUND_LOAD_BOOTSTRAP"
+			description="COM_JINBOUND_LOAD_BOOTSTRAP_DESC"
+			default="1"
 		>
-
-		<field type="JinboundPriorities" label="Lead Priorities"
-	        description="Lead Priorities"
-	         />
-
-
-
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
 	</fieldset>
-
-
-
+	
+	<fieldset
+		name="backend"
+		label="COM_JINBOUND_CONFIG_FIELDSET_BACKEND"
+	>
+		<field
+			name="load_jquery_back" id="load_jquery_back"
+			type="list"
+			label="COM_JINBOUND_LOAD_JQUERY"
+			description="COM_JINBOUND_LOAD_JQUERY_DESC"
+			default="1"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+			name="load_jquery_ui_back" id="load_jquery_ui_back"
+			type="list"
+			label="COM_JINBOUND_LOAD_JQUERY_UI"
+			description="COM_JINBOUND_LOAD_JQUERY_UI_DESC"
+			default="1"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+			name="load_bootstrap_back" id="load_bootstrap_back"
+			type="list"
+			label="COM_JINBOUND_LOAD_BOOTSTRAP"
+			description="COM_JINBOUND_LOAD_BOOTSTRAP_DESC"
+			default="1"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+	</fieldset>
+	
 	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"

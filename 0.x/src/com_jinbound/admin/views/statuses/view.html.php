@@ -13,5 +13,5 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewStatuses extends JInboundListView
 {
-	public $viewItemName = 'status';
+	
 }

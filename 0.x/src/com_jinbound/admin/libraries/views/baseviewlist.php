@@ -30,7 +30,7 @@ class JInboundListView extends JInboundView
 		
 		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PUBLISHED'), 'filter_published', $this->get('PublishedStatus'), $state->get('filter.published'));
 		
-		parent::display($tpl);
+		return parent::display($tpl, $echo);
 	}
 	
 	public function addFilter($label, $name, $options, $default) {
@@ -44,7 +44,9 @@ class JInboundListView extends JInboundView
 	}
 	
 	public function renderFilters() {
-		if (empty($this->_filters)) return;
+		if (empty($this->_filters)) {
+			return;
+		}
 		if (JInbound::version()->isCompatible('3.0')) {
 			foreach ($this->_filters as $filter) {
 				if (empty($filter->options)) {
@@ -61,7 +63,7 @@ class JInboundListView extends JInboundView
 				continue;
 			}
 			$this->currentFilter = JHtml::_('select.genericlist', $filter->options, $filter->name, sprintf('id="%s" class="listbox" onchange="this.form.submit()"', $filter->name), 'value', 'text', $filter->default);
-			echo $this->loadTemplate('filter');
+			echo $this->loadTemplate('filter', 'default');
 		}
 	}
 
