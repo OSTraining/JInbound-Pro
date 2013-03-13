@@ -8,8 +8,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.application.component.controllerform');
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerform');
 
-class JInboundControllerEmail extends JControllerForm
+class JInboundControllerEmail extends JInboundFormController
 {
 }

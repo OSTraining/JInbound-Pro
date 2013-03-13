@@ -20,24 +20,12 @@ $saveOrder = ($listOrder == 'Campaign.id');
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.Name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_NAME', 'Campaign.EmailName', $listDirn, $listOrder); ?>
-	</th>
-			<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Campaign.Active', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'Campaign.published', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Campaign.Schedule', $listDirn, $listOrder); ?>
-	</th>
-	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_USERS', 'Campaign.Users', $listDirn, $listOrder); ?>
-	</th>
-	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_OPEN', 'Campaign.Open', $listDirn, $listOrder); ?>
-	</th>
-	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_CLICK', 'Campaign.Click', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CREATED', 'Campaign.created', $listDirn, $listOrder); ?>
 	</th>
 </tr>

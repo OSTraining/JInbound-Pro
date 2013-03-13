@@ -8,7 +8,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$id = $this->escape($this->input->id);
+$id    = $this->escape($this->input->id);
+$value = $this->input->value->toArray();
 ?>
 <div id="<?php echo $id; ?>_sidebar">
 	<ul class="nav nav-tabs">
@@ -18,7 +19,7 @@ $id = $this->escape($this->input->id);
 	<div class="tab-content">
 		<div id="<?php echo $id; ?>_fieldlist" class="tab-pane active">
 			<ul id="<?php echo $id; ?>_fields" class="unstyled <?php echo $id; ?>_connected">
-<?php foreach ($this->input->getFormFields() as $field) : ?>
+<?php foreach ($this->input->getFormFields() as $field) : if (array_key_exists($field->id, $value) && 1 == $value[$field->id]['enabled']) continue; ?>
 				<li class="btn btn-block" data-id="<?php echo $this->escape($field->id); ?>"><?php echo $this->escape($field->name); ?></li>
 <?php endforeach; ?>
 			</ul>

@@ -12,7 +12,7 @@ defined('JPATH_PLATFORM') or die;
 <div class="row-fluid">
 	<!-- visits -->
 	<div class="span3 text-center">
-		<h3>1000</h3>
+		<h3><?php echo $this->getVisitCount(); ?></h3>
 		<span><?php echo JText::_('COM_JINBOUND_WEBSITE_VISITS'); ?></span>
 	</div>
 	<!-- arrow -->
@@ -21,7 +21,7 @@ defined('JPATH_PLATFORM') or die;
 	</div>
 	<!-- leads -->
 	<div class="span3 text-center">
-		<h3>100</h3>
+		<h3><?php echo $this->getLeadCount(); ?></h3>
 		<span><?php echo JText::_('COM_JINBOUND_LEADS'); ?></span>
 	</div>
 	<!-- arrow -->

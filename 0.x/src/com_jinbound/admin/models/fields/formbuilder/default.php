@@ -19,11 +19,11 @@ $id = $this->escape($this->input->id);
 		placeholder: "ui-state-highlight"
 	});
 	$("#<?php echo $id; ?>_elements").on("sortreceive", function(e, ui) {
-		$('#<?php echo $id; ?>_' + ui.item.attr('data-id'));
-		console.log(ui.item.attr('data-id'));
+		$('#<?php echo $id; ?>_' + ui.item.attr('data-id') + '_enabled').val(1);
 	});
 	$("#<?php echo $id; ?>_fields").on("sortreceive", function(e, ui) {
-		console.log(ui.item.attr('data-id'));
+		$(ui.item).removeClass('btn-primary');
+		$('#<?php echo $id; ?>_' + ui.item.attr('data-id') + '_enabled').val(0);
 	});
 	$(document).on('click', "#<?php echo $id; ?>_elements .btn-block", function(e){
 		$("#<?php echo $id; ?>_elements .btn-block.btn-primary").removeClass('btn-primary');
@@ -39,8 +39,8 @@ $id = $this->escape($this->input->id);
 
 <div id="<?php echo $id; ?>" class="container-fluid">
 	<ul id="<?php echo $id; ?>_elements" class="well <?php echo $id; ?>_connected">
-<?php foreach ($this->input->getFormValue() as $element) : ?>
-		<li class="btn btn-block"><?php echo $element; ?></li>
+<?php foreach ($this->input->value->toArray() as $ename => $element) : if (0 == $element['enabled']) continue; ?>
+		<li class="btn btn-block" data-id="<?php echo $this->escape($ename); ?>"><?php echo $this->escape($element['title']); ?></li>
 <?php endforeach; ?>
 	</ul>
 </div>
@@ -48,4 +48,4 @@ $id = $this->escape($this->input->id);
 <div>
 	<input id="<?php echo $id; ?>_value" name="<?php echo $this->escape($this->input->name); ?>" type="<?php echo (defined('JDEBUG') && JDEBUG) ? 'hidden' : 'text'; ?>" value="" />
 </div>
-<pre><?php print_r($this->input->value); ?></pre>
+<pre><?php print_r($this->input->value->toArray()); ?></pre>

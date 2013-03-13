@@ -8,7 +8,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-if (!property_exists($this->item, 'layout') || !in_array($this->item->layout, array('a','b','c','d'))) {
+if (!property_exists($this->item, 'layout') || !in_array(strtolower($this->item->layout), array('a','b','c','d'))) {
 	$this->item->layout = 'a';
 }
 

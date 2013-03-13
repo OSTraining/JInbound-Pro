@@ -13,5 +13,9 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewEmails extends JInboundListView
 {
-	
+	function display($tpl = null, $echo = true) {
+		$this->adviceText = JText::_('COM_JINBOUND_LEAD_MANAGER_RANDOM_ADVICE_' . rand(1,4));
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_STATUS'), 'filter_status', $this->get('StatusOptions'), $this->get('State')->get('filter.status'));
+		return parent::display($tpl, $echo);
+	}
 }

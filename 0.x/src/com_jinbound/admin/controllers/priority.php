@@ -8,8 +8,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundPageController', JPATH_ADMINISTRATOR.'/components/com_jinbound/libraries/controllers/basecontrollerpage.php');
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerform');
 
-class JInboundControllerPriority extends JInboundPageController
+class JInboundControllerPriority extends JInboundFormController
 {
 }

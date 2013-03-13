@@ -8,6 +8,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+$leads = $this->getRecentLeads();
+
 ?>
 <!-- Row 5: Recent Leads -->
 <div class="row-fluid">
@@ -22,12 +24,14 @@ defined('JPATH_PLATFORM') or die;
 			</tr>
 		</thead>
 		<tbody>
+<?php if (!empty($leads)) foreach ($leads as $lead) : ?>
 			<tr>
-				<td>Name</td>
-				<td>Date</td>
-				<td>Form Converted On</td>
-				<td>Website</td>
+				<td><?php echo $this->escape($lead->name); ?></td>
+				<td><?php echo $this->escape($lead->date); ?></td>
+				<td>TODO</td>
+				<td><a href="<?php echo $this->escape($lead->website); ?>" target="_blank"><?php echo $this->escape($lead->website); ?></a></td>
 			</tr>
+<?php endforeach; ?>
 		</tbody>
 	</table>
 </div>

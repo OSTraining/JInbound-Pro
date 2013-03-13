@@ -10,32 +10,9 @@ defined('JPATH_PLATFORM') or die;
 
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
+JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
 
-class JInboundModelPage extends JInboundBaseModel
+class JInboundModelPage extends JInboundAdminModel
 {
 	public $_context = 'com_jinbound.page';
-
-	public function &getItem()
-	{
-		// Initialise variables.
-		$id = JFactory::getApplication()->input->get('id', 0, 'int');
-
-		$db = $this->getDbo();
-		$query = $db->getQuery(true);
-
-		$query->select('Page.*');
-		$query->from('#__jinbound_pages AS Page');
-		$query->where('Page.id = ' . (int) $id);
-
-		$db->setQuery($query);
-
-		$data = $db->loadObject();
-		
-		$registry = new JRegistry();
-		$registry->loadString($data->formbuilder);
-		$data->formbuilder = $registry->toArray();//JArrayHelper::fromObject($registry);
-
-		return $data;
-	}
 }

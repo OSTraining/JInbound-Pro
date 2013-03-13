@@ -210,6 +210,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+
+  `layout` varchar(1) NOT NULL DEFAULT "A"
+  COMMENT 'Layout type - 0 for custom, or A-D',
   
   `heading` varchar(255) NOT NULL,
   `subheading` varchar(255) NOT NULL,

@@ -38,16 +38,32 @@
 			description="COM_JINBOUND_CATEGORY_DESC"
 			extension="com_jinbound"
 			class="input-block-level"
+			required="true"
 		/>
 
 		<field
 			id="published" name="published"
 			type="jinboundpublished"
-			label="COM_JINBOUND_PUBLISHED"
+			label="JPUBLISHED"
 			description="COM_JINBOUND_PUBLISHED_DESC"
 			class="input-block-level"
 			default="1"
 		/>
+		
+		<field
+			id="layout" name="layout"
+			type="list"
+			label="COM_JINBOUND_LAYOUT"
+			description="COM_JINBOUND_LAYOUT_DESC"
+			class="input-block-level"
+			default="A"
+		>
+			<option value="A">COM_JINBOUND_TEMPLATE_A</option>
+			<option value="B">COM_JINBOUND_TEMPLATE_B</option>
+			<option value="C">COM_JINBOUND_TEMPLATE_C</option>
+			<option value="D">COM_JINBOUND_TEMPLATE_D</option>
+			<option value="custom">COM_JINBOUND_TEMPLATE_CUSTOM</option>
+		</field>
 
 	</fieldset>
 	
@@ -66,6 +82,7 @@
 			description="COM_JINBOUND_HEADING_DESC"
 			class="input-block-level"
 			size="30"
+			required="true"
 		/>
 		<field
 			id="subheading" name="subheading"
@@ -74,6 +91,7 @@
 			description="COM_JINBOUND_SUBHEADING_DESC"
 			class="input-block-level"
 			size="30"
+			required="true"
 		/>
 		<field
 			id="socialmedia" name="socialmedia"

@@ -21,6 +21,7 @@ if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 
 if (!empty($this->items)) :
 	foreach($this->items as $i => $item):
+		$this->_itemNum = $i;
 
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.page.'.$item->id);
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
@@ -47,39 +48,25 @@ if (!empty($this->items)) :
 					<?php echo $this->escape($item->name); ?>
 				<?php endif; ?>
 			</div>
-			<?php if (JInbound::version()->isCompatible('3.0')) : ?>
-			<div class="pull-left"><?php
-
-				JHtml::_('dropdown.edit', $item->id, 'page.');
-				JHtml::_('dropdown.divider');
-				JHtml::_('dropdown.' . ($item->published ? 'un' : '') . 'publish', 'cb' . $i, 'pages.');
-				if ($item->checked_out) :
-					JHtml::_('dropdown.checkin', 'cb' . $i, 'pages.');
-				endif;
-				JHtml::_('dropdown.' . ($trashed ? 'un' : '') . 'trash', 'cb' . $i, 'pages.');
-
-				echo JHtml::_('dropdown.render');
-
-			?></div>
-			<?php endif; ?>
+			<?php echo $this->loadTemplate('list_dropdown'); ?>
 		</td>
 		<td class="hidden-phone">
-				&nbsp;<?php echo JHtml::_('jgrid.published', $item->published, $i, 'pages.', $canChange, 'cb'); ?>
+			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'pages.', $canChange, 'cb'); ?>
 		</td>
 		<td class="hidden-phone">
-				&nbsp;<?php  echo $item->category_name;   ?>
+			<?php echo $item->category_name; ?>
 		</td>
 		<td class="hidden-phone">
-				&nbsp;
+			<?php echo $item->hits; ?>
 		</td>
 		<td class="hidden-phone">
-				&nbsp;
+			TODO
 		</td>
 		<td class="hidden-phone">
-				&nbsp;
+			TODO
 		</td>
 		<td class="hidden-phone">
-				&nbsp; <a href="#">Report</a>
+			<a href="#">TODO</a>
 		</td>
 	</tr>
 	<?php endforeach;

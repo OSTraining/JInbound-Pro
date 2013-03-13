@@ -35,9 +35,9 @@ class JInboundModelPages extends JInboundListModel
 		// main query
 		$query = $db->getQuery(true)
 			// Select the required fields from the table.
-			->select('Page.*, Category.name as category_name')
+			->select('Page.*, Category.title as category_name')
 			->from('#__jinbound_pages AS Page')
-			->leftJoin('#__jinbound_categories AS Category ON Category.id = Page.category')
+			->leftJoin('#__categories AS Category ON Category.id = Page.category')
 		;
 		
 		// add author to query
@@ -54,13 +54,26 @@ class JInboundModelPages extends JInboundListModel
 		return $query;
 	}
 	
-	public function getCategoryOptions() {
+	public function getCategoriesOptions() {
 		$query = $this->getDbo()->getQuery(true)
-		->select('Category.id AS value, Category.name as text')
-		->from('#__jinbound_categories AS Category')
+		->select('Category.id AS value, Category.title as text')
+		->from('#__categories AS Category')
 		->where('Category.published = 1')
-		->order('Category.name ASC')
+		->where('Category.extension = ' . $this->getDbo()->quote(JInbound::COM))
+		->order('Category.lft ASC')
+		->order('Category.title ASC')
+		->group('Category.id')
 		;
 		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_CATEGORY'));
+	}
+	
+	public function getCampaignsOptions() {
+		$query = $this->getDbo()->getQuery(true)
+		->select('Campaign.id AS value, Campaign.name as text')
+		->from('#__jinbound_campaigns AS Campaign')
+		->where('Campaign.published = 1')
+		->group('Campaign.id')
+		;
+		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_CAMPAIGN'));
 	}
 }

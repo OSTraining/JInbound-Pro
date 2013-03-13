@@ -29,9 +29,7 @@ class JInboundModelReports extends JInboundListModel
 	protected function getListQuery()
 	{
 		// Create a new query object.
-		$db = $this->getDbo();
-		// main query
-		$query = $db->getQuery(true)
+		$query = $this->getDbo()->getQuery(true)
 		// Select the required fields from the table.
 		->select('1')
 		->from('#__jinbound_pages AS Page')
@@ -47,5 +45,69 @@ class JInboundModelReports extends JInboundListModel
 			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
 		}
 		return $query;
+	}
+	
+	/**
+	 * Gets the total number of hits for all landing pages
+	 * 
+	 * @return integer
+	 */
+	public function getVisitCount() {
+		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
+			->select('SUM(Page.hits)')
+			->from('#__jinbound_pages AS Page')
+		);
+		
+		try {
+			$count = $this->getDbo()->loadResult();
+		}
+		catch (Exception $e) {
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
+			$count = 0;
+		}
+		
+		return (int) $count;
+	}
+	
+	/**
+	 * Gets the total number of leads
+	 * 
+	 * @return integer
+	 */
+	public function getLeadCount() {
+		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
+			->select('COUNT(Lead.id)')
+			->from('#__jinbound_leads AS Lead')
+		);
+		
+		try {
+			$count = $this->getDbo()->loadResult();
+		}
+		catch (Exception $e) {
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
+			$count = 0;
+		}
+		
+		return (int) $count;
+	}
+	
+	public function getRecentLeads() {
+		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
+			->select('Contact.name AS name, Lead.created AS date, Contact.webpage AS website')
+			->from('#__jinbound_leads AS Lead')
+			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
+			->group('Lead.id')
+			->order('Lead.created DESC')
+		);
+		
+		try {
+			$leads = $this->getDbo()->loadObjectList();
+		}
+		catch (Exception $e) {
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
+			$leads = array();
+		}
+		
+		return $leads;
 	}
 }
