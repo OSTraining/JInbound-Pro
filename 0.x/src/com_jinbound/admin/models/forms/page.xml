@@ -33,9 +33,10 @@
 
 		<field
 			id="category" name="category"
-			type="JinboundCategorylist"
+			type="category"
 			label="COM_JINBOUND_CATEGORY"
 			description="COM_JINBOUND_CATEGORY_DESC"
+			extension="com_jinbound"
 			class="input-block-level"
 		/>
 

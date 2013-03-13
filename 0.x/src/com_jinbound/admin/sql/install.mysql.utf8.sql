@@ -49,50 +49,6 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 
 
 ########################################
-##    Categories                      ##
-##                                    ##
-##    Like Campaigns, categories are  ##
-##    used to categorize pages        ##
-########################################;
-
-CREATE TABLE IF NOT EXISTS `#__jinbound_categories` (
-
-  `id` int(11) NOT NULL AUTO_INCREMENT
-  COMMENT 'Primary Key',
-  
-  `name` varchar(255) NOT NULL
-  COMMENT 'name of this record',
-  
-  `description` mediumtext NOT NULL
-  COMMENT 'description of this record',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
-
-########################################
 ##    Emails                          ##
 ##                                    ##
 ##    Emails to be sent to the user   ##

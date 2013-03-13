@@ -196,14 +196,16 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('pages', 'categories', 'campaigns', 'emails', 'leads', 'statuses', 'priorities', 'reports');
+		$subMenuItems = array('pages', 'campaigns', 'emails', 'leads', 'statuses', 'priorities', 'reports');
 		foreach ($subMenuItems as $sub) {
 			$label = JText::_(strtoupper(JInbound::COM . "_$sub"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub);
 			JSubMenuHelper::addEntry($label, $href, $active);
-			// we want categories AFTER events
-			//if ('campaigns' == $sub) JSubMenuHelper::addEntry(JText::_('COM_CATEGORIES'), JInboundHelperUrl::_(array('option' => 'com_categories', 'extension' => JInbound::COM)), 'com_categories' == $option);
+			// we want categories AFTER pages
+			if ('pages' == $sub) {
+				JSubMenuHelper::addEntry(JText::_('COM_CATEGORIES'), JInboundHelperUrl::_(array('option' => 'com_categories', 'extension' => JInbound::COM)), 'com_categories' == $option);
+			}
 		}
 	}
 
