@@ -113,16 +113,7 @@ defined('JPATH_PLATFORM') or die;
 				AD BANNER
 			</div>
 			<!-- Row 4 - other links -->
-			<div class="well">
-				<h4><?php echo JText::_('COM_JINBOUND_EDUCATION'); ?></h4>
-				<ul>
-					<li><?php echo JHtml::link('#', 'Something from RSS - TODO'); ?></li>
-				</ul>
-				<h4><?php echo JText::_('COM_JINBOUND_DOWNLOADS'); ?></h4>
-				<ul>
-					<li><?php echo JHtml::link('#', 'Download Links - TODO'); ?></li>
-				</ul>
-			</div>
+			<div class="well"><?php echo $this->feed; ?></div>
 		</div>
 
   </div>

@@ -75,18 +75,7 @@ class JInboundModelCategories extends JInboundListModel
 		;
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Category');
-
-		// Filter by search.
-		$search = $this->getState('filter.search');
-		if (!empty($search)) {
-			if (stripos($search, 'id:') === 0) {
-				$query->where('Category.id = '.(int) substr($search, 3));
-			}
-			else {
-				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
-				$query->where('Category.title LIKE '.$search);
-			}
-		}
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Category');
 
 		// Add the list ordering clause.
 		$orderCol = trim($this->state->get('list.ordering'));

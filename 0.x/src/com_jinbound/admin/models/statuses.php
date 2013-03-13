@@ -36,6 +36,16 @@ class JInboundModelStatuses extends JInboundListModel
 			->select('Status.*')
 			->from('#__jinbound_lead_statuses AS Status')
 		;
+		// add author to query
+		$this->appendAuthorToQuery($query, 'Status');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Status');
+
+		// Add the list ordering clause.
+		$orderCol = trim($this->state->get('list.ordering'));
+		$orderDirn = trim($this->state->get('list.direction'));
+		if (strlen($orderCol)) {
+			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		}
 		return $query;
 	}
 }

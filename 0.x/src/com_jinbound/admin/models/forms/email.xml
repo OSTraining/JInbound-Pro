@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset
+		name="default"
+		label="COM_JINBOUND_EMAIL_FIELDSET_DEFAULT"
+	>
+		<field
+			id="email_tips" name="email_tips"
+			type="jinboundtips"
+		/>
+		
+		<field
+			id="id" name="id"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_ID"
+			default="0"
+			readonly="true"
+		/>
+		
+		<field
+			id="name" name="name"
+			type="text"
+			label="COM_JINBOUND_EMAIL_NAME"
+			description="COM_JINBOUND_EMAIL_NAME_DESC"
+			class="input-block-level"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="fromname" name="fromname"
+			type="text"
+			label="COM_JINBOUND_EMAIL_FROM_NAME"
+			description="COM_JINBOUND_EMAIL_FROM_NAME_DESC"
+			class="input-block-level"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="fromemail" name="fromemail"
+			type="text"
+			label="COM_JINBOUND_EMAIL_FROM_EMAIL"
+			description="COM_JINBOUND_EMAIL_FROM_EMAIL_DESC"
+			class="input-block-level"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="sendafter" name="sendafter"
+			type="text"
+			label="COM_JINBOUND_EMAIL_SEND_AFTER"
+			description="COM_JINBOUND_EMAIL_SEND_AFTER_DESC"
+			class="input-block-level"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="subject" name="subject"
+			type="text"
+			label="COM_JINBOUND_EMAIL_SUBJECT"
+			description="COM_JINBOUND_EMAIL_SUBJECT_DESC"
+			class="input-block-level"
+			size="30"
+			required="true"
+		/>
+
+		<field
+			id="htmlbody" name="htmlbody"
+			type="editor"
+			filter="safehtml"
+			label="COM_JINBOUND_EMAIL_HTMLBODY"
+			description="COM_JINBOUND_EMAIL_HTMLBODY_DESC"
+			class="input-block-level"
+			cols="60" rows="12"
+			buttons="0"
+		/>
+
+		<field
+			id="plainbody" name="plainbody"
+			type="textarea"
+			label="COM_JINBOUND_EMAIL_PLAINBODY"
+			description="COM_JINBOUND_EMAIL_PLAINBODY_DESC"
+			class="input-block-level"
+			cols="100" rows="14"
+		/>
+
+	</fieldset>
+</form>

@@ -16,9 +16,25 @@ defined('JPATH_PLATFORM') or die;
 			<div class="span12">
 			
 				<div class="row-fluid">
-					<div class="span12">
-						<div class="pull-right"><?php echo JText::sprintf('COM_JINBOUND_USER_ID', $this->item->user_id); ?></div>
-						<h2><?php echo $this->escape($this->item->name); ?></h2>
+					<div class="span12 well">
+						<div class="row-fluid">
+							<div class="pull-right"><?php echo JText::sprintf('COM_JINBOUND_USER_ID', $this->item->_contact->user_id); ?></div>
+						</div>
+						<div class="row-fluid">
+							<?php
+								$this->_currentFieldset = $this->form->getFieldset('leadname');
+								foreach ($this->_currentFieldset as $field) :
+							?>
+							<div class="span6">
+								<?php
+									$this->_currentField = $field;
+									echo $this->loadTemplate('edit_field');
+								?>
+							</div>
+							<?php
+								endforeach;
+							?>
+						</div>
 					</div>
 				</div>
 				

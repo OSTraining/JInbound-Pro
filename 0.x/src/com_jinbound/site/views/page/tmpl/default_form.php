@@ -8,4 +8,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?><pre><?php echo htmlspecialchars(print_r($this->item->formbuilder, 1)); ?></pre>
+foreach ($this->item->formbuilder as $key => $element) :
+	$this->_currentFieldName = $key;
+	$this->_currentField     = $element;
+	echo $this->loadTemplate('form_field_' . $key);
+endforeach;

@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
 	</div>
 </div>
 <div class="row-fluid">
-	<div class="span3">
+	<div class="span3 well">
 		<?php echo $this->loadTemplate('form'); ?>
 	</div>
 	<div class="span9">

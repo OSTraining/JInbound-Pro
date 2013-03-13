@@ -34,9 +34,19 @@ class JInboundModelPriorities extends JInboundListModel
 		// main query
 		$query = $db->getQuery(true)
 		// Select the required fields from the table.
-		->select('*')
+		->select('Priority.*')
 		->from('#__jinbound_priorities AS Priority')
 		;
+		// add author to query
+		$this->appendAuthorToQuery($query, 'Priority');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Priority');
+
+		// Add the list ordering clause.
+		$orderCol = trim($this->state->get('list.ordering'));
+		$orderDirn = trim($this->state->get('list.direction'));
+		if (strlen($orderCol)) {
+			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		}
 
 		return $query;
 	}

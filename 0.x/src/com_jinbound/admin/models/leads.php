@@ -33,15 +33,30 @@ class JInboundModelLeads extends JInboundListModel
 
 		// main query
 		$query = $db->getQuery(true)
-			// Select the required fields from the table.
+			// main table
 			->select('Lead.*')
 			->from('#__jinbound_leads AS Lead')
-			->select('User.email AS email')
-			->select('User.name AS name')
-			->select('User.username AS username')
-			->leftJoin('#__users AS User ON User.id = Lead.user_id')
+			// join the contact
+			->select('Contact.email_to AS email')
+			->select('Contact.name AS name')
+			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
+			// join the form data
+			->select('Page.formbuilder')
+			->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
+			// group by lead
 			->group('Lead.id')
 		;
+		
+		// add author to query
+		$this->appendAuthorToQuery($query, 'Lead');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Lead');
+		
+		// Add the list ordering clause.
+		$orderCol = trim($this->state->get('list.ordering'));
+		$orderDirn = trim($this->state->get('list.direction'));
+		if (strlen($orderCol)) {
+			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		}
 
 		return $query;
 	}

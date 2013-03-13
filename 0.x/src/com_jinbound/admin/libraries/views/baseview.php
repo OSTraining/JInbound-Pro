@@ -28,17 +28,64 @@ JInbound::language('com_categories', JPATH_ADMINISTRATOR);
 
 // create an intermediary dummy class
 if (jimport('joomla.application.component.view')) {
-	class JInboundBaseView extends JView
+	class JInboundBaseCompatView extends JView
 	{
 		
 	}
 }
 else {
 	jimport('legacy.view.legacy');
-	class JInboundBaseView extends JViewLegacy
+	class JInboundBaseCompatView extends JViewLegacy
 	{
 		
 	}
+}
+
+class JInboundBaseView extends JInboundBaseCompatView
+{
+	function __construct($config = array()) {
+		parent::__construct($config);
+		
+		jimport('joomla.filesystem.file');
+		jimport('joomla.filesystem.folder');
+		
+		$app = JFactory::getApplication();
+		
+		// add the common tmpl path so we can load our commonly shared files
+		$templateBase = ($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views';
+		foreach (array('_common', $this->_name . '/tmpl') as $path) {
+			if (JFolder::exists("$templateBase/$path")) {
+				$this->addTemplatePath("$templateBase/$path");
+			}
+		}
+		
+	}
+
+	function display($tpl = null, $echo = true) {
+		if ($echo) {
+			parent::display($tpl);
+		}
+		else {
+			return $this->loadTemplate($tpl);
+		}
+	}
+	
+	/**
+	 * overload this with an extra param to choose layout
+	 * 
+	 * (non-PHPdoc)
+	 * @see JView::loadTemplate()
+	 */
+	public function loadTemplate($tpl = null, $layout = null) {
+		$oldLayout = $this->_layout;
+		if (!is_null($layout)) {
+			$this->_layout = $layout;
+		}
+		$return = parent::loadTemplate($tpl);
+		$this->_layout = $oldLayout;
+		return $return;
+	}
+	
 }
 
 
@@ -63,12 +110,6 @@ class JInboundView extends JInboundBaseView
 		// add the view as a class as well
 		$this->viewClass   .= ' jcl_view_' . JInboundHelperFilter::escape($this->_name);
 		$this->viewName     = $this->_name;
-		
-		// add the common tmpl path so we can load our commonly shared files
-		
-		$templateBase = ($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views';
-		$this->addTemplatePath($templateBase . '/_common');
-		$this->addTemplatePath($templateBase . '/' . $this->viewName . '/tmpl');
 		
 		// are we in component view?
 		$this->tpl = 'component' == $app->input->get('tmpl', '', 'cmd');
@@ -120,12 +161,7 @@ class JInboundView extends JInboundBaseView
 		
 		$profiler->mark('onJInboundViewDisplayEnd');
 		
-		if ($echo) {
-			parent::display($tpl);
-		}
-		else {
-			return $this->loadTemplate($tpl);
-		}
+		return parent::display($tpl, $echo);
 	}
 	
 	/**
@@ -160,7 +196,7 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('pages', 'categories', 'campaigns', 'leads', 'statuses', 'priorities', 'reports');
+		$subMenuItems = array('pages', 'categories', 'campaigns', 'emails', 'leads', 'statuses', 'priorities', 'reports');
 		foreach ($subMenuItems as $sub) {
 			$label = JText::_(strtoupper(JInbound::COM . "_$sub"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
@@ -270,21 +306,5 @@ class JInboundView extends JInboundBaseView
 	
 	public function getCrumb($title, $url = '') {
 		return array('title' => $title, 'url' => $url);
-	}
-	
-	/**
-	 * overload this with an extra param to choose layout
-	 * 
-	 * (non-PHPdoc)
-	 * @see JView::loadTemplate()
-	 */
-	public function loadTemplate($tpl = null, $layout = null) {
-		$oldLayout = $this->_layout;
-		if (!is_null($layout)) {
-			$this->_layout = $layout;
-		}
-		$return = parent::loadTemplate($tpl);
-		$this->_layout = $oldLayout;
-		return $return;
 	}
 }

@@ -16,7 +16,7 @@
 
 		<field
 			id="description" name="description"
-			type="text"
+			type="textarea"
 			label="COM_JINBOUND_DESCRIPTION"
 			description="COM_JINBOUND_DESCRIPTION_DESC"
 			class="input-block-level"

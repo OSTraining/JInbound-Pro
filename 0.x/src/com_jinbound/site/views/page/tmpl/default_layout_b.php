@@ -23,7 +23,7 @@ defined('JPATH_PLATFORM') or die;
 			<?php echo $this->loadTemplate('body'); ?>
 		</div>
 	</div>
-	<div class="span3">
+	<div class="span3 well">
 		<?php echo $this->loadTemplate('form'); ?>
 	</div>
 </div>

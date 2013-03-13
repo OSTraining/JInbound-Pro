@@ -26,17 +26,31 @@ class JInboundModelPages extends JInboundListModel
 	 */
 	protected $context  = 'com_jinbound.pages';
 	
+	private $_registryColumns = array('formbuilder');
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.
 		$db = $this->getDbo();
 		// main query
 		$query = $db->getQuery(true)
-		// Select the required fields from the table.
-		->select('Page.*, Category.name as category_name')
-		->from('#__jinbound_pages AS Page')
-		->leftJoin('#__jinbound_categories AS Category ON Category.id = Page.category')
+			// Select the required fields from the table.
+			->select('Page.*, Category.name as category_name')
+			->from('#__jinbound_pages AS Page')
+			->leftJoin('#__jinbound_categories AS Category ON Category.id = Page.category')
 		;
+		
+		// add author to query
+		$this->appendAuthorToQuery($query, 'Page');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page');
+		
+		// Add the list ordering clause.
+		$orderCol = trim($this->state->get('list.ordering'));
+		$orderDirn = trim($this->state->get('list.direction'));
+		if (strlen($orderCol)) {
+			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		}
+		
 		return $query;
 	}
 	

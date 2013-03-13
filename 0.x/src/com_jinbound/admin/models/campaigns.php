@@ -34,9 +34,19 @@ class JInboundModelCampaigns extends JInboundListModel
 		// main query
 		$query = $db->getQuery(true)
 		// Select the required fields from the table.
-		->select('*')
+		->select('Campaign.*')
 		->from('#__jinbound_campaigns AS Campaign')
 		;
+		
+		$this->appendAuthorToQuery($query, 'Campaign');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Campaign');
+
+		// Add the list ordering clause.
+		$orderCol = trim($this->state->get('list.ordering'));
+		$orderDirn = trim($this->state->get('list.direction'));
+		if (strlen($orderCol)) {
+			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+		}
 
 		return $query;
 	}

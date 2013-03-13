@@ -67,10 +67,10 @@ if (!empty($this->items)) :
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'leads.', $canChange, 'cb'); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->date); ?>
+			<?php echo $this->escape($item->created); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->converted); ?>
+			<?php echo $this->escape($item->formbuilder); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
 			<?php echo $this->escape($item->priority_id); ?>
@@ -79,7 +79,7 @@ if (!empty($this->items)) :
 			<?php echo $this->escape($item->status_id); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->note); ?>
+			<?php echo '';//$this->escape($item->note); ?>
 		</td>
 	</tr>
 	<?php endforeach;

@@ -27,7 +27,7 @@ defined('JPATH_PLATFORM') or die;
 		<div class="row-fluid">
 			<?php echo $this->loadTemplate('image'); ?>
 		</div>
-		<div class="row-fluid">
+		<div class="row-fluid well">
 			<?php echo $this->loadTemplate('form'); ?>
 		</div>
 	</div>

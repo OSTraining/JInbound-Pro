@@ -8,6 +8,7 @@
 	<authorUrl>http://anything-digital.com</authorUrl>
 	<creationDate>@ant_current_date@</creationDate>
 	<description>PKG_JINBOUND_DESCRIPTION</description>
+	<scriptfile>jinbound.install.php</scriptfile>
 	<files folder="packages">
 		<file type="component" id="@ant_component_id@">@ant_component_package@</file>
 		<file type="template" id="@ant_template_id@" client="site">@ant_template_package@</file>

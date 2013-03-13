@@ -45,7 +45,6 @@ if (!empty($this->items)) :
 				<?php else : ?>
 					<?php echo $this->escape($item->name); ?>
 				<?php endif; ?>
-				<?php  echo $item->name   ?>
 			</div>
 			<?php if (JInbound::version()->isCompatible('3.0')) : ?>
 			<div class="pull-left"><?php

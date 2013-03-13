@@ -36,9 +36,32 @@ class JInboundListModel extends JModelList
 	private $_parent = null;
 
 	private $_items = null;
+	
+	private $_registryColumns = null;
 
 	function __construct($config = array()) {
 		parent::__construct($config);
+	}
+	
+	public function getItems() {
+		$items = parent::getItems();
+		// if we have no columns to alter, we're done
+		if (!is_array($this->_registryColumns) || empty($this->_registryColumns)) {
+			return $items;
+		}
+		// alter items, if any, to convert json data to registries
+		if (is_array($items) && !empty($items)) {
+			foreach ($items as &$item) {
+				foreach ($this->_registryColumns as $col) {
+					if (!property_exists($item, $col)) {
+						continue;
+					}
+					$registry = new JRegistry();
+					$registry->loadString($item->$col);
+					$item->$col = $registry;
+				}
+			}
+		}
 	}
 
 	/**
@@ -150,4 +173,30 @@ class JInboundListModel extends JModelList
 			->leftJoin("#__users AS Author ON Author.id = {$column}")
 		;
 	}
+	
+	public function filterSearchQuery(&$query, $search, $tablename, $pk = 'id', $columns = array('name')) {
+		// clean our variables
+		$filter    = JFilterInput::getInstance();
+		$tablename = $filter->clean($tablename, 'cmd');
+		$pk        = $filter->clean($pk, 'cmd');
+		// get our dbo for cleaning texts
+		$db = JFactory::getDbo();
+		if (!empty($search)) {
+			if (stripos($search, $pk . ':') === 0) {
+				$query->where($tablename . '.' . $pk . ' = ' . (int) substr($search, 3));
+			}
+			else {
+				$search = $db->Quote('%' . $db->getEscaped($search, true) . '%');
+				$where = array();
+				if (!empty($columns)) {
+					foreach ($columns as &$column) {
+						$column  = $filter->clean($column, 'cmd');
+						$where[] = $tablename . '.' . $column . ' LIKE ' . $search;
+					}
+					$db->where('(' . implode(' OR ', $wheres) . ')');
+				}
+			}
+		}
+	}
+	
 }

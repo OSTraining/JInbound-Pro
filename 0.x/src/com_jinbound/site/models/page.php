@@ -3,71 +3,39 @@
  * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
-
- **********************************************
- JInbound
- Copyright (c) 2012 Anything-Digital.com
- **********************************************
- JInbound is some kind of marketing thingy
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This header must not be removed. Additional contributions/changes
- may be added to this header as long as no information is deleted.
- **********************************************
- Get the latest version of JInbound at:
- http://anything-digital.com/
- **********************************************
-
+@ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
 
 
-if (jimport('joomla.application.component.model')) {
-	class JInboundBaseModelCommon extends JModel
-	{
-		static public function addIncludePath($path = '', $prefix = '') {
-			return parent::addIncludePath($path, $prefix);
-		}
-	}
-}
-else {
-	jimport('legacy.model.legacy');
-	class JInboundBaseModelCommon extends JModelLegacy
-	{
-		static public function addIncludePath($path = '', $prefix = '') {
-			return parent::addIncludePath($path, $prefix);
-		}
-	}
-}
+JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
-class JInboundModelPage extends JInboundBaseModelCommon
+class JInboundModelPage extends JInboundBaseModel
 {
-
 	public $_context = 'com_jinbound.page';
 
 	public function &getItem()
 	{
 		// Initialise variables.
-				$id = JRequest::getInt('id');
+		$id = JFactory::getApplication()->input->get('id', 0, 'int');
 
-				$db = $this->getDbo();
-				$query = $db->getQuery(true);
+		$db = $this->getDbo();
+		$query = $db->getQuery(true);
 
-				$query->select('*');
-				$query->from('#__jinbound_pages AS Page');
-				$query->where('Page.id = ' . (int) $id);
+		$query->select('Page.*');
+		$query->from('#__jinbound_pages AS Page');
+		$query->where('Page.id = ' . (int) $id);
 
-				$db->setQuery($query);
+		$db->setQuery($query);
 
-				$data = $db->loadObject();
+		$data = $db->loadObject();
+		
+		$registry = new JRegistry();
+		$registry->loadString($data->formbuilder);
+		$data->formbuilder = $registry->toArray();//JArrayHelper::fromObject($registry);
 
-				return $data;
+		return $data;
 	}
-
-
 }

@@ -33,7 +33,7 @@ defined('JPATH_PLATFORM') or die;
 					<?php echo $this->loadTemplate('social'); ?>
 				</div>
 			</div>
-			<div class="span4">
+			<div class="span4 well">
 				<?php echo $this->loadTemplate('form'); ?>
 			</div>
 		</div>

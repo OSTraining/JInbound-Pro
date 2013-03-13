@@ -56,3 +56,10 @@
 	cursor: pointer;
 
 }
+
+
+#jinbound_component input#jform_first_name,
+#jinbound_component input#jform_last_name {
+	font-size: 18px !important;
+	line-height: 24px !important;
+}

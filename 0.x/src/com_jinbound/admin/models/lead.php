@@ -42,11 +42,14 @@ class JInboundModelLead extends JInboundAdminModel
 			return $item;
 		}
 		
-		$user = JFactory::getUser($item->user_id);
-		
-		foreach (array('name', 'username', 'email') as $var) {
-			$item->{$var} = $user->{$var};
+		// add the contact
+		jimport('joomla.database.table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
+		$contact = JTable::getInstance('Contact', 'ContactTable');
+		if ($item->contact_id) {
+			$contact->load($item->contact_id);
 		}
+		$item->_contact = $contact;
 		
 		return $item;
 	}

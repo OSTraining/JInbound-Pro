@@ -157,7 +157,7 @@
 		
 		<!-- filter package manifest -->
 		<copy todir="${cfg.packages}/temp/staging" filtering="true">
-			<fileset dir="${cfg.dir}" includes="${cfg.pfx.pkg}${cfg.name}.xml,language/" />
+			<fileset dir="${cfg.dir}" includes="${cfg.pfx.pkg}${cfg.name}.xml,${cfg.name}.install.php,language/" />
 		</copy>
 	</target>
 
@@ -246,7 +246,7 @@
 			<zipfileset dir="${cfg.packages}/temp" includes="packages/" />
 		</zip>
 		<zip destfile="${str.pkg.file}.zip" update="true">
-			<zipfileset dir="${cfg.packages}/temp/staging" includes="${cfg.pfx.pkg}${cfg.name}.xml,language/" />
+			<zipfileset dir="${cfg.packages}/temp/staging" includes="${cfg.pfx.pkg}${cfg.name}.xml,${cfg.name}.install.php,language/" />
 		</zip>
 		<zip destfile="${str.pkg.file}.zip" update="true">
 			<zipfileset dir="${svn.rootDir}" includes="changelog.log" />

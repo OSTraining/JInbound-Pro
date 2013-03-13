@@ -13,5 +13,15 @@ JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
 
 class JInboundViewPage extends JInboundItemView
 {
-	
+	function display($tpl = null, $echo = true) {
+		$item = $this->get('Item');
+		$doc  = JFactory::getDocument();
+		if (method_exists($doc, 'setTitle')) {
+			$doc->setTitle($item->metatitle);
+		}
+		if (method_exists($doc, 'setDescription')) {
+			$doc->setDescription($item->metadescription);
+		}
+		return parent::display($tpl, $echo);
+	}
 }

@@ -31,12 +31,13 @@ class JInboundModelPage extends JInboundAdminModel
 		if (empty($form)) {
 			return false;
 		}
-		if (!JFactory::getApplication()->isAdmin()) {
-			// set the frontend locations to be auto-published
-			$form->setFieldAttribute('published', 'type', 'hidden');
-			$form->setFieldAttribute('published', 'default', '1');
-			$form->setValue('published', '1');
+		
+		// remove the sidebar stuff if layout isn't "a" or empty
+		$template = strtolower(JFactory::getApplication()->input->get('set', $form->getValue('layout', 'A'), 'cmd'));
+		if (!empty($template) && 'a' !== $template) {
+			$form->removeField('sidebartext');
 		}
+		
 		return $form;
 	}
 }

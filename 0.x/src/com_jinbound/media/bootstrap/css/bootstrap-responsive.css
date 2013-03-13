@@ -881,6 +881,7 @@
   #jinbound_component .controls-row [class*="span"] + [class*="span"] {
     margin-left: 0;
   }
+  /*
   #jinbound_component .modal {
     position: fixed;
     top: 20px;
@@ -895,6 +896,7 @@
   #jinbound_component .modal.fade.in {
     top: 20px;
   }
+  */
 }
 
 @media (max-width: 480px) {
@@ -935,11 +937,13 @@
     margin-right: 0;
     margin-left: 0;
   }
+  /*
   #jinbound_component .modal {
     top: 10px;
     right: 10px;
     left: 10px;
   }
+  */
   #jinbound_component .modal-header .close {
     padding: 10px;
     margin: -10px;

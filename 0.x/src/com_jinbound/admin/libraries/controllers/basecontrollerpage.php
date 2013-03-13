@@ -12,5 +12,5 @@ jimport('joomla.application.component.controllerform');
 
 class JInboundPageController extends JControllerForm
 {
-
+	
 }

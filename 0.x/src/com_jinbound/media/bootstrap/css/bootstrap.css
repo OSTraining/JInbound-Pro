@@ -5188,7 +5188,7 @@ body {
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
-
+/*
 #jinbound_component .modal {
   position: fixed;
   top: 10%;
@@ -5223,7 +5223,7 @@ body {
 #jinbound_component .modal.fade.in {
   top: 10%;
 }
-
+*/
 #jinbound_component .modal-header {
   padding: 9px 15px;
   border-bottom: 1px solid #eee;
