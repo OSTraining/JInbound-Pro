@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
 				<div class="row-fluid">
 					<div class="span12 well">
 						<div class="row-fluid">
-							<div class="pull-right"><?php echo JText::sprintf('COM_JINBOUND_USER_ID', $this->item->_contact->user_id); ?></div>
+							<div class="pull-right"><?php echo JText::sprintf('COM_JINBOUND_USER_ID', $this->item->contact_id); ?></div>
 						</div>
 						<div class="row-fluid">
 							<?php

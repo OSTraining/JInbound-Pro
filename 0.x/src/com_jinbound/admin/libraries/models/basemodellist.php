@@ -62,6 +62,7 @@ class JInboundListModel extends JModelList
 				}
 			}
 		}
+		return $items;
 	}
 
 	/**

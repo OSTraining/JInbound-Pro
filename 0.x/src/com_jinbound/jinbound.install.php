@@ -16,6 +16,8 @@ class com_JInboundInstallerScript
 			case 'discover_install':
 				// fix component config
 				$this->_saveDefaults($parent);
+			case 'update':
+				$this->_checkContactCategory();
 				break;
 		}
 	}
@@ -64,5 +66,53 @@ class com_JInboundInstallerScript
 			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 		}
 		
+	}
+	
+	private function _checkContactCategory() {
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('id')
+			->from('#__categories')
+			->where($db->quoteName('extension') . ' = ' . $db->quote('com_contact'))
+			->where($db->quoteName('published') . ' = 1')
+			->where($db->quoteName('note') . ' = ' . $db->quote('com_jinbound'))
+		);
+		try {
+			$categories = $db->loadColumn();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage());
+			return;
+		}
+		if (is_array($categories) && !empty($categories)) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_FOUND'));
+			return;
+		}
+		jimport('joomla.database.table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
+		$table = JTable::getInstance('Category');
+		$bind = array(
+			'parent_id'   => $table->getRootId(),
+			'extension'   => 'com_contact',
+			'title'       => JText::_('COM_JINBOUND_DEFAULT_CONTACT_CATEGORY_TITLE'),
+			'note'        => 'com_jinbound',
+			'description' => JText::_('COM_JINBOUND_DEFAULT_CONTACT_CATEGORY_DESCRIPTION'),
+			'published'   => 1,
+			'language'    => '*'
+		);
+		if (!$table->bind($bind)) {
+			$app->enqueueMessage('bind error');
+			return;
+		}
+		if (!$table->check()) {
+			$app->enqueueMessage('check error');
+			return;
+		}
+		if (!$table->store()) {
+			$app->enqueueMessage('store error');
+			return;
+		}
+		$table->moveByReference(0, 'last-child', $table->id);
 	}
 }

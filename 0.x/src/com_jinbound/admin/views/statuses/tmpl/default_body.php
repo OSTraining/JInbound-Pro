@@ -12,7 +12,7 @@ $user      = JFactory::getUser();
 $userId    = $user->get('id');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
-$saveOrder = ($listOrder == 'Status.id');
+$saveOrder = ($listOrder == 'Status.ordering');
 $trashed   = (-2 == $this->state->get('filter.published'));
 
 if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
@@ -65,6 +65,18 @@ if (!empty($this->items)) :
 		</td>
 		<td class="hidden-phone">
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'statuses.', $canChange, 'cb'); ?>
+		</td>
+		<td class="order">
+			<?php if ($canChange) : ?>
+				<?php if ($saveOrder) : ?>
+					<span><?php echo $this->pagination->orderUpIcon($i, 0 == $i, 'statuses.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
+					<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, false, 'statuses.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
+				<?php endif; ?>
+				<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>
+				<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" <?php echo $disabled ?> class="text-area-order" />
+			<?php else : ?>
+				<?php echo $item->ordering;?>
+			<?php endif; ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
 			<?php echo $this->escape($item->description); ?>

@@ -9,6 +9,14 @@
 defined('JPATH_PLATFORM') or die;
 
 $id = $this->escape($this->input->id);
+$values = $this->input->value;
+if (is_object($values) && method_exists($values, 'toArray')) {
+	$values = $values->toArray();
+}
+if (!is_array($values)) {
+	$values = array();
+}
+
 ?>
 <script type="text/javascript">
 (function($){$(function(){
@@ -39,7 +47,7 @@ $id = $this->escape($this->input->id);
 
 <div id="<?php echo $id; ?>" class="container-fluid">
 	<ul id="<?php echo $id; ?>_elements" class="well <?php echo $id; ?>_connected">
-<?php foreach ($this->input->value->toArray() as $ename => $element) : if (0 == $element['enabled']) continue; ?>
+<?php if (!empty($values)) foreach ($values as $ename => $element) : if (0 == $element['enabled']) continue; ?>
 		<li class="btn btn-block" data-id="<?php echo $this->escape($ename); ?>"><?php echo $this->escape($element['title']); ?></li>
 <?php endforeach; ?>
 	</ul>
@@ -48,4 +56,4 @@ $id = $this->escape($this->input->id);
 <div>
 	<input id="<?php echo $id; ?>_value" name="<?php echo $this->escape($this->input->name); ?>" type="<?php echo (defined('JDEBUG') && JDEBUG) ? 'hidden' : 'text'; ?>" value="" />
 </div>
-<pre><?php print_r($this->input->value->toArray()); ?></pre>
+<pre><?php print_r($values); ?></pre>

@@ -173,6 +173,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_lead_statuses` (
   
   `description` mediumtext NOT NULL
   COMMENT 'description of this record',
+	 
+	`ordering` int(11) NOT NULL default '0'
+	COMMENT 'Ordering column for priority level',
 	
 	`published` tinyint(1) default '0'
 	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',

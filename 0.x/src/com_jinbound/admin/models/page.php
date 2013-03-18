@@ -24,6 +24,8 @@ class JInboundModelPage extends JInboundAdminModel
 	 * @var		string
 	 */
 	public $_context = 'com_jinbound.page';
+	
+	private $_registryColumns = array('formbuilder');
 
 	public function getForm($data = array(), $loadData = true) {
 		// Get the form.

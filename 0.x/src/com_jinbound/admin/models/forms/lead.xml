@@ -96,10 +96,11 @@
 	>
 		<field
 			id="contact_id" name="contact_id"
-			type="contact"
+			type="hidden"
 			label="COM_JINBOUND_CONTACT"
 			description="COM_JINBOUND_CONTACT_DESC"
 			class="input-block-level"
+			readonly="true"
 		/>
 
 		<field
@@ -122,7 +123,7 @@
 
 		<field
 			id="priority_id" name="priority_id"
-			type="jinboundpriority"
+			type="jinboundpriorities"
 			label="COM_JINBOUND_PRIORITY"
 			description="COM_JINBOUND_PRIORITY_DESC"
 			class="input-block-level"
@@ -130,7 +131,7 @@
 
 		<field
 			id="status_id" name="status_id"
-			type="jinboundstatus"
+			type="jinboundstatuses"
 			label="COM_JINBOUND_STATUS"
 			description="COM_JINBOUND_STATUS_DESC"
 			class="input-block-level"

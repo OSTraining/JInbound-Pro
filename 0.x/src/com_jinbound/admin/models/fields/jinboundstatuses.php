@@ -10,9 +10,9 @@ defined('JPATH_PLATFORM') or die;
 
 JFormHelper::loadFieldClass('list');
 
-class JFormFieldJinboundCampaignlist extends JFormFieldList
+class JFormFieldJinboundStatuses extends JFormFieldList
 {
-	protected $type = 'JinboundCampaignlist';
+	protected $type = 'JinboundStatuses';
 	
 	protected function getOptions() {
 		
@@ -20,7 +20,7 @@ class JFormFieldJinboundCampaignlist extends JFormFieldList
 		
 		$db->setQuery($db->getQuery(true)
 			->select('id AS value, name AS text')
-			->from('#__jinbound_campaigns')
+			->from('#__jinbound_lead_statuses')
 			->where('published = 1')
 		);
 		
@@ -35,5 +35,4 @@ class JFormFieldJinboundCampaignlist extends JFormFieldList
 
 		return $options;
 	}
-
 }

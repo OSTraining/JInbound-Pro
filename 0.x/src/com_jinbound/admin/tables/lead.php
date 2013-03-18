@@ -13,8 +13,31 @@ JInbound::registerLibrary('JInboundTable', 'table');
 
 class JInboundTableLead extends JInboundTable
 {
+	private $_contactData;
+	
 	function __construct(&$db) {
 		parent::__construct('#__jinbound_leads', 'id', $db);
+	}
+	
+	public function bind($array, $ignore = '') {
+		$columns = $this->getFields();
+		$unset   = array();
+		if (!empty($array)) {
+			foreach ($array as $key => $value) {
+				if (false !== array_search($key, $columns)) {
+					continue;
+				}
+				$var = '_' . $key;
+				$this->$var = $value;
+				$unset[] = $var;
+			}
+			if (!empty($unset)) {
+				foreach ($unset as $var) {
+					unset($array[$var]);
+				}
+			}
+		}
+		return parent::bind($array, $ignore);
 	}
 	
 	/**
@@ -24,39 +47,62 @@ class JInboundTableLead extends JInboundTable
 	 * @see JInboundTable::store()
 	 */
 	public function store($updateNulls = false) {
+		$app = JFactory::getApplication();
 		$isNew = empty($this->id);
 		$store = parent::store();
 		if ($store) {
+			// get the category id for jinbound contacts
+			$this->_db->setQuery($this->_db->getQuery(true)
+				->select('id')
+				->from('#__categories')
+				->where($this->_db->quoteName('extension') . ' = ' . $this->_db->quote('com_contact'))
+				->where($this->_db->quoteName('published') . ' = 1')
+				->where($this->_db->quoteName('note') . ' = ' . $this->_db->quote('com_jinbound'))
+			);
+			try {
+				$catid = $this->_db->loadResult();
+			}
+			catch (Exception $e) {
+				return $store;
+			}
 			// either update or add a contact
 			jimport('joomla.database.table');
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
 			$contact = JTable::getInstance('Contact', 'ContactTable');
 			
-			if ($item->contact_id) {
-				$contact->load($item->contact_id);
+			if ($this->contact_id) {
+				$contact->load($this->contact_id);
 			}
 			
 			$bind = array(
 				'name'      => $this->first_name . ' ' . $this->last_name
-			,	'address'   => $this->address
-			,	'telephone' => $this->phone
-			,	'email_to'  => $this->email
+			,	'address'   => $this->_address
+			,	'telephone' => $this->_phone
+			,	'email_to'  => $this->_email
+			,	'webpage'   => $this->_website
+			,	'catid'     => $catid
+			,	'state'     => $this->published
+			,	'language'  => '*'
 			);
+			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('bind: ' . print_r($bind, 1));
 			
 			if (!$contact->bind($bind)) {
 				JFactory::getApplication()->enqueueMessage('bind: ' . $contact->getError());
 				return $store;
 			}
+			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after bind: ' . print_r($contact, 1));
 			
 			if (!$contact->check()) {
 				JFactory::getApplication()->enqueueMessage('check: ' . $contact->getError());
 				return $store;
 			}
+			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after check: ' . print_r($contact, 1));
 			
 			if (!$contact->store()) {
 				JFactory::getApplication()->enqueueMessage('store: ' . $contact->getError());
 				return $store;
 			}
+			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after store: ' . print_r($contact, 1));
 			
 			$this->contact_id = $contact->id;
 			$k = $this->_tbl_key;

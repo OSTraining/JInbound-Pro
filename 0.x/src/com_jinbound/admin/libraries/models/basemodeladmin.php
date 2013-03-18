@@ -21,6 +21,8 @@ JForm::addFieldPath(JInboundHelperPath::admin('models/fields'));
 class JInboundAdminModel extends JModelAdmin
 {
 	public $option = JInbound::COM;
+	
+	private $_registryColumns = null;
 
 	public function getForm($data = array(), $loadData = true) {
 		// Get the form.
@@ -37,7 +39,20 @@ class JInboundAdminModel extends JModelAdmin
 	}
 
 	public function getItem($id = null) {
-		return parent::getItem($id);
+		$item = parent::getItem($id);
+		// if we have no columns to alter, we're done
+		if (!is_array($this->_registryColumns) || empty($this->_registryColumns)) {
+			return $item;
+		}
+		foreach ($this->_registryColumns as $col) {
+			if (!property_exists($item, $col)) {
+				continue;
+			}
+			$registry = new JRegistry();
+			$registry->loadString($item->$col);
+			$item->$col = $registry;
+		}
+		return $item;
 	}
 
 	protected function loadFormData() {

@@ -10,8 +10,8 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 <div class="row-fluid">
-	<?php echo $this->escape($this->_currentField['title']); ?>
+	<?php echo $this->_currentField->label; ?>
 </div>
 <div class="row-fluid">
-	<input name="<?php echo $this->escape($this->_currentFieldName); ?>" type="text" value="" />
+	<?php echo $this->_currentField->input; ?>
 </div>

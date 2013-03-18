@@ -70,13 +70,13 @@ if (!empty($this->items)) :
 			<?php echo $this->escape($item->created); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->formbuilder); ?>
+			<a href="<?php echo $this->escape(JInboundHelperUrl::edit('page', $item->page_id)); ?>"><?php echo $this->escape($item->formname); ?></a>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->priority_id); ?>
+			<?php echo $this->escape($item->priority_name); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->status_id); ?>
+			<?php echo $this->escape($item->status_name); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
 			<?php echo '';//$this->escape($item->note); ?>

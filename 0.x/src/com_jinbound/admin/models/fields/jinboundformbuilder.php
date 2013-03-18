@@ -59,8 +59,18 @@ class JFormFieldJinboundFormBuilder extends JFormField
 	 * TODO finish this
 	 */
 	public function getFormValue() {
-		if (empty($this->value)) {
-			return array();
+		if (!($this->value instanceof JRegistry)) {
+			$reg = new JRegistry();
+			if (is_array($this->value)) {
+				$reg->loadArray($this->value);
+			}
+			else if (is_object($this->value)) {
+				$reg->loadObject($this->value);
+			}
+			else if (is_string($this->value)) {
+				$reg->loadString($this->value);
+			}
+			$this->value = $reg;
 		}
 		return $this->value;
 	}

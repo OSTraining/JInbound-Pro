@@ -16,7 +16,7 @@ if (empty($go)) {
 ?>
 <div class="row-fluid">
 	<div class="span12">
-		<form action="<?php echo JInboundHelperUrl::task('lead.save'); ?>" method="post">
+		<form action="<?php echo JInboundHelperUrl::task('lead.save', true, array('page_id' => (int) $this->item->id)); ?>" method="post">
 			<div class="row-fluid">
 				<div class="span12">
 					<h4><?php echo $this->escape($this->item->formname); ?></h4>
@@ -25,13 +25,14 @@ if (empty($go)) {
 			<div class="row-fluid">
 				<div class="span12">
 					<?php
-						foreach ($this->item->formbuilder->toArray() as $key => $element) :
-							if (!$element['enabled']) continue;
-							$this->_currentFieldName = $key;
-							$this->_currentField     = $element;
-							echo $this->loadTemplate('form_field_' . $key);
+						foreach ($this->form->getFieldset('lead') as $key => $field) :
+							$this->_currentField = $field;
+							echo $this->loadTemplate('form_field');
 						endforeach;
 					?>
+					<input type="hidden" name="option" value="com_jinbound" />
+					<input type="hidden" name="task" value="lead.save" />
+					<input type="hidden" name="page_id" value="<?php echo (int) $this->item->id; ?>" />
 				</div>
 			</div>
 			<div class="row-fluid">

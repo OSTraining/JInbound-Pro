@@ -42,7 +42,14 @@ class JInboundModelLeads extends JInboundListModel
 			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
 			// join the form data
 			->select('Page.formbuilder')
+			->select('Page.formname')
 			->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
+			// join the priority
+			->select('Priority.name AS priority_name')
+			->leftJoin('#__jinbound_priorities AS Priority ON Priority.id = Lead.priority_id')
+			// join the status
+			->select('Status.name AS status_name')
+			->leftJoin('#__jinbound_lead_statuses AS Status ON Status.id = Lead.status_id')
 			// group by lead
 			->group('Lead.id')
 		;
