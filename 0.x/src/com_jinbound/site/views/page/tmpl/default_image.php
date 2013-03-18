@@ -8,5 +8,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-image template
+if (!empty($this->item->image)) :
+	?><img src="<?php echo $this->escape($this->item->image); ?>" alt="<?php echo $this->escape($this->item->imagealttext); ?>" /><?php
+endif;

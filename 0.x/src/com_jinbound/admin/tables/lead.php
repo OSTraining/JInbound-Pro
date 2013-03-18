@@ -84,25 +84,21 @@ class JInboundTableLead extends JInboundTable
 			,	'published' => $this->published
 			,	'language'  => '*'
 			);
-			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('bind: ' . print_r($bind, 1));
 			
 			if (!$contact->bind($bind)) {
 				JFactory::getApplication()->enqueueMessage('bind: ' . $contact->getError());
 				return $store;
 			}
-			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after bind: ' . print_r($contact, 1));
 			
 			if (!$contact->check()) {
 				JFactory::getApplication()->enqueueMessage('check: ' . $contact->getError());
 				return $store;
 			}
-			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after check: ' . print_r($contact, 1));
 			
 			if (!$contact->store()) {
 				JFactory::getApplication()->enqueueMessage('store: ' . $contact->getError());
 				return $store;
 			}
-			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after store: ' . print_r($contact, 1));
 			
 			$this->contact_id = $contact->id;
 			$k = $this->_tbl_key;

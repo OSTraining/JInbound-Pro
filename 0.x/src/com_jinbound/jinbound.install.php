@@ -83,7 +83,10 @@ class com_JInboundInstallerScript
 		}
 	}
 	
+	
 	public function postflight($type, $parent) {
+		// for some reason this isn't being loaded automatically... :/
+		JFactory::getLanguage()->load('com_jinbound.sys', JPATH_ADMINISTRATOR);
 		switch ($type) {
 			case 'install':
 			case 'discover_install':
@@ -175,17 +178,18 @@ class com_JInboundInstallerScript
 			'language'    => '*'
 		);
 		if (!$table->bind($bind)) {
-			$app->enqueueMessage('bind error');
+			$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_BIND_ERROR'));
 			return;
 		}
 		if (!$table->check()) {
-			$app->enqueueMessage('check error');
+			$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_CHECK_ERROR'));
 			return;
 		}
 		if (!$table->store()) {
-			$app->enqueueMessage('store error');
+			$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_STORE_ERROR'));
 			return;
 		}
 		$table->moveByReference(0, 'last-child', $table->id);
+		$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_INSTALLED'));
 	}
 }

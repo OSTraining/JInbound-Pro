@@ -58,23 +58,19 @@ class JInboundControllerLead extends JInboundBaseController
 		// now get a lead table
 		$message     = JText::_('COM_JINBOUND_LEAD_SAVED');
 		$messageType = 'message';
-		if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage(print_r($bind, 1));
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
 		if (!$lead->bind($bind)) {
 			$message     = JText::_('COM_JINBOUND_LEAD_FAILED_BIND');
 			$messageType = 'error';
 		}
-		if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after bind:' . print_r($lead, 1));
 		if (!$lead->check()) {
 			$message     = JText::_('COM_JINBOUND_LEAD_FAILED_CHECK');
 			$messageType = 'error';
 		}
-		if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after check:' . print_r($lead, 1));
 		if (!$lead->store()) {
 			$message     = JText::_('COM_JINBOUND_LEAD_FAILED_STORE');
 			$messageType = 'error';
 		}
-		if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after store:' . print_r($lead, 1));
 		
 		// build the redirect
 		if ('message' !== $messageType) {

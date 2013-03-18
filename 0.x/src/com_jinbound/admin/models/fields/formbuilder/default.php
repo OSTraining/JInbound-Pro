@@ -56,4 +56,5 @@ if (!is_array($values)) {
 <div>
 	<input id="<?php echo $id; ?>_value" name="<?php echo $this->escape($this->input->name); ?>" type="<?php echo (defined('JDEBUG') && JDEBUG) ? 'hidden' : 'text'; ?>" value="" />
 </div>
+<h4>Values:</h4>
 <pre><?php print_r($values); ?></pre>
