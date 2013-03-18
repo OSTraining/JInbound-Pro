@@ -75,7 +75,35 @@ class JInboundControllerLead extends JInboundBaseController
 			$messageType = 'error';
 		}
 		if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('after store:' . print_r($lead, 1));
-		$app->redirect(JURI::root(), $message, $messageType);
+		
+		// build the redirect
+		if ('message' !== $messageType) {
+			$redirect = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
+		}
+		else {
+			switch ($page->after_submit_sendto) {
+				case 'menuitem':
+					if (!empty($page->menu_item)) {
+						$redirect = JRoute::_('index.php?Itemid=' . $page->menu_item);
+					}
+					break;
+				case 'url':
+					if (!empty($page->send_to_url)) {
+						$redirect = JRoute::_($page->send_to_url);
+					}
+					break;
+				case 'message':
+					if (!empty($page->sendto_message)) {
+						$message = $page->sendto_message;
+					}
+				default:
+					$redirect = JURI::root();
+					break;
+			}
+		}
+		
+		
+		$app->redirect($redirect, $message, $messageType);
 		$app->close();
 	}
 }

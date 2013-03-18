@@ -38,6 +38,9 @@ class JInboundModelPages extends JInboundListModel
 			->select('Page.*, Category.title as category_name')
 			->from('#__jinbound_pages AS Page')
 			->leftJoin('#__categories AS Category ON Category.id = Page.category')
+			->select('COUNT(Lead.id) AS submissions')
+			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Page.id')
+			->group('Page.id')
 		;
 		
 		// add author to query

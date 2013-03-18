@@ -25,14 +25,14 @@ $listDirn  = $this->state->get('list.direction');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Page.status', $listDirn, $listOrder); ?>
 	</th>
-			<th>
+	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY', 'Page.category', $listDirn, $listOrder); ?>
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_VIEWS', 'Page.views', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_SUBMISSIONS', 'Page.submissions', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_SUBMISSIONS', 'submissions', $listDirn, $listOrder); ?>
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'Page.conversions', $listDirn, $listOrder); ?>

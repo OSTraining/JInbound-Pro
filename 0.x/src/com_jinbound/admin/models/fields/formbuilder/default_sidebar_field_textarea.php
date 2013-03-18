@@ -8,6 +8,3 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-
-<textarea>hai iam txtarae plz</textarea>

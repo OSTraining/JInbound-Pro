@@ -81,7 +81,7 @@ class JInboundTableLead extends JInboundTable
 			,	'email_to'  => $this->_email
 			,	'webpage'   => $this->_website
 			,	'catid'     => $catid
-			,	'state'     => $this->published
+			,	'published' => $this->published
 			,	'language'  => '*'
 			);
 			if (defined('JDEBUG') && JDEBUG) $app->enqueueMessage('bind: ' . print_r($bind, 1));

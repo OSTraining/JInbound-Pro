@@ -8,3 +8,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
+echo $this->loadTemplate('sidebar_field_options');

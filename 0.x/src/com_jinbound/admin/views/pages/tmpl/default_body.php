@@ -60,7 +60,7 @@ if (!empty($this->items)) :
 			<?php echo $item->hits; ?>
 		</td>
 		<td class="hidden-phone">
-			TODO
+			<?php echo $item->submissions; ?>
 		</td>
 		<td class="hidden-phone">
 			TODO

@@ -246,13 +246,11 @@
 
 		<field
 			id="menu_item" name="menu_item"
-			type="list"
+			type="menuitem"
 			label="COM_JINBOUND_PAGE_MENU_ITEM"
 			description="COM_JINBOUND_PAGE_MENU_ITEM_DESC"
 			class="input-large"
-		>
-			<option value=""></option>
-		</field>
+		/>
 
 		<field
 			id="send_to_url" name="send_to_url"

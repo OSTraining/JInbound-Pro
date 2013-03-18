@@ -130,17 +130,17 @@ class JFormFieldJinboundFormBuilder extends JFormField
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_CHECKBOXES'),
 				'id'   => 'checkboxes',
-				'type' => 'text'
+				'type' => 'checkboxes'
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_RADIO'),
 				'id'   => 'radio',
-				'type' => 'text'
+				'type' => 'radio'
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_SELECT'),
 				'id'   => 'select',
-				'type' => 'text'
+				'type' => 'select'
 			)))
 		);
 	}

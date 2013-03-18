@@ -8,7 +8,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$id    = $this->escape($this->input->id);
+$id     = $this->escape($this->input->id);
 $values = $this->input->value;
 if (is_object($values) && method_exists($values, 'toArray')) {
 	$values = $values->toArray();
@@ -34,7 +34,10 @@ if (!is_array($values)) {
 			<div class="container-fluid">
 <?php foreach ($this->input->getFormFields() as $field) : ?>
 				<div class="row hide <?php echo $id; ?>_fieldsettingsform" id="<?php echo $id; ?>_<?php echo $this->escape($field->id); ?>">
-					<?php $this->_currentField = $field; echo $this->loadTemplate('sidebar_field_' . $field->type); ?>
+					<?php
+						$this->_currentField = $field;
+						echo $this->loadTemplate('sidebar_field');
+					?>
 				</div>
 <?php endforeach; ?>
 			</div>
