@@ -85,8 +85,14 @@ class com_JInboundInstallerScript
 	
 	
 	public function postflight($type, $parent) {
-		// for some reason this isn't being loaded automatically... :/
-		JFactory::getLanguage()->load('com_jinbound.sys', JPATH_ADMINISTRATOR);
+		$lang = JFactory::getLanguage();
+		if (method_exists($parent, 'source')) {
+			$root = $parent->getPath('source');
+		}
+		else {
+			$root = $parent->getParent()->getPath('source');
+		}
+		$lang->load('com_jinbound.sys', $root) || $lang->load('com_jinbound.sys', JPATH_ADMINISTRATOR);
 		switch ($type) {
 			case 'install':
 			case 'discover_install':
@@ -94,6 +100,8 @@ class com_JInboundInstallerScript
 				$this->_saveDefaults($parent);
 			case 'update':
 				$this->_checkContactCategory();
+				$this->_checkDefaultPriorities();
+				$this->_checkDefaultStatuses();
 				break;
 		}
 	}
@@ -191,5 +199,85 @@ class com_JInboundInstallerScript
 		}
 		$table->moveByReference(0, 'last-child', $table->id);
 		$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_INSTALLED'));
+	}
+	
+	/**
+	 * checks for the presence of priorities and if none are found creates them
+	 * 
+	 */
+	private function _checkDefaultPriorities() {
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('id')
+			->from('#__jinbound_priorities')
+		);
+		try {
+			$priorities = $db->loadColumn();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage());
+			return;
+		}
+		if (is_array($priorities) && !empty($priorities)) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_PRIORITIES_FOUND'));
+			return;
+		}
+		jimport('joomla.database.table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
+		
+		foreach (array('COLD', 'WARM', 'HOT', 'ON_FIRE') as $i => $p) {
+			$table = JTable::getInstance('Priority', 'JInboundTable');
+			$bind = array(
+				'name'        => JText::_('COM_JINBOUND_PRIORITY_' . $p),
+				'description' => JText::_('COM_JINBOUND_PRIORITY_' . $p . '_DESC'),
+				'published'   => 1,
+				'ordering'    => $i + 1
+			);
+			$table->bind($bind);
+			$table->check();
+			$table->store();
+		}
+	}
+	
+	private function _checkDefaultStatuses() {
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('id')
+			->from('#__jinbound_lead_statuses')
+		);
+		try {
+			$statuses = $db->loadColumn();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage());
+			return;
+		}
+		if (is_array($statuses) && !empty($statuses)) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_STATUSES_FOUND'));
+			return;
+		}
+		jimport('joomla.database.table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
+		
+		$leads   = array('NEW_LEAD', 'NOT_INTERESTED', 'EMAIL', 'VOICEMAIL', 'CONVERTED');
+		$default = 0;
+		$final   = count($leads) - 1;
+		
+		foreach ($leads as $i => $p) {
+			$table = JTable::getInstance('Status', 'JInboundTable');
+			$bind = array(
+				'name'        => JText::_('COM_JINBOUND_STATUS_' . $p),
+				'description' => JText::_('COM_JINBOUND_STATUS_' . $p . '_DESC'),
+				'published'   => 1,
+				'ordering'    => $i + 1,
+				'default'     => (int) ($i == $default),
+				'final'       => (int) ($i == $final)
+			);
+			$table->bind($bind);
+			$table->check();
+			$table->store();
+		}
 	}
 }

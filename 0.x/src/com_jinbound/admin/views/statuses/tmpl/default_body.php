@@ -66,6 +66,12 @@ if (!empty($this->items)) :
 		<td class="hidden-phone">
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'statuses.', $canChange, 'cb'); ?>
 		</td>
+		<td class="hidden-phone">
+			<?php echo JHtml::_('jgrid.isdefault', $item->default, $i, 'statuses.', !$item->default && $canChange, 'cb'); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo JHtml::_('jgrid.isdefault', $item->final, $i, 'statuses.', !$item->final && $canChange, 'cb'); ?>
+		</td>
 		<td class="order">
 			<?php if ($canChange) : ?>
 				<?php if ($saveOrder) : ?>

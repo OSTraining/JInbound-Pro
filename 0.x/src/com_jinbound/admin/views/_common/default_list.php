@@ -39,3 +39,9 @@ $listDirn  = $this->state->get('list.direction');
 		</div>
 	</form>
 </div>
+<?php if (defined('JDEBUG') && JDEBUG) : ?>
+<h3>State</h3>
+<pre><?php echo $this->escape(print_r($this->state, 1)); ?></pre>
+<h3>Items</h3>
+<pre><?php echo $this->escape(print_r($this->items, 1)); ?></pre>
+<?php endif; ?>

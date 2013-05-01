@@ -8,6 +8,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+$pages = $this->getTopLandingPages();
+
 ?>
 <!-- Row 6: Landing Pages -->
 <div class="row-fluid">
@@ -22,12 +24,14 @@ defined('JPATH_PLATFORM') or die;
 			</tr>
 		</thead>
 		<tbody>
+<?php if (!empty($pages)) foreach ($pages as $page) : ?>
 			<tr>
-				<td>Name</td>
-				<td>Date</td>
-				<td>Form Converted On</td>
-				<td>Website</td>
+				<td><a href="<?php echo JInboundHelperUrl::edit('page', $page->id, false); ?>"><?php echo $this->escape($page->name); ?></a></td>
+				<td><?php echo $this->escape($page->hits); ?></td>
+				<td><?php echo $this->escape($page->conversions); ?></td>
+				<td><?php echo $this->escape($page->conversion_rate); ?></td>
 			</tr>
+<?php endforeach; ?>
 		</tbody>
 	</table>
 </div>

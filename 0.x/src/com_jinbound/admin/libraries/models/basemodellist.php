@@ -38,10 +38,6 @@ class JInboundListModel extends JModelList
 	private $_items = null;
 	
 	private $_registryColumns = null;
-
-	function __construct($config = array()) {
-		parent::__construct($config);
-	}
 	
 	public function getItems() {
 		$items = parent::getItems();
@@ -175,7 +171,7 @@ class JInboundListModel extends JModelList
 		;
 	}
 	
-	public function filterSearchQuery(&$query, $search, $tablename, $pk = 'id', $columns = array('name')) {
+	public function filterSearchQuery(&$query, $search, $tablename, $pk = 'id', $columns = array()) {
 		// clean our variables
 		$filter    = JFilterInput::getInstance();
 		$tablename = $filter->clean($tablename, 'cmd');
@@ -183,7 +179,7 @@ class JInboundListModel extends JModelList
 		// get our dbo for cleaning texts
 		$db = JFactory::getDbo();
 		if (!empty($search)) {
-			if (stripos($search, $pk . ':') === 0) {
+			if (0 === stripos($search, $pk . ':')) {
 				$query->where($tablename . '.' . $pk . ' = ' . (int) substr($search, 3));
 			}
 			else {
@@ -191,10 +187,10 @@ class JInboundListModel extends JModelList
 				$where = array();
 				if (!empty($columns)) {
 					foreach ($columns as &$column) {
-						$column  = $filter->clean($column, 'cmd');
-						$where[] = $tablename . '.' . $column . ' LIKE ' . $search;
+						$column = $filter->clean($column, 'cmd');
+						$where[] = $column . ' LIKE ' . $search;
 					}
-					$db->where('(' . implode(' OR ', $wheres) . ')');
+					$query->where('(' . implode(' OR ', $where) . ')');
 				}
 			}
 		}

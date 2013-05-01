@@ -21,6 +21,7 @@ class JInboundTable extends JTable
 	public function store($updateNulls = false) {
 		$date   = JFactory::getDate();
 		$user   = JFactory::getUser();
+		
 		if ($this->id) {
 			// Existing item
 			$this->modified    = $date->toSql();

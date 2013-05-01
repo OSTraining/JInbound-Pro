@@ -13,5 +13,19 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerLead extends JInboundFormController
 {
+	public function status() {
+		$this->_changeLead('status');
+	}
 	
+	public function priority() {
+		$this->_changeLead('priority');
+	}
+	
+	private function _changeLead($how) {
+		$app   = JFactory::getApplication();
+		$id    = $app->input->get('id');
+		$value = $app->input->get('value');
+		$model = $this->getModel();
+		$model->$how($id, $value);
+	}
 }

@@ -16,7 +16,7 @@ class JInboundListView extends JInboundView
 	protected $pagination;
 	protected $state;
 
-	function display($tpl = null, $echo = true) {
+	function display($tpl = null, $safeparams = false) {
 		$items = $this->get('Items');
 		$pagination = $this->get('Pagination');
 		$state = $this->get('State');
@@ -28,9 +28,12 @@ class JInboundListView extends JInboundView
 		$this->pagination = $pagination;
 		$this->state = $state;
 		
-		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PUBLISHED'), 'filter_published', $this->get('PublishedStatus'), $state->get('filter.published'));
+		$publishedOptions = $this->get('PublishedStatus');
+		if (!empty($publishedOptions)) {
+			$this->addFilter(JText::_('COM_JINBOUND_SELECT_PUBLISHED'), 'filter_published', $publishedOptions, $state->get('filter.published'));
+		}
 		
-		return parent::display($tpl, $echo);
+		return parent::display($tpl, $safeparams);
 	}
 	
 	public function addFilter($label, $name, $options, $default) {

@@ -303,16 +303,33 @@
 		label="COM_JINBOUND_PAGE_FIELDSET_TEMPLATE"
 	>
 		<field
-			id="template_tips" name="template_tips"
-			type="jinboundtips"
-		/>
-		<field
 			id="template" name="template"
-			type="editor"
+			type="jinboundeditor"
 			label="COM_JINBOUND_PAGE_TEMPLATE"
 			description="COM_JINBOUND_PAGE_TEMPLATE_DESC"
 			class="input-block-level"
-		/>
+		>
+			<tag value="heading" />
+			<tag value="subheading" />
+			<tag value="maintext" />
+			<tag value="sidebartext" />
+			<tag value="image" />
+			<tag value="form" />
+			<tag value="form:firstname" />
+			<tag value="form:lastname" />
+			<tag value="form:email" />
+			<tag value="form:website" />
+			<tag value="form:companyname" />
+			<tag value="form:phonenumber" />
+			<tag value="form:fulladdress" />
+			<tag value="form:singleline:fieldtitle" />
+			<tag value="form:paragraph:fieldtitle" />
+			<tag value="form:checkbox:fieldtitle" />
+			<tag value="form:radio:fieldtitle" />
+			<tag value="form:dropdown:fieldtitle" />
+			<tag value="captcha" />
+			<tag value="submit" />
+		</field>
 
 	</fieldset>
 

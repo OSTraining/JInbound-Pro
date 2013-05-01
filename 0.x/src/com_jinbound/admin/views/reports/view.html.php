@@ -26,6 +26,18 @@ class JInboundViewReports extends JInboundListView
 		return $this->_callModelMethod('getLeadCount');
 	}
 	
+	public function getTopLandingPages() {
+		return $this->_callModelMethod('getTopLandingPages');
+	}
+	
+	public function getConversionCount() {
+		return $this->_callModelMethod('getConversionCount');
+	}
+	
+	public function getConversionRate() {
+		return $this->_callModelMethod('getConversionRate');
+	}
+	
 	private function _callModelMethod($method) {
 		$model = JInboundBaseModel::getInstance('Reports', 'JInboundModel');
 		return $model->$method();

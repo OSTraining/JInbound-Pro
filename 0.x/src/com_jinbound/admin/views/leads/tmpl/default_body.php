@@ -17,6 +17,8 @@ $trashed   = (-2 == $this->state->get('filter.published'));
 
 if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 
+JHtml::_('jinbound.leadupdate');
+
 
 
 if (!empty($this->items)) :
@@ -30,9 +32,6 @@ if (!empty($this->items)) :
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="hidden-phone">
 			<?php echo JHtml::_('grid.id', $i, $item->id); ?>
-		</td>
-		<td class="hidden-phone">
-			<?php echo $item->id;  ?>
 		</td>
 		<td class="nowrap has-context">
 			<div class="pull-left">
@@ -73,13 +72,16 @@ if (!empty($this->items)) :
 			<a href="<?php echo $this->escape(JInboundHelperUrl::edit('page', $item->page_id)); ?>"><?php echo $this->escape($item->formname); ?></a>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->priority_name); ?>
+			<?php echo JHtml::_('jinbound.priority', $item->id, $item->priority_id, 'leads.', $canChange); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo $this->escape($item->status_name); ?>
+			<?php echo JHtml::_('jinbound.status', $item->id, $item->status_id, 'leads.', $canChange); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<?php echo '';//$this->escape($item->note); ?>
+			<?php echo JHtml::_('jinbound.leadnotes', $item->id, $canChange); ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $item->id;  ?>
 		</td>
 	</tr>
 	<?php endforeach;

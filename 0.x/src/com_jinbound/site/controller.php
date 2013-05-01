@@ -19,4 +19,15 @@ class JInboundController extends JInboundBaseController
 		$app->input->set('view', $view);
 		parent::display($cachable);
 	}
+	
+	/**
+	 * controller action to run cron tasks
+	 * 
+	 * TODO
+	 */
+	function cron() {
+		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/emails.php';
+		$model = $this->getModel('Emails', 'JInboundModel');
+		$model->send();
+	}
 }

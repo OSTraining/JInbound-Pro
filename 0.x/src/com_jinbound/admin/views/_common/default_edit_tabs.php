@@ -20,7 +20,7 @@ if (1 < count($fieldsets)) : ?>
 		<div id="jinbound_default_tabs">
 			<ul class="nav nav-tabs">
 <?php $active = true; foreach ($fieldsets as $name => $fieldset) : if ('default' == $name) continue; ?>
-				<li><a <?php echo ($active ? ' class="active"' : ''); $active = false; ?>href="<?php echo $this->escape('#jinbound_tab_' . $name); ?>"><?php echo JText::_($fieldset->label); ?></a></li>
+				<li><a <?php echo ($active ? 'class="active" ' : ''); $active = false; ?>href="<?php echo $this->escape('#jinbound_tab_' . $name); ?>"><?php echo JText::_($fieldset->label); ?></a></li>
 <?php endforeach; ?>
 			</ul>
 <?php endif; ?>

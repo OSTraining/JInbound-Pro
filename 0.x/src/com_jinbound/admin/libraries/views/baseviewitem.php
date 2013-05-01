@@ -14,7 +14,7 @@ JLoader::register('JInboundView', JPATH_ADMINISTRATOR.'/components/com_jinbound/
 
 class JInboundItemView extends JInboundView
 {
-	function display($tpl = null, $echo = true) {
+	function display($tpl = null, $safeparams = false) {
 		$form = $this->get('Form');
 		$item = $this->get('Item');
 		if (count($errors = $this->get('Errors'))) {
@@ -30,7 +30,7 @@ class JInboundItemView extends JInboundView
 		$this->item = $item;
 		$this->canDo = JInbound::getActions();
 		
-		parent::display($tpl);
+		parent::display($tpl, $safeparams);
 		$this->setDocument();
 	}
 

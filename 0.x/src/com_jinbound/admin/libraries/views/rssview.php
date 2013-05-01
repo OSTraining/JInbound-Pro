@@ -21,9 +21,9 @@ class JInboundRSSView extends JInboundBaseView
 	public $feedLimit = 5;
 	public $wordLimit = 140;
 	
-	function display($tpl = null, $echo = true) {
+	function display($tpl = null, $safeparams = false) {
 		$this->feed = $this->getFeed($this->url);
-		return parent::display($tpl);
+		return parent::display($tpl, $safeparams);
 	}
 	
 	/**

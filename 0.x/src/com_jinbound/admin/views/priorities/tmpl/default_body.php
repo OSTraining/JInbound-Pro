@@ -74,7 +74,7 @@ if (!empty($this->items)) :
 				<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>
 				<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" <?php echo $disabled ?> class="text-area-order" />
 			<?php else : ?>
-				<?php echo $item->ordering;?>
+				<?php echo $item->ordering; ?>
 			<?php endif; ?>
 		</td>
 		<td class="hidden-phone">

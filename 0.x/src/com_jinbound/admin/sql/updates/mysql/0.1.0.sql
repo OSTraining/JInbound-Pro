@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
   
   `name` varchar(255) NOT NULL
   COMMENT 'name of this record',
@@ -32,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',
@@ -58,14 +61,19 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_emails` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
   
   `name` varchar(255) NOT NULL
   COMMENT 'name of this record',
   
-  `campaign_id` int(11) NOT NULL,
+  `campaign_id` int(11) NOT NULL
+  COMMENT 'Primary key of associated campaign',
+  
   `fromname` varchar(255) NOT NULL,
   `fromemail` varchar(255) NOT NULL,
-  `sendafter` int(1) NOT NULL,
+  `sendafter` int(4) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `htmlbody` blob NOT NULL,
   `plainbody` blob NOT NULL,
@@ -80,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_emails` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',
@@ -90,6 +98,34 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_emails` (
 	
 	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
 	COMMENT 'Date and Time record was checked out',
+	
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+
+########################################
+##    Email Records                   ##
+##                                    ##
+##    Records of emails already sent  ##
+########################################;
+
+CREATE TABLE IF NOT EXISTS `#__jinbound_emails_records` (
+
+  `id` int(11) NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
+
+  `email_id` int(11) NOT NULL
+  COMMENT 'Primary Key of associated Email',
+  
+  `lead_id` int(11) NOT NULL
+  COMMENT 'Primary key of associated Lead',
+	
+	`sent` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when record was created, in UTC',
 	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -109,6 +145,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_leads` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
   
 	`page_id` int(11) NOT NULL
 	COMMENT 'Primary key of Page associated with this lead',
@@ -138,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_leads` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',
@@ -167,12 +206,24 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_lead_statuses` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
   
   `name` varchar(255) NOT NULL
   COMMENT 'name of this record',
   
   `description` mediumtext NOT NULL
   COMMENT 'description of this record',
+	 
+	`ordering` int(11) NOT NULL default '0'
+	COMMENT 'Ordering column for priority level',
+	
+	`default` tinyint(1) default '0'
+	COMMENT 'Default status',
+	
+	`final` tinyint(1) default '0'
+	COMMENT 'Final status',
 	
 	`published` tinyint(1) default '0'
 	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
@@ -184,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_lead_statuses` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',
@@ -210,6 +261,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
 
   `layout` varchar(1) NOT NULL DEFAULT "A"
   COMMENT 'Layout type - 0 for custom, or A-D',
@@ -253,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',
@@ -280,6 +334,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_priorities` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
   
   `name` varchar(255) NOT NULL
   COMMENT 'name of this record',
@@ -300,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_priorities` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',
@@ -327,6 +384,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_stages` (
 
   `id` int(11) NOT NULL AUTO_INCREMENT
   COMMENT 'Primary Key',
+	 
+	`asset_id` int(11) NOT NULL
+	COMMENT 'Key for assets table',
   
   `name` varchar(255) NOT NULL
   COMMENT 'name of this record',
@@ -347,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_stages` (
 	COMMENT 'User id of record creator',
 	
 	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC, deprecates last_updated',	
+	COMMENT 'when record was last modified in UTC',	
 	 
 	`modified_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of last modifier',

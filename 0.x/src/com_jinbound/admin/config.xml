@@ -72,6 +72,49 @@
 		</field>
 	</fieldset>
 	
+	
+	<fieldset
+		name="reports"
+		label="COM_JINBOUND_CONFIG_FIELDSET_REPORTS"
+	>
+		<field
+			name="send_reports" id="send_reports"
+			type="list"
+			label="COM_JINBOUND_SEND_REPORTS"
+			description="COM_JINBOUND_SEND_REPORTS_DESC"
+			default="1"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+			name="report_frequency" id="report_frequency"
+			type="list"
+			label="COM_JINBOUND_REPORT_FREQUENCY"
+			description="COM_JINBOUND_REPORT_FREQUENCY_DESC"
+			default="0"
+		>
+			<option value="0">COM_JINBOUND_REPORT_FREQUENCY_NEVER</option>
+			<option value="3">COM_JINBOUND_REPORT_FREQUENCY_EVERY_3_HOURS</option>
+			<option value="6">COM_JINBOUND_REPORT_FREQUENCY_EVERY_6_HOURS</option>
+			<option value="12">COM_JINBOUND_REPORT_FREQUENCY_EVERY_12_HOURS</option>
+			<option value="24">COM_JINBOUND_REPORT_FREQUENCY_EVERY_DAY</option>
+			<option value="48">COM_JINBOUND_REPORT_FREQUENCY_EVERY_OTHER_DAY</option>
+			<option value="72">COM_JINBOUND_REPORT_FREQUENCY_EVERY_3RD_DAY</option>
+			<option value="168">COM_JINBOUND_REPORT_FREQUENCY_EVERY_WEEK</option>
+			<option value="336">COM_JINBOUND_REPORT_FREQUENCY_EVERY_OTHER_WEEK</option>
+			<option value="720">COM_JINBOUND_REPORT_FREQUENCY_EVERY_30_DAYS</option>
+		</field>
+		<field
+			name="report_recipients" id="report_recipients"
+			type="text"
+			label="COM_JINBOUND_REPORT_RECIPIENTS"
+			description="COM_JINBOUND_REPORT_RECIPIENTS_DESC"
+			size="100"
+			default=""
+		/>
+	</fieldset>
+	
 	<fieldset
 		name="permissions"
 		label="JCONFIG_PERMISSIONS_LABEL"

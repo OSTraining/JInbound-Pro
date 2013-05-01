@@ -40,12 +40,14 @@ class JInboundModelPages extends JInboundListModel
 			->leftJoin('#__categories AS Category ON Category.id = Page.category')
 			->select('COUNT(Lead.id) AS submissions')
 			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Page.id')
+			->select('COUNT(Conversion.id) AS conversions')
+			->leftJoin('#__jinbound_leads AS Conversion ON Conversion.page_id = Page.id AND Conversion.status_id IN ((SELECT Status.id FROM #__jinbound_lead_statuses AS Status WHERE Status.final = 1))')
 			->group('Page.id')
 		;
 		
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Page');
-		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page', 'id', array('Page.name', 'Category.title'));
 		
 		// Add the list ordering clause.
 		$orderCol = trim($this->state->get('list.ordering'));

@@ -73,17 +73,33 @@ defined('JPATH_PLATFORM') or die;
 							<div class="span6">
 								<h4><?php echo JText::_('COM_JINBOUND_FORM_INFORMATION'); ?></h4>
 								<div class="well">
-									TODO: form info
+									<a href="<?php echo JInboundHelperUrl::edit('page', $this->page->id); ?>"><?php echo $this->escape($this->page->name); ?></a>
 								</div>
 								<h4><?php echo JText::_('COM_JINBOUND_CURRENT_LEAD_NURTURING_CAMPAIGNS'); ?></h4>
 								<div class="well">
-									TODO: campaign info
+									<?php if (!empty($this->records)) : ?>
+									<table class="table table-striped">
+										<?php foreach ($this->records as $record) : ?>
+										<tr>
+											<td><a href="<?php echo JInboundHelperUrl::edit('email', $record->email_id); ?>"><?php echo $this->escape($record->email_name); ?></a></td>
+											<td><?php echo $this->escape($record->sent); ?></td>
+										</tr>
+										<?php endforeach; ?>
+									</table>
+									<?php endif; ?>
 								</div>
 							</div>
 							<div class="span6">
 								<h4><?php echo JText::_('COM_JINBOUND_NOTES'); ?></h4>
 								<div class="well">
-									TODO: notes info
+									<table class="table table-striped">
+									<?php if (!empty($this->notes)) : foreach ($this->notes as $note) : ?>
+										<tr>
+											<td><span class="label"><?php echo $note->created; ?></span></td>
+											<td class="note"><?php echo $this->escape($note->text); ?></td>
+										</tr>
+									<?php endforeach; endif; ?>
+									</table>
 								</div>
 							</div>
 						</div>

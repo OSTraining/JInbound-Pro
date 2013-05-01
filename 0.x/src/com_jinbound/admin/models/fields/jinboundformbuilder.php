@@ -23,9 +23,13 @@ class JFormFieldJinboundFormBuilder extends JFormField
 	 * @see JFormField::getInput()
 	 */
 	protected function getInput() {
+		// ensure defaults are set
+		$value = $this->getFormValue();
+		// get the view
 		$view = $this->getView();
 		// set data
 		$view->input = $this;
+		$view->value = $value;
 		// return template html
 		return $view->loadTemplate();
 	}

@@ -63,7 +63,7 @@ if (!empty($this->items)) :
 			<?php echo $item->submissions; ?>
 		</td>
 		<td class="hidden-phone">
-			TODO
+			<?php echo $item->conversions; ?>
 		</td>
 		<td class="hidden-phone">
 			<a href="#">TODO</a>

@@ -13,7 +13,7 @@ JInbound::registerLibrary('JInboundView', 'views/baseview');
 
 class JInboundViewDashboard extends JInboundView
 {
-	function display($tpl = null, $echo = true) {
+	function display($tpl = null, $safeparams = false) {
 		$app = JFactory::getApplication();
 		// get our libraries
 		JInbound::registerHelper('path');
@@ -44,6 +44,6 @@ class JInboundViewDashboard extends JInboundView
 		$app->input->set('tmpl', $tmpl);
 		$app->input->set('layout', $layout);
 		
-		return parent::display($tpl, $echo);
+		return parent::display($tpl, $safeparams);
 	}
 }

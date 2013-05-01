@@ -14,7 +14,7 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 
 class JInboundViewPages extends JInboundListView
 {
-	function display($tpl = null, $echo = true) {
+	function display($tpl = null, $safeparams = false) {
 		foreach (array('categories', 'campaigns') as $var) {
 			$single = JInboundInflector::singularize($var);
 			$$var = $this->get(ucwords($var) . 'Options');
@@ -27,6 +27,6 @@ class JInboundViewPages extends JInboundListView
 			$this->addFilter(JText::_('COM_JINBOUND_SELECT_' . strtoupper($single)), 'filter_' . $single, $$var, $this->get('State')->get('filter.' . $single));
 		}
 		
-		return parent::display($tpl, $echo);
+		return parent::display($tpl, $safeparams);
 	}
 }

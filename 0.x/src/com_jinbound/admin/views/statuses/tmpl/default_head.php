@@ -26,6 +26,12 @@ $saveOrder = ($listOrder == 'Status.ordering');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Status.status', $listDirn, $listOrder); ?>
 	</th>
+	<th>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_DEFAULT', 'Status.default', $listDirn, $listOrder); ?>
+	</th>
+	<th>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_FINAL', 'Status.final', $listDirn, $listOrder); ?>
+	</th>
 	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ORDERING', 'Status.ordering', $listDirn, $listOrder); ?>
 		<?php if ($saveOrder) :?>

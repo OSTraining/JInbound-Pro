@@ -8,6 +8,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$this->cols = 5;
+$this->cols = 8;
 
 echo $this->loadTemplate('list');

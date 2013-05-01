@@ -31,6 +31,16 @@ class JInboundModelEmail extends JInboundAdminModel
 		if (empty($form)) {
 			return false;
 		}
+		
+		// remove the sidebar stuff if layout isn't "a" or empty
+		$template = strtolower(JFactory::getApplication()->input->get('set', $form->getValue('layout', 'A'), 'cmd'));
+		if (!empty($template) && 'a' !== $template) {
+			if (1 == JString::strlen($template)) {
+				$template = JString::strtoupper($template);
+			}
+			$form->setValue('layout', null, $template);
+		}
+		
 		return $form;
 	}
 }

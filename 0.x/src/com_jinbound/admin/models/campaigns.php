@@ -39,7 +39,7 @@ class JInboundModelCampaigns extends JInboundListModel
 		;
 		
 		$this->appendAuthorToQuery($query, 'Campaign');
-		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Campaign');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Campaign', 'id', array('Campaign.name'));
 
 		// Add the list ordering clause.
 		$orderCol = trim($this->state->get('list.ordering'));

@@ -17,7 +17,7 @@ JInbound::registerHelper('url');
 JInbound::registerLibrary('JInboundInflector', 'inflector');
 // include the html helper here
 jimport('joomla.html.html');
-//JHtml::addIncludePath(JInboundHelperPath::site().'/helpers/html');
+JHtml::addIncludePath(JInboundHelperPath::admin() . '/helpers/html');
 // include core libs
 jimport('joomla.error.profiler');
 jimport('joomla.filesystem.file');
@@ -60,15 +60,6 @@ class JInboundBaseView extends JInboundBaseCompatView
 		}
 		
 	}
-
-	function display($tpl = null, $echo = true) {
-		if ($echo) {
-			parent::display($tpl);
-		}
-		else {
-			return $this->loadTemplate($tpl);
-		}
-	}
 	
 	/**
 	 * overload this with an extra param to choose layout
@@ -97,7 +88,7 @@ class JInboundView extends JInboundBaseView
 	
 	protected $_filters;
 
-	function display($tpl = null, $echo = true) {
+	function display($tpl = null, $safeparams = false) {
 		$profiler = JProfiler::getInstance('Application');
 		$profiler->mark('onJInboundViewDisplayStart');
 		
@@ -161,7 +152,7 @@ class JInboundView extends JInboundBaseView
 		
 		$profiler->mark('onJInboundViewDisplayEnd');
 		
-		return parent::display($tpl, $echo);
+		return parent::display($tpl, $safeparams);
 	}
 	
 	/**
@@ -196,16 +187,18 @@ class JInboundView extends JInboundBaseView
 		// Dashboard
 		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
-		$subMenuItems = array('pages', 'campaigns', 'emails', 'leads', 'statuses', 'priorities', 'reports');
-		foreach ($subMenuItems as $sub) {
-			$label = JText::_(strtoupper(JInbound::COM . "_$sub"));
+		$subMenuItems = array(
+			'pages'     => 'PAGES',
+			'emails'    => 'LEAD_NURTURING_MANAGER',
+			'leads'     => 'LEADS',
+			'reports'   => 'REPORTS',
+			'utilities' => 'UTILITIES'
+		);
+		foreach ($subMenuItems as $sub => $txt) {
+			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub);
 			JSubMenuHelper::addEntry($label, $href, $active);
-			// we want categories AFTER pages
-			if ('pages' == $sub) {
-				JSubMenuHelper::addEntry(JText::_('COM_CATEGORIES'), JInboundHelperUrl::_(array('option' => 'com_categories', 'extension' => JInbound::COM)), 'com_categories' == $option);
-			}
 		}
 	}
 

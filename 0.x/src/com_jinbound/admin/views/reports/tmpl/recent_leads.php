@@ -26,9 +26,9 @@ $leads = $this->getRecentLeads();
 		<tbody>
 <?php if (!empty($leads)) foreach ($leads as $lead) : ?>
 			<tr>
-				<td><?php echo $this->escape($lead->name); ?></td>
+				<td><a href="<?php echo JInboundHelperUrl::edit('lead', $lead->id, false); ?>"><?php echo $this->escape($lead->name); ?></a></td>
 				<td><?php echo $this->escape($lead->date); ?></td>
-				<td>TODO</td>
+				<td><a href="<?php echo JInboundHelperUrl::edit('page', $lead->page_id, false); ?>"><?php echo $this->escape($lead->formname); ?></a></td>
 				<td><a href="<?php echo $this->escape($lead->website); ?>" target="_blank"><?php echo $this->escape($lead->website); ?></a></td>
 			</tr>
 <?php endforeach; ?>

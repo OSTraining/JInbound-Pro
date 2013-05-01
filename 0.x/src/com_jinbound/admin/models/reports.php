@@ -93,9 +93,16 @@ class JInboundModelReports extends JInboundListModel
 	
 	public function getRecentLeads() {
 		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-			->select('Contact.name AS name, Lead.created AS date, Contact.webpage AS website')
+			->select('Lead.id AS id')
+			->select('Contact.id AS contact_id')
+			->select('Page.id AS page_id')
+			->select('Contact.name AS name')
+			->select('Lead.created AS date')
+			->select('Page.formname AS formname')
+			->select('Contact.webpage AS website')
 			->from('#__jinbound_leads AS Lead')
 			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
+			->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
 			->group('Lead.id')
 			->order('Lead.created DESC')
 		);
@@ -110,4 +117,77 @@ class JInboundModelReports extends JInboundListModel
 		
 		return $leads;
 	}
+	
+	public function getTopLandingPages() {
+		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
+			->select('Page.id AS id')
+			->select('Lead.id AS lead_id')
+			->select('Page.name AS name')
+			->select('Page.hits AS hits')
+			->select('COUNT(Lead.id) AS conversions')
+			->select('IF(Page.hits > 0, (COUNT(Lead.id) / Page.hits) * 100, 0) AS conversion_rate')
+			->from('#__jinbound_pages AS Page')
+			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Lead.id')
+			->group('Page.id')
+			->order('Page.hits DESC')
+		);
+		
+		try {
+			$pages = $this->getDbo()->loadObjectList();
+		}
+		catch (Exception $e) {
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
+			$pages = array();
+		}
+		
+		return $pages;
+	}
+	
+	public function getConversionCount() {
+		static $count;
+		
+		if (is_null($count)) {
+			$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
+				->select('COUNT(Lead.id) AS conversions')
+				->from('#__jinbound_leads AS Lead')
+				->leftJoin('#__jinbound_lead_statuses AS Status ON Lead.status_id = Status.id')
+				->where('Status.final = 1')
+				->group('Lead.id')
+			);
+			
+			try {
+				$count = $this->getDbo()->loadResult();
+			}
+			catch (Exception $e) {
+				JFactory::getApplication()->enqueueMessage($e->getMessage());
+				$count = 0;
+			}
+		}
+		
+		return (int) $count;
+	}
+	
+	public function getConversionRate() {
+		static $rate;
+		
+		if (is_null($rate)) {
+			$count = $this->getConversionCount();
+			$hits  = $this->getVisitCount();
+			if (0 < $hits) {
+				$rate = ($count / $hits) * 100; 
+			}
+			else {
+				$rate = 0;
+			}
+			
+			$rate = number_format($rate, 2);
+		}
+		
+		return $rate;
+	}
+	
+	public function getPublishedStatus() {
+		return false;
+	}
+	
 }

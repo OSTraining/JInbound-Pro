@@ -19,6 +19,14 @@
 		/>
 		
 		<field
+			id="campaign_id" name="campaign_id"
+			type="jinboundcampaignlist"
+			class="input-block-level"
+			label="COM_JINBOUND_CAMPAIGN_ID"
+			description="COM_JINBOUND_CAMPAIGN_ID_DESC"
+		/>
+		
+		<field
 			id="name" name="name"
 			type="text"
 			label="COM_JINBOUND_EMAIL_NAME"
@@ -26,6 +34,15 @@
 			class="input-block-level"
 			size="30"
 			required="true"
+		/>
+
+		<field
+			id="published" name="published"
+			type="jinboundpublished"
+			label="JPUBLISHED"
+			description="COM_JINBOUND_PUBLISHED_DESC"
+			class="input-block-level"
+			default="1"
 		/>
 
 		<field
@@ -50,13 +67,28 @@
 
 		<field
 			id="sendafter" name="sendafter"
-			type="text"
+			type="jinboundtimespan"
 			label="COM_JINBOUND_EMAIL_SEND_AFTER"
 			description="COM_JINBOUND_EMAIL_SEND_AFTER_DESC"
 			class="input-block-level"
 			size="30"
 			required="true"
 		/>
+		
+		<field
+			id="layout" name="layout"
+			type="list"
+			label="COM_JINBOUND_LAYOUT"
+			description="COM_JINBOUND_LAYOUT_DESC"
+			class="input-block-level"
+			default="A"
+		>
+			<option value="A">COM_JINBOUND_TEMPLATE_A</option>
+			<option value="B">COM_JINBOUND_TEMPLATE_B</option>
+			<option value="C">COM_JINBOUND_TEMPLATE_C</option>
+			<option value="D">COM_JINBOUND_TEMPLATE_D</option>
+			<option value="custom">COM_JINBOUND_TEMPLATE_CUSTOM</option>
+		</field>
 
 		<field
 			id="subject" name="subject"
