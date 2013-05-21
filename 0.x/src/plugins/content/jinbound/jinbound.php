@@ -12,10 +12,14 @@ jimport('joomla.filesystem.file');
 jimport('joomla.plugin.plugin');
 // we HAVE to force-load the helper here to prevent fatal errors!
 $helper = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
-if (JFile::exists($helper)) require_once $helper;
+if (JFile::exists($helper)) {
+	require_once $helper;
+}
 
 class plgContentJInbound extends JPlugin
 {
+	private static $_run;
+	
 	/**
 	 * Constructor
 	 * 
@@ -26,13 +30,13 @@ class plgContentJInbound extends JPlugin
 		// if something happens & the helper class can't be found, we don't want a fatal error here
 		if (class_exists('JInbound')) {
 			JInbound::language('plg_content_jinbound.sys', JPATH_ADMINISTRATOR);
+			self::$_run = true;
 		}
 		else {
 			JFactory::getLanguage()->load('plg_content_jinbound.sys', JPATH_ADMINISTRATOR);
 			JFactory::getApplication()->enqueueMessage(JText::_('PLG_CONTENT_JINBOUND_COMPONENT_NOT_INSTALLED'));
+			self::$_run = false;
 		}
 		parent::__construct($subject, $config);
 	}
-	
-	
 }

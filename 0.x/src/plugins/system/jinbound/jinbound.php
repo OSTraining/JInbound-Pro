@@ -44,6 +44,11 @@ class plgSystemJInbound extends JPlugin
 		parent::loadLanguage($extension, $basePath);
 	}
 	
+	/**
+	 * onAfterInitialise
+	 * 
+	 * forces template
+	 */
 	public function onAfterInitialise() {
 		$app = JFactory::getApplication();
 		
@@ -63,12 +68,16 @@ class plgSystemJInbound extends JPlugin
 	 * handles flair after dispatch
 	 */
 	public function onAfterDispatch() {
-		if (!self::$_run) return;
+		if (!self::$_run) {
+			return;
+		}
 		$app = JFactory::getApplication();
 		// we want to add some extras to com_categories
 		if ($app->isAdmin() && 'com_categories' == $app->input->get('option', '', 'cmd') && class_exists('JInbound') && JInbound::COM == $app->input->get('extension', '', 'cmd')) {
 			// UPDATE: don't do this in edit layout in 3.0+
-			if (JInbound::version()->isCompatible('3.0') && 'edit' == $app->input->get('layout')) return;
+			if (JInbound::version()->isCompatible('3.0') && 'edit' == $app->input->get('layout')) {
+				return;
+			}
 			// add submenu to categories
 			JInbound::registerLibrary('JInboundView', 'views/baseview');
 			$comView = new JInboundView();

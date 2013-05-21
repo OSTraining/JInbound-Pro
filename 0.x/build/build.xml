@@ -80,8 +80,8 @@
 		</condition>
 
 		<!-- Init of changelog automatic build up -->
-		<property name="svn.rootDir" value="/home/jeff/workspace/JInbound/0.x/src/" />
-		<property name="svn.buildDir" value="/home/jeff/workspace/JInbound/0.x/build/" />
+		<property name="svn.rootDir" value="/home/jeff/git/jinbound/0.x/src/" />
+		<property name="svn.buildDir" value="/home/jeff/git/jinbound/0.x/build/" />
 		<property name="svn.executable" value="/usr/bin/svn" />
 		<property name="php.executable" value="/usr/bin/php" />
 
