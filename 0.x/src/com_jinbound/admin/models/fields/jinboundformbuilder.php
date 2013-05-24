@@ -75,6 +75,32 @@ class JFormFieldJinboundFormBuilder extends JFormField
 			}
 			$this->value = $reg;
 		}
+		// we know it's the first 3 - shortcut ;)
+		$defaults = $this->getFormFields();
+		foreach (array('first_name', 'last_name', 'email') as $field) {
+			$def = $this->value->get($field, false);
+			if (!$def) {
+				$this->value->set($field, json_decode(json_encode(array(
+					'title'    => JText::_('COM_JINBOUND_PAGE_FIELD_'.$field)
+				,	'enabled'  => 1
+				,	'required' => 1
+				))));
+			}
+			else if (is_object($def)) {
+				if ($def instanceof JRegistry) {
+					$def->set('enabled', 1);
+					$def->set('required', 1);
+				}
+				else {
+					$def->enabled  = 1;
+					$def->required = 1;
+				}
+			}
+			else if (is_array($def)) {
+				$def['enabled']  = 1;
+				$def['required'] = 1;
+			}
+		}
 		return $this->value;
 	}
 	
@@ -86,64 +112,76 @@ class JFormFieldJinboundFormBuilder extends JFormField
 	public function getFormFields() {
 		return array(
 			json_decode(json_encode(array(
-				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_FIRST_NAME'),
-				'id'   => 'first_name',
-				'type' => 'text'
+				'name'  => JText::_('COM_JINBOUND_PAGE_FIELD_FIRST_NAME'),
+				'id'    => 'first_name',
+				'type'  => 'text',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_LAST_NAME'),
 				'id'   => 'last_name',
-				'type' => 'text'
+				'type' => 'text',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_EMAIL'),
 				'id'   => 'email',
-				'type' => 'text'
+				'type' => 'text',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_WEBSITE'),
 				'id'   => 'website',
-				'type' => 'text'
+				'type' => 'text',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_COMPANY_NAME'),
 				'id'   => 'company_name',
-				'type' => 'text'
+				'type' => 'text',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_PHONE_NUMBER'),
 				'id'   => 'phone_number',
-				'type' => 'text'
+				'type' => 'text',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_ADDRESS'),
 				'id'   => 'address',
-				'type' => 'textarea'
+				'type' => 'textarea',
+				'multi' => 0
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_TEXT'),
 				'id'   => 'text',
-				'type' => 'text'
+				'type' => 'text',
+				'multi' => 1
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_TEXTAREA'),
 				'id'   => 'textarea',
-				'type' => 'textarea'
+				'type' => 'textarea',
+				'multi' => 1
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_CHECKBOXES'),
 				'id'   => 'checkboxes',
-				'type' => 'checkboxes'
+				'type' => 'checkboxes',
+				'multi' => 1
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_RADIO'),
 				'id'   => 'radio',
-				'type' => 'radio'
+				'type' => 'radio',
+				'multi' => 1
 			))),
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_SELECT'),
 				'id'   => 'select',
-				'type' => 'select'
+				'type' => 'select',
+				'multi' => 1
 			)))
 		);
 	}
