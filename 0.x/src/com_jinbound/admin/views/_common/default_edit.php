@@ -10,7 +10,7 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 <div id="jinbound_component" class="<?php echo $this->viewClass; ?>">
-	<form action="<?php echo JInboundHelperUrl::_(); ?>" method="post" id="location-form" name="adminForm" class="form-validate" enctype="multipart/form-data">
+	<form action="<?php echo JInboundHelperUrl::_(); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
 		<fieldset>
 			<?php echo $this->loadTemplate('edit_default'); ?>
 			<input type="hidden" name="task" value="" />

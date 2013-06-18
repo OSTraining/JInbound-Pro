@@ -20,7 +20,12 @@ if (!is_array($values)) {
 <script type="text/javascript">
 (function($){$(function(){
 	var clone, before, parent;
-	$('#<?php echo $id; ?>_sidebar').tabs();
+	try {
+		$('#<?php echo $id; ?>_sidebar').tabs();
+	}
+	catch (err) {
+		console.log(err);
+	}
 	$("#<?php echo $id; ?>_elements, #<?php echo $id; ?>_fields").sortable({
 		connectWith: ".<?php echo $id; ?>_connected",
 		revert: false,
@@ -150,6 +155,24 @@ if (!is_array($values)) {
 			console.log(btn);
 			btn.text(title);
 		}
+	});
+
+	console.log('Hiding default');
+	$('.formbuilder-default-option').hide();
+	
+	$(document).on('click', '.formbuilder-option-add', function(e) {
+		console.log('adding option');
+		$(e.target).closest('.formbuilder-option').parent().append($(e.target).closest('.formbuilder-field-options').find('.formbuilder-default-option').clone().show().removeClass('formbuilder-default-option'));
+	});
+	
+	$(document).on('click', '.formbuilder-option-del', function(e) {
+		console.log('removing option');
+		var opt = $(this).closest('.formbuilder-option');
+		if (!(opt.closest('.formbuilder-field-options-stage').find('.formbuilder-option').length > 1)) {
+			alert(Joomla.JText._('COM_JINBOUND_CANNOT_REMOVE_LAST_OPTION'));
+			return;
+		}
+		opt.empty().remove();
 	});
 });})(jQuery);
 </script>

@@ -46,21 +46,7 @@ if (!empty($this->items)) :
 					<?php echo $this->escape($item->name); ?>
 				<?php endif; ?>
 			</div>
-			<?php if (JInbound::version()->isCompatible('3.0')) : ?>
-			<div class="pull-left"><?php
-
-				JHtml::_('dropdown.edit', $item->id, 'priority.');
-				JHtml::_('dropdown.divider');
-				JHtml::_('dropdown.' . ($item->published ? 'un' : '') . 'publish', 'cb' . $i, 'priorities.');
-				if ($item->checked_out) :
-					JHtml::_('dropdown.checkin', 'cb' . $i, 'priorities.');
-				endif;
-				JHtml::_('dropdown.' . ($trashed ? 'un' : '') . 'trash', 'cb' . $i, 'priorities.');
-
-				echo JHtml::_('dropdown.render');
-
-			?></div>
-			<?php endif; ?>
+			<?php $this->currentItem = $item; echo $this->loadTemplate('list_dropdown'); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'priorities.', $canChange, 'cb'); ?>

@@ -35,7 +35,7 @@ $saveOrder = ''; //($listOrder == 'Page.id');
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">
-		<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->items); ?>);" />
+		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($this->items); ?>);" />
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY_NAME', 'Status.name', $listDirn, $listOrder); ?>

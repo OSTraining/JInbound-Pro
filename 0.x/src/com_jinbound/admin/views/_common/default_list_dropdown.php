@@ -17,10 +17,10 @@ if (JInbound::version()->isCompatible('3.0')) : ?>
 <?php
 	$list = JInboundInflector::pluralize($this->getName());
 
-	JHtml::_('dropdown.edit', $item->id, $this->getName() . '.');
+	JHtml::_('dropdown.edit', $this->currentItem->id, $this->getName() . '.');
 	JHtml::_('dropdown.divider');
-	JHtml::_('dropdown.' . ($item->published ? 'un' : '') . 'publish', 'cb' . $this->_itemNum, $list . '.');
-	if ($item->checked_out) :
+	JHtml::_('dropdown.' . ($this->currentItem->published ? 'un' : '') . 'publish', 'cb' . $this->_itemNum, $list . '.');
+	if ($this->currentItem->checked_out) :
 		JHtml::_('dropdown.checkin', 'cb' . $this->_itemNum, $list . '.');
 	endif;
 	JHtml::_('dropdown.' . ($trashed ? 'un' : '') . 'trash', 'cb' . $this->_itemNum, $list . '.');

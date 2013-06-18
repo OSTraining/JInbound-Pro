@@ -1,6 +1,5 @@
 <?php
 /**
- * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
 @ant_copyright_header@
@@ -47,7 +46,7 @@ if (!empty($this->items)) :
 					<?php echo $this->escape($item->name); ?>
 				<?php endif; ?>
 			</div>
-			<?php echo $this->loadTemplate('list_dropdown'); ?>
+			<?php $this->currentItem = $item; echo $this->loadTemplate('list_dropdown'); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'campaigns.', $canChange, 'cb'); ?>

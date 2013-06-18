@@ -14,7 +14,7 @@ $saveOrder = ($listOrder == 'Campaign.id');
 ?>
 <tr>
 	<th width="1%" class="nowrap hidden-phone">
-		<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($this->items); ?>);" />
+		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(<?php echo count($this->items); ?>);" />
 	</th>
 	<th width="1%" class="nowrap hidden-phone">
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
@@ -26,6 +26,6 @@ $saveOrder = ($listOrder == 'Campaign.id');
 		<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'Campaign.published', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CREATED', 'Campaign.created', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'JGLOBAL_CREATED', 'Campaign.created', $listDirn, $listOrder); ?>
 	</th>
 </tr>

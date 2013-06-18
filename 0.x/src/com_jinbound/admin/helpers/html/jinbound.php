@@ -149,4 +149,41 @@ abstract class JHtmlJInbound
 		<?php
 		
 	}
+	
+	public static function startTabSet($tabSetName, $options = array()) {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			JHtml::_('bootstrap.framework');
+			return JHtml::_('bootstrap.startTabSet', $tabSetName, $options);
+		}
+		else {
+			return JHtml::_('tabs.start', $tabSetName, $options);
+		}
+	}
+	
+	public static function addTab($tabSetName, $tabName, $tabLabel) {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			return JHtml::_('bootstrap.addTab', $tabSetName, $tabName, $tabLabel);
+		}
+		else {
+			return JHtml::_('tabs.panel', $tabLabel, $tabName);
+		}
+	}
+	
+	public static function endTab() {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			return JHtml::_('bootstrap.endTab');
+		}
+		else {
+			return '';
+		}
+	}
+	
+	public static function endTabSet() {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			return JHtml::_('bootstrap.endTabSet');
+		}
+		else {
+			return JHtml::_('tabs.end');
+		}
+	}
 }
