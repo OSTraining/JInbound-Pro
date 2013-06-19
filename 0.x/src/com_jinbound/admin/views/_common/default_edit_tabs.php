@@ -18,7 +18,7 @@ $fieldsets = $this->form->getFieldsets();
 		<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', $name . '_tab', JText::_('COM_JINBOUND_' . $this->getName() . '_FIELDSET_' . $name, true)); ?>
 		<fieldset class="container-fluid">
 			<div class="row-fluid">
-				<div class="span9">
+				<div class="span8">
 				<?php
 					$well = false;
 					foreach ($this->form->getFieldset($name) as $field) :
@@ -36,7 +36,7 @@ $fieldsets = $this->form->getFieldsets();
 				?>
 				</div>
 				<?php if (!empty($well)) : ?>
-				<div class="span3 well">
+				<div class="span4 well">
 					<?php echo $well; ?>
 				</div>
 				<?php endif; ?>
