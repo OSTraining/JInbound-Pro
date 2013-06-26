@@ -22,15 +22,8 @@ class JFormFieldJinboundFormBuilder extends JFormField
 	 * @see JFormField::getInput()
 	 */
 	protected function getInput() {
-		// ensure defaults are set
-		$value = $this->getFormValue();
-		// get the view
-		$view = $this->getView();
-		// set data
-		$view->input = $this;
-		$view->value = $value;
 		// return template html
-		return $view->loadTemplate();
+		return $this->getView()->loadTemplate();
 	}
 	
 	/**
@@ -38,11 +31,8 @@ class JFormFieldJinboundFormBuilder extends JFormField
 	 * 
 	 */
 	public function getSidebar() {
-		$view = $this->getView();
-		// set data
-		$view->input = $this;
 		// return template html
-		return $view->loadTemplate('sidebar');
+		return $this->getView()->loadTemplate('sidebar');
 	}
 	
 	/**
@@ -53,6 +43,9 @@ class JFormFieldJinboundFormBuilder extends JFormField
 	protected function getView() {
 		$viewConfig = array('template_path' => dirname(__FILE__) . '/formbuilder');
 		$view = new JInboundFieldView($viewConfig);
+		$view->input    = $this;
+		$view->value    = $this->getFormValue();
+		$view->input_id = $view->escape($this->id);
 		return $view;
 	}
 	
@@ -82,6 +75,7 @@ class JFormFieldJinboundFormBuilder extends JFormField
 			if (!$def) {
 				$this->value->set($field, json_decode(json_encode(array(
 					'title'    => JText::_('COM_JINBOUND_PAGE_FIELD_'.$field)
+				,	'name'     => $field
 				,	'enabled'  => 1
 				,	'required' => 1
 				))));
@@ -101,7 +95,8 @@ class JFormFieldJinboundFormBuilder extends JFormField
 				$def['required'] = 1;
 			}
 		}
-		return $this->value;
+		
+		return $this->value->toArray();
 	}
 	
 	/**

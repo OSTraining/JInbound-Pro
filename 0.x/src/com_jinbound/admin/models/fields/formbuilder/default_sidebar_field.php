@@ -1,6 +1,5 @@
 <?php
 /**
- * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
 @ant_copyright_header@
@@ -8,18 +7,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$id = $this->escape($this->input->id) . '_' . $this->_currentField->id;
+$id = $this->escape($this->input_id) . '_' . $this->_currentField->id;
 $name = $this->escape($this->input->name . '[' . $this->_currentField->id . ']');
-$values = $this->input->value;
-if (is_object($values) && method_exists($values, 'toArray')) {
-	$values = $values->toArray();
-}
-if (!is_array($values)) {
-	$values = array();
-}
 
-if (array_key_exists($this->_currentField->id, $values)) {
-	$value = $values[$this->_currentField->id];
+if (array_key_exists($this->_currentField->id, $this->value)) {
+	$value = $this->value[$this->_currentField->id];
 	if (!array_key_exists('required', $value)) {
 		$value['required'] = 0;
 	}
@@ -74,6 +66,8 @@ switch ($this->_currentField->id) {
 		<input id="<?php echo $id; ?>_required" type="hidden" name="<?php echo $name; ?>[required]" value="1" />
 		<input id="<?php echo $id; ?>_enabled" type="hidden" name="<?php echo $name; ?>[enabled]" value="1" />
 	<?php endif; ?>
+	
+	<input id="<?php echo $id; ?>_type" type="hidden" name="<?php echo $name; ?>[type]" value="<?php echo $this->escape($this->_currentField->type); ?>" />
 	
 	<?php echo $this->loadTemplate('sidebar_field_' . $this->_currentField->type); ?>
 	<?php if (defined('JDEBUG') && JDEBUG) : ?>

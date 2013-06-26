@@ -25,6 +25,9 @@ class JInboundModelPage extends JInboundAdminModel
 	 * @see JInboundAdminModel::getForm()
 	 */
 	public function getForm($data = array(), $loadData = true) {
+		$fieldtypes = array(
+			'select' => 'list'
+		);
 		// Get the form.
 		$form = $this->loadForm(JInbound::COM.'.lead_front', 'lead_front', array('control' => 'jform', 'load_data' => $loadData));
 		if (empty($form)) {
@@ -48,13 +51,28 @@ class JInboundModelPage extends JInboundAdminModel
 		}
 		$allowedFields = 0;
 		foreach ($formbuilder->toArray() as $name => $field) {
-			if (0 == $field['enabled']) continue;
+			if (0 == $field['enabled']) {
+				continue;
+			}
 			$allowedFields++;
+			$type = array_key_exists('type', $field) ? $field['type'] : 'text';
+			if (array_key_exists($type, $fieldtypes)) {
+				$type = $fieldtypes[$type];
+			}
 			$xmlField = $xmlFieldset->addChild('field');
 			$xmlField->addAttribute('name', $name);
-			$xmlField->addAttribute('type', array_key_exists('type', $field) ? $field['type'] : 'text');
+			$xmlField->addAttribute('type', $type);
 			$xmlField->addAttribute('label', $field['title']);
 			$xmlField->addAttribute('description', $field['title']);
+			if (array_key_exists('options', $field) && is_array($field['options']) && array_key_exists('name', $field['options'])) {
+				foreach ($field['options']['name'] as $k => $v) {
+					if (empty($v)) {
+						continue;
+					}
+					$xmlOpt = $xmlField->addChild('option', $v);
+					$xmlOpt->addAttribute('value', $field['options']['value'][$k]);
+				}
+			}
 		}
 		// if we have allowed fields, add them
 		if (0 < $allowedFields) {

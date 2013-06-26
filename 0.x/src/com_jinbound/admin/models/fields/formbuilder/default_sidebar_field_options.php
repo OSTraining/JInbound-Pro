@@ -7,15 +7,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$id     = $this->escape($this->input->id) . '_' . $this->_currentField->id;
-$name   = $this->escape($this->input->name . '[' . $this->_currentField->id . '][options]');
-$values = $this->input->value;
-if (is_object($values) && method_exists($values, 'toArray')) {
-	$values = $values->toArray();
-}
-if (!is_array($values)) {
-	$values = array();
-}
+$id    = $this->escape($this->input->id) . '_' . $this->_currentField->id;
+$name  = $this->escape($this->input->name . '[' . $this->_currentField->id . '][options]');
+$value = $this->value[$this->_currentField->id];
+
+$this->_optname = $name;
 
 ?>
 <div class="row-fluid">
@@ -26,26 +22,26 @@ if (!is_array($values)) {
 		
 		<div class="formbuilder-option formbuilder-default-option">
 			<?php
-				$this->_optname  = $name;
-				$this->_optvalue = '';
+				$this->_optnamevalue  = '';
+				$this->_optvaluevalue = '';
 				echo $this->loadTemplate('sidebar_field_option');
 			?>
 		</div>
 		
 		
 		<div class="formbuilder-field-options-stage">
+			<?php
+					foreach ($value['options']['name'] as $k => $v) :
+						if (empty($v)) {
+							continue;
+						}
+						$this->_optnamevalue  = $v;
+						$this->_optvaluevalue = $value['options']['value'][$k];
+						?>
 			<div class="formbuilder-option">
-				<?php
-					foreach ($values['name'] as $k => $v) {
-						$this->_optname  = $v;
-						$this->_optvalue = $values['value'][$k];
-						echo $this->loadTemplate('sidebar_field_option');
-					}
-					$this->_optname  = '';
-					$this->_optvalue = '';
-					echo $this->loadTemplate('sidebar_field_option');
-				?>
+				<?php echo $this->loadTemplate('sidebar_field_option'); ?>
 			</div>
+			<?php endforeach; ?>
 		</div>
 	</div>
 </div>
