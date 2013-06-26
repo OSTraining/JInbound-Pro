@@ -23,7 +23,8 @@ if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 if (!empty($this->items)) :
 	$lastCampaign = false;
 	$lastColor    = current($colors);
-	foreach($this->items as $i => $item):
+	foreach ($this->items as $i => $item) :
+		$this->_itemNum = $i;
 
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.email.'.$item->id);
 		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.email.'.$item->id) && $item->created_by == $userId;

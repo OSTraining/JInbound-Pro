@@ -20,7 +20,8 @@ if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 
 
 if (!empty($this->items)) :
-	foreach($this->items as $i => $item):
+	foreach ($this->items as $i => $item) :
+		$this->_itemNum = $i;
 
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.priority.'.$item->id);
 		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.priority.'.$item->id) && $item->created_by == $userId;

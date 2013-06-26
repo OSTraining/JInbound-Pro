@@ -22,7 +22,8 @@ JHtml::_('jinbound.leadupdate');
 
 
 if (!empty($this->items)) :
-	foreach($this->items as $i => $item):
+	foreach ($this->items as $i => $item) :
+		$this->_itemNum = $i;
 
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.lead.'.$item->id);
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
