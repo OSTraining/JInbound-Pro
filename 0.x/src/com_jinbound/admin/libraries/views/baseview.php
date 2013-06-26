@@ -212,15 +212,7 @@ class JInboundView extends JInboundBaseView
 		$canAdd = method_exists($doc, 'addStyleSheet');
 		$ext    = (defined('JDEBUG') && JDEBUG ? '.min' : '');
 		$sfx    = $app->isAdmin() ? 'back' : 'front';
-		if (JInbound::version()->isCompatible('3.1.0')) {
-			JHtml::_('bootstrap.framework', true);
-			// we have to load our own ui - tabs() isn't included in core (?!)
-			if ($canAdd) {
-				$doc->addStyleSheet(JInboundHelperUrl::media() . '/ui/css/jinbound_component/jquery-ui-1.10.1.custom' . $ext . '.css');
-				$doc->addScript(JInboundHelperUrl::media() . '/ui/js/jquery-ui-1.10.1.custom' . $ext . '.js');
-			}
-		}
-		else if ($canAdd) {
+		if ($canAdd) {
 			if (JInbound::config("load_jquery_$sfx", 1)) {
 				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
 			}
