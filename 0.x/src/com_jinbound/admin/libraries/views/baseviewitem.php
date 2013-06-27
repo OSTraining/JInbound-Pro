@@ -78,6 +78,13 @@ class JInboundItemView extends JInboundView
 			JToolBarHelper::cancel(strtolower($this->_name).'.cancel', 'JTOOLBAR_CLOSE');
 		}
 	}
+	
+	public function addMenuBar() {
+		if ('edit' == JFactory::getApplication()->input->get('layout')) {
+			return;
+		}
+		parent::addMenuBar();
+	}
 
 	public function setDocument() {
 		jimport('joomla.filesystem.file');
