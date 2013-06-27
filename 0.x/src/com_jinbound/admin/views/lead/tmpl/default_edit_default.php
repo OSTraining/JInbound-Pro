@@ -90,6 +90,9 @@ defined('JPATH_PLATFORM') or die;
 							</div>
 							<div class="span6">
 								<h4><?php echo JText::_('COM_JINBOUND_NOTES'); ?></h4>
+								<div class="pull-right">
+									<?php echo JHtml::_('jinbound.leadnotes', $this->item->id, true); ?>
+								</div>
 								<div class="well">
 									<table class="table table-striped">
 									<?php if (!empty($this->notes)) : foreach ($this->notes as $note) : ?>

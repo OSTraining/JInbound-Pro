@@ -54,18 +54,17 @@ window.jinbound_leadnotes_token = false;
 				});
 			});
 		});
-
-		$(document).on('contextmenu', '.leadnotes .dropdown-menu', function(e) {
+		$('.leadnotes .dropdown-menu').on('contextmenu', '[data-stopPropagation]', function(e) {
+			console.log('contextmenu');
 			e.stopPropagation();
-			return false;
 		});
-		$(document).on('click', '.leadnotes .dropdown-menu', function(e) {
+		$('.leadnotes .dropdown-menu').on('click', '[data-stopPropagation]', function(e) {
+			console.log('click');
 			e.stopPropagation();
-			return false;
 		});
-		$(document).on('dblclick', '.leadnotes .dropdown-menu', function(e) {
+		$('.leadnotes .dropdown-menu').on('dblclick', '[data-stopPropagation]', function(e) {
+			console.log('dblclick');
 			e.stopPropagation();
-			return false;
 		});
 	});
 })(jQuery);

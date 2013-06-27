@@ -125,21 +125,21 @@ abstract class JHtmlJInbound
 		?>
 		<div class="leadnotes btn-group">
 			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-pencil"> </i> <span class="carat"></span></a>
-			<div class="dropdown-menu pull-right">
-				<div class="leadnotes-block">
-					<div class="leadnotes-notes">
+			<div class="dropdown-menu pull-right" data-stopPropagation="true">
+				<div class="leadnotes-block" data-stopPropagation="true">
+					<div class="leadnotes-notes" data-stopPropagation="true">
 <?php if (!empty($notes[$key])) : foreach ($notes[$key] as $note) : ?>
-						<div class="leadnote">
-							<span class="label"><?php echo $note->created; ?></span>
-							<div class="leadnote-text"><?php echo JFilterInput::getInstance()->clean($note->text, 'string'); ?></div>
+						<div class="leadnote" data-stopPropagation="true">
+							<span class="label" data-stopPropagation="true"><?php echo $note->created; ?></span>
+							<div class="leadnote-text" data-stopPropagation="true"><?php echo JFilterInput::getInstance()->clean($note->text, 'string'); ?></div>
 						</div>
 <?php endforeach; endif; ?>
 					</div>
-					<div class="leadnotes-form-container">
-						<fieldset class="well">
-							<textarea class="leadnotes-new-text input-block-level"></textarea>
+					<div class="leadnotes-form-container" data-stopPropagation="true">
+						<fieldset class="well" data-stopPropagation="true">
+							<textarea class="leadnotes-new-text input-block-level" data-stopPropagation="true"></textarea>
 							<input type="hidden" name="lead_id" value="<?php echo (int) $id; ?>" />
-							<button type="button" class="leadnotes-submit btn btn-primary pull-right"><i class="icon-ok"> </i> <?php echo JText::_('JAPPLY'); ?> </button>
+							<button type="button" class="leadnotes-submit btn btn-primary pull-right" data-stopPropagation="true"><i class="icon-ok"> </i> <?php echo JText::_('JAPPLY'); ?> </button>
 						</fieldset>
 					</div>
 				</div>
