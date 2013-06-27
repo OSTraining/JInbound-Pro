@@ -1,6 +1,5 @@
 <?php
 /**
- * @version		$Id$
  * @package		JInbound
  * @subpackage	com_jinbound
 @ant_copyright_header@
@@ -13,7 +12,6 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerEmail extends JInboundFormController
 {
-	
 	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'set') {
 		$set     = JFactory::getApplication()->input->get('set', 'a', 'cmd');
 		$append  = parent::getRedirectToItemAppend($recordId, $urlVar);

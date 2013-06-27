@@ -1,6 +1,5 @@
 <?php
 /**
- * @version		$Id$
  * @package		JInbound
  * @subpackage	tpl_jinbound
 @ant_copyright_header@
