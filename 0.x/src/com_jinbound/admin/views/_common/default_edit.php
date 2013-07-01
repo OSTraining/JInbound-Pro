@@ -24,3 +24,7 @@ defined('JPATH_PLATFORM') or die;
 		<?php echo $this->loadTemplate('edit_tabs'); ?>
 	</form>
 </div>
+<?php if (defined('JDEBUG') && JDEBUG) : ?>
+<h3>Item:</h3>
+<pre><?php htmlspecialchars(print_r($this->item)); ?></pre>
+<?php endif; ?>

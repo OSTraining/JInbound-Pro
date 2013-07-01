@@ -36,46 +36,49 @@ class JInboundItemView extends JInboundView
 	public function addToolBar() {
 		// only fire in administrator
 		$app = JFactory::getApplication();
-		if (!$app->isAdmin()) return;
+		if (!$app->isAdmin()) {
+			return;
+		}
 		$app->input->set('hidemainmenu', true);
-		$user = JFactory::getUser();
-		$userId = $user->id;
-		$isNew = (@$this->item->id == 0);
+		$user       = JFactory::getUser();
+		$userId     = $user->id;
+		$isNew      = (@$this->item->id == 0);
 		$checkedOut = false;
+		$name       = strtolower($this->_name);
 		if ($this->item && property_exists($this->item, 'checked_out')) {
 			$checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
 		}
 		$canDo = JInbound::getActions();
 
-		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM) . '_' . strtoupper($this->_name) . '_MANAGER_' . ($checkedOut ? 'VIEW' : ($isNew ? 'ADD' : 'EDIT'))), 'jinbound-'.strtolower($this->_name));
+		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM) . '_' . strtoupper($this->_name) . '_MANAGER_' . ($checkedOut ? 'VIEW' : ($isNew ? 'ADD' : 'EDIT'))), 'jinbound-'.$name);
 
 		if ($isNew) {
 			if ($canDo->get('core.create')) {
-				JToolBarHelper::apply(strtolower($this->_name).'.apply', 'JTOOLBAR_APPLY');
-				JToolBarHelper::save(strtolower($this->_name).'.save', 'JTOOLBAR_SAVE');
-				JToolBarHelper::custom(strtolower($this->_name).'.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+				JToolBarHelper::apply($name.'.apply', 'JTOOLBAR_APPLY');
+				JToolBarHelper::save($name.'.save', 'JTOOLBAR_SAVE');
+				JToolBarHelper::custom($name.'.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 			}
-			JToolBarHelper::cancel(strtolower($this->_name).'.cancel', 'JTOOLBAR_CANCEL');
+			JToolBarHelper::cancel($name.'.cancel', 'JTOOLBAR_CANCEL');
 		} else {
 			// Can't save the record if it's checked out.
 			if (!$checkedOut) {
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
 				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId)) {
-					JToolBarHelper::apply(strtolower($this->_name).'.apply', 'JTOOLBAR_APPLY');
-					JToolBarHelper::save(strtolower($this->_name).'.save', 'JTOOLBAR_SAVE');
+					JToolBarHelper::apply($name.'.apply', 'JTOOLBAR_APPLY');
+					JToolBarHelper::save($name.'.save', 'JTOOLBAR_SAVE');
 
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create')) {
-						JToolBarHelper::custom(strtolower($this->_name).'.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+						JToolBarHelper::custom($name.'.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 					}
 				}
 			}
 
 			// If checked out, we can still save
 			if ($canDo->get('core.create')) {
-				JToolBarHelper::custom(strtolower($this->_name).'.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
+				JToolBarHelper::custom($name.'.save2copy', 'save-copy.png', 'save-copy_f2.png', 'JTOOLBAR_SAVE_AS_COPY', false);
 			}
-			JToolBarHelper::cancel(strtolower($this->_name).'.cancel', 'JTOOLBAR_CLOSE');
+			JToolBarHelper::cancel($name.'.cancel', 'JTOOLBAR_CLOSE');
 		}
 	}
 	

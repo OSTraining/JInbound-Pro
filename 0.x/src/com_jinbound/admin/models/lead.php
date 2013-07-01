@@ -30,6 +30,7 @@ class JInboundModelLead extends JInboundAdminModel
 		if (empty($form)) {
 			return false;
 		}
+		// return the form
 		return $form;
 	}
 	
@@ -62,7 +63,7 @@ class JInboundModelLead extends JInboundAdminModel
 			->where($db->quoteName('id') . ' = ' . (int) $id)
 		);
 		
-		$db->query();
+		return $db->query();
 	}
 	
 	public function priority($id, $value) {
@@ -74,7 +75,7 @@ class JInboundModelLead extends JInboundAdminModel
 			->where($db->quoteName('id') . ' = ' . (int) $id)
 		);
 		
-		$db->query();
+		return $db->query();
 	}
 	
 	public function getNotes($id = null) {

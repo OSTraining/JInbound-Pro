@@ -18,6 +18,16 @@ class JInboundTableLead extends JInboundTable
 		parent::__construct('#__jinbound_leads', 'id', $db);
 	}
 	
+	public function load($keys = null, $reset = true) {
+		$load = parent::load($keys, $reset);
+		$contact = $this->getContact();
+		$this->address = $contact->address;
+		$this->phone   = $contact->telephone;
+		$this->email   = $contact->email_to;
+		$this->website = $contact->webpage;
+		return $load;
+	}
+	
 	public function bind($array, $ignore = '') {
 		$columns = $this->getFields();
 		$unset   = array();
@@ -46,8 +56,13 @@ class JInboundTableLead extends JInboundTable
 	 * @see JInboundTable::store()
 	 */
 	public function store($updateNulls = false) {
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$isNew = empty($this->id);
+		foreach (array('address', 'email', 'phone', 'website') as $col) {
+			if (property_exists($this, $col)) {
+				unset($this->$col);
+			}
+		}
 		$store = parent::store();
 		if ($store) {
 			// get the category id for jinbound contacts
@@ -62,16 +77,11 @@ class JInboundTableLead extends JInboundTable
 				$catid = $this->_db->loadResult();
 			}
 			catch (Exception $e) {
+				$app->enqueueMessage(JText::_('COM_JINBOUND_NO_CONTACT_CATEGORY'), 'error');
 				return $store;
 			}
 			// either update or add a contact
-			jimport('joomla.database.table');
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
-			$contact = JTable::getInstance('Contact', 'ContactTable');
-			
-			if ($this->contact_id) {
-				$contact->load($this->contact_id);
-			}
+			$contact = $this->getContact();
 			
 			$bind = array(
 				'name'      => $this->first_name . ' ' . $this->last_name
@@ -85,17 +95,17 @@ class JInboundTableLead extends JInboundTable
 			);
 			
 			if (!$contact->bind($bind)) {
-				JFactory::getApplication()->enqueueMessage('bind: ' . $contact->getError());
+				$app->enqueueMessage('bind: ' . $contact->getError());
 				return $store;
 			}
 			
 			if (!$contact->check()) {
-				JFactory::getApplication()->enqueueMessage('check: ' . $contact->getError());
+				$app->enqueueMessage('check: ' . $contact->getError());
 				return $store;
 			}
 			
 			if (!$contact->store()) {
-				JFactory::getApplication()->enqueueMessage('store: ' . $contact->getError());
+				$app->enqueueMessage('store: ' . $contact->getError());
 				return $store;
 			}
 			
@@ -110,5 +120,18 @@ class JInboundTableLead extends JInboundTable
 			}
 		}
 		return $store;
+	}
+	
+	public function getContact() {
+		// either update or add a contact
+		jimport('joomla.database.table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
+		$this->_contact = JTable::getInstance('Contact', 'ContactTable');
+			
+		if ($this->contact_id) {
+			$this->_contact->load($this->contact_id);
+		}
+		
+		return $this->_contact;
 	}
 }

@@ -212,6 +212,10 @@ class JInboundView extends JInboundBaseView
 		$ext    = (defined('JDEBUG') && JDEBUG ? '.min' : '');
 		$sfx    = $app->isAdmin() ? 'back' : 'front';
 		if ($canAdd) {
+			if (JInbound::version()->isCompatible('3.0.0')) {
+				JHtml::_('behavior.framework', true);
+				JHtml::_('jquery.ui', array('core', 'sortable'));
+			}
 			if (JInbound::config("load_jquery_$sfx", 1)) {
 				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
 			}
