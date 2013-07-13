@@ -7,5 +7,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-TODO: social media buttons
+echo $this->loadTemplate('sidebar_field_options');

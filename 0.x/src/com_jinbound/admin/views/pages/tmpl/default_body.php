@@ -64,9 +64,6 @@ if (!empty($this->items)) :
 		<td class="hidden-phone">
 			<?php echo $item->conversions; ?>
 		</td>
-		<td class="hidden-phone">
-			<a href="#">TODO</a>
-		</td>
 	</tr>
 	<?php endforeach;
 endif;

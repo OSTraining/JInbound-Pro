@@ -8,4 +8,8 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-TODO: social media buttons
+<div class="row-fluid">
+	<div class="span12">
+		<?php echo $this->renderCustomLayout($this->item); ?>
+	</div>
+</div>

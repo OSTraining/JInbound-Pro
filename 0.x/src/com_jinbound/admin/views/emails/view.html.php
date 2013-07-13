@@ -22,7 +22,7 @@ class JInboundViewEmails extends JInboundListView
 		if (1 >= count($campaigns)) {
 			JFactory::getApplication()->enqueueMessage(JText::_('COM_JINBOUND_NO_CAMPAIGNS_YET'), 'warning');
 		}
-		$this->adviceText = JText::_('COM_JINBOUND_LEAD_MANAGER_RANDOM_ADVICE_' . rand(1,4));
+		$this->adviceText = JText::_('COM_JINBOUND_LEAD_MANAGER_RANDOM_ADVICE_' . rand(1,5));
 		$this->addFilter(JText::_('COM_JINBOUND_SELECT_STATUS'), 'filter_status', $this->get('StatusOptions'), $this->get('State')->get('filter.status'));
 		return parent::display($tpl, $safeparams);
 	}

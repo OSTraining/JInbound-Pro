@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
 	</div>
 	<!-- arrow -->
 	<div class="span1 text-center">
-		<h3>&rarr;</h3>
+		<h3><img src="<?php echo JInboundHelperUrl::media() . '/images/summary_arrows.png'; ?>" /></h3>
 	</div>
 	<!-- leads -->
 	<div class="span3 text-center">
@@ -25,7 +25,7 @@ defined('JPATH_PLATFORM') or die;
 	</div>
 	<!-- arrow -->
 	<div class="span1 text-center">
-		<h3>&rarr;</h3>
+		<h3><img src="<?php echo JInboundHelperUrl::media() . '/images/summary_arrows.png'; ?>" /></h3>
 	</div>
 	<!-- conversions -->
 	<div class="span3 text-center">

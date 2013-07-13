@@ -12,7 +12,7 @@ $leads = $this->getRecentLeads();
 ?>
 <!-- Row 5: Recent Leads -->
 <div class="row-fluid">
-	<h4><?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?></h4>
+	<h4><img alt="<?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/recent_leads.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?></span></h4>
 	<table class="table table-striped">
 		<thead>
 			<tr>

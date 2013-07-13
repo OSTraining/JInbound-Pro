@@ -36,7 +36,4 @@ $listDirn  = $this->state->get('list.direction');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'Page.conversions', $listDirn, $listOrder); ?>
 	</th>
-	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_REPORT', 'Page.report', $listDirn, $listOrder); ?>
-	</th>
 </tr>

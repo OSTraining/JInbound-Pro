@@ -17,7 +17,7 @@
 .icon-48-jinbound-status,
 .icon-48-jinbound-statuses,
 .icon-48-jinbound-utilities {
-	background: url('../images/icon-48-jinbound.png') 0 0 no-repeat;
+	background: url('../images/component_header_logo.png') 0 0 no-repeat;
 }
 
 .layout_select_button {
@@ -76,3 +76,12 @@
 	white-space: normal !important;
 }
 
+#welcome_buttons {
+	padding-bottom: 8px;
+}
+
+#welcome_buttons .btn-text {
+	display: block;
+	min-height: 45px;
+	padding: 10px 0 0;
+}

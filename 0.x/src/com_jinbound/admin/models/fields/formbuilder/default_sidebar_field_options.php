@@ -42,6 +42,13 @@ $this->_optname = $name;
 				<?php echo $this->loadTemplate('sidebar_field_option'); ?>
 			</div>
 			<?php endforeach; ?>
+			<div class="formbuilder-option">
+				<?php
+					$this->_optnamevalue  = '';
+					$this->_optvaluevalue = '';
+					echo $this->loadTemplate('sidebar_field_option');
+				?>
+			</div>
 		</div>
 	</div>
 </div>

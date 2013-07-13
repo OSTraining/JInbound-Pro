@@ -21,10 +21,10 @@ $saveOrder = ($listOrder == 'Campaign.id');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="5%">
 		<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'Campaign.published', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="5%">
 		<?php echo JHtml::_('grid.sort', 'JGLOBAL_CREATED', 'Campaign.created', $listDirn, $listOrder); ?>
 	</th>
 </tr>

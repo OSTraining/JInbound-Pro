@@ -145,7 +145,31 @@ class JFormFieldJinboundFormBuilder extends JFormField
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_ADDRESS'),
 				'id'   => 'address',
-				'type' => 'textarea',
+				'type' => 'text',
+				'multi' => 0
+			))),
+			json_decode(json_encode(array(
+				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_SUBURB'),
+				'id'   => 'suburb',
+				'type' => 'text',
+				'multi' => 0
+			))),
+			json_decode(json_encode(array(
+				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_STATE'),
+				'id'   => 'state',
+				'type' => 'text',
+				'multi' => 0
+			))),
+			json_decode(json_encode(array(
+				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_COUNTRY'),
+				'id'   => 'country',
+				'type' => 'text',
+				'multi' => 0
+			))),
+			json_decode(json_encode(array(
+				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_POSTCODE'),
+				'id'   => 'postcode',
+				'type' => 'text',
 				'multi' => 0
 			))),
 			json_decode(json_encode(array(
@@ -175,7 +199,7 @@ class JFormFieldJinboundFormBuilder extends JFormField
 			json_decode(json_encode(array(
 				'name' => JText::_('COM_JINBOUND_PAGE_FIELD_SELECT'),
 				'id'   => 'select',
-				'type' => 'select',
+				'type' => 'list',
 				'multi' => 1
 			)))
 		);

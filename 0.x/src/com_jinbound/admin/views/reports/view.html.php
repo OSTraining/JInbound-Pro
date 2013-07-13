@@ -37,8 +37,13 @@ class JInboundViewReports extends JInboundListView
 		return $this->_callModelMethod('getConversionRate');
 	}
 	
-	private function _callModelMethod($method) {
+	private function _callModelMethod($method, $state = null) {
 		$model = JInboundBaseModel::getInstance('Reports', 'JInboundModel');
+		if (is_array($state) && !empty($state)) {
+			foreach ($state as $key => $value) {
+				$model->setState($key, $value);
+			}
+		}
 		return $model->$method();
 	}
 }

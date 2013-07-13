@@ -40,11 +40,13 @@ window.jinbound_leadnotes_token = false;
 				,	dataType : 'json'
 				,	type     : 'post'
 				,	success  : function(response) {
-						var container = $this.closest('.leadnotes')
+						var container = $this.closest('.leadnotes');
 						var notes     = container.find('.leadnotes-notes');
+						var count     = container.find('.leadnotes-count');
 						notes.empty();
+						count.text(parseInt(response.notes.length, 10));
 						for (var i = 0, n = response.notes.length; i < n; i++) {
-							var row = $('<div class="leadnote"><span class="label"></span><div class="leadnote-text"></div></div>');
+							var row = $('<div class="leadnote alert-message"><span class="label"></span><div class="leadnote-text"></div></div>');
 							row.find('.label').text(response.notes[i].created);
 							row.find('.leadnote-text').text(response.notes[i].text);
 							notes.append(row);

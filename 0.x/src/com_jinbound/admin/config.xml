@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 	<fieldset
+		name="general"
+		label="COM_JINBOUND_CONFIG_FIELDSET_GENERAL"
+	>
+		<field
+			name="cron_type"
+			type="list"
+			label="COM_JINBOUND_CRON_TYPE"
+			description="COM_JINBOUND_CRON_TYPE_DESC"
+			default="0"
+			menu="hide"
+		>
+			<option value="0">COM_JINBOUND_CRON_TYPE_FAKE</option>
+			<option value="1">COM_JINBOUND_CRON_TYPE_REAL</option>
+		</field>
+	</fieldset>
+	<fieldset
 		name="frontend"
 		label="COM_JINBOUND_CONFIG_FIELDSET_FRONTEND"
 	>

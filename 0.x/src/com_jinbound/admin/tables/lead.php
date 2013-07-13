@@ -19,12 +19,16 @@ class JInboundTableLead extends JInboundTable
 	}
 	
 	public function load($keys = null, $reset = true) {
-		$load = parent::load($keys, $reset);
+		$load    = parent::load($keys, $reset);
 		$contact = $this->getContact();
-		$this->address = $contact->address;
-		$this->phone   = $contact->telephone;
-		$this->email   = $contact->email_to;
-		$this->website = $contact->webpage;
+		$this->address  = $contact->address;
+		$this->phone    = $contact->telephone;
+		$this->email    = $contact->email_to;
+		$this->website  = $contact->webpage;
+		$this->suburb   = $contact->suburb;
+		$this->state    = $contact->state;
+		$this->country  = $contact->country;
+		$this->postcode = $contact->postcode;
 		return $load;
 	}
 	
@@ -58,7 +62,7 @@ class JInboundTableLead extends JInboundTable
 	public function store($updateNulls = false) {
 		$app   = JFactory::getApplication();
 		$isNew = empty($this->id);
-		foreach (array('address', 'email', 'phone', 'website') as $col) {
+		foreach (array('address', 'email', 'phone', 'website', 'suburb', 'state', 'country', 'postcode') as $col) {
 			if (property_exists($this, $col)) {
 				unset($this->$col);
 			}
@@ -84,29 +88,37 @@ class JInboundTableLead extends JInboundTable
 			$contact = $this->getContact();
 			
 			$bind = array(
-				'name'      => $this->first_name . ' ' . $this->last_name
-			,	'address'   => $this->_address
-			,	'telephone' => $this->_phone
-			,	'email_to'  => $this->_email
-			,	'webpage'   => $this->_website
-			,	'catid'     => $catid
-			,	'published' => $this->published
-			,	'language'  => '*'
+				'name'       => $this->first_name . ' ' . $this->last_name
+			,	'address'    => $this->_address
+			,	'suburb'     => $this->_suburb
+			,	'state'      => $this->_state
+			,	'country'    => $this->_country
+			,	'postcode'   => $this->_postcode
+			,	'telephone'  => $this->_phone
+			,	'email_to'   => $this->_email
+			,	'webpage'    => $this->_website
+			,	'catid'      => $catid
+			,	'published'  => $this->published
+			,	'xreference' => $this->id
+			,	'language'   => '*'
 			);
 			
+			// before saving contact be sure to load the contact language file
+			JFactory::getLanguage()->load('com_contact', JPATH_ADMINISTRATOR);
+			
 			if (!$contact->bind($bind)) {
-				$app->enqueueMessage('bind: ' . $contact->getError());
-				return $store;
+				$this->setError(JText::_($contact->getError()));
+				return false;
 			}
 			
 			if (!$contact->check()) {
-				$app->enqueueMessage('check: ' . $contact->getError());
-				return $store;
+				$this->setError(JText::_($contact->getError()));
+				return false;
 			}
 			
 			if (!$contact->store()) {
-				$app->enqueueMessage('store: ' . $contact->getError());
-				return $store;
+				$this->setError(JText::_($contact->getError()));
+				return false;
 			}
 			
 			$this->contact_id = $contact->id;
@@ -130,6 +142,9 @@ class JInboundTableLead extends JInboundTable
 			
 		if ($this->contact_id) {
 			$this->_contact->load($this->contact_id);
+		}
+		else if (!empty($this->first_name) && !empty($this->last_name)) {
+			$this->_contact->load(array('name' => $this->first_name . ' ' . $this->last_name));
 		}
 		
 		return $this->_contact;

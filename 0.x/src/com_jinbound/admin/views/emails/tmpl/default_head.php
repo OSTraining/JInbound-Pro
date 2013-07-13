@@ -15,16 +15,16 @@ $saveOrder = ($listOrder == 'Email.id');
 	<th width="1%" class="nowrap hidden-phone">
 		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 	</th>
-	<th>
+	<th width="15%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_NAME', 'Email.name', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="5%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Campaign.Active', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="5%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Campaign.Schedule', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">

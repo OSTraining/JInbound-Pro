@@ -59,9 +59,9 @@ class JInboundModelEmails extends JInboundListModel
 	 * 
 	 */
 	public function send() {
-		$db = $this->getDbo();
-		
-		$interval = (defined('JDEBUG') && JDEBUG) ? 'MINUTE' : 'DAY';
+		$db       = $this->getDbo();
+		$out      = defined('JDEBUG') && JDEBUG;
+		$interval = $out ? 'MINUTE' : 'DAY';
 		
 		// NOTE: This query is kind of hairy and a little complicated, edit at your own risk!!!
 		$db->setQuery($db->getQuery(true)
@@ -96,21 +96,29 @@ class JInboundModelEmails extends JInboundListModel
 			->group('Contact.id')
 		);
 		
+		if ($out) {
+			echo '<h3>Query</h3><pre>' . print_r((string) $db->getQuery(false), 1) . '</pre>';
+		}
+		
 		try {
 			$results = $db->loadObjectList();
 			if (empty($results)) {
-				throw new Exception('No records found' . (defined('JDEBUG') && JDEBUG ? ': ' . $db->getQuery(false) : ''));
+				throw new Exception('No records found');
 			}
 		}
 		catch (Exception $e) {
-			echo $e->getMessage() . "\n" . $e->getTraceAsString();
+			if ($out) {
+				echo $e->getMessage() . "\n<pre>" . $e->getTraceAsString() . "</pre>";
+			}
 			jexit();
 		}
 		
 		$now = JFactory::getDate();
 		
 		foreach ($results as $result) {
-			echo ('<h3>Result</h3><pre>' . print_r($result, 1) . '</pre>');
+			if ($out) {
+				echo '<h3>Result</h3><pre>' . print_r($result, 1) . '</pre>';
+			}
 			
 			$mailer = JFactory::getMailer();
 			$mailer->ClearAllRecipients();
@@ -121,12 +129,16 @@ class JInboundModelEmails extends JInboundListModel
 			$mailer->IsHTML(true);
 			$mailer->AltBody = $result->plainbody;
 			
-			echo ('<h3>Mailer</h3><pre>' . print_r($mailer, 1) . '</pre>');
+			if ($out) {
+				echo ('<h3>Mailer</h3><pre>' . print_r($mailer, 1) . '</pre>');
+			}
 			
 			$sent = $mailer->Send();
 			
 			if (!$sent) {
-				echo ('<h3>COULD NOT SEND MAIL!!!!</h3>');
+				if ($out) {
+					echo ('<h3>COULD NOT SEND MAIL!!!!</h3>');
+				}
 				continue;
 			}
 			$object = new stdClass;
@@ -137,11 +149,14 @@ class JInboundModelEmails extends JInboundListModel
 				$db->insertObject('#__jinbound_emails_records', $object);
 			}
 			catch (Exception $e) {
-				echo $e->getMessage() . "\n" . $e->getTraceAsString();
+				if ($out) {
+					echo $e->getMessage() . "\n" . $e->getTraceAsString();
+				}
 				continue;
 			}
 		}
 		
+		echo "\n";
 		jexit();
 	}
 }

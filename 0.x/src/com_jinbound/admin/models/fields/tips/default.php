@@ -11,5 +11,5 @@ $id = $this->escape($this->input->id);
 ?>
 
 <div id="<?php echo $id; ?>" class="container-fluid">
-	<?php echo JText::_('COM_JINBOUND_TIPS_' . $id); ?>
+	<?php echo JText::_('COM_JINBOUND_TIPS_' . strtoupper($id)); ?>
 </div>

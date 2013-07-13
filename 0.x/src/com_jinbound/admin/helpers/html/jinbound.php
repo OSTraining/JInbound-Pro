@@ -124,12 +124,13 @@ abstract class JHtmlJInbound
 		
 		?>
 		<div class="leadnotes btn-group">
-			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-pencil"> </i> <span class="carat"></span></a>
+			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="leadnotes-count"><?php echo count($notes[$key]); ?></span> <i class="icon-pencil"> </i> <span class="carat"></span></a>
 			<div class="dropdown-menu pull-right" data-stopPropagation="true">
 				<div class="leadnotes-block" data-stopPropagation="true">
 					<div class="leadnotes-notes" data-stopPropagation="true">
 <?php if (!empty($notes[$key])) : foreach ($notes[$key] as $note) : ?>
-						<div class="leadnote" data-stopPropagation="true">
+						<div class="leadnote alert" data-stopPropagation="true">
+							<a class="close" data-dismiss="alert" href="#" onclick="(function(){return confirm(Joomla.JText._('COM_JINBOUND_CONFIRM_DELETE'));})();">&times;</a>
 							<span class="label" data-stopPropagation="true"><?php echo $note->created; ?></span>
 							<div class="leadnote-text" data-stopPropagation="true"><?php echo JFilterInput::getInstance()->clean($note->text, 'string'); ?></div>
 						</div>

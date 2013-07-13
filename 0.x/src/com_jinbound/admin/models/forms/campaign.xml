@@ -32,7 +32,7 @@
 			id="published" name="published"
 			type="jinboundpublished"
 			label="JPUBLISHED"
-			description="COM_JINBOUND_PUBLISHED_DESC"
+			description="COM_JINBOUND_CAMPAIGN_PUBLISHED_DESC"
 			class="input-block-level"
 			default="1"
 		/>

@@ -83,4 +83,19 @@ class plgSystemJInbound extends JPlugin
 			$comView->addMenuBar();
 		}
 	}
+	
+	public function onAfterRender() {
+		if (!self::$_run || JFactory::getApplication()->isAdmin()) {
+			return;
+		}
+		// just plow on through yo
+		if (0 == intval(JInbound::config()->def('cron_type', ''))) {
+			JInbound::registerHelper('url');
+			JInbound::registerHelper('filter');
+			$url  = JInboundHelperFilter::escape(JInboundHelperUrl::task('cron', false));
+			$body = JResponse::getBody();
+			$body = str_replace('</body>', '<iframe src="' . $url . '" style="width:1px;height:1px;position:absolute;left:-999px;border:0px"></iframe></body>', $body);
+			JResponse::setBody($body);
+		}
+	}
 }

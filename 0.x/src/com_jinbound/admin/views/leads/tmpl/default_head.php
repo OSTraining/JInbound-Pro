@@ -18,22 +18,22 @@ $listDirn  = $this->state->get('list.direction');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_NAME', 'User.name', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="5%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Lead.status', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_DATE', 'Lead.date', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="15%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_CONVERTED', 'Lead.converted', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_PRIORITY', 'Lead.priority_id', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_STATUS', 'Lead.status_id', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_NOTE', 'Lead.note', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">

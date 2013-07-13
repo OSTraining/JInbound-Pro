@@ -40,7 +40,7 @@
 			id="published" name="published"
 			type="jinboundpublished"
 			label="JPUBLISHED"
-			description="COM_JINBOUND_PUBLISHED_DESC"
+			description="COM_JINBOUND_EMAIL_PUBLISHED_DESC"
 			class="input-block-level"
 			default="1"
 		/>
@@ -79,7 +79,7 @@
 			id="layout" name="layout"
 			type="list"
 			label="COM_JINBOUND_LAYOUT"
-			description="COM_JINBOUND_LAYOUT_DESC"
+			description="COM_JINBOUND_EMAIL_LAYOUT_DESC"
 			class="input-block-level"
 			default="A"
 		>

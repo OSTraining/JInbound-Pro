@@ -13,16 +13,17 @@ JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller'
 class JInboundControllerLead extends JInboundBaseController
 {
 	public function save() {
-		$app   = JFactory::getApplication();
+		$app    = JFactory::getApplication();
+		$Itemid = $app->input->get('Itemid', 0, 'int');
 		// fetch the page id
-		$id    = $app->input->post->get('page_id', 0, 'int');
+		$id     = $app->input->post->get('page_id', 0, 'int');
 		// fetch only the lead data
-		$data  = $app->input->post->get('jform', array(), 'array');
+		$data   = $app->input->post->get('jform', array(), 'array');
 		// start building the bind data
-		$bind  = array('page_id' => $id);
+		$bind   = array('page_id' => $id);
 		// get a page model so we can pull the formbuilder variable from it
-		$model = $this->getModel('Page', 'JInboundModel');
-		$page  = $model->getItem($id);
+		$model  = $this->getModel('Page', 'JInboundModel');
+		$page   = $model->getItem($id);
 		if (!$page || empty($page->id)) {
 			$this->setError(JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
 			return;
@@ -59,20 +60,20 @@ class JInboundControllerLead extends JInboundBaseController
 		$messageType = 'message';
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
 		if (!$lead->bind($bind)) {
-			$message     = JText::_('COM_JINBOUND_LEAD_FAILED_BIND');
+			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_BIND', $lead->getError());
 			$messageType = 'error';
 		}
 		if (!$lead->check()) {
-			$message     = JText::_('COM_JINBOUND_LEAD_FAILED_CHECK');
+			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_CHECK', $lead->getError());
 			$messageType = 'error';
 		}
 		if (!$lead->store()) {
-			$message     = JText::_('COM_JINBOUND_LEAD_FAILED_STORE');
+			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_STORE', $lead->getError());
 			$messageType = 'error';
 		}
 		
 		// build the redirect
-		if ('message' !== $messageType) {
+		if ('message' != $messageType) {
 			$redirect = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
 		}
 		else {

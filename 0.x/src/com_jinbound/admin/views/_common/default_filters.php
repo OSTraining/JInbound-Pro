@@ -9,6 +9,8 @@ defined('JPATH_PLATFORM') or die;
 
 $floatButtons = JInbound::version()->isCompatible('3.0');
 
+if ('component' != JFactory::getApplication()->input->get('tmpl', 'default')) :
+
 ?>
 <fieldset id="filter-bar">
 	<div class="filter-search fltlft btn-group pull-left input-append">
@@ -32,3 +34,7 @@ $floatButtons = JInbound::version()->isCompatible('3.0');
 	<?php $this->renderFilters(); ?>
 </fieldset>
 <div class="clr"> </div>
+
+<?php
+
+endif;

@@ -7,9 +7,13 @@
 
 defined('JPATH_PLATFORM') or die;
 
-if (!property_exists($this->item, 'layout') || !in_array(strtolower($this->item->layout), array('a','b','c','d'))) {
+if (!property_exists($this->item, 'layout') || !in_array(strtolower($this->item->layout), array('a','b','c','d','custom','0'))) :
 	$this->item->layout = 'a';
-}
+endif;
+
+if ('0' == $this->item->layout || 'custom' == $this->item->layout) :
+	echo $this->loadTemplate('layout_custom');
+else :
 
 ?>
 <div class="row-fluid">
@@ -22,3 +26,6 @@ if (!property_exists($this->item, 'layout') || !in_array(strtolower($this->item-
 <?php echo $this->loadTemplate('layout_' . strtolower($this->item->layout)); ?>
 	</div>
 </div>
+<?php
+
+endif;

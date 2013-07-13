@@ -164,6 +164,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_leads` (
 	`status_id` int(11) NOT NULL
 	COMMENT 'Primary key of Status associated with this lead',
   
+	`campaign_id` int(11) NOT NULL
+	COMMENT 'Primary key of Campaign associated with this lead',
+  
   `first_name` varchar(255) NOT NULL
   COMMENT 'First name of Lead (contacts uses single column for both names)',
   

@@ -9,8 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 <div class="row-fluid">
-	<div class="span1">TODO: scrolly thing</div>
-	<div class="span11">
+	<div class="span12">
 		<div class="row-fluid">
 			<div class="span12">
 			
@@ -38,15 +37,9 @@ defined('JPATH_PLATFORM') or die;
 				</div>
 				
 				<div class="row-fluid">
-					<div class="span7">
+					<div class="span12">
 						<?php
 							$this->_currentFieldset = $this->form->getFieldset('profile');
-							echo $this->loadTemplate('edit_fields');
-						?>
-					</div>
-					<div class="span5">
-						<?php
-							$this->_currentFieldset = $this->form->getFieldset('social');
 							echo $this->loadTemplate('edit_fields');
 						?>
 					</div>

@@ -12,7 +12,7 @@ $pages = $this->getTopLandingPages();
 ?>
 <!-- Row 6: Landing Pages -->
 <div class="row-fluid">
-	<h4><?php echo JText::_('COM_JINBOUND_TOP_PERFORMING_LANDING_PAGES'); ?></h4>
+	<h4><img alt="<?php echo JText::_('COM_JINBOUND_TOP_PERFORMING_LANDING_PAGES'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/top_performing_landing_pages.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_TOP_PERFORMING_LANDING_PAGES'); ?></span></h4>
 	<table class="table table-striped">
 		<thead>
 			<tr>

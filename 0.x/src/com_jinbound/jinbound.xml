@@ -42,7 +42,7 @@
 		<filename>index.html</filename>
 	</media>
 	<administration>
-		<menu img="../media/jinbound/images/icon-16-jinbound.png">COM_JINBOUND</menu>
+		<menu img="../media/jinbound/images/component_dropdown_icon.png">COM_JINBOUND</menu>
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>jinbound.php</filename>

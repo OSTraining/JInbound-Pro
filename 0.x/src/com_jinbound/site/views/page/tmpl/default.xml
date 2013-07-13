@@ -16,8 +16,8 @@
 		>
 			<field
 				name="id" type="jinboundpage"
-				description="COM_JINBOUND_FIELD_PAGE_CHOOSE_PAGE_DESC"
-				label="COM_JINBOUND_FIELD_PAGE_CHOOSE_PAGE_DESC"
+				description="COM_JINBOUND_PAGE_FIELD_LANDING_PAGE_DESC"
+				label="COM_JINBOUND_PAGE_FIELD_LANDING_PAGE"
 				required="true"
 			/>
 		</fieldset>

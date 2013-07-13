@@ -28,5 +28,6 @@ class JInboundController extends JInboundBaseController
 		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/emails.php';
 		$model = $this->getModel('Emails', 'JInboundModel');
 		$model->send();
+		jexit();
 	}
 }

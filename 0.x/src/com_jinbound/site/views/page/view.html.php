@@ -39,4 +39,54 @@ class JInboundViewPage extends JInboundItemView
 		
 		return $display;
 	}
+	
+	function renderCustomLayout($item) {
+		// get the custom layout data & replace all the tags
+		$text = $item->template;
+		
+		$tags = array();
+		$basetags = array("heading", "subheading", "maintext", "sidebartext");
+		foreach ($basetags as $basetag) {
+			$tags[$basetag] = $item->$basetag;
+		}
+		
+		if (!empty($item->image)) {
+			$tags['image'] = '<img src="' . JInboundHelperFilter::escape($item->image) . '" />';
+		}
+		
+		foreach ($tags as $tag => $value) {
+			if (false === JString::strpos($text, $tag)) {
+				continue;
+			}
+			$text = implode($value, explode('{' . $tag . '}', $text));
+		}
+		
+		
+		/*
+		$tags = array(
+			"heading"     => $item->heading
+		,	"subheading"  => $item->heading
+		,	"maintext"    => $item->heading
+		,	"sidebartext" => $item->heading
+		,	"image"       => $item->heading
+		,	"form"        => $item->heading
+		,	"form:open" => $item->heading
+		,	"form:close" => $item->heading
+		,	"form:firstname" => $item->heading
+		,	"form:lastname" => $item->heading
+		,	"form:email" => $item->heading
+		,	"form:website" => $item->heading
+		,	"form:companyname" => $item->heading
+		,	"form:phonenumber" => $item->heading
+		,	"form:fulladdress" => $item->heading
+		,	"form:address" => $item->heading
+		,	"form:suburb" => $item->heading
+		,	"form:state" => $item->heading
+		,	"form:country" => $item->heading
+		,	"form:postcode" => $item->postcode
+		);
+		*/
+		
+		return $text;
+	}
 }

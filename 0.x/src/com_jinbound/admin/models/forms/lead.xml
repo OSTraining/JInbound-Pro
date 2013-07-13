@@ -53,40 +53,38 @@
 		/>
 		<field
 			id="address" name="address"
-			type="textarea"
+			type="text"
 			label="COM_JINBOUND_ADDRESS"
 			description="COM_JINBOUND_ADDRESS_DESC"
 			class="input-block-level"
 		/>
-	</fieldset>
-	
-	<fieldset
-		name="social"
-		label="COM_JINBOUND_LEAD_FIELDSET_SOCIAL"
-	>
 		<field
-			id="facebook" name="facebook"
-			type="jinboundicontext"
-			label="COM_JINBOUND_FACEBOOK"
-			description="COM_JINBOUND_FACEBOOK_DESC"
+			id="suburb" name="suburb"
+			type="text"
+			label="COM_JINBOUND_PAGE_FIELD_SUBURB"
+			description="COM_JINBOUND_PAGE_FIELD_SUBURB_DESC"
 			class="input-block-level"
-			icon="media/jinbound/images/facebook.jpg"
 		/>
 		<field
-			id="twitter" name="twitter"
-			type="jinboundicontext"
-			label="COM_JINBOUND_TWITTER"
-			description="COM_JINBOUND_TWITTER_DESC"
+			id="state" name="state"
+			type="text"
+			label="COM_JINBOUND_PAGE_FIELD_STATE"
+			description="COM_JINBOUND_PAGE_FIELD_STATE_DESC"
 			class="input-block-level"
-			icon="media/jinbound/images/twitter.jpg"
 		/>
 		<field
-			id="linkedin" name="linkedin"
-			type="jinboundicontext"
-			label="COM_JINBOUND_LINKEDIN"
-			description="COM_JINBOUND_LINKEDIN_DESC"
+			id="country" name="country"
+			type="text"
+			label="COM_JINBOUND_PAGE_FIELD_COUNTRY"
+			description="COM_JINBOUND_PAGE_FIELD_COUNTRY_DESC"
 			class="input-block-level"
-			icon="media/jinbound/images/linkedin.jpg"
+		/>
+		<field
+			id="postcode" name="postcode"
+			type="text"
+			label="COM_JINBOUND_PAGE_FIELD_POSTCODE"
+			description="COM_JINBOUND_PAGE_FIELD_POSTCODE_DESC"
+			class="input-block-level"
 		/>
 	</fieldset>
 	
@@ -134,6 +132,14 @@
 			type="jinboundstatuses"
 			label="COM_JINBOUND_STATUS"
 			description="COM_JINBOUND_STATUS_DESC"
+			class="input-block-level"
+		/>
+		
+		<field
+			id="campaign_id" name="campaign_id"
+			type="jinboundcampaignlist"
+			label="COM_JINBOUND_CAMPAIGN"
+			description="COM_JINBOUND_CAMPAIGN_DESC"
 			class="input-block-level"
 		/>
 	</fieldset>

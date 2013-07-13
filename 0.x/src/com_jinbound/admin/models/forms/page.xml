@@ -17,7 +17,7 @@
 			id="name" name="name"
 			type="text"
 			label="COM_JINBOUND_NAME"
-			description="COM_JINBOUND_NAME_DESC"
+			description="COM_JINBOUND_PAGE_NAME_DESC"
 			class="input-block-level"
 			size="30"
 			required="true"
@@ -35,7 +35,7 @@
 			id="category" name="category"
 			type="category"
 			label="COM_JINBOUND_CATEGORY"
-			description="COM_JINBOUND_CATEGORY_DESC"
+			description="COM_JINBOUND_PAGE_CATEGORY_DESC"
 			extension="com_jinbound"
 			class="input-block-level"
 			required="true"
@@ -45,7 +45,7 @@
 			id="published" name="published"
 			type="jinboundpublished"
 			label="JPUBLISHED"
-			description="COM_JINBOUND_PUBLISHED_DESC"
+			description="COM_JINBOUND_PAGE_PUBLISHED_DESC"
 			class="input-block-level"
 			default="1"
 		/>
@@ -54,7 +54,7 @@
 			id="layout" name="layout"
 			type="list"
 			label="COM_JINBOUND_LAYOUT"
-			description="COM_JINBOUND_LAYOUT_DESC"
+			description="COM_JINBOUND_PAGE_LAYOUT_DESC"
 			class="input-block-level"
 			default="A"
 		>
@@ -62,7 +62,7 @@
 			<option value="B">COM_JINBOUND_TEMPLATE_B</option>
 			<option value="C">COM_JINBOUND_TEMPLATE_C</option>
 			<option value="D">COM_JINBOUND_TEMPLATE_D</option>
-			<option value="custom">COM_JINBOUND_TEMPLATE_CUSTOM</option>
+			<option value="0">COM_JINBOUND_TEMPLATE_CUSTOM</option>
 		</field>
 
 	</fieldset>
@@ -308,6 +308,7 @@
 			label="COM_JINBOUND_PAGE_TEMPLATE"
 			description="COM_JINBOUND_PAGE_TEMPLATE_DESC"
 			class="input-block-level"
+			filter="safehtml"
 		>
 			<tag value="heading" />
 			<tag value="subheading" />
@@ -315,6 +316,8 @@
 			<tag value="sidebartext" />
 			<tag value="image" />
 			<tag value="form" />
+			<tag value="form:open" />
+			<tag value="form:close" />
 			<tag value="form:firstname" />
 			<tag value="form:lastname" />
 			<tag value="form:email" />
@@ -322,11 +325,18 @@
 			<tag value="form:companyname" />
 			<tag value="form:phonenumber" />
 			<tag value="form:fulladdress" />
+			<tag value="form:address" />
+			<tag value="form:suburb" />
+			<tag value="form:state" />
+			<tag value="form:country" />
+			<tag value="form:postcode" />
+			<!--
 			<tag value="form:singleline:fieldtitle" />
 			<tag value="form:paragraph:fieldtitle" />
 			<tag value="form:checkbox:fieldtitle" />
 			<tag value="form:radio:fieldtitle" />
 			<tag value="form:dropdown:fieldtitle" />
+			-->
 			<tag value="captcha" />
 			<tag value="submit" />
 		</field>

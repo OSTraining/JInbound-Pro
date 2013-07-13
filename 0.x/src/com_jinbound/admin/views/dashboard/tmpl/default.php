@@ -21,30 +21,30 @@ defined('JPATH_PLATFORM') or die;
       	</div>
       </div>
       <!-- Row 2 - Buttons -->
-      <div class="row-fluid">
+      <div class="row-fluid" id="welcome_buttons">
       	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/icon-48-jinbound.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/landing_pages.png'; ?>" />
 	      	</span>
-      		<span><?php echo JText::_('COM_JINBOUND_LANDING_PAGES'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LANDING_PAGES'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('campaigns'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/icon-48-jinbound.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/leads_nurturing.png'; ?>" />
 	      	</span>
-      		<span><?php echo JText::_('COM_JINBOUND_LEAD_NURTURING_MANAGER'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_NURTURING_MANAGER'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('leads'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/icon-48-jinbound.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
 	      	</span>
-      		<span><?php echo JText::_('COM_JINBOUND_LEAD_MANAGER'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_MANAGER'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('reports'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/icon-48-jinbound.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/reports.png'; ?>" />
 	      	</span>
-      		<span><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></span>
       	</a>
       </div>
       
@@ -71,13 +71,13 @@ defined('JPATH_PLATFORM') or die;
 		<div class="span4">
 			<!-- Row 1 - links -->
 			<div class="well">
-				<h4><?php echo JText::_('COM_JINBOUND_CREATE_A_NEW'); ?></h4>
+				<img alt="<?php echo JText::_('COM_JINBOUND_CREATE_A_NEW'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/start_by_creating.png'; ?>" />
 				<ul>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('campaign.add'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('lead.add'), JText::_('COM_JINBOUND_LEAD')); ?></li>
 				</ul>
-				<h4><?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?></h4>
+				<h3><img alt="<?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/view_reports.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?></span></h3>
 				<ul>
 					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_CONVERSIONS')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_LANDING_PAGE_REPORT')); ?></li>
@@ -86,7 +86,7 @@ defined('JPATH_PLATFORM') or die;
 			</div>
 			<!-- Row 2: Updates -->
 			<div class="well">
-				<h3><?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?></h3>
+				<h4><img alt="<?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/alerts.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?></span></h4>
 				<div class="well">
 					something here
 				</div>
