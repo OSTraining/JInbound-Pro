@@ -218,7 +218,7 @@ endif;
 </div>
 
 <div>
-	<input id="<?php echo $this->input->id; ?>_value" name="<?php echo $this->escape($this->input->name); ?>" type="<?php echo (defined('JDEBUG') && JDEBUG) ? 'hidden' : 'text'; ?>" value="" />
+	<input id="<?php echo $this->input->id; ?>_value" name="<?php echo $this->escape($this->input->name); ?>" type="<?php echo (defined('JDEBUG') && JDEBUG) ? 'text' : 'hidden'; ?>" value="" />
 </div>
 <?php if (defined('JDEBUG') && JDEBUG) : ?>
 <h4>Values:</h4>
