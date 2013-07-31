@@ -84,6 +84,7 @@ defined('JPATH_PLATFORM') or die;
 					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
 				</ul>
 			</div>
+			<?php /*
 			<!-- Row 2: Updates -->
 			<div class="well">
 				<h4><img alt="<?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/alerts.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?></span></h4>
@@ -111,6 +112,7 @@ defined('JPATH_PLATFORM') or die;
 			<div class="well">
 				AD BANNER
 			</div>
+			*/ ?>
 			<!-- Row 4 - other links -->
 			<div class="well"><?php echo $this->feed; ?></div>
 		</div>
