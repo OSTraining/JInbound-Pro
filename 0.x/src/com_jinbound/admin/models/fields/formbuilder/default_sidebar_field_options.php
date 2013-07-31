@@ -9,7 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 $id    = $this->escape($this->input->id) . '_' . $this->_currentField->id;
 $name  = $this->escape($this->input->name . '[' . $this->_currentField->id . '][options]');
-$value = $this->value[$this->_currentField->id];
+$value = array_key_exists($this->_currentField->id, $this->value) ? $this->value[$this->_currentField->id] : array();
 
 $this->_optname = $name;
 
@@ -31,7 +31,7 @@ $this->_optname = $name;
 		
 		<div class="formbuilder-field-options-stage">
 			<?php
-					foreach ($value['options']['name'] as $k => $v) :
+					if (array_key_exists('options', $value)) foreach ($value['options']['name'] as $k => $v) :
 						if (empty($v)) {
 							continue;
 						}
