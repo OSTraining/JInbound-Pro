@@ -18,6 +18,7 @@
 .icon-48-jinbound-statuses,
 .icon-48-jinbound-utilities {
 	background: url('../images/component_header_logo.png') 0 0 no-repeat;
+	padding-left: 180px !important;
 }
 
 .layout_select_button {
