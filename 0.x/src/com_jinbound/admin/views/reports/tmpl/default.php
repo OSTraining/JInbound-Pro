@@ -17,12 +17,11 @@ JHtml::_('behavior.calendar');
 		</div>
 	</div>
 	<div class="row-fluid">
-		<div class="span12">
-			<fieldset id="filter-bar">
-				<?php echo JHtml::_('calendar', $this->state->get('filter_begin'), 'filter_begin', '%Y-%m-%d', array('size' => 10, 'onchange' => "this.form.fireEvent('submit');this.form.submit()")); ?>
-				<?php echo JHtml::_('calendar', $this->state->get('filter_end'), 'filter_end', '%Y-%m-%d', array('size' => 10, 'onchange' => "this.form.fireEvent('submit');this.form.submit()")); ?>
-			</fieldset>
-			<div class="clr"> </div>
+		<div class="span3 offset3">
+			<?php echo JHtml::_('calendar', $this->state->get('filter_begin'), 'filter_begin', 'filter_begin', '%Y-%m-%d', array('size' => 10, 'onchange' => "window.fetchLeads(window.jinbound_leads_start, window.jinbound_leads_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val());window.fetchPages(window.jinbound_pages_start, window.jinbound_pages_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val())")); ?>
+		</div>
+		<div class="span3">
+			<?php echo JHtml::_('calendar', $this->state->get('filter_end'), 'filter_end', 'filter_end', '%Y-%m-%d', array('size' => 10, 'onchange' => "window.fetchLeads(window.jinbound_leads_start, window.jinbound_leads_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val());window.fetchPages(window.jinbound_pages_start, window.jinbound_pages_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val())")); ?>
 		</div>
 	</div>
 	<?php echo $this->loadTemplate('dashboard'); ?>
@@ -41,7 +40,11 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 <script type="text/javascript">
 (function($){
 	window.jinbound_leads_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=leads&format=json', false); ?>';
+	window.jinbound_leads_limit = 10;
+	window.jinbound_leads_start = 0;
 	window.jinbound_pages_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=pages&format=json', false); ?>';
+	window.jinbound_pages_limit = 10;
+	window.jinbound_pages_start = 0;
 	var makeButtons = function(callback, pagination, cols) {
 		var f = $('<tfoot></tfoot>'), fr = $('<tr colspan="' + cols + '"></tr>'), fc = $('<td class="btn-group"></td>');
 		if (pagination.pagesTotal > 1) {
@@ -87,8 +90,19 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 			return f;
 		}
 	};
-	var fetchLeads = function(start, limit) {
-		$.ajax(window.jinbound_leads_baseurl + '&limit=' + limit + '&limitstart=' + start, {
+	window.fetchLeads = function(start, limit) {
+		window.jinbound_leads_limit = limit;
+		window.jinbound_leads_start = start;
+		var filter = '';
+		if (arguments.length > 2) {
+			if (arguments[2]) {
+				filter += '&filter_start=' + arguments[2];
+			}
+			if (arguments[3]) {
+				filter += '&filter_end=' + arguments[3];
+			}
+		}
+		$.ajax(window.jinbound_leads_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
 				$('#reports_recent_leads').empty();
@@ -114,13 +128,24 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 					b.append(tr);
 				}
 				t.append(b);
-				t.append(makeButtons(fetchLeads, data.pagination, 3));
+				t.append(makeButtons(window.fetchLeads, data.pagination, 3));
 				$('#reports_recent_leads').append(t);
 			}
 		});
 	};
-	var fetchPages = function(start, limit) {
-		$.ajax(window.jinbound_pages_baseurl + '&limit=' + limit + '&limitstart=' + start, {
+	window.fetchPages = function(start, limit) {
+		window.jinbound_pages_limit = limit;
+		window.jinbound_pages_start = start;
+		var filter = '';
+		if (arguments.length > 2) {
+			if (arguments[2]) {
+				filter += '&filter_start=' + arguments[2];
+			}
+			if (arguments[3]) {
+				filter += '&filter_end=' + arguments[3];
+			}
+		}
+		$.ajax(window.jinbound_pages_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
 				$('#reports_top_pages').empty();
@@ -148,12 +173,12 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 					b.append(tr);
 				}
 				t.append(b);
-				t.append(makeButtons(fetchLeads, data.pagination, 4));
+				t.append(makeButtons(window.fetchPages, data.pagination, 4));
 				$('#reports_top_pages').append(t);
 			}
 		});
 	};
-	fetchLeads(0, 10);
-	fetchPages(0, 10);
+	window.fetchLeads(0, 10);
+	window.fetchPages(0, 10);
 })(jQuery);
 </script>
