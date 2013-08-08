@@ -116,11 +116,13 @@
 		/>
 		<field
 			id="sidebartext" name="sidebartext"
-			type="textarea"
+			type="editor"
+			filter="safehtml"
 			label="COM_JINBOUND_SIDEBARTEXT"
 			description="COM_JINBOUND_SIDEBARTEXT_DESC"
 			cols="60" rows="12"
 			class="input-block-level"
+			buttons="0"
 		/>
 
 
