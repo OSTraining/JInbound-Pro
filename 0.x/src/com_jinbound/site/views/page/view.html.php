@@ -8,6 +8,8 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
+JInbound::registerHelper('filter');
+JInbound::registerHelper('url');
 JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
 
 class JInboundViewPage extends JInboundItemView
@@ -39,21 +41,66 @@ class JInboundViewPage extends JInboundItemView
 		
 		return $display;
 	}
+
+	public function setDocument() {
+		parent::setDocument();
+		$document = JFactory::getDocument();
+		$document->addScript(JInboundHelperUrl::media() . '/js/jinbound.js');
+	}
 	
-	function renderCustomLayout($item) {
+	function renderCustomLayout() {
 		// get the custom layout data & replace all the tags
-		$text = $item->template;
+		$text = $this->item->template;
 		
 		$tags = array();
 		$basetags = array("heading", "subheading", "maintext", "sidebartext");
 		foreach ($basetags as $basetag) {
-			$tags[$basetag] = $item->$basetag;
+			if (!property_exists($this->item, $basetag)) {
+				continue;
+			}
+			$tags[$basetag] = $this->item->$basetag;
 		}
 		
-		if (!empty($item->image)) {
-			$tags['image'] = '<img src="' . JInboundHelperFilter::escape($item->image) . '" />';
+		if (!empty($this->item->image)) {
+			$tags['image'] = $this->loadTemplate('image', 'default');
 		}
 		
+		// load these from templates
+		$tags['form:open']  = $this->loadTemplate('form_open', 'default');
+		$tags['form:close'] = $this->loadTemplate('form_close', 'default');
+		$tags['submit']     = $this->loadTemplate('form_submit', 'default');
+		$tags['form']       = $this->loadTemplate('form', 'default');
+		
+		$tagsToFields = array(
+			'first_name'   => 'firstname'
+		,	'last_name'    => 'lastname'
+		,	'company_name' => 'companyname'
+		,	'phone_number' => 'phonenumber'
+		);
+		
+		$fullAddress = array(
+			'address'  => ''
+		,	'suburb'   => ''
+		,	'state'    => ''
+		,	'country'  => ''
+		,	'postcode' => ''
+		);
+		
+		foreach ($this->form->getFieldset('lead') as $key => $field) {
+			$tagKey = str_replace('jform_lead_', '', $key);
+			if (array_key_exists($tagKey, $tagsToFields)) {
+				$tagKey = $tagsToFields[$tagKey];
+			}
+			$this->_currentField = $field;
+			$tags['form:' . $tagKey] = $this->loadTemplate('form_field');
+			
+			if (array_key_exists($tagKey, $fullAddress)) {
+				$fullAddress[$tagKey] = $tags['form:' . $tagKey];
+			}
+		}
+		$tags['form:fulladdress'] = implode("", array_values($fullAddress));
+		
+		// replace tags
 		foreach ($tags as $tag => $value) {
 			if (false === JString::strpos($text, $tag)) {
 				continue;
@@ -64,26 +111,26 @@ class JInboundViewPage extends JInboundItemView
 		
 		/*
 		$tags = array(
-			"heading"     => $item->heading
-		,	"subheading"  => $item->heading
-		,	"maintext"    => $item->heading
-		,	"sidebartext" => $item->heading
-		,	"image"       => $item->heading
-		,	"form"        => $item->heading
-		,	"form:open" => $item->heading
-		,	"form:close" => $item->heading
-		,	"form:firstname" => $item->heading
-		,	"form:lastname" => $item->heading
-		,	"form:email" => $item->heading
-		,	"form:website" => $item->heading
-		,	"form:companyname" => $item->heading
-		,	"form:phonenumber" => $item->heading
-		,	"form:fulladdress" => $item->heading
-		,	"form:address" => $item->heading
-		,	"form:suburb" => $item->heading
-		,	"form:state" => $item->heading
-		,	"form:country" => $item->heading
-		,	"form:postcode" => $item->postcode
+			"heading"     => $this->item->heading
+		,	"subheading"  => $this->item->heading
+		,	"maintext"    => $this->item->heading
+		,	"sidebartext" => $this->item->heading
+		,	"image"       => $this->item->heading
+		,	"form"        => $this->item->heading
+		,	"form:open" => $this->item->heading
+		,	"form:close" => $this->item->heading
+		,	"form:firstname" => $this->item->heading
+		,	"form:lastname" => $this->item->heading
+		,	"form:email" => $this->item->heading
+		,	"form:website" => $this->item->heading
+		,	"form:companyname" => $this->item->heading
+		,	"form:phonenumber" => $this->item->heading
+		,	"form:fulladdress" => $this->item->heading
+		,	"form:address" => $this->item->heading
+		,	"form:suburb" => $this->item->heading
+		,	"form:state" => $this->item->heading
+		,	"form:country" => $this->item->heading
+		,	"form:postcode" => $this->item->postcode
 		);
 		*/
 		

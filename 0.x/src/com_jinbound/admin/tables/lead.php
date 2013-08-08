@@ -135,15 +135,23 @@ class JInboundTableLead extends JInboundTable
 	}
 	
 	public function getContact() {
+		$debug = defined('JDEBUG') && JDEBUG;
+		$app   = JFactory::getApplication();
 		// either update or add a contact
 		jimport('joomla.database.table');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
 		$this->_contact = JTable::getInstance('Contact', 'ContactTable');
 			
 		if ($this->contact_id) {
+			if ($debug) {
+				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT_ID_FOUND', $this->contact_id));
+			}
 			$this->_contact->load($this->contact_id);
 		}
 		else if (!empty($this->first_name) && !empty($this->last_name)) {
+			if ($debug) {
+				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT_NAME_SEARCH', $this->first_name, $this->last_name));
+			}
 			$this->_contact->load(array('name' => $this->first_name . ' ' . $this->last_name));
 		}
 		

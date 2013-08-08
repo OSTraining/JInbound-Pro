@@ -10,6 +10,6 @@ defined('JPATH_PLATFORM') or die;
 ?>
 <div class="row-fluid">
 	<div class="span12">
-		<?php echo $this->renderCustomLayout($this->item); ?>
+		<?php echo $this->renderCustomLayout(); ?>
 	</div>
 </div>
