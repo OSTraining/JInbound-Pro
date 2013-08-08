@@ -28,7 +28,7 @@ defined('JPATH_PLATFORM') or die;
 	      	</span>
       		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LANDING_PAGES'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('campaigns'); ?>" class="span3 btn text-center">
+      	<a href="<?php echo JInboundHelperUrl::view('emails'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/leads_nurturing.png'; ?>" />
 	      	</span>
