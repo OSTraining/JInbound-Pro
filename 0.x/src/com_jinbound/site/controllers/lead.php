@@ -72,6 +72,19 @@ class JInboundControllerLead extends JInboundBaseController
 			$messageType = 'error';
 		}
 		
+		// alert if necessary
+		$emails = $page->notification_email;
+		if (!empty($emails)) {
+			$emails = explode(',', $emails);
+			$subject = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_SUBJECT');
+			$body    = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_BODY');
+			$mailer  = JFactory::getMailer();
+			$mailer->setSubject($subject);
+			$mailer->setBody($body);
+			$mailer->addBCC($emails);
+			$mailer->Send();
+		}
+		
 		// build the redirect
 		if ('message' != $messageType) {
 			$redirect = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
