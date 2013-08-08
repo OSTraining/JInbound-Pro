@@ -71,16 +71,47 @@ class plgSystemJInbound extends JPlugin
 			return;
 		}
 		$app = JFactory::getApplication();
-		// we want to add some extras to com_categories
-		if ($app->isAdmin() && 'com_categories' == $app->input->get('option', '', 'cmd') && class_exists('JInbound') && JInbound::COM == $app->input->get('extension', '', 'cmd')) {
-			// UPDATE: don't do this in edit layout in 3.0+
-			if (JInbound::version()->isCompatible('3.0') && 'edit' == $app->input->get('layout')) {
-				return;
-			}
-			// add submenu to categories
-			JInbound::registerLibrary('JInboundView', 'views/baseview');
-			$comView = new JInboundView();
-			$comView->addMenuBar();
+		$opt = $app->input->get('option', '', 'cmd');
+		if ($app->isAdmin()) {
+			$this->onAfterDispatchAdmin($opt);
+		}
+		else {
+			$this->onAfterDispatchSite($opt);
+		}
+	}
+	
+	// stub for now
+	public function onAfterDispatchSite($option) {
+		$app = JFactory::getApplication();
+		switch ($option) {
+			default: break;
+		}
+	}
+	
+	public function onAfterDispatchAdmin($option) {
+		$app = JFactory::getApplication();
+		switch ($option) {
+			case 'com_categories':
+				// we want to add some extras to com_categories
+				if (class_exists('JInbound') && JInbound::COM == $app->input->get('extension', '', 'cmd')) {
+					// UPDATE: don't do this in edit layout in 3.0+
+					if (JInbound::version()->isCompatible('3.0') && 'edit' == $app->input->get('layout')) {
+						return;
+					}
+					// add submenu to categories
+					JInbound::registerLibrary('JInboundView', 'views/baseview');
+					$comView = new JInboundView();
+					$comView->addMenuBar();
+				}
+				break;
+			case 'com_menus':
+				JInbound::registerHelper('url');
+				if ('edit' == $app->input->get('layout') && 'item' == $app->input->get('view')) {
+					JText::script('COM_JINBOUND_MENU_NOT_SET_TO_USE_JINBOUND_TEMPLATE');
+					JFactory::getDocument()->addScript(JInboundHelperUrl::media() . '/js/admin.menu.js');
+				}
+				break;
+			default: break;
 		}
 	}
 	

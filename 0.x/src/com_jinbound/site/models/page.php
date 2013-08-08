@@ -58,6 +58,17 @@ class JInboundModelPage extends JInboundAdminModel
 			if (array_key_exists($type, $fieldtypes)) {
 				$type = $fieldtypes[$type];
 			}
+			$class = "";
+			switch ($type) {
+				case 'text':
+				case 'list':
+				case 'textarea':
+					$class = "input-block-level";
+					break;
+				case 'checkboxes':
+					$class = "checkbox";
+					break;
+			}
 			$xmlField = $xmlFieldset->addChild('field');
 			$xmlField->addAttribute('name', $name);
 			$xmlField->addAttribute('type', $type);
@@ -71,6 +82,9 @@ class JInboundModelPage extends JInboundAdminModel
 					$xmlOpt = $xmlField->addChild('option', $v);
 					$xmlOpt->addAttribute('value', $field['options']['value'][$k]);
 				}
+			}
+			if (!empty($class)) {
+				$xmlField->addAttribute('class', $class);
 			}
 		}
 		// if we have allowed fields, add them

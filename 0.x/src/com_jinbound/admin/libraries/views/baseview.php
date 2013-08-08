@@ -241,6 +241,8 @@ class JInboundView extends JInboundBaseView
 			return;
 		}
 		
+		$doc->addStyleSheet(JInboundHelperUrl::media() . '/css/stylesheet.css');
+		
 		$menus   = $app->getMenu();
 		$pathway = $app->getPathway();
 		$title   = null;
