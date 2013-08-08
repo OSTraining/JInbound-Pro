@@ -9,6 +9,11 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 <div class="row-fluid">
+	<div class="span12">
+		<h2><?php echo $this->escape($this->item->subheading); ?></h2>
+	</div>
+</div>
+<div class="row-fluid">
 	<div class="span3">
 		<div class="jinbound-image row-fluid">
 			<?php echo $this->loadTemplate('image'); ?>
@@ -18,11 +23,6 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 	</div>
 	<div class="span9">
-		<div class="row-fluid">
-			<div class="span12">
-				<h2><?php echo $this->escape($this->item->subheading); ?></h2>
-			</div>
-		</div>
 		<div class="row-fluid">
 			<div class="span8">
 				<div class="row-fluid">
