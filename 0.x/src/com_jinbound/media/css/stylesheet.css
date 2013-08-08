@@ -2,3 +2,6 @@
 	list-style-type: none;
 	margin-left: 0px !important;
 }
+#jinbound_component .jinbound_image {
+	padding-bottom: 20px;
+}
