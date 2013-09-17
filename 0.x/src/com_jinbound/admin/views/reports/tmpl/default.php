@@ -11,11 +11,6 @@ JHtml::_('behavior.calendar');
 
 ?>
 <div class="container-fluid" id="jinbound_component">
-	<div class="row-fluid">
-		<div class="span12 text-center well">
-		Random Advice Text
-		</div>
-	</div>
 	<form action="<?php echo JInboundHelperUrl::_(); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
 	<div class="row-fluid">
 		<div class="span3 offset3">
