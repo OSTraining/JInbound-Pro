@@ -13,7 +13,9 @@ defined('JPATH_PLATFORM') or die;
 		<div class="pull-right">
 			<?php echo $this->loadTemplate('social'); ?>
 		</div>
+<?php if (!empty($this->item->subheading)) : ?>
 		<h2><?php echo $this->escape($this->item->subheading); ?></h2>
+<?php endif; ?>
 	</div>
 </div>
 <div class="row-fluid">

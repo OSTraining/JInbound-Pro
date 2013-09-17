@@ -8,11 +8,13 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
+<?php if (!empty($this->item->subheading)) : ?>
 <div class="row-fluid">
 	<div class="span12">
 		<h2><?php echo $this->escape($this->item->subheading); ?></h2>
 	</div>
 </div>
+<?php endif; ?>
 <div class="row-fluid">
 	<div class="span3">
 		<div class="jinbound-image row-fluid">

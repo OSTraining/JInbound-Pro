@@ -91,7 +91,6 @@
 			description="COM_JINBOUND_SUBHEADING_DESC"
 			class="input-block-level"
 			size="30"
-			required="true"
 		/>
 		<field
 			id="socialmedia" name="socialmedia"
