@@ -36,18 +36,32 @@ if ('com_jinbound' !== $option) {
 							<jdoc:include type="message" />
 						</div>
 					</div>
-					
+<?php if ($this->countModules('jinbound-header')) : ?>
+					<div class="row">
+						<div class="span12">
+							<jdoc:include type="modules" name="jinbound-header" />
+						</div>
+					</div>
+<?php endif; ?>
 					<div class="row">
 						<div class="span12">
 							<jdoc:include type="component" />
 						</div>
 					</div>
-					
+<?php if ($this->countModules('jinbound-footer')) : ?>
+					<div class="row">
+						<div class="span12">
+							<jdoc:include type="modules" name="jinbound-footer" />
+						</div>
+					</div>
+<?php endif; ?>
+<?php if ($this->countModules('debug')) : ?>
 					<div class="row">
 						<div class="span12">
 							<jdoc:include type="modules" name="debug" />
 						</div>
 					</div>
+<?php endif; ?>
 					
 				</div>
 			</div>
