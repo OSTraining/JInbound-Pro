@@ -39,6 +39,7 @@ class JInboundViewReports extends JInboundListView
 	
 	private function _callModelMethod($method, $state = null) {
 		$model = JInboundBaseModel::getInstance('Reports', 'JInboundModel');
+		$model->getState('init.state');
 		if (is_array($state) && !empty($state)) {
 			foreach ($state as $key => $value) {
 				$model->setState($key, $value);
@@ -54,14 +55,14 @@ class JInboundViewReports extends JInboundListView
 		static $set;
 		
 		if (is_null($set)) {
-			// set the title (because we're skipping the list view's addToolBar later)
-			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name.'_MANAGER')), 'jinbound-'.strtolower($this->_name));
 			// export icons
 			JToolBarHelper::custom($this->_name.'.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS', false);
 			JToolBarHelper::custom($this->_name.'.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
 			// skip parent and go to grandparent so we don't have the normal list view icons like "new" and "save"
 			$gpview = new JInboundView(array());
 			$gpview->addToolbar();
+			// set the title (because we're skipping the list view's addToolBar later)
+			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name)), 'jinbound-'.strtolower($this->_name));
 		}
 		$set = true;
 	}

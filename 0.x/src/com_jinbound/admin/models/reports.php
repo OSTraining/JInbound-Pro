@@ -102,6 +102,7 @@ class JInboundModelReports extends JInboundListModel
 			->from('#__jinbound_leads AS Lead')
 			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
 			->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
+			->group('Contact.id')
 			->group('Lead.id')
 			->order('Lead.created DESC')
 		);
@@ -170,8 +171,8 @@ class JInboundModelReports extends JInboundListModel
 		static $rate;
 		
 		if (is_null($rate)) {
-			$count = $this->getConversionCount();
-			$hits  = $this->getVisitCount();
+			$count = (int) $this->getConversionCount();
+			$hits  = (int) $this->getVisitCount();
 			if (0 < $hits) {
 				$rate = ($count / $hits) * 100; 
 			}
