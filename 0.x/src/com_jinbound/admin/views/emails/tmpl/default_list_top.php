@@ -14,17 +14,3 @@ defined('JPATH_PLATFORM') or die;
 		<p><?php echo $this->adviceText; ?></p>
 	</div>
 </div>
-
-<h3><?php echo JText::_('COM_JINBOUND_CREATE_A_NEW_EMAIL'); ?></h3>
-<div class="btn-toolbar">
-	<div class="btn-group row-fluid">
-<?php foreach (array('A', 'B', 'C', 'D') as $template) : ?>
-		<div class="btn span2<?php echo ('A' == $template ? ' offset1' : ''); ?>">
-			<a href="<?php echo JInboundHelperUrl::edit('email', 0, false, array('set' => $template)); ?>"><?php echo JText::_('COM_JINBOUND_TEMPLATE_' . $template); ?></a>
-		</div>
-<?php endforeach; ?>
-		<div class="btn span2">
-			<a href="<?php echo JInboundHelperUrl::edit('email', 0, false, array('set' => 'custom')); ?>"><?php echo JText::_('COM_JINBOUND_TEMPLATE_CUSTOM'); ?></a>
-		</div>
-	</div>
-</div>

@@ -77,18 +77,11 @@
 		
 		<field
 			id="layout" name="layout"
-			type="list"
+			type="hidden"
 			label="COM_JINBOUND_LAYOUT"
 			description="COM_JINBOUND_EMAIL_LAYOUT_DESC"
-			class="input-block-level"
 			default="A"
-		>
-			<option value="A">COM_JINBOUND_TEMPLATE_A</option>
-			<option value="B">COM_JINBOUND_TEMPLATE_B</option>
-			<option value="C">COM_JINBOUND_TEMPLATE_C</option>
-			<option value="D">COM_JINBOUND_TEMPLATE_D</option>
-			<option value="custom">COM_JINBOUND_TEMPLATE_CUSTOM</option>
-		</field>
+		/>
 
 		<field
 			id="subject" name="subject"
