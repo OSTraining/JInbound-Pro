@@ -9,6 +9,8 @@ defined('JPATH_PLATFORM') or die;
 
 JFormHelper::loadFieldClass('text');
 
+JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php');
+
 class JFormFieldJinboundTimespan extends JFormFieldText
 {
 	protected $type = 'JinboundTimespan';

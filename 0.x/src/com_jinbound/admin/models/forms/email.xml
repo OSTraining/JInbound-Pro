@@ -5,11 +5,6 @@
 		label="COM_JINBOUND_EMAIL_FIELDSET_DEFAULT"
 	>
 		<field
-			id="email_tips" name="email_tips"
-			type="jinboundtips"
-		/>
-		
-		<field
 			id="id" name="id"
 			type="hidden"
 			class="readonly"
