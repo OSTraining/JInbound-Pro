@@ -25,6 +25,25 @@ class JInboundModelEmails extends JInboundListModel
 	 */
 	protected $context  = 'com_jinbound.emails';
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param       array   An optional associative array of configuration settings.
+	 * @see         JController
+	 */
+	function __construct($config = array()) {
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'Campaign.name'
+			,	'Email.name'
+			,	'Email.published'
+			,	'Email.sendafter'
+			);
+		}
+		
+		parent::__construct($config);
+	}
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.
@@ -43,13 +62,11 @@ class JInboundModelEmails extends JInboundListModel
 		
 		$this->appendAuthorToQuery($query, 'Email');
 		$this->filterSearchQuery($query, $this->state->get('filter.search'), 'Email', 'id', array('Email.name', 'Email.subject', 'Campaign.name'));
-
+		
 		// Add the list ordering clause.
-		$orderCol = trim($this->state->get('list.ordering'));
-		$orderDirn = trim($this->state->get('list.direction'));
-		if (strlen($orderCol)) {
-			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
-		}
+		$listOrdering = $this->getState('list.ordering', 'Campaign.name');
+		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
+		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 
 		return $query;
 	}

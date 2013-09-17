@@ -26,4 +26,18 @@ class JInboundViewEmails extends JInboundListView
 		$this->addFilter(JText::_('COM_JINBOUND_SELECT_STATUS'), 'filter_status', $this->get('StatusOptions'), $this->get('State')->get('filter.status'));
 		return parent::display($tpl, $safeparams);
 	}
+	
+	/**
+	 * Returns an array of fields the table can be sorted by
+	 * 
+	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 */
+	protected function getSortFields() {
+		return array(
+			'Campaign.name'   => JText::_('COM_JINBOUND_CAMPAIGN_NAME')
+		,	'Email.name'      => JText::_('COM_JINBOUND_EMAIL_NAME')
+		,	'Email.published' => JText::_('COM_JINBOUND_CAMPAIGN_ACTIVE')
+		,	'Email.sendafter' => JText::_('COM_JINBOUND_CAMPAIGN_SCHEDULE')
+		);
+	}
 }

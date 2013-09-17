@@ -22,10 +22,10 @@ $saveOrder = ($listOrder == 'Email.id');
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_NAME', 'Email.name', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Campaign.Active', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Email.published', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Campaign.Schedule', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Email.sendafter', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>

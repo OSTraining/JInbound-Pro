@@ -25,6 +25,25 @@ class JInboundModelPriorities extends JInboundListModel
 	 */
 	protected $context  = 'com_jinbound.priorities';
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param       array   An optional associative array of configuration settings.
+	 * @see         JController
+	 */
+	function __construct($config = array()) {
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'Priority.name'
+			,	'Priority.status'
+			,	'Priority.ordering'
+			,	'Priority.description'
+			);
+		}
+		
+		parent::__construct($config);
+	}
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.
@@ -39,13 +58,11 @@ class JInboundModelPriorities extends JInboundListModel
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Priority');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Priority');
-
+		
 		// Add the list ordering clause.
-		$orderCol = trim($this->state->get('list.ordering'));
-		$orderDirn = trim($this->state->get('list.direction'));
-		if (strlen($orderCol)) {
-			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
-		}
+		$listOrdering = $this->getState('list.ordering', 'Priority.name');
+		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
+		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 
 		return $query;
 	}

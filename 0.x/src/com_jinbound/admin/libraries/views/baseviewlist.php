@@ -104,4 +104,13 @@ class JInboundListView extends JInboundView
 		}
 		$set = true;
 	}
+	
+	/**
+	 * Returns an array of fields the table can be sorted by
+	 * 
+	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 */
+	protected function getSortFields() {
+		return array();
+	}
 }

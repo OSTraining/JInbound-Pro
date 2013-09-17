@@ -54,8 +54,8 @@ if (!empty($this->items)) :
 		<td class="order">
 			<?php if ($canChange) : ?>
 				<?php if ($saveOrder) : ?>
-					<span><?php echo $this->pagination->orderUpIcon($i, 0 == $i, 'priorities.orderup', 'JLIB_HTML_MOVE_UP', $ordering); ?></span>
-					<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, false, 'priorities.orderdown', 'JLIB_HTML_MOVE_DOWN', $ordering); ?></span>
+					<span><?php echo $this->pagination->orderUpIcon($i, 0 == $i, 'priorities.orderup', 'JLIB_HTML_MOVE_UP', $item->ordering); ?></span>
+					<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, false, 'priorities.orderdown', 'JLIB_HTML_MOVE_DOWN', $item->ordering); ?></span>
 				<?php endif; ?>
 				<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>
 				<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" <?php echo $disabled ?> class="text-area-order" />

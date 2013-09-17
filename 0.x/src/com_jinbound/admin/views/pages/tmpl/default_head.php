@@ -22,18 +22,18 @@ $listDirn  = $this->state->get('list.direction');
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LANDINGPAGE_NAME', 'Page.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Page.status', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Page.published', $listDirn, $listOrder); ?>
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY', 'Page.category', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_VIEWS', 'Page.views', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_VIEWS', 'Page.hits', $listDirn, $listOrder); ?>
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_SUBMISSIONS', 'submissions', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'Page.conversions', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'conversions', $listDirn, $listOrder); ?>
 	</th>
 </tr>

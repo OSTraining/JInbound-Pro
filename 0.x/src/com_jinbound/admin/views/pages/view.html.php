@@ -28,4 +28,20 @@ class JInboundViewPages extends JInboundListView
 		
 		return parent::display($tpl, $safeparams);
 	}
+	
+	/**
+	 * Returns an array of fields the table can be sorted by
+	 * 
+	 * @return  array  Array containing the field name to sort by as the key and display text as value
+	 */
+	protected function getSortFields() {
+		return array(
+			'Page.name'      => JText::_('COM_JINBOUND_LANDINGPAGE_NAME')
+		,	'Page.published' => JText::_('COM_JINBOUND_PUBLISHED')
+		,	'Page.category'  => JText::_('COM_JINBOUND_CATEGORY')
+		,	'Page.hits'      => JText::_('COM_JINBOUND_VIEWS')
+		,	'submissions'    => JText::_('COM_JINBOUND_SUBMISSIONS')
+		,	'conversions'    => JText::_('COM_JINBOUND_CONVERSIONS')
+		);
+	}
 }

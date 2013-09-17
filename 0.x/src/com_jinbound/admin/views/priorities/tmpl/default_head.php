@@ -22,7 +22,7 @@ $saveOrder = ($listOrder == 'Priority.ordering');
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_NAME', 'Priority.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Priority.status', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Priority.published', $listDirn, $listOrder); ?>
 	</th>
 	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ORDERING', 'Priority.ordering', $listDirn, $listOrder); ?>

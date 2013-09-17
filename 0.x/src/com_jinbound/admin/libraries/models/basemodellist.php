@@ -177,21 +177,23 @@ class JInboundListModel extends JModelList
 		$pk        = $filter->clean($pk, 'cmd');
 		// get our dbo for cleaning texts
 		$db = JFactory::getDbo();
-		if (!empty($search)) {
-			if (0 === stripos($search, $pk . ':')) {
-				$query->where($tablename . '.' . $pk . ' = ' . (int) substr($search, 3));
+		if (empty($search)) {
+			return;
+		}
+		// search by primary key
+		if (0 === stripos($search, $pk . ':')) {
+			$query->where($tablename . '.' . $pk . ' = ' . (int) substr($search, 3));
+			return;
+		}
+		// search by column text
+		$search = $db->Quote('%' . $db->getEscaped($search, true) . '%');
+		$where = array();
+		if (!empty($columns)) {
+			foreach ($columns as &$column) {
+				$column = $filter->clean($column, 'cmd');
+				$where[] = $column . ' LIKE ' . $search;
 			}
-			else {
-				$search = $db->Quote('%' . $db->getEscaped($search, true) . '%');
-				$where = array();
-				if (!empty($columns)) {
-					foreach ($columns as &$column) {
-						$column = $filter->clean($column, 'cmd');
-						$where[] = $column . ' LIKE ' . $search;
-					}
-					$query->where('(' . implode(' OR ', $where) . ')');
-				}
-			}
+			$query->where('(' . implode(' OR ', $where) . ')');
 		}
 	}
 	

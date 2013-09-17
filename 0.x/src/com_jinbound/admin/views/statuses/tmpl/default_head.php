@@ -23,7 +23,7 @@ $saveOrder = ($listOrder == 'Status.ordering');
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_NAME', 'Status.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Status.status', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Status.published', $listDirn, $listOrder); ?>
 	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_DEFAULT', 'Status.default', $listDirn, $listOrder); ?>

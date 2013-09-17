@@ -25,6 +25,28 @@ class JInboundModelLeads extends JInboundListModel
 	 */
 	protected $context  = 'com_jinbound.leads';
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param       array   An optional associative array of configuration settings.
+	 * @see         JController
+	 */
+	function __construct($config = array()) {
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'Contact.name'
+			,	'Lead.published'
+			,	'Lead.created'
+			,	'Page.formname'
+			,	'Priority.name'
+			,	'Status.name'
+			,	'Lead.note'
+			);
+		}
+		
+		parent::__construct($config);
+	}
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.
@@ -58,11 +80,9 @@ class JInboundModelLeads extends JInboundListModel
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Lead');
 		
 		// Add the list ordering clause.
-		$orderCol = trim($this->state->get('list.ordering'));
-		$orderDirn = trim($this->state->get('list.direction'));
-		if (strlen($orderCol)) {
-			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
-		}
+		$listOrdering = $this->getState('list.ordering', 'Lead.created');
+		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
+		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 
 		return $query;
 	}

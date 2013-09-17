@@ -27,6 +27,27 @@ class JInboundModelPages extends JInboundListModel
 	
 	private $_registryColumns = array('formbuilder');
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param       array   An optional associative array of configuration settings.
+	 * @see         JController
+	 */
+	function __construct($config = array()) {
+		if (empty($config['filter_fields'])) {
+			$config['filter_fields'] = array(
+				'Page.name'
+			,	'Page.published'
+			,	'Page.category'
+			,	'Page.hits'
+			,	'submissions'
+			,	'conversions'
+			);
+		}
+		
+		parent::__construct($config);
+	}
+	
 	protected function getListQuery()
 	{
 		// Create a new query object.
@@ -49,11 +70,9 @@ class JInboundModelPages extends JInboundListModel
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page', 'id', array('Page.name', 'Category.title'));
 		
 		// Add the list ordering clause.
-		$orderCol = trim($this->state->get('list.ordering'));
-		$orderDirn = trim($this->state->get('list.direction'));
-		if (strlen($orderCol)) {
-			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
-		}
+		$listOrdering = $this->getState('list.ordering', 'Page.name');
+		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
+		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 		
 		return $query;
 	}
