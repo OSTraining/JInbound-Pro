@@ -65,7 +65,15 @@ defined('JPATH_PLATFORM') or die;
 							<div class="span6">
 								<h4><?php echo JText::_('COM_JINBOUND_FORM_INFORMATION'); ?></h4>
 								<div class="well">
-									<a href="<?php echo JInboundHelperUrl::edit('page', $this->page->id); ?>"><?php echo $this->escape($this->page->name); ?></a>
+									<h5><?php echo $this->escape($this->page->name); ?></h5>
+									<table class="table table-striped">
+										<?php $data = $this->item->formdata->toArray(); if (array_key_exists('lead', $data)) foreach ($data['lead'] as $key => $value) : ?>
+										<tr>
+											<td><?php echo $this->escape($key); ?></td>
+											<td><?php echo $this->escape(print_r($value, 1)); ?></td>
+										</tr>
+										<?php endforeach; ?>
+									</table>
 								</div>
 								<h4><?php echo JText::_('COM_JINBOUND_CURRENT_LEAD_NURTURING_CAMPAIGNS'); ?></h4>
 								<div class="well">

@@ -59,6 +59,7 @@ class JInboundControllerLead extends JInboundBaseController
 		$bind['id']          = 0;
 		$bind['published']   = 1;
 		$bind['campaign_id'] = $page->campaign;
+		$bind['formdata']    = json_encode($data);
 		// now get a lead table
 		$message     = JText::_('COM_JINBOUND_LEAD_SAVED');
 		$messageType = 'message';

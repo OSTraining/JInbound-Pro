@@ -12,6 +12,16 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerLead extends JInboundFormController
 {
+	public function save($key = null, $urlVar = null) {
+		$app  = JFactory::getApplication();
+		$data = $app->input->post->get('jform', array(), 'array');
+		if (array_key_exists('formdata', $data)) {
+			unset($formdata);
+		}
+		$data['formdata'] = json_encode($data);
+		return parent::save($key, $urlVar);
+	}
+	
 	public function status() {
 		$this->_changeLead('status');
 	}

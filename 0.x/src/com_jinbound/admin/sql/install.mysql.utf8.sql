@@ -194,6 +194,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_leads` (
 	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
 	COMMENT 'Date and Time record was checked out',
 	
+	`formdata` TEXT
+	COMMENT 'JSON encoded form data',
+	
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

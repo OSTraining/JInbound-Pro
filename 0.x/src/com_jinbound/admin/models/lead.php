@@ -51,6 +51,13 @@ class JInboundModelLead extends JInboundAdminModel
 		}
 		$item->_contact = $contact;
 		
+		// convert the formdata to an object
+		$formdata = new JRegistry;
+		if (!empty($item->formdata)) {
+			$formdata->loadString($item->formdata);
+			$item->formdata = $formdata;
+		}
+		
 		return $item;
 	}
 	
