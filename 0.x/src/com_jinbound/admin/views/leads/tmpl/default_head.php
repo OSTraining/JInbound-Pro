@@ -31,6 +31,9 @@ $listDirn  = $this->state->get('list.direction');
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_PRIORITY', 'Priority.name', $listDirn, $listOrder); ?>
 	</th>
 	<th width="10%">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN', 'Campaign.name', $listDirn, $listOrder); ?>
+	</th>
+	<th width="10%">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEAD_STATUS', 'Lead.status_id', $listDirn, $listOrder); ?>
 	</th>
 	<th width="10%">

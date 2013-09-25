@@ -61,6 +61,9 @@ if (!empty($this->items)) :
 			<?php echo JHtml::_('jinbound.priority', $item->id, $item->priority_id, 'leads.', $canChange); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
+			<?php echo $this->escape($item->campaign_name); ?>
+		</td>
+		<td class="hidden-phone hidden-tablet">
 			<?php echo JHtml::_('jinbound.status', $item->id, $item->status_id, 'leads.', $canChange); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">

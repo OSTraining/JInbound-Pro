@@ -14,6 +14,7 @@ class JInboundControllerLead extends JInboundBaseController
 {
 	public function save() {
 		$app    = JFactory::getApplication();
+		$debug  = defined('JDEBUG') && JDEBUG;
 		$Itemid = $app->input->get('Itemid', 0, 'int');
 		// fetch the page id
 		$id     = $app->input->post->get('page_id', 0, 'int');
@@ -27,6 +28,9 @@ class JInboundControllerLead extends JInboundBaseController
 		if (!$page || empty($page->id)) {
 			$this->setError(JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
 			return;
+		}
+		if ($debug) {
+			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_PAGE', htmlspecialchars(print_r($page, 1))));
 		}
 		// get the form data
 		if (!method_exists($page->formbuilder, 'toArray')) {
@@ -51,14 +55,25 @@ class JInboundControllerLead extends JInboundBaseController
 			}
 			$bind[$name] = $data['lead'][$name];
 		}
-		
 		// force some variables into this
-		$bind['id']        = 0;
-		$bind['published'] = 1;
+		$bind['id']          = 0;
+		$bind['published']   = 1;
+		$bind['campaign_id'] = $page->campaign;
 		// now get a lead table
 		$message     = JText::_('COM_JINBOUND_LEAD_SAVED');
 		$messageType = 'message';
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
+		// see if there is an existing lead for this user
+		if ($lead->load(array('first_name' => $bind['first_name'], 'last_name' => $bind['last_name']))) {
+			if ($debug) {
+				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_BEFORE_SAVE', htmlspecialchars(print_r($lead, 1))));
+			}
+			$bind['id'] = $lead->id;
+		}
+		// show data before bind
+		if ($debug) {
+			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_DATA_BEFORE_BIND', htmlspecialchars(print_r($bind, 1))));
+		}
 		if (!$lead->bind($bind)) {
 			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_BIND', $lead->getError());
 			$messageType = 'error';
@@ -70,6 +85,9 @@ class JInboundControllerLead extends JInboundBaseController
 		if (!$lead->store()) {
 			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_STORE', $lead->getError());
 			$messageType = 'error';
+		}
+		if ($debug) {
+			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_AFTER_SAVE', htmlspecialchars(print_r($lead, 1))));
 		}
 		
 		// alert if necessary

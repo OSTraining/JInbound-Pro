@@ -13,5 +13,6 @@ defined('JPATH_PLATFORM') or die;
 		<input type="hidden" name="task" value="lead.save" />
 		<input type="hidden" name="page_id" value="<?php echo (int) $this->item->id; ?>" />
 		<input type="hidden" name="Itemid" value="<?php echo JFactory::getApplication()->input->get('Itemid', 0, 'int'); ?>" />
+		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

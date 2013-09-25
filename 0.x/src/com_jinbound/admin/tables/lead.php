@@ -155,6 +155,10 @@ class JInboundTableLead extends JInboundTable
 			$this->_contact->load(array('name' => $this->first_name . ' ' . $this->last_name));
 		}
 		
+		if ($debug) {
+			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT', print_r($this->_contact, 1)));
+		}
+		
 		return $this->_contact;
 	}
 }

@@ -71,6 +71,9 @@ class JInboundModelLeads extends JInboundListModel
 			// join the status
 			->select('Status.name AS status_name')
 			->leftJoin('#__jinbound_lead_statuses AS Status ON Status.id = Lead.status_id')
+			// join the campaign
+			->select('Campaign.name AS campaign_name')
+			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Lead.campaign_id')
 			// group by lead
 			->group('Lead.id')
 		;
