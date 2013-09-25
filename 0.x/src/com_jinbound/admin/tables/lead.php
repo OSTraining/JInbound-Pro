@@ -53,6 +53,23 @@ class JInboundTableLead extends JInboundTable
 		return parent::bind($array, $ignore);
 	}
 	
+	public function check() {
+		// set empty id to null
+		if (empty($this->id)) {
+			$this->id = null;
+		}
+		// validate user info
+		if ('' == trim($this->first_name) && '' == trim($this->last_name)) {
+			$this->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));
+			return false;
+		}
+		if ('' == trim($this->email) || !JMailHelper::isEmailAddress($this->email)) {
+			$this->setError(JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
+			return false;
+		}
+		return true;
+	}
+	
 	/**
 	 * override to save a contact with this lead
 	 * 

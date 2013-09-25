@@ -48,16 +48,22 @@ class JInboundModelPage extends JInboundAdminModel
 			$reg = new JRegistry();
 			$formbuilder = $reg;
 		}
+		// count how many fields we've added
 		$allowedFields = 0;
+		// add the fields
 		foreach ($formbuilder->toArray() as $name => $field) {
+			// if this field isn't enabled, don't add
 			if (0 == $field['enabled']) {
 				continue;
 			}
+			// enabled - this field will be added
 			$allowedFields++;
+			// get the field type
 			$type = array_key_exists('type', $field) ? $field['type'] : 'text';
 			if (array_key_exists($type, $fieldtypes)) {
 				$type = $fieldtypes[$type];
 			}
+			// get the default class
 			$class = "";
 			switch ($type) {
 				case 'text':
@@ -69,11 +75,13 @@ class JInboundModelPage extends JInboundAdminModel
 					$class = "checkbox";
 					break;
 			}
+			// add the field
 			$xmlField = $xmlFieldset->addChild('field');
 			$xmlField->addAttribute('name', $name);
 			$xmlField->addAttribute('type', $type);
 			$xmlField->addAttribute('label', $field['title']);
 			$xmlField->addAttribute('description', $field['title']);
+			// add the options
 			if (array_key_exists('options', $field) && is_array($field['options']) && array_key_exists('name', $field['options'])) {
 				foreach ($field['options']['name'] as $k => $v) {
 					if (empty($v)) {
@@ -83,8 +91,13 @@ class JInboundModelPage extends JInboundAdminModel
 					$xmlOpt->addAttribute('value', $field['options']['value'][$k]);
 				}
 			}
+			// add the class
 			if (!empty($class)) {
 				$xmlField->addAttribute('class', $class);
+			}
+			// required
+			if (array_key_exists('enabled', $field) && $field['enabled']) {
+				$xmlField->addAttribute('required', true);
 			}
 		}
 		// if we have allowed fields, add them
