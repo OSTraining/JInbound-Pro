@@ -96,7 +96,7 @@ class JInboundModelPage extends JInboundAdminModel
 				$xmlField->addAttribute('class', $class);
 			}
 			// required
-			if (array_key_exists('enabled', $field) && $field['enabled']) {
+			if (array_key_exists('required', $field) && $field['required']) {
 				$xmlField->addAttribute('required', true);
 			}
 		}
