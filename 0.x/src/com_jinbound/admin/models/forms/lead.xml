@@ -141,7 +141,9 @@
 			label="COM_JINBOUND_CAMPAIGN"
 			description="COM_JINBOUND_CAMPAIGN_DESC"
 			class="input-block-level"
-		/>
+		>
+			<option value="0">JNONE</option>
+		</field>
 	</fieldset>
 
 </form>

@@ -61,6 +61,13 @@ class JInboundModelLead extends JInboundAdminModel
 		return $item;
 	}
 	
+	/**
+	 * get the lead status details for an item
+	 * 
+	 * @param unknown_type $id
+	 * @param unknown_type $value
+	 * @return mixed
+	 */
 	public function status($id, $value) {
 		$db = JFactory::getDbo();
 		
@@ -73,6 +80,13 @@ class JInboundModelLead extends JInboundAdminModel
 		return $db->query();
 	}
 	
+	/**
+	 * get the lead priority details
+	 * 
+	 * @param unknown_type $id
+	 * @param unknown_type $value
+	 * @return mixed
+	 */
 	public function priority($id, $value) {
 		$db = JFactory::getDbo();
 		
@@ -85,6 +99,11 @@ class JInboundModelLead extends JInboundAdminModel
 		return $db->query();
 	}
 	
+	/**
+	 * get lead notes
+	 * 
+	 * @param unknown_type $id
+	 */
 	public function getNotes($id = null) {
 		$item = $this->getItem($id);
 		$db = JFactory::getDbo();
@@ -108,6 +127,11 @@ class JInboundModelLead extends JInboundAdminModel
 		return $notes;
 	}
 	
+	/**
+	 * get lead page
+	 * 
+	 * @param unknown_type $id
+	 */
 	public function getPage($id = null) {
 		$item = $this->getItem($id);
 		$db = JFactory::getDbo();
@@ -130,6 +154,11 @@ class JInboundModelLead extends JInboundAdminModel
 		return $page;
 	}
 	
+	/**
+	 * get email records for lead
+	 * 
+	 * @param unknown_type $id
+	 */
 	public function getRecords($id = null) {
 		$item = $this->getItem($id);
 		$db = JFactory::getDbo();
@@ -154,5 +183,82 @@ class JInboundModelLead extends JInboundAdminModel
 		}
 		
 		return $records;
+	}
+	
+	public function getCampaign($id = null) {
+		$item = $this->getItem($id);
+		// our return object
+		$data = new stdClass;
+		$data->campaign = false;
+		$data->emails   = false;
+		// if the item has no campaign attached there is nothing to do
+		if (empty($item->campaign_id)) {
+			goto done;
+		}
+		// get the campaign from the database
+		$db = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('Campaign.*')
+			->from('#__jinbound_campaigns AS Campaign')
+			->where('Campaign.id = ' . (int) $item->campaign_id)
+		);
+		
+		try {
+			$campaign = $db->loadObject();
+		}
+		catch (Exception $e) {
+			// if there is an error just return the empty object
+			goto done;
+		}
+		// if this is not an object bail
+		if (!is_object($campaign)) {
+			goto done;
+		}
+		// assign
+		$data->campaign = $campaign;
+		
+		// fetch the emails associated with this campaign
+		$db->setQuery($db->getQuery(true)
+			->select('Email.*')
+			->from('#__jinbound_emails AS Email')
+			->select('Record.sent')
+			->leftJoin('#__jinbound_emails_records AS Record ON Record.email_id = Email.id AND Record.lead_id = ' . (int) $item->id)
+			->where('Email.campaign_id = ' . (int) $item->campaign_id)
+			->group('Email.id')
+		);
+		
+		try {
+			$emails = $db->loadObjectList();
+		}
+		catch (Exception $e) {
+			$emails = false;
+		}
+		// if the emails aren't empty, fix dates and assign
+		if (!empty($emails)) {
+			foreach ($emails as &$email) {
+				// force empty (null, false, whatever) to be false
+				if (empty($email->sent)) {
+					$email->sent = false;
+					continue;
+				}
+				// try to convert - any errors should set sent to false
+				try {
+					$date = new DateTime($email->sent);
+				}
+				catch (Exception $e) {
+					$date = false;
+				}
+				if (!is_a($date, 'DateTime')) {
+					$date = false;
+				}
+				$email->sent = $date;
+			}
+			$data->emails = $emails;
+		}
+		
+		// single exit point for function, to ensure this object is returned
+		done: {
+			return $data;
+		}
 	}
 }

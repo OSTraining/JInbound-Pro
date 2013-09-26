@@ -77,15 +77,18 @@ defined('JPATH_PLATFORM') or die;
 								</div>
 								<h4><?php echo JText::_('COM_JINBOUND_CURRENT_LEAD_NURTURING_CAMPAIGNS'); ?></h4>
 								<div class="well">
-									<?php if (!empty($this->records)) : ?>
+									<?php if (!empty($this->campaign->campaign)) : ?>
+									<h5><?php echo $this->escape($this->campaign->campaign->name); ?></h5>
+									<?php if (!empty($this->campaign->emails)) : ?>
 									<table class="table table-striped">
-										<?php foreach ($this->records as $record) : ?>
+										<?php foreach ($this->campaign->emails as $email) : ?>
 										<tr>
-											<td><a href="<?php echo JInboundHelperUrl::edit('email', $record->email_id); ?>"><?php echo $this->escape($record->email_name); ?></a></td>
-											<td><?php echo $this->escape($record->sent); ?></td>
+											<td><a href="<?php echo JInboundHelperUrl::edit('email', $email->id); ?>"><?php echo $this->escape($email->name); ?></a></td>
+											<td><?php echo ($email->sent ? $this->escape($email->sent->format(DateTime::RSS)) : ''); ?></td>
 										</tr>
 										<?php endforeach; ?>
 									</table>
+									<?php endif; ?>
 									<?php endif; ?>
 								</div>
 							</div>
