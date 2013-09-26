@@ -72,10 +72,6 @@
 		label="COM_JINBOUND_PAGE_FIELDSET_CONTENT"
 	>
 		<field
-			id="content_tips" name="content_tips"
-			type="jinboundtips"
-		/>
-		<field
 			id="heading" name="heading"
 			type="text"
 			label="COM_JINBOUND_HEADING"
@@ -131,10 +127,6 @@
 		name="imagetab"
 		label="COM_JINBOUND_PAGE_FIELDSET_IMAGE"
 	>
-		<field
-			id="imagetab_tips" name="imagetab_tips"
-			type="jinboundtips"
-		/>
 		<field
 			id="image" name="image"
 			type="media"
@@ -276,10 +268,6 @@
 		name="seo"
 		label="COM_JINBOUND_PAGE_FIELDSET_SEO"
 	>
-		<field
-			id="seo_tips" name="seo_tips"
-			type="jinboundtips"
-		/>
 		<field
 			id="metatitle" name="metatitle"
 			type="text"
