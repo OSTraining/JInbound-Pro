@@ -77,6 +77,11 @@
 	white-space: normal !important;
 }
 
+#jinbound_component .leadnotes .btn,
+#jinbound_component .leadnotes .btn span {
+	font-size: 13px !important;
+}
+
 #welcome_buttons {
 	padding-bottom: 8px;
 }
