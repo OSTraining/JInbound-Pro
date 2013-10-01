@@ -105,7 +105,12 @@ class JInboundModelLead extends JInboundAdminModel
 	 * @param unknown_type $id
 	 */
 	public function getNotes($id = null) {
-		$item = $this->getItem($id);
+		if (property_exists($this, 'item') && $this->item && $this->item->id == $id) {
+			$item = $this->item;
+		}
+		else {
+			$item = $this->getItem($id);
+		}
 		$db = JFactory::getDbo();
 		$db->setQuery($db->getQuery(true)
 			->select('id, created, text')
@@ -133,7 +138,12 @@ class JInboundModelLead extends JInboundAdminModel
 	 * @param unknown_type $id
 	 */
 	public function getPage($id = null) {
-		$item = $this->getItem($id);
+		if (property_exists($this, 'item') && $this->item && $this->item->id == $id) {
+			$item = $this->item;
+		}
+		else {
+			$item = $this->getItem($id);
+		}
 		$db = JFactory::getDbo();
 		$db->setQuery($db->getQuery(true)
 			->select('*')
@@ -160,7 +170,12 @@ class JInboundModelLead extends JInboundAdminModel
 	 * @param unknown_type $id
 	 */
 	public function getRecords($id = null) {
-		$item = $this->getItem($id);
+		if (property_exists($this, 'item') && $this->item && $this->item->id == $id) {
+			$item = $this->item;
+		}
+		else {
+			$item = $this->getItem($id);
+		}
 		$db = JFactory::getDbo();
 		$db->setQuery($db->getQuery(true)
 			->select('Record.*')
@@ -186,7 +201,12 @@ class JInboundModelLead extends JInboundAdminModel
 	}
 	
 	public function getCampaign($id = null) {
-		$item = $this->getItem($id);
+		if (property_exists($this, 'item') && $this->item && $this->item->id == $id) {
+			$item = $this->item;
+		}
+		else {
+			$item = $this->getItem($id);
+		}
 		// our return object
 		$data = new stdClass;
 		$data->campaign = false;

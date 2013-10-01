@@ -19,16 +19,29 @@ class JInboundTableLead extends JInboundTable
 	}
 	
 	public function load($keys = null, $reset = true) {
-		$load    = parent::load($keys, $reset);
+		// load
+		$load = parent::load($keys, $reset);
+		// convert formdata to an object
+		if (is_string($this->formdata)) {
+			$registry = new JRegistry;
+			$registry->loadString($this->formdata);
+			$this->formdata = $registry;
+		}
+		// set data from contact
 		$contact = $this->getContact();
-		$this->address  = $contact->address;
-		$this->phone    = $contact->telephone;
-		$this->email    = $contact->email_to;
-		$this->website  = $contact->webpage;
-		$this->suburb   = $contact->suburb;
-		$this->state    = $contact->state;
-		$this->country  = $contact->country;
-		$this->postcode = $contact->postcode;
+		$this->address      = $contact->address;
+		$this->phone_number = $contact->telephone;
+		$this->email        = $contact->email_to;
+		$this->website      = $contact->webpage;
+		$this->suburb       = $contact->suburb;
+		$this->state        = $contact->state;
+		$this->country      = $contact->country;
+		$this->postcode     = $contact->postcode;
+		// set company name from formdata
+		$lead = $this->formdata->get('lead');
+		if (is_object($lead) && property_exists($lead, 'company_name')) {
+			$this->company    = $lead->company_name;
+		}
 		return $load;
 	}
 	
@@ -49,6 +62,19 @@ class JInboundTableLead extends JInboundTable
 					unset($array[$var]);
 				}
 			}
+		}
+		if (isset($array['formdata'])) {
+			$registry = new JRegistry;
+			if (is_array($array['formdata'])) {
+				$registry->loadArray($array['formdata']);
+			}
+			else if (is_string($array['formdata'])) {
+				$registry->loadString($array['formdata']);
+			}
+			else if (is_object($array['formdata'])) {
+				
+			}
+			$array['formdata'] = (string) $registry;
 		}
 		return parent::bind($array, $ignore);
 	}
@@ -79,7 +105,7 @@ class JInboundTableLead extends JInboundTable
 	public function store($updateNulls = false) {
 		$app   = JFactory::getApplication();
 		$isNew = empty($this->id);
-		foreach (array('address', 'email', 'phone', 'website', 'suburb', 'state', 'country', 'postcode') as $col) {
+		foreach (array('address', 'email', 'phone_number', 'website', 'suburb', 'state', 'country', 'postcode') as $col) {
 			if (property_exists($this, $col)) {
 				unset($this->$col);
 			}
@@ -111,7 +137,7 @@ class JInboundTableLead extends JInboundTable
 			,	'state'      => $this->_state
 			,	'country'    => $this->_country
 			,	'postcode'   => $this->_postcode
-			,	'telephone'  => $this->_phone
+			,	'telephone'  => $this->_phone_number
 			,	'email_to'   => $this->_email
 			,	'webpage'    => $this->_website
 			,	'catid'      => $catid
@@ -170,10 +196,6 @@ class JInboundTableLead extends JInboundTable
 				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT_NAME_SEARCH', $this->first_name, $this->last_name));
 			}
 			$this->_contact->load(array('name' => $this->first_name . ' ' . $this->last_name));
-		}
-		
-		if ($debug) {
-			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT', print_r($this->_contact, 1)));
 		}
 		
 		return $this->_contact;

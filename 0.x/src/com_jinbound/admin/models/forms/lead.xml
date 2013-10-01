@@ -24,7 +24,7 @@
 		label="COM_JINBOUND_LEAD_FIELDSET_PROFILE"
 	>
 		<field
-			id="phone" name="phone"
+			id="phone_number" name="phone_number"
 			type="text"
 			label="COM_JINBOUND_PHONE"
 			description="COM_JINBOUND_PHONE_DESC"
