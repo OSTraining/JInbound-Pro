@@ -58,6 +58,7 @@ class JInboundModelPriorities extends JInboundListModel
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Priority');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Priority');
+		$this->filterPublished($query, $this->getState('filter.published'), 'Priority');
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Priority.name');

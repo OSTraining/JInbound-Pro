@@ -58,6 +58,7 @@ class JInboundModelStatuses extends JInboundListModel
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Status');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Status');
+		$this->filterPublished($query, $this->getState('filter.published'), 'Status');
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Status.name');

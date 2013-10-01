@@ -82,6 +82,7 @@ class JInboundModelLeads extends JInboundListModel
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Lead');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Lead');
+		$this->filterPublished($query, $this->getState('filter.published'), 'Lead');
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Lead.created');

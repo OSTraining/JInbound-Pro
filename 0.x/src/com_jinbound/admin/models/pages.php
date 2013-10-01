@@ -69,6 +69,7 @@ class JInboundModelPages extends JInboundListModel
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Page');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page', 'id', array('Page.name', 'Category.title'));
+		$this->filterPublished($query, $this->getState('filter.published'), 'Page');
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Page.name');

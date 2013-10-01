@@ -197,4 +197,28 @@ class JInboundListModel extends JModelList
 		}
 	}
 	
+	public function filterPublished(&$query, $status, $tablename, $column = 'published') {
+		// clean our variables
+		$filter    = JFilterInput::getInstance();
+		$tablename = $filter->clean($tablename, 'cmd');
+		$column    = $filter->clean($column, 'cmd');
+		$col       = $tablename . '.' . $column;
+		// get our dbo for cleaning texts
+		$db = JFactory::getDbo();
+		// search by column text
+		switch ($status) {
+			default:
+			case '':
+				$query->where("($col = 1 OR $col = 0)");
+				break;
+			case 0:
+			case 1:
+			case 2:
+			case -1:
+			case -2:
+				$query->where("$col = $status");
+				break;
+		}
+	}
+	
 }
