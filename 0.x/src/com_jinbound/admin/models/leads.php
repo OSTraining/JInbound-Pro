@@ -39,6 +39,7 @@ class JInboundModelLeads extends JInboundListModel
 			,	'Lead.created'
 			,	'Page.formname'
 			,	'Priority.name'
+			,	'Campaign.name'
 			,	'Status.name'
 			,	'Lead.note'
 			);
