@@ -191,6 +191,12 @@ class JInboundTableLead extends JInboundTable
 			}
 			$this->_contact->load($this->contact_id);
 		}
+		else if (!empty($this->_email)) {
+			if ($debug) {
+				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT_EMAIL_SEARCH', $this->_email));
+			}
+			$this->_contact->load(array('email' => $this->_email));
+		}
 		else if (!empty($this->first_name) && !empty($this->last_name)) {
 			if ($debug) {
 				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_CONTACT_NAME_SEARCH', $this->first_name, $this->last_name));
