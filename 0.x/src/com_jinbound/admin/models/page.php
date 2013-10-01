@@ -36,7 +36,9 @@ class JInboundModelPage extends JInboundAdminModel
 		// remove the sidebar stuff if layout isn't "a" or empty
 		$template = strtolower(JFactory::getApplication()->input->get('set', $form->getValue('layout', 'A'), 'cmd'));
 		if (!empty($template) && 'a' !== $template) {
+			// single length value - defined template
 			if (1 == JString::strlen($template)) {
+				// upper case
 				$template = JString::strtoupper($template);
 			}
 			$form->setValue('layout', null, $template);

@@ -24,6 +24,8 @@ class JInboundViewDashboard extends JInboundView
 		// get a reports view & load it's output
 		$app->input->set('tmpl', 'component');
 		$app->input->set('layout', 'default');
+		$app->setUserState('list.limit', 10);
+		$app->setUserState('list.start', 0);
 		$reportView = new JInboundViewReports();
 		
 		$this->reports = new stdClass;

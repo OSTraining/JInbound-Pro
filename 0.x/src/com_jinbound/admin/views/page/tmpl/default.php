@@ -15,7 +15,7 @@ echo $this->loadTemplate('edit');
 	var hideSidebar = function() {
 		var row = $('#jform_sidebartext').closest('.row-fluid'), d = [4];
 		switch($('#jform_layout').val()) {
-			case 'custom':
+			case '0':
 				d = [];
 			case 'A':
 				row.show();
@@ -28,6 +28,12 @@ echo $this->loadTemplate('edit');
 			$('#jinbound_default_tabs').tabs("option", "disabled", d);
 		}
 		catch (err) {
+			if (d.length) {
+				$('#jinbound_default_tabsTabs').find('li')[d[0]].hide();
+			}
+			else {
+				$('#jinbound_default_tabsTabs').find('li').show();
+			}
 		}
 	};
 	hideSidebar();
