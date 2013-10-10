@@ -102,13 +102,15 @@ defined('JPATH_PLATFORM') or die;
 									<?php echo JHtml::_('jinbound.leadnotes', $this->item->id, true); ?>
 								</div>
 								<div class="well">
-									<table class="table table-striped">
-									<?php if (!empty($this->notes)) : foreach ($this->notes as $note) : ?>
-										<tr>
-											<td><span class="label"><?php echo $note->created; ?></span></td>
-											<td class="note"><?php echo $this->escape($note->text); ?></td>
-										</tr>
-									<?php endforeach; endif; ?>
+									<table id="jinbound_leadnotes_table" class="table table-striped">
+										<tbody>
+										<?php if (!empty($this->notes)) : foreach ($this->notes as $note) : ?>
+											<tr>
+												<td><span class="label"><?php echo $note->created; ?></span></td>
+												<td class="note"><?php echo $this->escape($note->text); ?></td>
+											</tr>
+										<?php endforeach; endif; ?>
+										</tbody>
 									</table>
 								</div>
 							</div>

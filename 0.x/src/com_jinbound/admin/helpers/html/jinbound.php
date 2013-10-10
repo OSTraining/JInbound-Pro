@@ -102,13 +102,14 @@ abstract class JHtmlJInbound
 			$document->addScript(JInboundHelperUrl::media() . '/js/leadnotes.js');
 		}
 		
+		$id  = (int) $id;
 		$key = "lead_$id";
 		if (!array_key_exists($key, $notes)) {
 			$db = JFactory::getDbo();
 			$db->setQuery($db->getQuery(true)
 				->select('*')
 				->from('#__jinbound_notes')
-				->where($db->quoteName('lead_id') . ' = ' . (int) $id)
+				->where($db->quoteName('lead_id') . ' = ' . $id)
 			);
 			
 			try {
@@ -139,7 +140,7 @@ abstract class JHtmlJInbound
 					<div class="leadnotes-form-container" data-stopPropagation="true">
 						<fieldset class="well" data-stopPropagation="true">
 							<textarea class="leadnotes-new-text input-block-level" data-stopPropagation="true"></textarea>
-							<input type="hidden" name="lead_id" value="<?php echo (int) $id; ?>" />
+							<input type="hidden" name="lead_id" value="<?php echo $id; ?>" />
 							<button type="button" class="leadnotes-submit btn btn-primary pull-right" data-stopPropagation="true"><i class="icon-ok"> </i> <?php echo JText::_('JAPPLY'); ?> </button>
 						</fieldset>
 					</div>
