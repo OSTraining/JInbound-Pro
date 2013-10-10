@@ -47,6 +47,40 @@ class JInboundModelPages extends JInboundListModel
 		
 		parent::__construct($config);
 	}
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 */
+	protected function populateState($ordering = null, $direction = null)
+	{
+		parent::populateState($ordering, $direction);
+		
+		foreach (array('category', 'campaign') as $var) {
+			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
+		}
+	}
+
+	/**
+	 * Method to get a store id based on model configuration state.
+	 *
+	 * This is necessary because the model is used by the component and
+	 * different modules that might need different sets of data or different
+	 * ordering requirements.
+	 *
+	 * @param	string		$id	A prefix for the store id.
+	 *
+	 * @return	string		A store id.
+	 */
+	protected function getStoreId($id = '')
+	{
+		// Compile the store id.
+		$id	.= ':'.$this->getState('filter.category');
+		$id	.= ':'.$this->getState('filter.campaign');
+
+		return parent::getStoreId($id);
+	}
 	
 	protected function getListQuery()
 	{
@@ -70,6 +104,13 @@ class JInboundModelPages extends JInboundListModel
 		$this->appendAuthorToQuery($query, 'Page');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page', 'id', array('Page.name', 'Category.title'));
 		$this->filterPublished($query, $this->getState('filter.published'), 'Page');
+		// other filters
+		foreach (array('category', 'campaign') as $column) {
+			$filter = $this->getState('filter.' . $column);
+			if (!empty($filter)) {
+				$query->where('Page.' . $column . ' = ' . (int) $filter);
+			}
+		}
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Page.name');

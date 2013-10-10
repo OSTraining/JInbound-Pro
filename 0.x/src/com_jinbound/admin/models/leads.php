@@ -81,6 +81,7 @@ class JInboundModelLeads extends JInboundListModel
 		
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Lead');
+		// filter query
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Lead');
 		$this->filterPublished($query, $this->getState('filter.published'), 'Lead');
 		
