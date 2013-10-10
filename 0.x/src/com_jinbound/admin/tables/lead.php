@@ -95,7 +95,8 @@ class JInboundTableLead extends JInboundTable
 			$this->setError(JText::_('JLIB_DATABASE_ERROR_PLEASE_ENTER_YOUR_NAME'));
 			return false;
 		}
-		if ('' == trim($this->email) || !JMailHelper::isEmailAddress($this->email)) {
+		$email = empty($this->email) ? $this->_email : $this->email;
+		if ('' == trim($email) || !JMailHelper::isEmailAddress($email)) {
 			$this->setError(JText::_('JLIB_DATABASE_ERROR_VALID_MAIL'));
 			return false;
 		}
