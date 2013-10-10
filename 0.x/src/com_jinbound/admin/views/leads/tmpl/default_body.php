@@ -55,7 +55,7 @@ if (!empty($this->items)) :
 			<?php echo $this->escape($item->created); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
-			<a href="<?php echo $this->escape(JInboundHelperUrl::edit('page', $item->page_id)); ?>"><?php echo $this->escape($item->formname); ?></a>
+			<?php echo JHtml::_('jinbound.formdata', $item->id, $item->formname, $item->formdata, 'leads.', $canChange); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet">
 			<?php echo JHtml::_('jinbound.priority', $item->id, $item->priority_id, 'leads.', $canChange); ?>

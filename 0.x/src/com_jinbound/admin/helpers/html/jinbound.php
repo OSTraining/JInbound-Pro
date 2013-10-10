@@ -93,6 +93,89 @@ abstract class JHtmlJInbound
 		}
 	}
 	
+	public function formdata($id, $formname, $formdata) {
+		if (!is_a($formdata, 'JRegistry')) {
+			$registry = new JRegistry();
+			if (is_object($formdata)) {
+				$registry->loadObject($formdata);
+			}
+			else if (is_array($formdata)) {
+				$registry->loadArray($formdata);
+			}
+			else if (is_string($formdata)) {
+				$registry->loadString($formdata);
+			}
+			else {
+				return;
+			}
+			$data = $registry->toArray();
+		}
+		else {
+			$data = $formdata->toArray();
+		}
+		
+		$filter = JFilterInput::getInstance();
+		
+		?>
+			<div class="formdata">
+				<a href="#" class="formdata-modal"><?php echo $filter->clean($formname); ?></a>
+				<div class="formdata-container hide">
+					<div class="formdata-data">
+						<h4><?php echo JText::_('COM_JINBOUND_FORM_INFORMATION'); ?></h4>
+						<div class="well">
+							<table class="table table-striped">
+								<?php if (array_key_exists('lead', $data)) foreach ($data['lead'] as $key => $value) : ?>
+								<tr>
+									<td><?php echo $filter->clean($key); ?></td>
+									<td><?php echo $filter->clean(print_r($value, 1)); ?></td>
+								</tr>
+								<?php endforeach; ?>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		<?php
+		
+		// add script once
+		static $scripted;
+		
+		if (!is_null($scripted)) {
+			return;
+		}
+		
+		$scripted = true;
+		
+		$doc = JFactory::getDocument();
+		// if no scripts can be added, bail
+		if (!method_exists($doc, 'addScriptDeclaration')) {
+			return;
+		}
+		JHtml::_('behavior.modal');
+		// build script
+		$script = <<<EOF
+(function($){
+	$(document).ready(function(){
+		$('.formdata-modal').click(function(e){
+			try {
+				console.log('opening modal');
+			}
+			catch (err) {
+			}
+			var data = $(e.target).parent().find('.formdata-data');
+			if (data.length) {
+				SqueezeBox.setContent('adopt', data[0]);
+			}
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	});
+})(jQuery);
+EOF
+;
+		$doc->addScriptDeclaration($script);
+	}
+	
 	public function leadnotes($id) {
 		static $notes;
 		
