@@ -101,7 +101,12 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 						tr.append($('<td></td>').append($('<a href="' + data.items[i].url + '"></a>').text(data.items[i].name)));
 					}
 					tr.append($('<td></td>').text(data.items[i].created));
-					tr.append($('<td></td>').append($('<a href="' + data.items[i].page_url + '"></a>').text(data.items[i].formname)));
+					if (null === data.items[i].formname) {
+						tr.append($('<td></td>').text(' '));
+					}
+					else {
+						tr.append($('<td></td>').append($('<a href="' + data.items[i].page_url + '"></a>').text(data.items[i].formname)));
+					}
 					b.append(tr);
 				}
 				t.append(b);
