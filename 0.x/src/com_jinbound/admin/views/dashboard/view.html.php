@@ -30,6 +30,7 @@ class JInboundViewDashboard extends JInboundView
 		
 		$this->reports = new stdClass;
 		$this->reports->glance       = $reportView->loadTemplate(null, 'glance');
+		$this->reports->script       = $reportView->loadTemplate('script', 'default');
 		$this->reports->top_pages    = $reportView->loadTemplate('pages', 'top');
 		$this->reports->recent_leads = $reportView->loadTemplate('leads', 'recent');
 		

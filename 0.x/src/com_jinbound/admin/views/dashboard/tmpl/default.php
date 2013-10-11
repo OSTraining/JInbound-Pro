@@ -119,3 +119,7 @@ defined('JPATH_PLATFORM') or die;
 
   </div>
 </div>
+<?php
+
+echo $this->reports->script;
+

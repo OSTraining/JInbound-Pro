@@ -7,30 +7,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$leads = $this->getRecentLeads();
-
 ?>
-<!-- Row 5: Recent Leads -->
 <div class="row-fluid">
-	<h4><img alt="<?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/recent_leads.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?></span></h4>
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th><?php echo JText::_('COM_JINBOUND_NAME'); ?></th>
-				<th><?php echo JText::_('COM_JINBOUND_DATE'); ?></th>
-				<th><?php echo JText::_('COM_JINBOUND_FORM_CONVERTED_ON'); ?></th>
-				<th><?php echo JText::_('COM_JINBOUND_WEBSITE'); ?></th>
-			</tr>
-		</thead>
-		<tbody>
-<?php if (!empty($leads)) foreach ($leads as $lead) : ?>
-			<tr>
-				<td><a href="<?php echo JInboundHelperUrl::edit('lead', $lead->id, false); ?>"><?php echo $this->escape($lead->name); ?></a></td>
-				<td><?php echo $this->escape($lead->date); ?></td>
-				<td><a href="<?php echo JInboundHelperUrl::edit('page', $lead->page_id, false); ?>"><?php echo $this->escape($lead->formname); ?></a></td>
-				<td><a href="<?php echo $this->escape($lead->website); ?>" target="_blank"><?php echo $this->escape($lead->website); ?></a></td>
-			</tr>
-<?php endforeach; ?>
-		</tbody>
-	</table>
+	<div class="span12">
+		<h4><img alt="<?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/recent_leads.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_RECENT_LEADS'); ?></span></h4>
+		<div id="reports_recent_leads"></div>
+	</div>
 </div>
