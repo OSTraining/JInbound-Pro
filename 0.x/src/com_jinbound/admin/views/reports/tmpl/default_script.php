@@ -18,10 +18,10 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 ?>
 <script type="text/javascript">
 (function($){
-	window.jinbound_leads_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=leads&format=json', false); ?>';
+	window.jinbound_leads_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=leads&format=json&filter_order=Lead.created&filter_order_Dir=desc', false); ?>';
 	window.jinbound_leads_limit = 10;
 	window.jinbound_leads_start = 0;
-	window.jinbound_pages_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=pages&format=json', false); ?>';
+	window.jinbound_pages_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=pages&format=json&filter_order=Page.hits&filter_order_Dir=desc', false); ?>';
 	window.jinbound_pages_limit = 10;
 	window.jinbound_pages_start = 0;
 	var makeButtons = function(callback, pagination, cols) {
@@ -157,7 +157,12 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 			}
 		});
 	};
-	window.fetchLeads(0, 10);
-	window.fetchPages(0, 10);
+	var start = $('#filter_begin'), end = $('#filter_end'), start_date = '', end_date = '';
+	if (start.length && end.length) {
+		start_date = start.val();
+		end_date = end.val();
+	}
+	window.fetchLeads(0, 10, start_date, end_date);
+	window.fetchPages(0, 10, start_date, end_date);
 })(jQuery);
 </script>

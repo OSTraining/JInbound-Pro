@@ -104,7 +104,7 @@ class JInboundModelReports extends JInboundListModel
 			->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
 			->group('Contact.id')
 			->group('Lead.id')
-			->order('Lead.created DESC')
+			->order('Lead.created ASC')
 		);
 		
 		try {

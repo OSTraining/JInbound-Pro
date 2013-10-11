@@ -21,6 +21,5 @@ defined('JPATH_PLATFORM') or die;
 	</div>
 </div>
 <?php
-echo $this->loadTemplate('script');
 echo $this->loadTemplate('leads', 'recent');
 echo $this->loadTemplate('pages', 'top');

@@ -47,6 +47,42 @@ class JInboundModelLeads extends JInboundListModel
 		
 		parent::__construct($config);
 	}
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 */
+	protected function populateState($ordering = null, $direction = null)
+	{
+		parent::populateState($ordering, $direction);
+		
+		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
+		$this->setState('filter.start', $value);
+		
+		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
+		$this->setState('filter.end', $value);
+	}
+
+	/**
+	 * Method to get a store id based on model configuration state.
+	 *
+	 * This is necessary because the model is used by the component and
+	 * different modules that might need different sets of data or different
+	 * ordering requirements.
+	 *
+	 * @param	string		$id	A prefix for the store id.
+	 *
+	 * @return	string		A store id.
+	 */
+	protected function getStoreId($id = '')
+	{
+		// Compile the store id.
+		$id	.= ':'.$this->getState('filter.start');
+		$id	.= ':'.$this->getState('filter.end');
+
+		return parent::getStoreId($id);
+	}
 	
 	protected function getListQuery()
 	{
@@ -84,6 +120,32 @@ class JInboundModelLeads extends JInboundListModel
 		// filter query
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Lead');
 		$this->filterPublished($query, $this->getState('filter.published'), 'Lead');
+		
+		$value = $this->getState('filter.start');
+		if (!empty($value)) {
+			try {
+				$date = new DateTime($value);
+			}
+			catch (Exception $e) {
+				$date = false;
+			}
+			if ($date) {
+				$query->where('Lead.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
+			}
+		}
+		
+		$value = $this->getState('filter.end');
+		if (!empty($value)) {
+			try {
+				$date = new DateTime($value);
+			}
+			catch (Exception $e) {
+				$date = false;
+			}
+			if ($date) {
+				$query->where('Lead.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
+			}
+		}
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Lead.created');

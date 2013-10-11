@@ -60,6 +60,12 @@ class JInboundModelPages extends JInboundListModel
 		foreach (array('category', 'campaign') as $var) {
 			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
 		}
+		
+		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
+		$this->setState('filter.start', $value);
+		
+		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
+		$this->setState('filter.begin', $value);
 	}
 
 	/**
@@ -78,6 +84,8 @@ class JInboundModelPages extends JInboundListModel
 		// Compile the store id.
 		$id	.= ':'.$this->getState('filter.category');
 		$id	.= ':'.$this->getState('filter.campaign');
+		$id	.= ':'.$this->getState('filter.start');
+		$id	.= ':'.$this->getState('filter.end');
 
 		return parent::getStoreId($id);
 	}
@@ -109,6 +117,34 @@ class JInboundModelPages extends JInboundListModel
 			$filter = $this->getState('filter.' . $column);
 			if (!empty($filter)) {
 				$query->where('Page.' . $column . ' = ' . (int) $filter);
+			}
+		}
+		
+		$value = $this->getState('filter.start');
+		if (!empty($value)) {
+			try {
+				$date = new DateTime($value);
+			}
+			catch (Exception $e) {
+				$date = false;
+			}
+			if ($date) {
+				$query->where('Lead.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Conversion.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
+			}
+		}
+		
+		$value = $this->getState('filter.end');
+		if (!empty($value)) {
+			try {
+				$date = new DateTime($value);
+			}
+			catch (Exception $e) {
+				$date = false;
+			}
+			if ($date) {
+				$query->where('Lead.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Conversion.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
 			}
 		}
 		
