@@ -94,10 +94,24 @@ class JInboundControllerLead extends JInboundBaseController
 		// alert if necessary
 		$emails = $page->notification_email;
 		if (!empty($emails)) {
-			$emails = explode(',', $emails);
+			$html   = array();
+			$html[] = '<table>';
+			foreach ($data['lead'] as $key => $val) {
+				$html[] = '	<tr>';
+				$html[] = '		<td>';
+				$html[] = '			' . htmlspecialchars($key);
+				$html[] = '		</td>';
+				$html[] = '		<td>';
+				$html[] = '			' . htmlspecialchars($val);
+				$html[] = '		</td>';
+				$html[] = '	</tr>';
+			}
+			$html[]  = '</table>';
+			$emails  = explode(',', $emails);
 			$subject = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_SUBJECT');
-			$body    = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_BODY');
+			$body    = JText::sprintf('COM_JINBOUND_NOTIFICATION_EMAIL_BODY', $page->formname, implode("\n", $html));
 			$mailer  = JFactory::getMailer();
+			$mailer->IsHTML(true);
 			$mailer->setSubject($subject);
 			$mailer->setBody($body);
 			$mailer->addBCC($emails);

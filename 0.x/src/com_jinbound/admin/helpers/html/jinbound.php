@@ -93,7 +93,7 @@ abstract class JHtmlJInbound
 		}
 	}
 	
-	public function formdata($id, $formname, $formdata) {
+	public function formdata($id, $formname, $formdata, $script = true) {
 		if (!is_a($formdata, 'JRegistry')) {
 			$registry = new JRegistry();
 			if (is_object($formdata)) {
@@ -118,8 +118,12 @@ abstract class JHtmlJInbound
 		
 		?>
 			<div class="formdata">
+<?php if ($script) : ?>
 				<a href="#" class="formdata-modal"><?php echo $filter->clean($formname); ?></a>
-				<div class="formdata-container hide">
+<?php else : ?>
+				<h3><?php echo $filter->clean($formname); ?></h3>
+<?php endif; ?>
+				<div class="formdata-container<?php if ($script) : ?> hide<?php endif; ?>">
 					<div class="formdata-data">
 						<h4><?php echo JText::_('COM_JINBOUND_FORM_INFORMATION'); ?></h4>
 						<div class="well">
@@ -148,12 +152,12 @@ abstract class JHtmlJInbound
 		
 		$doc = JFactory::getDocument();
 		// if no scripts can be added, bail
-		if (!method_exists($doc, 'addScriptDeclaration')) {
+		if (!$script || !method_exists($doc, 'addScriptDeclaration')) {
 			return;
 		}
 		JHtml::_('behavior.modal');
 		// build script
-		$script = <<<EOF
+		$source = <<<EOF
 (function($){
 	$(document).ready(function(){
 		$('.formdata-modal').click(function(e){
@@ -173,7 +177,7 @@ abstract class JHtmlJInbound
 })(jQuery);
 EOF
 ;
-		$doc->addScriptDeclaration($script);
+		$doc->addScriptDeclaration($source);
 	}
 	
 	public function leadnotes($id) {
