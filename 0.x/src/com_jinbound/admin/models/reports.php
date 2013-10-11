@@ -97,6 +97,7 @@ class JInboundModelReports extends JInboundListModel
 			->select('Page.id AS page_id')
 			->select('Contact.name AS name')
 			->select('Lead.created AS date')
+			->select('Lead.formdata AS formdata')
 			->select('Page.formname AS formname')
 			->select('Contact.webpage AS website')
 			->from('#__jinbound_leads AS Lead')

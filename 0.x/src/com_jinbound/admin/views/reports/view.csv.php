@@ -23,7 +23,33 @@ class JInboundViewReports extends JInboundCsvView
 		}
 		switch ($this->getLayout()) {
 			case 'leads':
-				$this->data = $model->getRecentLeads();
+				$leads = $model->getRecentLeads();
+				$data  = array();
+				$extra = array();
+				if (!empty($leads)) {
+					foreach ($leads as &$lead) {
+						$formdata = new JRegistry();
+						$formdata->loadString($lead->formdata);
+						$lead->formdata = $formdata->toArray();
+						if (array_key_exists('lead', $lead->formdata) && is_array($lead->formdata['lead'])) {
+							$extra = array_values(array_unique(array_merge($extra, array_keys($lead->formdata['lead']))));
+						}
+					}
+				}
+				if (!empty($extra)) {
+					foreach ($leads as &$lead) {
+						foreach ($extra as $col) {
+							$value = '';
+							if (array_key_exists('lead', $lead->formdata) && is_array($lead->formdata['lead']) && array_key_exists($col, $lead->formdata['lead'])) {
+								$value = $lead->formdata['lead'][$col];
+							}
+							$lead->$col = $value;
+						}
+						unset($lead->formdata);
+						$data[] = $lead;
+					}
+				}
+				$this->data = $data;
 				break;
 			case 'pages':
 				$this->data = $model->getTopLandingPages();

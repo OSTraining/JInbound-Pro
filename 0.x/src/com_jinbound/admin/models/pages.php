@@ -109,7 +109,7 @@ class JInboundModelPages extends JInboundListModel
 			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Page.id')
 			->select('COUNT(Conversion.id) AS conversions')
 			->leftJoin('#__jinbound_leads AS Conversion ON Conversion.page_id = Page.id AND Conversion.status_id IN ((SELECT Status.id FROM #__jinbound_lead_statuses AS Status WHERE Status.final = 1))')
-			->select('IF(Page.hits > 0, (COUNT(Conversion.id) / Page.hits) * 100, 0) AS conversion_rate')
+			->select('ROUND(IF(Page.hits > 0, (COUNT(Conversion.id) / Page.hits) * 100, 0), 2) AS conversion_rate')
 			->group('Page.id')
 		;
 		
