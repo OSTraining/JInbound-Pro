@@ -57,10 +57,15 @@ class JInboundModelLeads extends JInboundListModel
 	{
 		parent::populateState($ordering, $direction);
 		
+		$app    = JFactory::getApplication();
+		$format = $app->input->get('format', '', 'cmd');
+		
 		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
+		if ('json' != $format) $value = '';
 		$this->setState('filter.start', $value);
 		
 		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
+		if ('json' != $format) $value = '';
 		$this->setState('filter.end', $value);
 	}
 

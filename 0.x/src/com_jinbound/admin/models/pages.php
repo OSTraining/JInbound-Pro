@@ -57,15 +57,20 @@ class JInboundModelPages extends JInboundListModel
 	{
 		parent::populateState($ordering, $direction);
 		
+		$app    = JFactory::getApplication();
+		$format = $app->input->get('format', '', 'cmd');
+		
 		foreach (array('category', 'campaign') as $var) {
 			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
 		}
 		
 		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
+		if ('json' != $format) $value = '';
 		$this->setState('filter.start', $value);
 		
 		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
-		$this->setState('filter.begin', $value);
+		if ('json' != $format) $value = '';
+		$this->setState('filter.end', $value);
 	}
 
 	/**

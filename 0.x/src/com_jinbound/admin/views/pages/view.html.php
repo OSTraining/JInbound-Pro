@@ -44,4 +44,10 @@ class JInboundViewPages extends JInboundListView
 		,	'conversions'    => JText::_('COM_JINBOUND_CONVERSIONS')
 		);
 	}
+	
+	public function addToolBar() {
+		// export icon
+		JToolBarHelper::custom('reports.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
+		parent::addToolBar();
+	}
 }

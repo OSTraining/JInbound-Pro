@@ -28,4 +28,10 @@ class JInboundViewLeads extends JInboundListView
 		,	'Lead.note'        => JText::_('COM_JINBOUND_LEAD_NOTE')
 		);
 	}
+	
+	public function addToolBar() {
+		// export icon
+		JToolBarHelper::custom('reports.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS', false);
+		parent::addToolBar();
+	}
 }

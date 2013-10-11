@@ -74,12 +74,10 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 		window.jinbound_leads_start = start;
 		var filter = '';
 		if (arguments.length > 2) {
-			if (arguments[2]) {
-				filter += '&filter_start=' + arguments[2];
-			}
-			if (arguments[3]) {
-				filter += '&filter_end=' + arguments[3];
-			}
+			filter += '&filter_start=' + arguments[2];
+		}
+		if (arguments.length > 3) {
+			filter += '&filter_end=' + arguments[3];
 		}
 		$.ajax(window.jinbound_leads_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
@@ -117,12 +115,10 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 		window.jinbound_pages_start = start;
 		var filter = '';
 		if (arguments.length > 2) {
-			if (arguments[2]) {
-				filter += '&filter_start=' + arguments[2];
-			}
-			if (arguments[3]) {
-				filter += '&filter_end=' + arguments[3];
-			}
+			filter += '&filter_start=' + arguments[2];
+		}
+		if (arguments.length > 3) {
+			filter += '&filter_end=' + arguments[3];
 		}
 		$.ajax(window.jinbound_pages_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
