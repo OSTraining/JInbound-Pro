@@ -51,6 +51,39 @@ class JInboundModelLead extends JInboundAdminModel
 		}
 		$item->_contact = $contact;
 		
+		// now that we have the contact, load formdata for any other leads that may be linked to the contact
+		$item->_formdatas = array();
+		if ($item->contact_id) {
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select('Lead.formdata')
+				->select('Page.name AS pagename')
+				->from('#__jinbound_leads AS Lead')
+				->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
+				->where('Lead.contact_id = ' . (int) $item->contact_id)
+				//->where('Lead.id <> ' . (int) $item->id)
+				->group('Lead.id')
+			;
+			$db->setQuery($query);
+			
+			try {
+				$datas = $db->loadObjectList();
+			}
+			catch (Exception $e) {
+				$datas = false;
+			}
+			
+			if (is_array($datas) && !empty($datas)) {
+				foreach ($datas as $data) {
+					$reg = new JRegistry;
+					$reg->loadString($data->formdata);
+					$reg->set('pagename', $data->pagename);
+					$item->_formdatas[] = $reg->toArray();
+				}
+			}
+			
+		}
+		
 		// convert the formdata to an object
 		$formdata = new JRegistry;
 		if (!empty($item->formdata)) {

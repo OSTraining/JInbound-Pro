@@ -238,6 +238,43 @@ EOF
 		
 	}
 	
+	public static function startSlider($selector = 'myAccordian', $params = array()) {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			JHtml::_('bootstrap.framework');
+			return JHtml::_('bootstrap.startAccordion', $selector, $params);
+		}
+		else {
+			return JHtml::_('sliders.start', $selector, $params);
+		}
+	}
+	
+	public static function endSlider() {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			return JHtml::_('bootstrap.endTabSet');
+		}
+		else {
+			return JHtml::_('sliders.end');
+		}
+	}
+	
+	public static function addSlide($selector, $text, $id, $class = '') {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			return JHtml::_('bootstrap.addSlide', $selector, $text, $id, $class);
+		}
+		else {
+			return JHtml::_('sliders.panel', $text, $id);
+		}
+	}
+	
+	public static function endSlide() {
+		if (JInbound::version()->isCompatible('3.1.0')) {
+			return JHtml::_('bootstrap.endSlide');
+		}
+		else {
+			return '';
+		}
+	}
+	
 	public static function startTabSet($tabSetName, $options = array()) {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			JHtml::_('bootstrap.framework');

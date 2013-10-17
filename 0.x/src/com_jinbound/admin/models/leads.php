@@ -93,31 +93,45 @@ class JInboundModelLeads extends JInboundListModel
 	{
 		// Create a new query object.
 		$db = $this->getDbo();
-
-		// main query
+		
+		// select columns
 		$query = $db->getQuery(true)
-			// main table
 			->select('Lead.*')
-			->from('#__jinbound_leads AS Lead')
-			// join the contact
 			->select('Contact.email_to AS email')
 			->select('Contact.name AS name')
-			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
-			// join the form data
 			->select('Page.formbuilder')
 			->select('Page.formname')
-			->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
-			// join the priority
 			->select('Priority.name AS priority_name')
-			->leftJoin('#__jinbound_priorities AS Priority ON Priority.id = Lead.priority_id')
-			// join the status
 			->select('Status.name AS status_name')
-			->leftJoin('#__jinbound_lead_statuses AS Status ON Status.id = Lead.status_id')
-			// join the campaign
 			->select('Campaign.name AS campaign_name')
-			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Lead.campaign_id')
-			// group by lead
+		;
+		
+		// group by contact but only on the main leads page
+		if ('leads' == JFactory::getApplication()->input->get('view')) {
+			$query
+			->select('GROUP_CONCAT(Lead.id) AS lead_ids')
+			->from('#__contact_details AS Contact')
+			->leftJoin('#__jinbound_leads AS Lead ON Contact.id = Lead.contact_id')
+			->group('Contact.id')
+			;
+		}
+		// group by lead
+		else {
+			$query
+			->select('Lead.id AS lead_ids') // just to keep columns the same
+			->from('#__jinbound_leads AS Lead')
+			->leftJoin('#__contact_details AS Contact ON Contact.id = Lead.contact_id')
 			->group('Lead.id')
+			;
+		}
+		
+		// join in the remaining tables
+		// this has to be done after the initial Lead/Contact from/join to prevent sql errors
+		$query
+		->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
+		->leftJoin('#__jinbound_priorities AS Priority ON Priority.id = Lead.priority_id')
+		->leftJoin('#__jinbound_lead_statuses AS Status ON Status.id = Lead.status_id')
+		->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Lead.campaign_id')
 		;
 		
 		// add author to query
