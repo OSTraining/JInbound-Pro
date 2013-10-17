@@ -7,5 +7,14 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-TODO: social media buttons
+// render a module position here
+$modules = JModuleHelper::getModules('jinbound_social');
+
+if (!empty($modules)) {
+	foreach ($modules as $module) {
+		$mparams = new JRegistry;
+		$mparams->loadString($module->params);
+		echo JModuleHelper::renderModule($module, $mparams->toArray());
+	}
+}
+
