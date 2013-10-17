@@ -46,6 +46,9 @@ window.jinbound_leadnotes_token = false;
 						var count     = container.find('.leadnotes-count');
 						var single    = $('#jinbound_leadnotes_table');
 						notes.empty();
+						if (single && single.length) {
+							single.empty();
+						}
 						count.text(parseInt(response.notes.length, 10));
 						for (var i = 0, n = response.notes.length; i < n; i++) {
 							var row = $('<div class="leadnote alert-message"><span class="label"></span><div class="leadnote-text"></div></div>');
@@ -56,7 +59,7 @@ window.jinbound_leadnotes_token = false;
 								var trow = $('<tr><td><span class="label"></span></td><td class="note"></td></tr>');
 								trow.find('.label').text(response.notes[i].created);
 								trow.find('.note').text(response.notes[i].text);
-								single.find('tbody').append(row);
+								single.find('tbody').append(trow);
 							}
 						}
 						container.find('textarea').val('');
