@@ -9,6 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 $fieldsets = $this->form->getFieldsets();
 
+if (!empty($fieldsets) && !(1 == count($fieldsets) && array_key_exists('default', $fieldsets))) :
 ?>
 
 <div id="jinbound_default_tabs">
@@ -45,4 +46,6 @@ $fieldsets = $this->form->getFieldsets();
 	<?php endforeach; ?>
 <?php echo JHtml::_('jinbound.endTabSet'); ?>
 </div>
-			
+<?php
+
+endif;
