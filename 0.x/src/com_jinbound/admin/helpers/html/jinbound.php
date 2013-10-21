@@ -311,4 +311,12 @@ EOF
 			return JHtml::_('tabs.end');
 		}
 	}
+	
+	public static function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
+		$states = array(
+				1       => array('unsetFinal',        'COM_JINBOUND_FINAL', 'JLIB_HTML_UNSETDEFAULT_ITEM',      'JDEFAULT',     false,  'default',              'default'),
+				0       => array('setFinal',          '',                     'JLIB_HTML_SETDEFAULT_ITEM',    '',                     false,  'notdefault',   'notdefault'),
+		);
+		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
+	}
 }

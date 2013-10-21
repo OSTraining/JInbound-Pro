@@ -14,4 +14,64 @@ class JInboundControllerStatuses extends JControllerAdmin
 	public function getModel($name='Status', $prefix = 'JInboundModel') {
 		return parent::getModel($name, $prefix, array('ignore_request' => true));
 	}
+	
+	public function setDefault() {
+		// Check for request forgeries
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		
+		// Initialise variables.
+		$pks = JRequest::getVar('cid', array(), 'post', 'array');
+		
+		try
+		{
+			if (empty($pks)) {
+				throw new Exception(JText::_('COM_JINBOUND_NO_STATUS_SELECTED'));
+			}
+		
+			JArrayHelper::toInteger($pks);
+		
+			// Pop off the first element.
+			$id = array_shift($pks);
+			$model = $this->getModel();
+			$model->setDefault($id);
+			$this->setMessage(JText::_('COM_JINBOUND_SUCCESS_DEFAULT_STATUS_SET'));
+		
+		}
+		catch (Exception $e)
+		{
+			JError::raiseWarning(500, $e->getMessage());
+		}
+		
+		$this->setRedirect('index.php?option=com_jinbound&view=statuses');
+	}
+	
+	public function setFinal() {
+		// Check for request forgeries
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		
+		// Initialise variables.
+		$pks = JRequest::getVar('cid', array(), 'post', 'array');
+		
+		try
+		{
+			if (empty($pks)) {
+				throw new Exception(JText::_('COM_JINBOUND_NO_STATUS_SELECTED'));
+			}
+		
+			JArrayHelper::toInteger($pks);
+		
+			// Pop off the first element.
+			$id = array_shift($pks);
+			$model = $this->getModel();
+			$model->setFinal($id);
+			$this->setMessage(JText::_('COM_JINBOUND_SUCCESS_FINAL_STATUS_SET'));
+		
+		}
+		catch (Exception $e)
+		{
+			JError::raiseWarning(500, $e->getMessage());
+		}
+		
+		$this->setRedirect('index.php?option=com_jinbound&view=statuses');
+	}
 }

@@ -56,7 +56,7 @@ if (!empty($this->items)) :
 			<?php echo JHtml::_('jgrid.isdefault', $item->default, $i, 'statuses.', !$item->default && $canChange, 'cb'); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JHtml::_('jgrid.isdefault', $item->final, $i, 'statuses.', !$item->final && $canChange, 'cb'); ?>
+			<?php echo JHtml::_('jinbound.isfinal', $item->final, $i, 'statuses.', !$item->final && $canChange, 'cb'); ?>
 		</td>
 		<td class="order">
 			<?php if ($canChange) : ?>
