@@ -12,7 +12,7 @@ defined('JPATH_PLATFORM') or die;
 	<!-- visits -->
 	<div class="span3 text-center">
 		<h3><?php echo $this->getVisitCount(); ?></h3>
-		<span><?php echo JText::_('COM_JINBOUND_WEBSITE_VISITS'); ?></span>
+		<span><?php echo JText::_('COM_JINBOUND_LANDING_PAGE_VIEWS'); ?></span>
 	</div>
 	<!-- arrow -->
 	<div class="span1 text-center">
