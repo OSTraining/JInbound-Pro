@@ -61,7 +61,7 @@ class JInboundControllerLead extends JInboundBaseController
 		$bind['campaign_id'] = $page->campaign;
 		$bind['formdata']    = json_encode($data);
 		// now get a lead table
-		$message     = JText::_('COM_JINBOUND_LEAD_SAVED');
+		$message     = '';
 		$messageType = 'message';
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
 		// see if there is an existing lead for this user
@@ -144,8 +144,12 @@ class JInboundControllerLead extends JInboundBaseController
 			}
 		}
 		
-		
-		$app->redirect($redirect, $message, $messageType);
+		if (empty($message)) {
+			$app->redirect($redirect);
+		}
+		else {
+			$app->redirect($redirect, $message, $messageType);
+		}
 		$app->close();
 	}
 }
