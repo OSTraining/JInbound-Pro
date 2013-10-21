@@ -37,9 +37,10 @@ class JInboundViewDashboard extends JInboundView
 		// get RSS view and display its contents
 		JInbound::registerLibrary('JInboundRSSView', 'views/rssview');
 		$app->input->set('layout', 'rss');
+		$url = 'http://feeds.feedburner.com/jinbound';
 		$rss = new JInboundRSSView();
-		$rss->url = 'http://anything-digital.com/News/?format=feed';
-		$rss->getFeed('http://anything-digital.com/News/?format=feed');
+		$rss->url = $url;
+		$rss->getFeed($url);
 		$this->feed = $rss->loadTemplate(null, 'rss');
 		
 		// reset template and layout data
