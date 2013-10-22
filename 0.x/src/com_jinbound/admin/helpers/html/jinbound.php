@@ -314,8 +314,8 @@ EOF
 	
 	public static function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
-				1       => array('unsetFinal',        'COM_JINBOUND_FINAL', 'JLIB_HTML_UNSETDEFAULT_ITEM',      'JDEFAULT',     false,  'default',              'default'),
-				0       => array('setFinal',          '',                     'JLIB_HTML_SETDEFAULT_ITEM',    '',                     false,  'notdefault',   'notdefault'),
+				1       => array('unsetFinal',        'COM_JINBOUND_FINAL', 'COM_JINBOUND_HTML_UNSETFINAL_ITEM',      'COM_JINBOUND_FINAL',     false,  'default',              'default'),
+				0       => array('setFinal',          '',                     'COM_JINBOUND_HTML_SETFINAL_ITEM',    '',                     false,  'notdefault',   'notdefault'),
 		);
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}

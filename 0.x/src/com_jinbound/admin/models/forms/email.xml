@@ -91,7 +91,6 @@
 		<field
 			id="htmlbody" name="htmlbody"
 			type="editor"
-			filter="safehtml"
 			label="COM_JINBOUND_EMAIL_HTMLBODY"
 			description="COM_JINBOUND_EMAIL_HTMLBODY_DESC"
 			class="input-block-level"
