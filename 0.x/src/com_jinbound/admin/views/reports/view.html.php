@@ -66,7 +66,7 @@ class JInboundViewReports extends JInboundListView
 			$gpview = new JInboundView(array());
 			$gpview->addToolbar();
 			// set the title (because we're skipping the list view's addToolBar later)
-			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name)), 'jinbound-'.strtolower($this->_name));
+			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_REPORTS')), 'jinbound-'.strtolower($this->_name));
 		}
 		$set = true;
 	}

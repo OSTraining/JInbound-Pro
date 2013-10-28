@@ -172,20 +172,20 @@
 			default="stop"
 			class="input-block-level"
 		>
-			<option value="stop">Stop This Lead Nurturing Campaign</option>
-			<option value="donotsend">Do Not Send Lead Nurturing Campaign</option>
+			<option value="stop">COM_JINBOUND_STOP_THIS_LEAD_NURTURING_CAMPAIGN</option>
+			<option value="donotsend">COM_JINBOUND_DO_NOT_SEND_LEAD_NURTURING_CAMPAIGN</option>
 		</field>
 
 		<field
 			id="converts_on_same_campaign" name="converts_on_same_campaign"
 			type="list"
 			label="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CAMPAIGN"
-			description="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CMAPAIGN_DESC"
+			description="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CAMPAIGN_DESC"
 			default="donotsend"
 			class="input-block-level"
 		>
-			<option value="stop">Stop This Lead Nurturing Campaign</option>
-			<option value="donotsend">Do Not Send Lead Nurturing Campaign</option>
+			<option value="stop">COM_JINBOUND_STOP_THIS_LEAD_NURTURING_CAMPAIGN</option>
+			<option value="donotsend">COM_JINBOUND_DO_NOT_SEND_LEAD_NURTURING_CAMPAIGN</option>
 		</field>
 		
 		<field
@@ -232,9 +232,9 @@
 			default="message"
 			class="input-large"
 		>
-			<option value="menuitem">Menu Item</option>
-			<option value="url">Redirect to URL</option>
-			<option value="message">Message</option>
+			<option value="menuitem">COM_JINBOUND_MENU_ITEM</option>
+			<option value="url">COM_JINBOUND_REDIRECT_TO_URL</option>
+			<option value="message">COM_JINBOUND_MESSAGE</option>
 		</field>
 
 		<field
