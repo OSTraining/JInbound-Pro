@@ -107,6 +107,9 @@ class JInboundModelEmails extends JInboundListModel
 			->leftJoin('#__jinbound_emails_records AS Record ON Record.lead_id = Lead.id AND Record.email_id = Email.id')
 			->where('Record.id IS NULL')
 			->where('DATE_ADD(Lead.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
+			->where('Email.published = 1')
+			->where('Page.published = 1')
+			->where('Campaign.published = 1')
 			// NOTE: Grouping order is VERY important here!!!!!
 			// the query has to be grouped FIRST by emails, THEN by contacts
 			// otherwise we don't get the correct data!!!!!!
