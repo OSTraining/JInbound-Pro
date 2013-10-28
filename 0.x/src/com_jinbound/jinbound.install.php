@@ -109,6 +109,8 @@ class com_JInboundInstallerScript
 		jimport('joomla.filesystem.file');
 		jimport('joomla.form.form');
 		
+		$version = new JVersion;
+		
 		if (method_exists($parent, 'extension_root')) {
 			$configfile = $parent->getPath('extension_root') . '/config.xml';
 		}
@@ -130,7 +132,16 @@ class com_JInboundInstallerScript
 				$fields = $form->getFieldset($fieldset->name);
 				if (!empty($fields)) {
 					foreach ($fields as $name => $field) {
-						$params[$field->__get('name')] = $field->__get('value');
+						$fieldname  = $field->__get('name');
+						$fieldvalue = $field->__get('value');
+						// handle some compat params
+						switch ($fieldname) {
+							case 'load_bootstrap_back':
+								$fieldvalue = (int) (!$version->isCompatible('3.0.0'));
+								break;
+							default: break;
+						}
+						$params[$fieldname] = $fieldvalue;
 					}
 				}
 			}
