@@ -21,6 +21,10 @@ class JInboundViewReports extends JInboundListView
 		return $this->_callModelMethod('getVisitCount');
 	}
 	
+	public function getViewsToLeads() {
+		return $this->_callModelMethod('getViewsToLeads');
+	}
+	
 	public function getLeadCount() {
 		return $this->_callModelMethod('getLeadCount');
 	}

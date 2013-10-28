@@ -30,6 +30,7 @@ class JInboundModelStatuses extends JInboundListModel
 				'Status.name'
 			,	'Status.published'
 			,	'Status.default'
+			,	'Status.active'
 			,	'Status.final'
 			,	'Status.ordering'
 			,	'Status.description'

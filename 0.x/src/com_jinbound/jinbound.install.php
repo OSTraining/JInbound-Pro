@@ -272,6 +272,7 @@ class com_JInboundInstallerScript
 				'published'   => 1,
 				'ordering'    => $i + 1,
 				'default'     => (int) ($i == $default),
+				'active'      => (int) !('NOT_INTERESTED' == $p),
 				'final'       => (int) ($i == $final)
 			);
 			$table->bind($bind);

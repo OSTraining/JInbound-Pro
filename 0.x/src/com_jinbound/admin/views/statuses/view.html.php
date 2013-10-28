@@ -22,6 +22,7 @@ class JInboundViewStatuses extends JInboundListView
 			'Status.name'        => JText::_('COM_JINBOUND_NAME')
 		,	'Status.published'   => JText::_('COM_JINBOUND_PUBLISHED')
 		,	'Status.default'     => JText::_('COM_JINBOUND_DEFAULT')
+		,	'Status.active'      => JText::_('COM_JINBOUND_ACTIVE')
 		,	'Status.final'       => JText::_('COM_JINBOUND_FINAL')
 		,	'Status.ordering'    => JText::_('JGRID_HEADING_ORDERING')
 		,	'Status.description' => JText::_('COM_JINBOUND_DESCRIPTION')

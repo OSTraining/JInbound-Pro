@@ -69,7 +69,7 @@ class JInboundModelReports extends JInboundListModel
 	}
 	
 	/**
-	 * Gets the total number of leads
+	 * Gets the total number of active leads
 	 * 
 	 * @return integer
 	 */
@@ -77,6 +77,8 @@ class JInboundModelReports extends JInboundListModel
 		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
 			->select('COUNT(Lead.id)')
 			->from('#__jinbound_leads AS Lead')
+			->leftJoin('#__jinbound_lead_statuses AS Status ON Lead.status_id = Status.id')
+			->where('(Status.active = 1 OR Status.active IS NULL)') // users with no status are probably new and something went wonky
 		);
 		
 		try {
@@ -128,9 +130,10 @@ class JInboundModelReports extends JInboundListModel
 			->select('COUNT(Lead.id) AS conversions')
 			->select('IF(Page.hits > 0, (COUNT(Lead.id) / Page.hits) * 100, 0) AS conversion_rate')
 			->from('#__jinbound_pages AS Page')
-			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Lead.id')
-			//->leftJoin('#__jinbound_statuses AS Status ON Status.id = Lead.status_id AND Status.final = 1')
+			->leftJoin('#__jinbound_statuses AS Status ON Status.final = 1')
+			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Lead.id AND Lead.status_id = Status.id')
 			->group('Page.id')
+			->order('conversion_rate DESC')
 			->order('Page.hits DESC')
 		);
 		
@@ -190,6 +193,25 @@ class JInboundModelReports extends JInboundListModel
 	
 	public function getPublishedStatus() {
 		return false;
+	}
+	
+	public function getViewsToLeads() {
+		static $rate;
+		
+		if (is_null($rate)) {
+			$count = (int) $this->getLeadCount();
+			$hits  = (int) $this->getVisitCount();
+			if (0 < $hits) {
+				$rate = ($count / $hits) * 100; 
+			}
+			else {
+				$rate = 0;
+			}
+			
+			$rate = number_format($rate, 2);
+		}
+		
+		return $rate;
 	}
 	
 }

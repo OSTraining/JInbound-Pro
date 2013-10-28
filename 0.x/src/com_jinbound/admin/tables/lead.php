@@ -117,6 +117,19 @@ class JInboundTableLead extends JInboundTable
 				unset($this->$col);
 			}
 		}
+		
+		// check status for this lead
+		if (empty($this->status_id)) {
+			$this->_db->setQuery('SELECT id FROM #__jinbound_lead_statuses WHERE default = 1 AND published = 1');
+			
+			try {
+				$this->status_id = (int) $this->_db->loadResult();
+			}
+			catch (Exception $e) {
+				$this->status_id = 0;
+			}
+		}
+		
 		$store = parent::store();
 		if ($store) {
 			// get the category id for jinbound contacts

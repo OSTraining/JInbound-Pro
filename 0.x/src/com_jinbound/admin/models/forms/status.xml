@@ -30,6 +30,18 @@
 			class="input-medium"
 			default="1"
 		/>
+		
+		<field
+			id="active" name="active"
+			type="list"
+			label="COM_JINBOUND_ACTIVE"
+			description="COM_JINBOUND_ACTIVE_DESC"
+			default="0"
+			class="input-medium"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
 
 		<field
 			id="id" name="id"

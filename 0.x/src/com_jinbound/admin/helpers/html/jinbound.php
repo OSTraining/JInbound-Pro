@@ -319,4 +319,12 @@ EOF
 		);
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
+	
+	public static function isactive($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
+		$states = array(
+				1       => array('unsetActive',        'COM_JINBOUND_ACTIVE', 'COM_JINBOUND_HTML_UNSETACTIVE_ITEM',      'COM_JINBOUND_ACTIVE',     false,  'default',              'default'),
+				0       => array('setActive',          '',                     'COM_JINBOUND_HTML_SETACTIVE_ITEM',    '',                     false,  'notdefault',   'notdefault'),
+		);
+		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
+	}
 }

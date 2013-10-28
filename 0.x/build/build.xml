@@ -154,7 +154,13 @@
 		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark" filtering="true">
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark"
-				includes="${cfg.pfx.mod}${cfg.name}_social_bookmark.php,${cfg.pfx.mod}${cfg.name}_social_bookmark.xml,index.html,icons/,css/"
+				includes="${cfg.pfx.mod}${cfg.name}_social_bookmark.php,${cfg.pfx.mod}${cfg.name}_social_bookmark.xml,index.html,css/"
+			/>
+		</copy>
+		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark" filtering="false">
+			<fileset
+				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark"
+				includes="icons/"
 			/>
 		</copy>
 

@@ -231,6 +231,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_lead_statuses` (
 	`default` tinyint(1) default '0'
 	COMMENT 'Default status',
 	
+	`active` tinyint(1) default '0'
+	COMMENT 'Active statuses count towards leads, inactive do not',
+	
 	`final` tinyint(1) default '0'
 	COMMENT 'Final status',
 	
