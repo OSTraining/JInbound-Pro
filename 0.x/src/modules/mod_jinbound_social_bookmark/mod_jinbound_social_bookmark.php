@@ -71,7 +71,7 @@ $customalt4 = $params->get("customalt4");
 
 $padding = $params->get("padding");
 
-$doc=&JFactory::getDocument();
+$doc=JFactory::getDocument();
 $css=array();
 $css[]='.nsb_container a{';
 $css[]="\tpadding:".$params->get('padding').'px; float:'.$params->get('iposition').'; display:inline-block;';
