@@ -38,4 +38,54 @@ class plgContentJInbound extends JPlugin
 		}
 		parent::__construct($subject, $config);
 	}
+	
+	/**
+	 * onContentBeforeSave event - dummy for now
+	 * 
+	 * @param unknown_type $context
+	 * @param unknown_type $table
+	 * @param unknown_type $isNew
+	 */
+	public function onContentBeforeSave($context, &$table, $isNew) {
+		if (!self::$_run || 'com_jinbound.lead' != $context) {
+			return true;
+		}
+		if (defined('JDEBUG') && JDEBUG) {
+			JFactory::getApplication()->enqueueMessage(__METHOD__);
+		}
+		return true;
+	}
+	
+	/**
+	 * onContentAfterSave event - dummy for now
+	 * 
+	 * @param unknown_type $context
+	 * @param unknown_type $table
+	 * @param unknown_type $isNew
+	 */
+	public function onContentAfterSave($context, &$table, $isNew) {
+		if (!self::$_run || 'com_jinbound.lead' != $context) {
+			return true;
+		}
+		if (defined('JDEBUG') && JDEBUG) {
+			JFactory::getApplication()->enqueueMessage(__METHOD__);
+		}
+		return true;
+	}
+	
+	/**
+	 * onContentAfterDelete event - dummy for now
+	 * 
+	 * @param unknown_type $context
+	 * @param unknown_type $item
+	 */
+	public function onContentAfterDelete($context, $item) {
+		if (!self::$_run || 'com_jinbound.lead' != $context) {
+			return true;
+		}
+		if (defined('JDEBUG') && JDEBUG) {
+			JFactory::getApplication()->enqueueMessage(__METHOD__);
+		}
+		return true;
+	}
 }
