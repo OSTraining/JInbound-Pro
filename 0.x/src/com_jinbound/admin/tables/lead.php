@@ -120,8 +120,12 @@ class JInboundTableLead extends JInboundTable
 		
 		// check status for this lead
 		if (empty($this->status_id)) {
-			$this->_db->setQuery('SELECT id FROM #__jinbound_lead_statuses WHERE default = 1 AND published = 1');
-			
+			$this->_db->setQuery($this->_db->getQuery(true)
+				->select($this->_db->quoteName('id'))
+				->from('#__jinbound_lead_statuses')
+				->where($this->_db->quoteName('default') . ' = 1')
+				->where($this->_db->quoteName('published') . ' = 1')
+			);
 			try {
 				$this->status_id = (int) $this->_db->loadResult();
 			}
