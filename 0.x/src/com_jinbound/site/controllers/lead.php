@@ -13,9 +13,13 @@ JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller'
 class JInboundControllerLead extends JInboundBaseController
 {
 	public function save() {
-		$app    = JFactory::getApplication();
-		$debug  = defined('JDEBUG') && JDEBUG;
-		$Itemid = $app->input->get('Itemid', 0, 'int');
+		// init
+		$app        = JFactory::getApplication();
+		$debug      = defined('JDEBUG') && JDEBUG;
+		$Itemid     = $app->input->get('Itemid', 0, 'int');
+		$dispatcher = JDispatcher::getInstance();
+		// import content plugins
+		JPluginHelper::importPlugin('content');
 		// fetch the page id
 		$id     = $app->input->post->get('page_id', 0, 'int');
 		// fetch only the lead data
@@ -64,29 +68,46 @@ class JInboundControllerLead extends JInboundBaseController
 		$message     = '';
 		$messageType = 'message';
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
+		$isNew       = true;
 		// see if there is an existing lead for this user
 		if ($lead->load(array('first_name' => $bind['first_name'], 'last_name' => $bind['last_name']))) {
 			if ($debug) {
 				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_BEFORE_SAVE', htmlspecialchars(print_r($lead, 1))));
 			}
 			$bind['id'] = $lead->id;
+			$isNew = false;
 		}
 		// show data before bind
 		if ($debug) {
 			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_DATA_BEFORE_BIND', htmlspecialchars(print_r($bind, 1))));
 		}
+		// bind the data
 		if (!$lead->bind($bind)) {
 			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_BIND', $lead->getError());
 			$messageType = 'error';
+			goto done;
 		}
+		// check the data
 		if (!$lead->check()) {
 			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_CHECK', $lead->getError());
 			$messageType = 'error';
+			goto done;
 		}
+		// fire before save event
+		$result = $dispatcher->trigger('onContentBeforeSave', array('com_jinbound.lead', &$lead, $isNew));
+		if (in_array(false, $result, true)) {
+			$message     = $lead->getError();
+			$messageType = 'error';
+			goto done;
+		}
+		// store lead
 		if (!$lead->store()) {
 			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_STORE', $lead->getError());
 			$messageType = 'error';
+			goto done;
 		}
+		// fire after save event
+		$dispatcher->trigger('onContentAfterSave', array('com_jinbound.lead', &$lead, $isNew));
 		if ($debug) {
 			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_AFTER_SAVE', htmlspecialchars(print_r($lead, 1))));
 		}
@@ -144,12 +165,15 @@ class JInboundControllerLead extends JInboundBaseController
 			}
 		}
 		
-		if (empty($message)) {
-			$app->redirect($redirect);
+		done: {
+			if (empty($message)) {
+				$app->redirect($redirect);
+			}
+			else {
+				$app->redirect($redirect, $message, $messageType);
+			}
 		}
-		else {
-			$app->redirect($redirect, $message, $messageType);
-		}
+		
 		$app->close();
 	}
 }
