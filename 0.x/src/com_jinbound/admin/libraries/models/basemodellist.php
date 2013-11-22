@@ -116,10 +116,10 @@ class JInboundListModel extends JModelList
 	 */
 	public function getPublishedStatus() {
 		$list = array(
-			JHtml::_('select.option',  '',  'COM_JINBOUND_SELECT_PUBLISHED')
-		,	JHtml::_('select.option',  '1', 'COM_JINBOUND_SELECT_PUBLISHED_OPTION_PUBLISHED')
-		,	JHtml::_('select.option',  '0', 'COM_JINBOUND_SELECT_PUBLISHED_OPTION_UNPUBLISHED')
-		,	JHtml::_('select.option', '-2', 'COM_JINBOUND_SELECT_PUBLISHED_OPTION_TRASHED')
+			JHtml::_('select.option',  '',  JText::_('COM_JINBOUND_SELECT_PUBLISHED'))
+		,	JHtml::_('select.option',  '1', JText::_('COM_JINBOUND_SELECT_PUBLISHED_OPTION_PUBLISHED'))
+		,	JHtml::_('select.option',  '0', JText::_('COM_JINBOUND_SELECT_PUBLISHED_OPTION_UNPUBLISHED'))
+		,	JHtml::_('select.option', '-2', JText::_('COM_JINBOUND_SELECT_PUBLISHED_OPTION_TRASHED'))
 		);
 		return $list;
 	}
