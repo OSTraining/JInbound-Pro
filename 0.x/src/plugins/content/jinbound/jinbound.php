@@ -88,4 +88,26 @@ class plgContentJInbound extends JPlugin
 		}
 		return true;
 	}
+	
+	/**
+	 * onContentChangeState event - dummy for now
+	 * 
+	 * @param unknown_type $context
+	 * @param unknown_type $item
+	 */
+	public function onContentChangeState($context, $id, $value) {
+		if (!self::$_run) {
+			return true;
+		}
+		switch ($context) {
+			case 'com_jinbound.lead.status':
+			case 'com_jinbound.lead.priority':
+				break;
+			default: return true;
+		}
+		if (defined('JDEBUG') && JDEBUG) {
+			JFactory::getApplication()->enqueueMessage(__METHOD__);
+		}
+		return true;
+	}
 }
