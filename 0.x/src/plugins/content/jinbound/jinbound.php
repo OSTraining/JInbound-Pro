@@ -103,7 +103,8 @@ class plgContentJInbound extends JPlugin
 			case 'com_jinbound.lead.status':
 			case 'com_jinbound.lead.priority':
 				break;
-			default: return true;
+			default:
+				return true;
 		}
 		if (defined('JDEBUG') && JDEBUG) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__);

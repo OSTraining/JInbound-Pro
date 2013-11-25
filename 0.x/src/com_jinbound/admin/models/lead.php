@@ -103,6 +103,8 @@ class JInboundModelLead extends JInboundAdminModel
 	 */
 	public function status($id, $value) {
 		$dispatcher = JDispatcher::getInstance();
+		JPluginHelper::importPlugin('content');
+		
 		$db = JFactory::getDbo();
 		
 		$db->setQuery($db->getQuery(true)
@@ -132,6 +134,8 @@ class JInboundModelLead extends JInboundAdminModel
 	 */
 	public function priority($id, $value) {
 		$dispatcher = JDispatcher::getInstance();
+		JPluginHelper::importPlugin('content');
+		
 		$db = JFactory::getDbo();
 		
 		$db->setQuery($db->getQuery(true)
