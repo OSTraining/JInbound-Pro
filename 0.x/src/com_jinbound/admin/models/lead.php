@@ -95,13 +95,14 @@ class JInboundModelLead extends JInboundAdminModel
 	}
 	
 	/**
-	 * get the lead status details for an item
+	 * set the lead status details for an item
 	 * 
 	 * @param unknown_type $id
 	 * @param unknown_type $value
 	 * @return mixed
 	 */
 	public function status($id, $value) {
+		$dispatcher = JDispatcher::getInstance();
 		$db = JFactory::getDbo();
 		
 		$db->setQuery($db->getQuery(true)
@@ -110,17 +111,27 @@ class JInboundModelLead extends JInboundAdminModel
 			->where($db->quoteName('id') . ' = ' . (int) $id)
 		);
 		
-		return $db->query();
+		$return = $db->query();
+		
+		// Trigger the onContentChangeState event.
+		$result = $dispatcher->trigger('onContentChangeState', array('com_jinbound.lead.status', $id, $value));
+		
+		if (in_array(false, $result, true)) {
+			return false;
+		}
+		
+		return $return;
 	}
 	
 	/**
-	 * get the lead priority details
+	 * set the lead priority details
 	 * 
 	 * @param unknown_type $id
 	 * @param unknown_type $value
 	 * @return mixed
 	 */
 	public function priority($id, $value) {
+		$dispatcher = JDispatcher::getInstance();
 		$db = JFactory::getDbo();
 		
 		$db->setQuery($db->getQuery(true)
@@ -129,7 +140,16 @@ class JInboundModelLead extends JInboundAdminModel
 			->where($db->quoteName('id') . ' = ' . (int) $id)
 		);
 		
-		return $db->query();
+		$return = $db->query();
+		
+		// Trigger the onContentChangeState event.
+		$result = $dispatcher->trigger('onContentChangeState', array('com_jinbound.lead.priority', $id, $value));
+		
+		if (in_array(false, $result, true)) {
+			return false;
+		}
+		
+		return $return;
 	}
 	
 	/**
