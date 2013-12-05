@@ -47,11 +47,11 @@ class plgContentJInbound extends JPlugin
 	 * @param unknown_type $isNew
 	 */
 	public function onContentBeforeSave($context, &$table, $isNew) {
-		if (!self::$_run || 'com_jinbound.lead' != $context) {
+		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
 		if (defined('JDEBUG') && JDEBUG) {
-			JFactory::getApplication()->enqueueMessage(__METHOD__);
+			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
 	}
@@ -64,11 +64,27 @@ class plgContentJInbound extends JPlugin
 	 * @param unknown_type $isNew
 	 */
 	public function onContentAfterSave($context, &$table, $isNew) {
-		if (!self::$_run || 'com_jinbound.lead' != $context) {
+		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
 		if (defined('JDEBUG') && JDEBUG) {
-			JFactory::getApplication()->enqueueMessage(__METHOD__);
+			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
+		}
+		return true;
+	}
+	
+	/**
+	 * onContentBeforeDelete event - dummy for now
+	 * 
+	 * @param unknown_type $context
+	 * @param unknown_type $item
+	 */
+	public function onContentBeforeDelete($context, $item) {
+		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
+			return true;
+		}
+		if (defined('JDEBUG') && JDEBUG) {
+			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
 	}
@@ -80,11 +96,11 @@ class plgContentJInbound extends JPlugin
 	 * @param unknown_type $item
 	 */
 	public function onContentAfterDelete($context, $item) {
-		if (!self::$_run || 'com_jinbound.lead' != $context) {
+		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
 		if (defined('JDEBUG') && JDEBUG) {
-			JFactory::getApplication()->enqueueMessage(__METHOD__);
+			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
 	}
@@ -96,18 +112,11 @@ class plgContentJInbound extends JPlugin
 	 * @param unknown_type $item
 	 */
 	public function onContentChangeState($context, $id, $value) {
-		if (!self::$_run) {
+		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
-		switch ($context) {
-			case 'com_jinbound.lead.status':
-			case 'com_jinbound.lead.priority':
-				break;
-			default:
-				return true;
-		}
 		if (defined('JDEBUG') && JDEBUG) {
-			JFactory::getApplication()->enqueueMessage(__METHOD__);
+			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
 	}

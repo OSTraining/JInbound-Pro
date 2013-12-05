@@ -7,6 +7,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+JFactory::getLanguage()->load('com_jinbound', JPATH_ADMINISTRATOR);
+
 if (jimport('joomla.application.component.controller')) {
 	$controller = JController::getInstance('JInbound');
 }

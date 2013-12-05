@@ -99,6 +99,7 @@ class com_JInboundInstallerScript
 				$this->_saveDefaults($parent);
 			case 'update':
 				$this->_checkContactCategory();
+				$this->_checkContactSubscriptions();
 				$this->_checkDefaultPriorities();
 				$this->_checkDefaultStatuses();
 				break;
@@ -289,6 +290,44 @@ class com_JInboundInstallerScript
 			$table->bind($bind);
 			$table->check();
 			$table->store();
+		}
+	}
+	
+	function _checkContactSubscriptions() {
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('Contact.id')
+			->from('#__contact_details AS Contact')
+			->leftJoin('#__jinbound_subscriptions AS Subs ON Subs.contact_id = Contact.id')
+			->where('Subs.enabled IS NULL')
+			->group('Contact.id')
+		);
+		try {
+			$contacts = $db->loadColumn();
+			if (!is_array($contacts) || empty($contacts)) {
+				return;
+			}
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage());
+			return;
+		}
+		JArrayHelper::toInteger($contacts);
+		$query = $db->getQuery(true)
+			->insert('#__jinbound_subscriptions')
+			->columns(array('contact_id', 'enabled'))
+		;
+		foreach ($contacts as $contact) {
+			$query->values("$contact, 1");
+		}
+		$db->setQuery($query);
+		try {
+			$db->query();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage());
+			return;
 		}
 	}
 }

@@ -77,6 +77,8 @@ class JInboundModelEmails extends JInboundListModel
 	 * 
 	 */
 	public function send() {
+		JInbound::registerHelper('url');
+		
 		$db       = $this->getDbo();
 		$out      = defined('JDEBUG') && JDEBUG;
 		$interval = $out ? 'MINUTE' : 'DAY';
@@ -105,11 +107,13 @@ class JInboundModelEmails extends JInboundListModel
 			->leftJoin('#__jinbound_campaigns AS Campaign ON Page.campaign = Campaign.id')
 			->leftJoin('#__jinbound_emails AS Email ON Email.campaign_id = Campaign.id')
 			->leftJoin('#__jinbound_emails_records AS Record ON Record.lead_id = Lead.id AND Record.email_id = Email.id')
+			->leftJoin('#__jinbound_subscriptions AS Sub ON Contact.id = Sub.contact_id')
 			->where('Record.id IS NULL')
 			->where('DATE_ADD(Lead.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
 			->where('Email.published = 1')
 			->where('Page.published = 1')
 			->where('Campaign.published = 1')
+			->where('Sub.enabled <> 0')
 			// NOTE: Grouping order is VERY important here!!!!!
 			// the query has to be grouped FIRST by emails, THEN by contacts
 			// otherwise we don't get the correct data!!!!!!
@@ -137,6 +141,11 @@ class JInboundModelEmails extends JInboundListModel
 		$now = JFactory::getDate();
 		
 		foreach ($results as $result) {
+			// add unsubscribe link to email contents
+			$unsubscribe = JInboundHelperUrl::toFull(JInboundHelperUrl::task('unsubscribe', false, array('email' => $result->email)));
+			$result->htmlbody    = $result->htmlbody . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_HTML', $unsubscribe);
+			$result->plainbody   = $result->plainbody . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_PLAIN', $unsubscribe);
+			
 			if ($out) {
 				echo '<h3>Result</h3><pre>' . print_r($result, 1) . '</pre>';
 			}

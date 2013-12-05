@@ -197,6 +197,33 @@ class JInboundTableLead extends JInboundTable
 			else {
 				$stored = $this->_db->insertObject($this->_tbl, $this, $k);
 			}
+			// add a subscriptions value, if one doesn't exist
+			$this->_db->setQuery($this->_db->getQuery(true)
+				->select('id')
+				->from('#__jinbound_subscriptions')
+				->where('contact_id = ' . (int) $this->contact_id)
+			);
+			try {
+				$sub = $this->_db->loadResult();
+			}
+			catch (Exception $e) {
+				$this->setError($e->getMessage());
+				return false;
+			}
+			if (empty($sub)) {
+				$this->_db->setQuery($this->_db->getQuery(true)
+					->insert('#__jinbound_subscriptions')
+					->columns(array('contact_id', 'enabled'))
+					->values((int) $this->contact_id . ', 1')
+				);
+				try {
+					$this->_db->query();
+				}
+				catch (Exception $e) {
+					$this->setError($e->getMessage());
+					return false;
+				}
+			}
 		}
 		return $store;
 	}
