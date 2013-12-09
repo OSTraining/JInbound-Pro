@@ -124,6 +124,13 @@
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.install.php,admin/,language/,site/"
+				excludes="admin/liveupdate/"
+			/>
+		</copy>
+		<copy todir="${cfg.packages}/temp/staging/component/admin" filtering="false">
+			<fileset
+				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/admin"
+				includes="liveupdate/"
 			/>
 		</copy>
 		<mkdir dir="${cfg.packages}/temp/staging/component/media" />

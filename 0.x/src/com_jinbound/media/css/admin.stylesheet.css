@@ -91,3 +91,7 @@
 	min-height: 45px;
 	padding: 10px 0 0;
 }
+
+#live_update .icon a div {
+	float: left;
+}

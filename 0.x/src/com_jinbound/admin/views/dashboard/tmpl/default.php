@@ -20,6 +20,10 @@ defined('JPATH_PLATFORM') or die;
       		<p class="lead"><?php echo JText::_('COM_JINBOUND_WELCOME_TO_JINBOUND'); ?></p>
       	</div>
       </div>
+      <!-- Row 1.5 - LiveUpdate-->
+      <div class="row-fluid" id="live_update">
+	      <?php echo LiveUpdate::getIcon(); ?>
+	  </div>
       <!-- Row 2 - Buttons -->
       <div class="row-fluid" id="welcome_buttons">
       	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">

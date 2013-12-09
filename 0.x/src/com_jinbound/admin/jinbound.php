@@ -11,6 +11,13 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound')) {
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
+// rewritten LiveUpdate code
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/liveupdate/liveupdate.php';
+if ('liveupdate' == JFactory::getApplication()->input->get('view', '')) {
+	LiveUpdate::handleRequest();
+	return;
+}
+
 if (jimport('joomla.application.component.controller')) {
 	$controller = JController::getInstance('JInbound');
 }

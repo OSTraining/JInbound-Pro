@@ -54,6 +54,7 @@
 			<folder>controllers</folder>
 			<folder>helpers</folder>
 			<folder>libraries</folder>
+			<folder>liveupdate</folder>
 			<folder>models</folder>
 			<folder>sql</folder>
 			<folder>tables</folder>
