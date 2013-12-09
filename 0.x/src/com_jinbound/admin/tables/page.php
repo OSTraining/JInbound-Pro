@@ -30,6 +30,8 @@ class JInboundTablePage extends JInboundTable
 	 * overload bind
 	 */
 	public function bind($array, $ignore = '') {
+		// enforce alias checks
+		
 		// parameters
 		if (isset($array['formbuilder'])) {
 			$registry = new JRegistry;
@@ -46,5 +48,16 @@ class JInboundTablePage extends JInboundTable
 		}
 	
 		return parent::bind($array, $ignore);
+	}
+	
+	public function store($updateNulls = false) {
+		// Verify that the alias is unique
+		$table = JTable::getInstance('Page', 'JInboundTable');
+		if ($table->load(array('alias'=>$this->alias, 'category'=>$this->category)) && ($table->id != $this->id || $this->id==0)) {
+			$this->setError(JText::_('COM_JINBOUND_ERROR_UNIQUE_ALIAS'));
+			return false;
+		}
+		// Attempt to store the user data.
+		return parent::store($updateNulls);
 	}
 }
