@@ -60,7 +60,7 @@ class JInboundController extends JInboundBaseController
 		try {
 			$contact_id = (int) $db->loadResult();
 			if (empty($contact_id)) {
-				throw new Exception(JText::_('COM_JINBOUND_UNSUBSCRIBE_FAILED_NO_CONTACT'));
+				throw new Exception('COM_JINBOUND_UNSUBSCRIBE_FAILED_NO_CONTACT');
 			}
 		}
 		catch (Exception $e) {
@@ -96,7 +96,7 @@ class JInboundController extends JInboundBaseController
 		}
 		// handle exit
 		done: {
-			$app->redirect($redirect, $message, $type);
+			$app->redirect($redirect, JText::_($message), $type);
 			jexit();
 		}
 	}
