@@ -16,8 +16,8 @@ else
 }
 $url = $htp."://".$_SERVER['HTTP_HOST'] . getenv('REQUEST_URI');  
 $rss_url = $htp."://".$_SERVER['HTTP_HOST'];
-$isize = $params->get('isize');
-$iset = $params->get('iset');
+$isize = $params->get('isize', 32);
+$iset = $params->get('iset', 'aqu');
 $iposition = $params->get('iposition');
 $tweetbtn = $params->get('tweetbtn');
 $tweetbtnsize = $params->get('tweetbtnsize');
