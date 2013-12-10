@@ -16,6 +16,24 @@ class JInboundTablePage extends JInboundTable
 		parent::__construct('#__jinbound_pages', 'id', $db);
 	}
 	
+	function check() {
+		// Check for valid name.
+		if (trim($this->name) == '') {
+			$this->setError(JText::_('COM_JINBOUND_WARNING_PROVIDE_VALID_NAME'));
+			return false;
+		}
+	
+		if (empty($this->alias)) {
+			$this->alias = $this->name;
+		}
+		$this->alias = JApplication::stringURLSafe($this->alias);
+		if (trim(str_replace('-', '', $this->alias)) == '') {
+			$this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
+		}
+		
+		return parent::check();
+	}
+	
 	public function load($keys = null, $reset = true) {
 		$load = parent::load($keys, $reset);
 		if (is_string($this->formbuilder)) {
@@ -30,8 +48,6 @@ class JInboundTablePage extends JInboundTable
 	 * overload bind
 	 */
 	public function bind($array, $ignore = '') {
-		// enforce alias checks
-		
 		// parameters
 		if (isset($array['formbuilder'])) {
 			$registry = new JRegistry;
