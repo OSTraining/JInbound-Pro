@@ -56,6 +56,9 @@ if (!empty($this->items)) :
 			<?php echo $item->category_name; ?>
 		</td>
 		<td class="hidden-phone">
+			<?php echo $item->layout; ?>
+		</td>
+		<td class="hidden-phone">
 			<?php echo $item->hits; ?>
 		</td>
 		<td class="hidden-phone">

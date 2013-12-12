@@ -21,19 +21,22 @@ $listDirn  = $this->state->get('list.direction');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LANDINGPAGE_NAME', 'Page.name', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Page.published', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY', 'Page.category', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th class="hidden-phone">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LAYOUT', 'Page.layout', $listDirn, $listOrder); ?>
+	</th>
+	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_VIEWS', 'Page.hits', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_SUBMISSIONS', 'submissions', $listDirn, $listOrder); ?>
 	</th>
-	<th>
+	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'conversions', $listDirn, $listOrder); ?>
 	</th>
 </tr>
