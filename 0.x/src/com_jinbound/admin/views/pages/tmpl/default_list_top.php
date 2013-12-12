@@ -9,7 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 <h2><?php echo JText::_('COM_JINBOUND_CREATE_A_NEW_LANDING_PAGE'); ?></h2>
-<div class="btn-toolbar">
+<div class="btn-toolbar mixalot">
 	<div class="btn-group row-fluid">
 <?php foreach (array('A', 'B', 'C', 'D') as $template) : ?>
 		<div class="btn span2<?php echo ('A' == $template ? ' offset1' : ''); ?>">
