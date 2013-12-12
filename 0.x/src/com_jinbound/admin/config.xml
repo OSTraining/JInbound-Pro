@@ -5,6 +5,11 @@
 		label="COM_JINBOUND_CONFIG_FIELDSET_GENERAL"
 	>
 		<field
+			name="downloadid" type="text" default="" size="30"
+			label="COM_JINBOUND_DOWNLOAD_ID"
+			description="COM_JINBOUND_DOWNLOAD_ID_DESC"
+		/>
+		<field
 			name="cron_type"
 			type="list"
 			label="COM_JINBOUND_CRON_TYPE"
