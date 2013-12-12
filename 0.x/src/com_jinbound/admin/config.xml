@@ -15,6 +15,16 @@
 			<option value="0">COM_JINBOUND_CRON_TYPE_FAKE</option>
 			<option value="1">COM_JINBOUND_CRON_TYPE_REAL</option>
 		</field>
+		<field
+			name="debug" id="debug"
+			type="list"
+			label="COM_JINBOUND_DEBUG"
+			description="COM_JINBOUND_DEBUG_DESC"
+			default="0"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
 	</fieldset>
 	<fieldset
 		name="frontend"

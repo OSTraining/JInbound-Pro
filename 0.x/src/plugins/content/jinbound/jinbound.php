@@ -50,7 +50,7 @@ class plgContentJInbound extends JPlugin
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
-		if (defined('JDEBUG') && JDEBUG) {
+		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
@@ -67,7 +67,7 @@ class plgContentJInbound extends JPlugin
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
-		if (defined('JDEBUG') && JDEBUG) {
+		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
@@ -83,7 +83,7 @@ class plgContentJInbound extends JPlugin
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
-		if (defined('JDEBUG') && JDEBUG) {
+		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
@@ -99,7 +99,7 @@ class plgContentJInbound extends JPlugin
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
-		if (defined('JDEBUG') && JDEBUG) {
+		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;
@@ -115,7 +115,7 @@ class plgContentJInbound extends JPlugin
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
-		if (defined('JDEBUG') && JDEBUG) {
+		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
 		return true;

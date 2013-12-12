@@ -229,7 +229,7 @@ class JInboundTableLead extends JInboundTable
 	}
 	
 	public function getContact() {
-		$debug = defined('JDEBUG') && JDEBUG;
+		$debug = JInbound::config("debug", 0);
 		$app   = JFactory::getApplication();
 		// either update or add a contact
 		jimport('joomla.database.table');

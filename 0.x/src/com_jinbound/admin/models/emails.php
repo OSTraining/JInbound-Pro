@@ -80,7 +80,7 @@ class JInboundModelEmails extends JInboundListModel
 		JInbound::registerHelper('url');
 		
 		$db       = $this->getDbo();
-		$out      = defined('JDEBUG') && JDEBUG;
+		$out      = JInbound::config("debug", 0);
 		$interval = $out ? 'MINUTE' : 'DAY';
 		
 		// NOTE: This query is kind of hairy and a little complicated, edit at your own risk!!!

@@ -122,7 +122,7 @@ abstract class JInbound
 	 * @return mixed
 	 */
 	public static function debug($data, $fin = 'echo') {
-		if (defined('JDEBUG') && !JDEBUG) return '';
+		if (!JInbound::config("debug", 0)) return '';
 		$e       = new Exception;
 		$output  = "<pre>\n" . htmlspecialchars(print_r($data, 1)) . "\n\n" . $e->getTraceAsString() . "\n</pre>\n";
 		switch ($fin) {

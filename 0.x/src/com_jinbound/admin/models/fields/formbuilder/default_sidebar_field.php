@@ -59,7 +59,7 @@ switch ($this->_currentField->id) {
 		<?php echo JHtml::_('select.genericlist', array(JHtml::_('select.option', '1', JText::_('JYES')), JHtml::_('select.option', '0', JText::_('JNO'))), $name . '[required]', 'class="input-medium"', 'value', 'text', $value['required'], $id . '_required'); ?>
 	</div>
 	<div>
-		<input id="<?php echo $id; ?>_enabled" type="<?php echo (defined('JDEBUG') && JDEBUG ? 'text' : 'hidden'); ?>" name="<?php echo $name; ?>[enabled]" value="<?php echo (int) $value['enabled']; ?>" />
+		<input id="<?php echo $id; ?>_enabled" type="<?php echo (JInbound::config("debug", 0) ? 'text' : 'hidden'); ?>" name="<?php echo $name; ?>[enabled]" value="<?php echo (int) $value['enabled']; ?>" />
 	</div>
 	
 	<?php else : ?>
@@ -70,7 +70,7 @@ switch ($this->_currentField->id) {
 	<input id="<?php echo $id; ?>_type" type="hidden" name="<?php echo $name; ?>[type]" value="<?php echo $this->escape($this->_currentField->type); ?>" />
 	
 	<?php echo $this->loadTemplate('sidebar_field_' . $this->_currentField->type); ?>
-	<?php if (defined('JDEBUG') && JDEBUG) : ?>
+	<?php if (JInbound::config("debug", 0)) : ?>
 	<div class="row-fluid">
 		<h4>Value:</h4>
 		<pre><?php print_r($value); ?></pre>

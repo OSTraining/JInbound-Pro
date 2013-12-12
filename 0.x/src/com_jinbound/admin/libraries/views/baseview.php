@@ -209,7 +209,7 @@ class JInboundView extends JInboundBaseView
 		$app    = JFactory::getApplication();
 		$doc    = JFactory::getDocument();
 		$canAdd = method_exists($doc, 'addStyleSheet');
-		$ext    = (defined('JDEBUG') && JDEBUG ? '.min' : '');
+		$ext    = (JInbound::config("debug", 0) ? '.min' : '');
 		$sfx    = $app->isAdmin() ? 'back' : 'front';
 		if ($canAdd) {
 			if (JInbound::version()->isCompatible('3.0.0')) {

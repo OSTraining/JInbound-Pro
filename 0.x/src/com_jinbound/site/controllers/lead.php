@@ -15,7 +15,7 @@ class JInboundControllerLead extends JInboundBaseController
 	public function save() {
 		// init
 		$app        = JFactory::getApplication();
-		$debug      = defined('JDEBUG') && JDEBUG;
+		$debug      = JInbound::config("debug", 0);
 		$Itemid     = $app->input->get('Itemid', 0, 'int');
 		$dispatcher = JDispatcher::getInstance();
 		// import content plugins
