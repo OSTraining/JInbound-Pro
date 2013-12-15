@@ -20,10 +20,6 @@ defined('JPATH_PLATFORM') or die;
       		<p class="lead"><?php echo JText::_('COM_JINBOUND_WELCOME_TO_JINBOUND'); ?></p>
       	</div>
       </div>
-      <!-- Row 1.5 - LiveUpdate-->
-      <div class="row-fluid" id="live_update">
-	      <?php echo LiveUpdate::getIcon(); ?>
-	  </div>
       <!-- Row 2 - Buttons -->
       <div class="row-fluid" id="welcome_buttons">
       	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
@@ -75,6 +71,9 @@ defined('JPATH_PLATFORM') or die;
 		<div class="span4">
 			<!-- Row 1 - links -->
 			<div class="well">
+				<div class="row-fluid" id="live_update">
+					<?php echo LiveUpdate::getIcon(); ?>
+				</div>
 				<img alt="<?php echo JText::_('COM_JINBOUND_CREATE_A_NEW'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/start_by_creating.png'; ?>" />
 				<ul>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
