@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<config>
+<config addfieldpath="/administrator/components/com_jinbound/models/fields">
 	<fieldset
 		name="general"
 		label="COM_JINBOUND_CONFIG_FIELDSET_GENERAL"
@@ -20,6 +20,12 @@
 			<option value="0">COM_JINBOUND_CRON_TYPE_FAKE</option>
 			<option value="1">COM_JINBOUND_CRON_TYPE_REAL</option>
 		</field>
+		<field
+			name="cron_url"
+			type="jinboundcronurl"
+			label="COM_JINBOUND_CRON_URL"
+			description="COM_JINBOUND_CRON_URL_DESC"
+		/>
 		<field
 			name="debug" id="debug"
 			type="list"
