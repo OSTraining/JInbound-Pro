@@ -18,6 +18,9 @@ $listDirn  = $this->state->get('list.direction');
 	<th width="1%" class="nowrap hidden-phone">
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
 	</th>
+	<th width="1%" class="nowrap">
+		&nbsp;
+	</th>
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LANDINGPAGE_NAME', 'Page.name', $listDirn, $listOrder); ?>
 	</th>
