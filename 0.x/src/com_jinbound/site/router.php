@@ -93,6 +93,19 @@ function JinboundParseRoute($segments) {
 	$menu   = $app->getMenu();
 	$item   = $menu->getActive();
 	
+	// bugfix for sef
+	if (is_object($item)) {
+		$templateStyle = $item->template_style_id;
+		if ($templateStyle) {
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_templates/tables');
+			$template = JTable::getInstance('Style', 'TemplatesTable');
+			$template->load($templateStyle);
+			if ($template->id) {
+				$app->setTemplate($template->template, $template->params);
+			}
+		}
+	}
+	
 	// Count route segments
 	$count = count($segments);
 	

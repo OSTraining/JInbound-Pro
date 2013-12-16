@@ -10,6 +10,14 @@ defined('JPATH_PLATFORM') or die;
 $app = JFactory::getApplication();
 
 jimport('joomla.filesystem.file');
+
+// allow an override here
+$template_override = __DIR__ . '/override.php';
+if (JFile::exists($template_override)) {
+	include $template_override;
+	return;
+}
+
 $helper = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
 if (!JFile::exists($helper)) {
 	die('JInbound not installed!!!');
