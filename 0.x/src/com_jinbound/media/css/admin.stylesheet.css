@@ -96,6 +96,11 @@
 	float: left;
 }
 
+#live_update .icon a span {
+	line-height: 32px;
+	padding: 5px 5px 5px 12px;
+}
+
 /* he likes big bottoms ... */
 #jinbound_component .mixalot {
 	margin-bottom: 20px;
