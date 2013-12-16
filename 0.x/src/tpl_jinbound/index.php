@@ -33,6 +33,16 @@ if ('com_jinbound' !== $option) {
 <html>
 	<head>
 		<jdoc:include type="head" />
+		<style>
+.tip {
+	border: 1px solid black;
+	background: white;
+	padding: 5px 12px 5px 12px;
+}
+.tip .tip-title {
+	font-weight: bold;
+}
+		</style>
 	</head>
 	<body>
 		<div class="container" id="jinbound_component">
