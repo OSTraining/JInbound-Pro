@@ -99,6 +99,7 @@ class com_JInboundInstallerScript
 				$this->_saveDefaults($parent);
 			case 'update':
 				$this->_checkContactCategory();
+				$this->_checkInboundCategory();
 				$this->_checkContactSubscriptions();
 				$this->_checkDefaultPriorities();
 				$this->_checkDefaultStatuses();
@@ -210,6 +211,53 @@ class com_JInboundInstallerScript
 		}
 		$table->moveByReference(0, 'last-child', $table->id);
 		$app->enqueueMessage(JText::_('COM_JINBOUND_CONTACT_CATEGORIES_INSTALLED'));
+	}
+	
+	private function _checkInboundCategory() {
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('id')
+			->from('#__categories')
+			->where($db->quoteName('extension') . ' = ' . $db->quote('com_jinbound'))
+			->where($db->quoteName('published') . ' = 1')
+		);
+		try {
+			$categories = $db->loadColumn();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage());
+			return;
+		}
+		if (is_array($categories) && !empty($categories)) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_JINBOUND_CATEGORIES_FOUND'));
+			return;
+		}
+		jimport('joomla.database.table');
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
+		$table = JTable::getInstance('Category');
+		$bind = array(
+			'parent_id'   => $table->getRootId(),
+			'extension'   => 'com_jinbound',
+			'title'       => JText::_('COM_JINBOUND_DEFAULT_JINBOUND_CATEGORY_TITLE'),
+			'description' => JText::_('COM_JINBOUND_DEFAULT_JINBOUND_CATEGORY_DESCRIPTION'),
+			'published'   => 1,
+			'language'    => '*'
+		);
+		if (!$table->bind($bind)) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_JINBOUND_CATEGORIES_BIND_ERROR'));
+			return;
+		}
+		if (!$table->check()) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_JINBOUND_CATEGORIES_CHECK_ERROR'));
+			return;
+		}
+		if (!$table->store()) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_JINBOUND_CATEGORIES_STORE_ERROR'));
+			return;
+		}
+		$table->moveByReference(0, 'last-child', $table->id);
+		$app->enqueueMessage(JText::_('COM_JINBOUND_JINBOUND_CATEGORIES_INSTALLED'));
 	}
 	
 	/**
