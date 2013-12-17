@@ -270,7 +270,7 @@ class JInboundModelLead extends JInboundAdminModel
 		$data->emails   = false;
 		// if the item has no campaign attached there is nothing to do
 		if (empty($item->campaign_id)) {
-			goto done;
+			return $data;
 		}
 		// get the campaign from the database
 		$db = JFactory::getDbo();
@@ -285,11 +285,11 @@ class JInboundModelLead extends JInboundAdminModel
 		}
 		catch (Exception $e) {
 			// if there is an error just return the empty object
-			goto done;
+			return $data;
 		}
 		// if this is not an object bail
 		if (!is_object($campaign)) {
-			goto done;
+			return $data;
 		}
 		// assign
 		$data->campaign = $campaign;
@@ -331,11 +331,6 @@ class JInboundModelLead extends JInboundAdminModel
 				$email->sent = $date;
 			}
 			$data->emails = $emails;
-		}
-		
-		// single exit point for function, to ensure this object is returned
-		done: {
-			return $data;
 		}
 	}
 }

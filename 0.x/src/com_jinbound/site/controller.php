@@ -40,16 +40,13 @@ class JInboundController extends JInboundBaseController
 		$db   = JFactory::getDbo();
 		$menu = $app->getMenu('site')->getDefault()->id;
 		// default message sent to user
-		$message  = 'COM_JINBOUND_UNSUBSCRIBED';
-		$type     = 'message';
 		$redirect = JRoute::_('index.php?Itemid=' . $menu, false);
 		// find the contact based on email
 		$email = trim('' . $app->input->get('email', '', 'string'));
 		// if no email, bail
 		if (empty($email)) {
-			$message = 'COM_JINBOUND_UNSUBSCRIBE_FAILED_NO_EMAIL';
-			$type    = 'error';
-			goto done;
+			$app->redirect($redirect, JText::_('COM_JINBOUND_UNSUBSCRIBE_FAILED_NO_EMAIL'), 'error');
+			jexit();
 		}
 		// lookup contact based on email
 		$db->setQuery($db->getQuery(true)
@@ -64,9 +61,8 @@ class JInboundController extends JInboundBaseController
 			}
 		}
 		catch (Exception $e) {
-			$message = $e->getMessage();
-			$type    = 'error';
-			goto done;
+			$app->redirect($redirect, JText::_($e->getMessage()), 'error');
+			jexit();
 		}
 		// blind delete this contact & rebuild entry
 		$db->setQuery($db->getQuery(true)
@@ -77,9 +73,8 @@ class JInboundController extends JInboundBaseController
 			$db->query();
 		}
 		catch (Exception $e) {
-			$message = $e->getMessage();
-			$type    = 'error';
-			goto done;
+			$app->redirect($redirect, JText::_($e->getMessage()), 'error');
+			jexit();
 		}
 		$db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_subscriptions')
@@ -90,15 +85,12 @@ class JInboundController extends JInboundBaseController
 			$db->query();
 		}
 		catch (Exception $e) {
-			$message = $e->getMessage();
-			$type    = 'error';
-			goto done;
-		}
-		// handle exit
-		done: {
-			$app->redirect($redirect, JText::_($message), $type);
+			$app->redirect($redirect, JText::_($e->getMessage()), 'error');
 			jexit();
 		}
+		// handle exit
+		$app->redirect($redirect, JText::_('COM_JINBOUND_UNSUBSCRIBED'), 'message');
+		jexit();
 	}
 	
 	function landingpageurl() {

@@ -21,14 +21,15 @@ class JInboundControllerLead extends JInboundBaseController
 		// import content plugins
 		JPluginHelper::importPlugin('content');
 		// fetch the page id
-		$id     = $app->input->post->get('page_id', 0, 'int');
+		$id         = $app->input->post->get('page_id', 0, 'int');
 		// fetch only the lead data
-		$data   = $app->input->post->get('jform', array(), 'array');
+		$data       = $app->input->post->get('jform', array(), 'array');
 		// start building the bind data
-		$bind   = array('page_id' => $id);
+		$bind       = array('page_id' => $id);
 		// get a page model so we can pull the formbuilder variable from it
-		$model  = $this->getModel('Page', 'JInboundModel');
-		$page   = $model->getItem($id);
+		$model      = $this->getModel('Page', 'JInboundModel');
+		$page       = $model->getItem($id);
+		$redirect   = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
 		if (!$page || empty($page->id)) {
 			$this->setError(JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
 			return;
@@ -65,8 +66,6 @@ class JInboundControllerLead extends JInboundBaseController
 		$bind['campaign_id'] = $page->campaign;
 		$bind['formdata']    = json_encode($data);
 		// now get a lead table
-		$message     = '';
-		$messageType = 'message';
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
 		$isNew       = true;
 		// see if there is an existing lead for this user
@@ -83,28 +82,24 @@ class JInboundControllerLead extends JInboundBaseController
 		}
 		// bind the data
 		if (!$lead->bind($bind)) {
-			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_BIND', $lead->getError());
-			$messageType = 'error';
-			goto done;
+			$app->redirect($redirect, JText::sprintf('COM_JINBOUND_LEAD_FAILED_BIND', $lead->getError()), 'error');
+			$app->close();
 		}
 		// check the data
 		if (!$lead->check()) {
-			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_CHECK', $lead->getError());
-			$messageType = 'error';
-			goto done;
+			$app->redirect($redirect, JText::sprintf('COM_JINBOUND_LEAD_FAILED_CHECK', $lead->getError()), 'error');
+			$app->close();
 		}
 		// fire before save event
 		$result = $dispatcher->trigger('onContentBeforeSave', array('com_jinbound.lead', &$lead, $isNew));
 		if (in_array(false, $result, true)) {
-			$message     = $lead->getError();
-			$messageType = 'error';
-			goto done;
+			$app->redirect($redirect, $lead->getError(), 'error');
+			$app->close();
 		}
 		// store lead
 		if (!$lead->store()) {
-			$message     = JText::sprintf('COM_JINBOUND_LEAD_FAILED_STORE', $lead->getError());
-			$messageType = 'error';
-			goto done;
+			$app->redirect($redirect, JText::sprintf('COM_JINBOUND_LEAD_FAILED_STORE', $lead->getError()), 'error');
+			$app->close();
 		}
 		// fire after save event
 		$dispatcher->trigger('onContentAfterSave', array('com_jinbound.lead', &$lead, $isNew));
@@ -140,38 +135,32 @@ class JInboundControllerLead extends JInboundBaseController
 		}
 		
 		// build the redirect
-		if ('message' != $messageType) {
-			$redirect = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
-		}
-		else {
-			switch ($page->after_submit_sendto) {
-				case 'menuitem':
-					if (!empty($page->menu_item)) {
-						$redirect = JRoute::_('index.php?Itemid=' . $page->menu_item);
-					}
-					break;
-				case 'url':
-					if (!empty($page->send_to_url)) {
-						$redirect = JRoute::_($page->send_to_url);
-					}
-					break;
-				case 'message':
-					if (!empty($page->sendto_message)) {
-						$message = $page->sendto_message;
-					}
-				default:
-					$redirect = JURI::root();
-					break;
-			}
+		$message = '';
+		switch ($page->after_submit_sendto) {
+			case 'menuitem':
+				if (!empty($page->menu_item)) {
+					$redirect = JRoute::_('index.php?Itemid=' . $page->menu_item);
+				}
+				break;
+			case 'url':
+				if (!empty($page->send_to_url)) {
+					$redirect = JRoute::_($page->send_to_url);
+				}
+				break;
+			case 'message':
+				if (!empty($page->sendto_message)) {
+					$message = $page->sendto_message;
+				}
+			default:
+				$redirect = JURI::root();
+				break;
 		}
 		
-		done: {
-			if (empty($message)) {
-				$app->redirect($redirect);
-			}
-			else {
-				$app->redirect($redirect, $message, $messageType);
-			}
+		if (empty($message)) {
+			$app->redirect($redirect);
+		}
+		else {
+			$app->redirect($redirect, $message, 'message');
 		}
 		
 		$app->close();
