@@ -12,7 +12,7 @@ $fieldsets = $this->form->getFieldsets();
 if (!empty($fieldsets) && !(1 == count($fieldsets) && array_key_exists('default', $fieldsets))) :
 ?>
 
-<div id="jinbound_default_tabs">
+<div id="jinbound_default_tabset">
 	<?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab')); ?>
 	<?php foreach ($fieldsets as $name => $fieldset) : if ('default' == $name) continue; ?>
 		<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', $name . '_tab', JText::_('COM_JINBOUND_' . $this->getName() . '_FIELDSET_' . $name, true)); ?>

@@ -100,4 +100,22 @@ class JInboundController extends JInboundBaseController
 			jexit();
 		}
 	}
+	
+	function landingpageurl() {
+		$id   = JFactory::getApplication()->input->get('id', 0, 'int');
+		$data = array();
+		if ($id) {
+			JInbound::registerHelper('url');
+			$data['nonsef'] = JInboundHelperUrl::toFull(JInboundHelperUrl::view('page', false, array('id' => $id)));
+			$data['sef']    = JInboundHelperUrl::toFull(JInboundHelperUrl::view('page', true, array('id' => $id)));
+		}
+		else {
+			$data['error'] = JText::_('COM_JINBOUND_NOT_FOUND');
+		}
+		
+		done: {
+			echo json_encode($data);
+			die;
+		}
+	}
 }
