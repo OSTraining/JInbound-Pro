@@ -1,1 +1,40 @@
 table.adminform,#jinbound_postinstall table {width:100%}
+#jinbound_postinstall_maintext {
+	text-align: left;
+	font-weight: normal;
+}
+#jinbound_logo {
+	display: inline-block;
+	background: transparent url(../images/install_logo_large.png) no-repeat top left;
+	width: 450px;
+	height: 145px;
+	float: right;
+}
+#jinbound_postinstall_status {
+	clear: right;
+}
+@media only screen and (max-width: 1024px) {
+	#jinbound_logo {
+		background: transparent url(../images/install_logo_medium.png) no-repeat top left;
+		width: 350px;
+		height: 113px;
+	}
+}
+@media only screen and (max-width: 800px) {
+	#jinbound_logo {
+		background: transparent url(../images/install_logo_small.png) no-repeat top left;
+		width: 250px;
+		height: 81px;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	#jinbound_logo {
+		float: none;
+		margin-top: 12px;
+		margin-bottom: 12px;
+	}
+	#jinbound_postinstall_maintext h2 {
+		display: none;
+	}
+}
