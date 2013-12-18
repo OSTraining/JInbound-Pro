@@ -15,7 +15,6 @@ jimport('joomla.filesystem.file');
 $template_override = __DIR__ . '/override.php';
 if (JFile::exists($template_override)) {
 	include $template_override;
-	return;
 }
 
 $helper = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
