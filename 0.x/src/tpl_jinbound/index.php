@@ -34,10 +34,13 @@ if ('com_jinbound' !== $option) {
 	<head>
 		<jdoc:include type="head" />
 		<style>
-.tip {
+.tip,.tooltip {
 	border: 1px solid black;
 	background: white;
 	padding: 5px 12px 5px 12px;
+}
+.tooltip {
+	max-width: 120px;
 }
 .tip .tip-title {
 	font-weight: bold;
