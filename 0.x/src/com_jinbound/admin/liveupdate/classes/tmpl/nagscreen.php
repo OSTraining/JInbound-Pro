@@ -20,9 +20,5 @@ $stability = JText::_('LIVEUPDATE_STABILITY_'.$this->updateInfo->stability);
 	<p class="liveupdate-buttons">
 		<button onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_NAGSCREEN_BUTTON') ?></button>
 	</p>
-	
-	<p class="liveupdate-poweredby">
-		Powered by <a href="https://www.akeebabackup.com/software/akeeba-live-update.html">Akeeba Live Update</a>
-	</p>
 
 </div>

@@ -133,8 +133,4 @@ ENDSCRIPT;
 
 	<?php endif; ?>
 
-	<p class="liveupdate-poweredby">
-		Powered by <a href="https://www.akeebabackup.com/software/akeeba-live-update.html">Akeeba Live Update</a>
-	</p>
-
 </div>
