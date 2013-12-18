@@ -55,11 +55,9 @@ JHtml::_('behavior.modal');
 		$auth = $this->config->getAuthorization();
 		$auth = empty($auth) ? '' : '?'.$auth;
 	?>
-	<?php if($this->needsAuth): ?>
-	<p class="liveupdate-error-needsauth">
-		<?php echo JText::_('LIVEUPDATE_ERROR_NEEDSAUTH'); ?>
-	</p>
-	<?php endif; ?>
+	<?php if($this->needsAuth):
+		JFactory::getApplication()->enqueueMessage(JText::_('LIVEUPDATE_ERROR_NEEDSAUTH'), 'warning');
+	endif; ?>
 	<div class="liveupdate-<?php echo $class?>">
 		<h3><?php echo JText::_('LIVEUPDATE_'.strtoupper($class).'_HEAD') ?></h3>
 		<div class="liveupdate-infotable">

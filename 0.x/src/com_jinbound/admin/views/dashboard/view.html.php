@@ -14,6 +14,17 @@ class JInboundViewDashboard extends JInboundView
 {
 	function display($tpl = null, $safeparams = false) {
 		$app = JFactory::getApplication();
+		// check for updates
+		$updateInfo = LiveUpdate::getUpdateInformation();
+		if (!$updateInfo->supported) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_UPDATE_UNSUPPORTED'), 'error');
+		}
+		else if ($updateInfo->stuck) {
+			$app->enqueueMessage(JText::_('COM_JINBOUND_UPDATE_STUCK'), 'warning');
+		}
+		else if ($updateInfo->hasUpdates) {
+			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_UPDATE_HASUPDATES', $updateInfo->version), 'message');
+		}
 		// get our libraries
 		JInbound::registerHelper('path');
 		JLoader::register('JInboundViewReports', JInboundHelperPath::admin('views/reports/view.html.php'));

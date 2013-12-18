@@ -41,6 +41,11 @@ class LiveUpdateView extends JoomlaCompatView
 
 		$extInfo = (object)$config->getExtensionInformation();
 		JToolBarHelper::title($extInfo->title.' &ndash; '.JText::_('LIVEUPDATE_TASK_OVERVIEW'),'liveupdate');
+		
+		if (JFactory::getUser()->authorise('core.manage', JRequest::getCmd('option',''))) {
+			JToolBarHelper::preferences(JRequest::getCmd('option',''));
+		}
+		
 		JToolBarHelper::back('JTOOLBAR_BACK', 'index.php?option='.JRequest::getCmd('option',''));
 
 		if(version_compare(JVERSION, '3.0', 'ge')) {

@@ -12,6 +12,7 @@
 	<description>TPL_JINBOUND_DESCRIPTION</description>
 	<files>
 		<folder>language</folder>
+		<folder>css</folder>
 		<filename>index.php</filename>
 		<filename>index.html</filename>
 		<filename>templateDetails.xml</filename>

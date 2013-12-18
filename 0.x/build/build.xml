@@ -153,7 +153,7 @@
 		<copy todir="${cfg.packages}/temp/staging/template" filtering="true">
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.tpl}${cfg.name}"
-				includes="templateDetails.xml,index.php,index.html,language/"
+				includes="templateDetails.xml,index.php,index.html,language/,css/"
 			/>
 		</copy>
 		
