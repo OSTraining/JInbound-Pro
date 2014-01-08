@@ -11,8 +11,10 @@
 -->
 <project name="jinbound" default="dist" basedir=".">
 	<property file="config.ini" />
+	<property file="config.local.ini" />
+	
 	<!-- <target name="dist" depends="init,copyFiles,promptUser,doChangelog,cleanprev,zipFiles,deldir,info" /> -->
-	<target name="dist" depends="init,copyFiles,cleanprev,zipFiles,deldir,info" />
+	<target name="dist" depends="init,copyFiles,promptUser,doChangelog,cleanprev,zipFiles,deldir,info" />
 	<target name="init">
 
 		<!-- update marker in xml file for correct display of build number -->
@@ -86,36 +88,17 @@
 		</condition>
 
 		<!-- Init of changelog automatic build up -->
-		<property name="svn.rootDir" value="/home/jeff/git/jinbound/0.x/src/" />
-		<property name="svn.buildDir" value="/home/jeff/git/jinbound/0.x/build/" />
-		<property name="svn.executable" value="/usr/bin/svn" />
-		<property name="php.executable" value="/usr/bin/php" />
+		<property name="git.title" value="JInbound Changelog" />
+		<property name="git.log.dir" value="${cfg.buildpath}changelog" />
+		<property name="git.log.filename" value="changelog.log" />
+		<property name="git.log.file" value="${git.log.dir}/${git.log.filename}" />
+		
+		<property name="git.rootDir" value="/home/jeff/git/jinbound/0.x/src/" />
+		<property name="git.buildDir" value="/home/jeff/git/jinbound/0.x/build/" />
+		<property name="git.user" value="AnythingDig" />
+		<property name="git.repo" value="jinbound" />
 
-		<property name="svn.url" value="https://anythingdigital.repositoryhosting.com" />
-		<property name="svn.title" value="JInbound Changelog" />
-		<property name="svn.username" value="jeffchannell" />
-		<property name="svn.password" value="q5atw07u" />
-		<property name="svn.destFile" value="jChangelog.xml" />
-		<property name="svn.destLogFile" value="jChangelog.log" />
-		<property name="svn.destDir" value="${svn.buildDir}logs/changelog" />
-		<property name="svn.targetPath" value="/svn/anythingdigital_jinbound/0.x" />
-
-		<property name="ext.targetFile" value="${svn.rootDir}/changelog.log" />
-
-		<!-- Sample : value = "-r HEAD" or value = "-r 230 or leave empty " -->
-		<property name="svn.startingRevision" value="-r HEAD" />
-
-		<!-- Sample : value = ":HEAD" or value = ":230" or leave empty -->
-		<property name="svn.endingRevision" value="" />
-
-		<!-- Sample : value = "-r {2008-07-26}" or leave empty-->
-		<property name="svn.startingDate" value="" />
-
-		<!-- Sample : value = ":{2008-07-26}" or leave empty-->
-		<property name="svn.endingDate" value=":0" />
-
-		<property name="svn.authors" value="authors.xml" />
-	
+		<property name="ext.targetFile" value="${git.rootDir}/changelog.log" />
 	</target>
 	
 	<target name="copyFiles">
@@ -213,38 +196,31 @@
 
 	<!-- Automatic changelog from svn commits comments -->
 	<target name="doChangelog" if="do.changelog">
-		<echo message="Building    | ${svn.title}" />
+		<echo message="Building    | ${git.title}" />
 		<echo message="--------------------------------------------" />
-
-		<!-- use command line svn. Nothing else works -->
-
-		<echo>Making changelog for revisions ${svn.startingRevision}${svn.startingDate}:${svn.endingRevision}${svn.startingDate}</echo>
-		<echo>from ${svn.url}</echo>
-		<echo>to ${svn.destLogFile}</echo>
-		<echo>Processing ...</echo>
-
-		<mkdir dir="${svn.destDir}" />
+		
+		<echo>Making changelog ...</echo>
+		<mkdir dir="${cfg.buildpath}changelog" />
 		<echo>Created destination dir</echo>
+		
+		<echo>Fetching issues ...</echo>
+		<input message="GitHub password for user ${cfg.git.username}" addproperty="git.password">
+		</input>
 
-		<!-- need svn installed and in classpath -->
-		<echo>Spawning subversion exec with log --xml -v  ${svn.startingRevision}${svn.startingDate}${svn.endingRevision}${svn.endingDate} ${svn.url}${svn.targetPath}</echo>
-		<!-- creates log in an xml file for revision x to xx -->
-		<exec executable="${svn.executable}" outputproperty="svnlog.out" output="${svn.destDir}/${svn.destFile}">
-			<arg line="log --xml --username ${svn.username} --password ${svn.password} -v ${svn.startingRevision}${svn.startingDate}${svn.endingRevision}${svn.endingDate} ${svn.url}${svn.targetPath}" />
+		<exec executable="${cfg.curl.bin}" outputproperty="gitlog.out" output="${git.log.file}">
+			<arg line="-s 'https://api.github.com/repos/${git.user}/${git.repo}/issues?filter=all&amp;state=closed&amp;labels=CL' -u ${cfg.git.username}:${git.password}" />
 		</exec>
 		<echo>Raw data fetched from repository</echo>
-
-		<!-- use php logformat script to format raw xml svn log file-->
-		<echo>Spawning logformat script using ${php.executable}</echo>
-		<!-- creates log in an xml file for revision x to xx -->
-		<exec executable="${php.executable}">
-			<arg line=' changelog/logformat.php --title="${svn.title}" --build=${build.number}' />
+		
+		<!-- use php logformat script to format log file-->
+		<echo>Spawning logformat script using ${cfg.php.bin}</echo>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title}" --build=${build.number}' />
 		</exec>
-		<echo>Raw svn log processed</echo>
-
+		<echo>Raw git log processed</echo>
+		
 		<!-- Copy changelog to extension dir -->
-		<copy file="${svn.destDir}/${svn.destLogFile}" tofile="${ext.targetFile}" />
-
+		<copy file="${git.log.file}" tofile="${ext.targetFile}" />
 		<echo message="Done ---------------------------------------" />
 	</target>
 	
@@ -295,7 +271,7 @@
 			<zipfileset dir="${cfg.packages}/temp/staging" includes="${cfg.pfx.pkg}${cfg.name}.xml,${cfg.name}.install.php,language/" />
 		</zip>
 		<zip destfile="${str.pkg.file}.zip" update="true">
-			<zipfileset dir="${svn.rootDir}" includes="changelog.log" />
+			<zipfileset dir="${git.rootDir}" includes="changelog.log" />
 		</zip>
 	</target>
 	
