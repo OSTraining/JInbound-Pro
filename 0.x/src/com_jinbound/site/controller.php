@@ -98,8 +98,12 @@ class JInboundController extends JInboundBaseController
 		$data = array();
 		if ($id) {
 			JInbound::registerHelper('url');
-			$data['nonsef'] = JInboundHelperUrl::toFull(JInboundHelperUrl::view('page', false, array('id' => $id)));
-			$data['sef']    = JInboundHelperUrl::toFull(JInboundHelperUrl::view('page', true, array('id' => $id)));
+			$nonsef         = JInboundHelperUrl::view('page', false, array('id' => $id));
+			$sef            = JInboundHelperUrl::view('page', true, array('id' => $id));
+			$data['nonsef'] = JInboundHelperUrl::toFull($nonsef);
+			$data['sef']    = JInboundHelperUrl::toFull($sef);
+			$data['root']   = JURI::root();
+			$data['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
 		}
 		else {
 			$data['error'] = JText::_('COM_JINBOUND_NOT_FOUND');

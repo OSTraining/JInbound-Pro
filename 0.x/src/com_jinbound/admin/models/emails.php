@@ -89,6 +89,7 @@ class JInboundModelEmails extends JInboundListModel
 			->select('Lead.last_name AS last_name')
 			->select('Lead.created AS created')
 			->select('Lead.id AS lead_id')
+			->select('Lead.formdata AS form')
 			->select('Contact.email_to AS email')
 			->select('Contact.id AS contact_id')
 			->select('Page.id AS page_id')
@@ -141,10 +142,19 @@ class JInboundModelEmails extends JInboundListModel
 		$now = JFactory::getDate();
 		
 		foreach ($results as $result) {
+			// parse form data
+			$reg = new JRegistry;
+			$reg->loadString($result->form);
+			$arr = $reg->toArray();
+			$tags = array();
+			foreach (array_keys($arr['lead']) as $tag) {
+				$tags[] = 'email.lead.' . $tag;
+			}
+			$reg = $reg->toObject();
 			// add unsubscribe link to email contents
 			$unsubscribe = JInboundHelperUrl::toFull(JInboundHelperUrl::task('unsubscribe', false, array('email' => $result->email)));
-			$result->htmlbody    = $result->htmlbody . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_HTML', $unsubscribe);
-			$result->plainbody   = $result->plainbody . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_PLAIN', $unsubscribe);
+			$result->htmlbody    = $this->_replaceTags($result->htmlbody,  $reg, $tags) . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_HTML',  $unsubscribe);
+			$result->plainbody   = $this->_replaceTags($result->plainbody, $reg, $tags) . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_PLAIN', $unsubscribe);
 			
 			if ($out) {
 				echo '<h3>Result</h3><pre>' . print_r($result, 1) . '</pre>';
@@ -188,5 +198,71 @@ class JInboundModelEmails extends JInboundListModel
 		
 		echo "\n";
 		jexit();
+	}
+	
+	
+	private static function _replaceTags($string, $object, $extra = false) {
+		$out  = JInbound::config("debug", 0);
+		if ($out) echo ('<h3>Email Tags</h3>');
+		$tags = array(
+			'email.lead.first_name'
+		,	'email.lead.last_name'
+		,	'email.lead.email'
+		);
+	
+		if ($extra && is_array($extra)) {
+			$tags = array_merge($tags, $extra);
+		}
+		array_unique($tags);
+		
+		if ($out) echo ('<h4>Tags</h4><pre>' . print_r($tags, 1) . '</pre>');
+		if ($out) echo ('<h4>Object</h4><pre>' . print_r($object, 1) . '</pre>');
+	
+		if (!empty($tags)) foreach ($tags as $tag) {
+			if (false === stripos($string, $tag)) {
+				continue;
+			}
+			$parts   = explode('.', $tag);
+			$context = array_shift($parts);
+			$params  = false;
+			$value   = false;
+			if ($out) echo ('<h4>Context</h4><pre>' . print_r($context, 1) . '</pre>');
+			if ($out) echo ('<h4>Parts</h4><pre>' . print_r($parts, 1) . '</pre>');
+			while (!empty($parts)) {
+				$part = array_shift($parts);
+				if ($out) echo ('<h4>Part</h4><pre>' . print_r($part, 1) . '</pre>');
+				// handle the value differently based on it's type
+				if ($value) {
+					// arrays should have the key available
+					if (is_array($value) && array_key_exists($part, $value)) {
+						$value = $value[$part];
+					}
+					// JRegistry uses get() for values
+					else if (is_object($value) && $value instanceof JRegistry) {
+						$value = $value->get($part);
+					}
+					// normal object
+					else if (is_object($value) && property_exists($value, $part)) {
+						$value = $value->{$part};
+					}
+					// object with this method
+					else if (is_object($value) && method_exists($value, $part)) {
+						$value = call_user_func(array($value, $part));
+					}
+					// don't know what to do here...
+					else {
+						$value = '';
+						break;
+					}
+				}
+				else {
+					$value = $object->{$part};
+				}
+				if ($out) echo ('<h4>Value</h4><pre>' . print_r($value, 1) . '</pre>');
+			}
+			$string = str_ireplace("{%$tag%}", $value, $string);
+		}
+		if ($out) echo ('<h4>String</h4><pre>' . print_r($string, 1) . '</pre>');
+		return $string;
 	}
 }
