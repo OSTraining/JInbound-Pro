@@ -43,7 +43,7 @@ abstract class LiveUpdateStorage
 
 			if (!class_exists($className))
 			{
-				require_once __DIR__ . '/' . strtolower($type) . '.php';
+				require_once dirname(__FILE__) . '/' . strtolower($type) . '.php';
 			}
 
 			$object	= new $className($config);

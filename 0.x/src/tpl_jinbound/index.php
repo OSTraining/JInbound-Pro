@@ -12,7 +12,7 @@ $app = JFactory::getApplication();
 jimport('joomla.filesystem.file');
 
 // allow an override here
-$template_override = __DIR__ . '/override.php';
+$template_override = dirname(__FILE__) . '/override.php';
 if (JFile::exists($template_override)) {
 	include $template_override;
 }
