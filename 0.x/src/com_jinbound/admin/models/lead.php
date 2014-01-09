@@ -332,5 +332,7 @@ class JInboundModelLead extends JInboundAdminModel
 			}
 			$data->emails = $emails;
 		}
+		
+		return $data;
 	}
 }
