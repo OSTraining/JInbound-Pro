@@ -57,7 +57,7 @@ class JInboundModelEmails extends JInboundListModel
 			->from('#__jinbound_emails AS Email')
 			->leftJoin('#__jinbound_campaigns AS Campaign ON Email.campaign_id = Campaign.id')
 			->group('Email.id')
-			->order('Campaign.name')
+			->order('Campaign.name ASC')
 		;
 		
 		$this->appendAuthorToQuery($query, 'Email');
@@ -65,7 +65,7 @@ class JInboundModelEmails extends JInboundListModel
 		$this->filterPublished($query, $this->getState('filter.published'), 'Email');
 		
 		// Add the list ordering clause.
-		$listOrdering = $this->getState('list.ordering', 'Campaign.name');
+		$listOrdering = $this->getState('list.ordering', 'Email.sendafter');
 		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
 		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 
