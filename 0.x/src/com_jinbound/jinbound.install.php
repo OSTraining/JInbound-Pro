@@ -91,6 +91,7 @@ class com_JInboundInstallerScript
 		else {
 			$root = $parent->getParent()->getPath('source');
 		}
+		$lang->load('com_jinbound', $root) || $lang->load('com_jinbound', JPATH_ADMINISTRATOR);
 		$lang->load('com_jinbound.sys', $root) || $lang->load('com_jinbound.sys', JPATH_ADMINISTRATOR);
 		switch ($type) {
 			case 'install':
@@ -103,6 +104,7 @@ class com_JInboundInstallerScript
 				$this->_checkContactSubscriptions();
 				$this->_checkDefaultPriorities();
 				$this->_checkDefaultStatuses();
+				$this->_fixMissingLanguageDefaults();
 				break;
 		}
 	}
@@ -376,6 +378,47 @@ class com_JInboundInstallerScript
 		catch (Exception $e) {
 			$app->enqueueMessage($e->getMessage());
 			return;
+		}
+	}
+	
+	/**
+	 * some language strings were not present and saved to the database
+	 * 
+	 */
+	private function _fixMissingLanguageDefaults() {
+		$tags = array(
+			'lead_statuses' => array(
+				'COM_JINBOUND_STATUS_CONVERTED_DESC'
+			,	'COM_JINBOUND_STATUS_EMAIL_DESC'
+			,	'COM_JINBOUND_STATUS_NEW_LEAD_DESC'
+			,	'COM_JINBOUND_STATUS_NOT_INTERESTED_DESC'
+			,	'COM_JINBOUND_STATUS_VOICEMAIL_DESC'
+			)
+		,	'priorities' => array(
+				'COM_JINBOUND_PRIORITY_COLD_DESC'
+			,	'COM_JINBOUND_PRIORITY_WARM_DESC'
+			,	'COM_JINBOUND_PRIORITY_HOT_DESC'
+			,	'COM_JINBOUND_PRIORITY_ON_FIRE_DESC'
+			)
+		);
+		
+		// connect to the database and fix each one
+		$db    = JFactory::getDbo();
+		foreach ($tags as $table => $labels) {
+			foreach ($labels as $label) {
+				$db->setQuery($db->getQuery(true)
+					->update('#__jinbound_' . $table)
+					->set($db->quoteName('description') . ' = ' . $db->quote(JText::_($label)))
+					->where($db->quoteName('description') . ' = ' . $db->quote($label))
+				);
+				
+				try {
+					$db->query();
+				}
+				catch (Exception $e) {
+					// skip
+				}
+			}
 		}
 	}
 }
