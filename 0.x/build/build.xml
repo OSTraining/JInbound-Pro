@@ -51,7 +51,7 @@
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
-		<property name="str.pkg.filename" value="${cfg.pfx.pkg}Joomla_2.5_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.pkg.filename" value="${cfg.pfx.pkg}J25_J3x_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.pkg.file" value="${cfg.packages}/current/${str.pkg.filename}" />
 		<property name="str.com.filename" value="${cfg.pfx.com}${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.com.file" value="${cfg.packages}/temp/packages/${str.com.filename}" />
