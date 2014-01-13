@@ -28,6 +28,11 @@ if ('com_jinbound' !== $option) {
 	$app->redirect(JRoute::_('index.php'));
 }
 
+JInbound::registerHelper('url');
+$document = JFactory::getDocument();
+$document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
+$document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
+
 ?><!DOCTYPE html>
 <html>
 	<head>

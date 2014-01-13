@@ -215,8 +215,11 @@ class JInboundView extends JInboundBaseView
 			if (JInbound::version()->isCompatible('3.0.0')) {
 				JHtml::_('behavior.framework', true);
 				JHtml::_('jquery.ui', array('core', 'sortable'));
+				JHtml::_('bootstrap.tooltip');
 			}
-			JHtml::_('behavior.tooltip', '.hasTip');
+			else {
+				JHtml::_('behavior.tooltip', '.hasTip');
+			}
 			if (JInbound::config("load_jquery_$sfx", 1)) {
 				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
 			}

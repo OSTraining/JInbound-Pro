@@ -44,6 +44,9 @@ class JInboundViewPage extends JInboundItemView
 
 	public function setDocument() {
 		parent::setDocument();
+		// add behaviors
+		JHtml::_('behavior.tooltip');
+		// add script
 		$document = JFactory::getDocument();
 		$document->addScript(JInboundHelperUrl::media() . '/js/jinbound.js');
 	}
