@@ -56,10 +56,21 @@ class JInboundModelLead extends JInboundAdminModel
 		if ($item->contact_id) {
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true)
+				// form data
 				->select('Lead.formdata')
+				// modified dates
+				->select('Lead.created')
+				->select('Lead.created_by')
+				->select('Creator.username AS created_by_name')
+				->select('Lead.modified')
+				->select('Lead.modified_by')
+				->select('Editor.username AS modified_by_name')
+				// page name
 				->select('Page.name AS pagename')
 				->from('#__jinbound_leads AS Lead')
 				->leftJoin('#__jinbound_pages AS Page ON Page.id = Lead.page_id')
+				->leftJoin('#__users AS Creator ON Creator.id = Lead.created_by')
+				->leftJoin('#__users AS Editor ON Editor.id = Lead.modified_by')
 				->where('Lead.contact_id = ' . (int) $item->contact_id)
 				//->where('Lead.id <> ' . (int) $item->id)
 				->group('Lead.id')
@@ -78,6 +89,12 @@ class JInboundModelLead extends JInboundAdminModel
 					$reg = new JRegistry;
 					$reg->loadString($data->formdata);
 					$reg->set('pagename', $data->pagename);
+					$reg->set('created', $data->created);
+					$reg->set('created_by', $data->created_by);
+					$reg->set('created_by_name', $data->created_by_name);
+					$reg->set('modified', $data->modified);
+					$reg->set('modified_by', $data->modified_by);
+					$reg->set('modified_by_name', $data->modified_by_name);
 					$item->_formdatas[] = $reg->toArray();
 				}
 			}

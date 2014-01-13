@@ -68,7 +68,7 @@ defined('JPATH_PLATFORM') or die;
 									<?php echo JHtml::_('jinbound.startSlider', 'leadSlider'); ?>
 									<?php if (!empty($this->item->_formdatas)) : ?>
 									<?php foreach ($this->item->_formdatas as $i => $data) : ?>
-									<?php echo JHtml::_('jinbound.addSlide', 'leadSlider', $data['pagename'], 'leadslider-' . $i); ?>
+									<?php echo JHtml::_('jinbound.addSlide', 'leadSlider', $data['created'] . ' | ' . $data['pagename'], 'leadslider-' . $i); ?>
 									<table class="table table-striped">
 										<?php if (array_key_exists('lead', $data)) foreach ($data['lead'] as $key => $value) : ?>
 										<tr>
