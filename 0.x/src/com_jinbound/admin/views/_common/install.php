@@ -31,7 +31,7 @@ foreach ($this->extensions as $extension) :
 		<tr>
 			<td><?php echo $link ? '<a href="' . $link . '">' . $extension->name . '</a>' : $this->escape($extension->name); ?></td>
 			<td class="hidden-phone"><?php echo $this->escape($extension->type); ?></td>
-			<td><img src="../media/system/images/notice-<?php echo $this->escape($extension->installed ? 'info' : 'alert'); ?>.png" /></td>
+			<td><img src="../media/jinbound/images/install-<?php echo $this->escape($extension->installed ? 'success' : 'failed'); ?>.png" /></td>
 			<td class="hidden-phone"><?php echo $this->escape($extension->version); ?></td>
 		</tr>
 <?php endforeach; ?>
