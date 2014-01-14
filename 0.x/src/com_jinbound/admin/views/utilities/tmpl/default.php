@@ -8,6 +8,7 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
+<h2><?php echo JText::_('COM_JINBOUND_UTILITIES'); ?></h2>
 <div class="row-fluid">
 	<div class="span12">
 		<ul class="unstyled">

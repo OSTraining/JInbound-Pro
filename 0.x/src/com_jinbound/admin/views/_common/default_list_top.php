@@ -7,6 +7,5 @@
 
 defined('JPATH_PLATFORM') or die;
 
-/**
- * This file intentionally left blank (so parent views can override it)
- */
+?>
+<h2><?php echo JText::_(strtoupper(JInbound::COM.'_'.$this->_name.'_MANAGER')); ?></h2>
