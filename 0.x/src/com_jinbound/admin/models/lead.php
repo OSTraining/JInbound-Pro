@@ -65,6 +65,8 @@ class JInboundModelLead extends JInboundAdminModel
 				->select('Lead.modified')
 				->select('Lead.modified_by')
 				->select('Editor.username AS modified_by_name')
+				// add ip
+				->select('Lead.ip')
 				// page name
 				->select('Page.name AS pagename')
 				->from('#__jinbound_leads AS Lead')
@@ -95,6 +97,7 @@ class JInboundModelLead extends JInboundAdminModel
 					$reg->set('modified', $data->modified);
 					$reg->set('modified_by', $data->modified_by);
 					$reg->set('modified_by_name', $data->modified_by_name);
+					$reg->set('ip', $data->ip);
 					$item->_formdatas[] = $reg->toArray();
 				}
 			}

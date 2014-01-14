@@ -109,6 +109,14 @@
 			default="0"
 			readonly="true"
 		/>
+
+		<field
+			id="ip" name="ip"
+			type="hidden"
+			class="readonly"
+			label="COM_JINBOUND_IP"
+			readonly="true"
+		/>
 		
 		<field
 			id="published" name="published"

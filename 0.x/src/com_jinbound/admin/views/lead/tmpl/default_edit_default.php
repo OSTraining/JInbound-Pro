@@ -76,6 +76,12 @@ defined('JPATH_PLATFORM') or die;
 											<td><?php echo $this->escape(print_r($value, 1)); ?></td>
 										</tr>
 										<?php endforeach; ?>
+										<?php if (!empty($data['ip'])) : ?>
+										<tr>
+											<td><?php echo JText::_('COM_JINBOUND_IP'); ?></td>
+											<td><?php echo $this->escape($data['ip']); ?></td>
+										</tr>
+										<?php endif; ?>
 									</table>
 									<?php echo JHtml::_('jinbound.endSlide'); ?>
 									<?php endforeach; ?>
