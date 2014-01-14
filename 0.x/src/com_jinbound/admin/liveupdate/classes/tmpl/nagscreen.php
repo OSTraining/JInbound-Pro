@@ -18,7 +18,7 @@ $stability = JText::_('LIVEUPDATE_STABILITY_'.$this->updateInfo->stability);
 		<p class="nagtext"><?php echo JText::sprintf('LIVEUPDATE_NAGSCREEN_BODY', $this->updateInfo->version, $stability) ?></p>
 	</div>
 	<p class="liveupdate-buttons">
-		<button onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_NAGSCREEN_BUTTON') ?></button>
+		<button class="btn btn-primary" onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_NAGSCREEN_BUTTON') ?></button>
 	</p>
 
 </div>

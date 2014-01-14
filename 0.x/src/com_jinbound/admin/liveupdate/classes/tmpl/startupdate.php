@@ -38,7 +38,7 @@ defined('_JEXEC') or die();
 						</tr>
 					</tbody>				
 				</table>
-				<input type="submit" value="<?php echo JText::_('LIVEUPDATE_DOWNLOAD_AND_INSTALL'); ?>" />				
+				<input class="btn btn-primary" type="submit" value="<?php echo JText::_('LIVEUPDATE_DOWNLOAD_AND_INSTALL'); ?>" />				
 			</fieldset>
 		</form>
 	</div>

@@ -125,9 +125,9 @@ ENDSCRIPT;
 		<p class="liveupdate-buttons">
 			<?php if($this->updateInfo->hasUpdates):?>
 			<?php $disabled = $this->needsAuth ? 'disabled="disabled"' : ''?>
-			<button <?php echo $disabled?> onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_DO_UPDATE') ?></button>
+			<button class="btn btn-primary" <?php echo $disabled?> onclick="window.location='<?php echo $this->runUpdateURL ?>'" ><?php echo JText::_('LIVEUPDATE_DO_UPDATE') ?></button>
 			<?php endif;?>
-			<button onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
+			<button class="btn" onclick="window.location='<?php echo $this->requeryURL ?>'" ><?php echo JText::_('LIVEUPDATE_REFRESH_INFO') ?></button>
 		</p>
 	</div>
 
