@@ -118,6 +118,11 @@ class JInboundTableLead extends JInboundTable
 			}
 		}
 		
+		// add ip to new records
+		if ($isNew && array_key_exists('REMOTE_ADDR', $_SERVER)) {
+			$this->ip = $_SERVER['REMOTE_ADDR'];
+		}
+		
 		// check status for this lead
 		if (empty($this->status_id)) {
 			$this->_db->setQuery($this->_db->getQuery(true)
