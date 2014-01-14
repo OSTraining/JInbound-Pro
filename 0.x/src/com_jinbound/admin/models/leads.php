@@ -88,10 +88,10 @@ class JInboundModelLeads extends JInboundListModel
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
-		$id	.= ':'.$this->getState('filter.start');
-		$id	.= ':'.$this->getState('filter.end');
-		$id	.= ':'.$this->getState('filter.priority');
-		$id	.= ':'.$this->getState('filter.status');
+		$id	.= ':'.serialize($this->getState('filter.start'));
+		$id	.= ':'.serialize($this->getState('filter.end'));
+		$id	.= ':'.serialize($this->getState('filter.priority'));
+		$id	.= ':'.serialize($this->getState('filter.status'));
 
 		return parent::getStoreId($id);
 	}
