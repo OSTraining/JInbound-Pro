@@ -29,6 +29,20 @@ class JInboundViewLeads extends JInboundListView
 		);
 	}
 	
+	function display($tpl = null, $safeparams = false) {
+		
+		$state = $this->get('State');
+		if (count($errors = $this->get('Errors'))) {
+			JError::raiseError(500, implode('<br />', $errors));
+			return false;
+		}
+		
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PRIORITY'), 'filter_priority', $this->get('PriorityOptions'), $state->get('filter.priority'));
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_LEAD_STATUS'), 'filter_status', $this->get('StatusOptions'), $state->get('filter.status'));
+		
+		return parent::display($tpl, $safeparams);
+	}
+	
 	public function addToolBar() {
 		// export icon
 		JToolBarHelper::custom('reports.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS', false);

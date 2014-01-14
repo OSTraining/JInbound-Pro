@@ -15,6 +15,7 @@ class JInboundControllerLead extends JInboundBaseController
 	public function save() {
 		// init
 		$app        = JFactory::getApplication();
+		$db         = JFactory::getDbo();
 		$debug      = JInbound::config("debug", 0);
 		$Itemid     = $app->input->get('Itemid', 0, 'int');
 		$dispatcher = JDispatcher::getInstance();
@@ -65,6 +66,19 @@ class JInboundControllerLead extends JInboundBaseController
 		$bind['published']   = 1;
 		$bind['campaign_id'] = $page->campaign;
 		$bind['formdata']    = json_encode($data);
+		// get the default priority
+		$db->setQuery($db->getQuery(true)
+			->select('id')
+			->from('#__jinbound_priorities')
+			->order('ordering')
+		);
+		try {
+			$priority_id = $db->loadResult();
+		}
+		catch (Exception $e) {
+			$priority_id = 0;
+		}
+		$bind['priority_id'] = $priority_id;
 		// now get a lead table
 		$lead        = JTable::getInstance('Lead', 'JInboundTable');
 		$isNew       = true;

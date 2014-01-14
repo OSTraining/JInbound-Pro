@@ -59,14 +59,19 @@ class JInboundModelLeads extends JInboundListModel
 		
 		$app    = JFactory::getApplication();
 		$format = $app->input->get('format', '', 'cmd');
+		$end    = ('json' == $format ? '.json' : '');
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
-		if ('json' != $format) $value = '';
+		$value = $this->getUserStateFromRequest($this->context.'.filter.start'.$end, 'filter_start', '', 'string');
 		$this->setState('filter.start', $value);
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
-		if ('json' != $format) $value = '';
+		$value = $this->getUserStateFromRequest($this->context.'.filter.end'.$end, 'filter_end', '', 'string');
 		$this->setState('filter.end', $value);
+		
+		$value = $this->getUserStateFromRequest($this->context.'.filter.priority'.$end, 'filter_priority', '', 'int');
+		$this->setState('filter.priority', $value);
+		
+		$value = $this->getUserStateFromRequest($this->context.'.filter.status'.$end, 'filter_status', '', 'int');
+		$this->setState('filter.status', $value);
 	}
 
 	/**
@@ -85,6 +90,8 @@ class JInboundModelLeads extends JInboundListModel
 		// Compile the store id.
 		$id	.= ':'.$this->getState('filter.start');
 		$id	.= ':'.$this->getState('filter.end');
+		$id	.= ':'.$this->getState('filter.priority');
+		$id	.= ':'.$this->getState('filter.status');
 
 		return parent::getStoreId($id);
 	}
@@ -166,11 +173,82 @@ class JInboundModelLeads extends JInboundListModel
 			}
 		}
 		
+		$value = $this->getState('filter.priority');
+		if (!empty($value)) {
+			$query->where('Lead.priority_id = ' . (int) $value);
+		}
+		
+		$value = $this->getState('filter.status');
+		if (!empty($value)) {
+			$query->where('Lead.status_id = ' . (int) $value);
+		}
+		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Lead.created');
 		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
 		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 
 		return $query;
+	}
+	
+	
+	/**
+	 *
+	 */
+	public function getPriorityOptions() {
+		$db = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select($db->quoteName('id'))
+			->select($db->quoteName('name'))
+			->from('#__jinbound_priorities')
+			->where($db->quoteName('published') . ' = 1')
+		);
+	
+		try {
+			$options = $db->loadObjectList();
+		}
+		catch (Exception $e) {
+			// don't bother if there's an issue
+		}
+	
+		$list = array(JHtml::_('select.option', '', JText::_('COM_JINBOUND_SELECT_PRIORITY')));
+	
+		if (!empty($options)) {
+			foreach ($options as $option) {
+				$list[] = JHtml::_('select.option', $option->id, $option->name);
+			}
+		}
+	
+		return $list;
+	}
+	
+	/**
+	 *
+	 */
+	public function getStatusOptions() {
+		$db = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select($db->quoteName('id'))
+			->select($db->quoteName('name'))
+			->from('#__jinbound_lead_statuses')
+			->where($db->quoteName('published') . ' = 1')
+		);
+		
+		try {
+			$options = $db->loadObjectList();
+		}
+		catch (Exception $e) {
+			// don't bother if there's an issue
+		}
+		
+		$list = array(JHtml::_('select.option', '', JText::_('COM_JINBOUND_SELECT_LEAD_STATUS')));
+		
+		if (!empty($options)) {
+			foreach ($options as $option) {
+				$list[] = JHtml::_('select.option', $option->id, $option->name);
+			}
+		}
+		
+		return $list;
 	}
 }

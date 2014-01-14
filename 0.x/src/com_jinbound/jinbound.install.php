@@ -269,9 +269,11 @@ class com_JInboundInstallerScript
 	private function _checkDefaultPriorities() {
 		$app = JFactory::getApplication();
 		$db  = JFactory::getDbo();
+		$fix = $db->getQuery(true)->update('#__jinbound_leads')->where('priority_id = 0');
 		$db->setQuery($db->getQuery(true)
 			->select('id')
 			->from('#__jinbound_priorities')
+			->order('ordering ASC')
 		);
 		try {
 			$priorities = $db->loadColumn();
@@ -282,6 +284,14 @@ class com_JInboundInstallerScript
 		}
 		if (is_array($priorities) && !empty($priorities)) {
 			$app->enqueueMessage(JText::_('COM_JINBOUND_PRIORITIES_FOUND'));
+			$fix->set('priority_id = ' . $priorities[0]);
+			$db->setQuery($fix);
+			try {
+				$db->query();
+			}
+			catch (Exception $e) {
+				
+			}
 			return;
 		}
 		jimport('joomla.database.table');
@@ -295,9 +305,15 @@ class com_JInboundInstallerScript
 				'published'   => 1,
 				'ordering'    => $i + 1
 			);
-			$table->bind($bind);
-			$table->check();
-			$table->store();
+			if (!$table->bind($bind)) {
+				continue;
+			}
+			if (!$table->check()) {
+				continue;
+			}
+			if (!$table->store()) {
+				continue;
+			}
 		}
 	}
 	
