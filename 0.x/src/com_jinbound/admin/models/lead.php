@@ -136,7 +136,7 @@ class JInboundModelLead extends JInboundAdminModel
 		$return = $db->query();
 		
 		// Trigger the onContentChangeState event.
-		$result = $dispatcher->trigger('onContentChangeState', array('com_jinbound.lead.status', $id, $value));
+		$result = $dispatcher->trigger('onContentChangeState', array('com_jinbound.lead.status', array($id), $value));
 		
 		if (in_array(false, $result, true)) {
 			return false;
@@ -167,7 +167,7 @@ class JInboundModelLead extends JInboundAdminModel
 		$return = $db->query();
 		
 		// Trigger the onContentChangeState event.
-		$result = $dispatcher->trigger('onContentChangeState', array('com_jinbound.lead.priority', $id, $value));
+		$result = $dispatcher->trigger('onContentChangeState', array('com_jinbound.lead.priority', array($id), $value));
 		
 		if (in_array(false, $result, true)) {
 			return false;

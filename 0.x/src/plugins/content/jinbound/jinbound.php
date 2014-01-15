@@ -109,9 +109,10 @@ class plgContentJInbound extends JPlugin
 	 * onContentChangeState event - dummy for now
 	 * 
 	 * @param unknown_type $context
-	 * @param unknown_type $item
+	 * @param unknown_type $pks
+	 * @param unknown_type $value
 	 */
-	public function onContentChangeState($context, $id, $value) {
+	public function onContentChangeState($context, $pks, $value) {
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
