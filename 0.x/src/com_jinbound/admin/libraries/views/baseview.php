@@ -199,7 +199,7 @@ class JInboundView extends JInboundBaseView
 		if (JInbound::version()->isCompatible('3.0.0')) {
 			$addCategories = true;
 			$subMenuItems = array_merge($subMenuItems, array(
-				'campaigns'  => 'CAMPAIGNS',
+				'campaigns'  => 'CAMPAIGNS_MANAGER',
 				'statuses'   => 'STATUSES',
 				'priorities' => 'PRIORITIES'
 			));
