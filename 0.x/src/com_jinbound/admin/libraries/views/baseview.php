@@ -179,7 +179,9 @@ class JInboundView extends JInboundBaseView
 		$app = JFactory::getApplication();
 		
 		// only fire in administrator
-		if (!$app->isAdmin()) return;
+		if (!$app->isAdmin()) {
+			return;
+		}
 		
 		$vName  = $app->input->get('view', '', 'cmd');
 		$option = $app->input->get('option', '', 'cmd');
@@ -190,14 +192,30 @@ class JInboundView extends JInboundBaseView
 			'pages'     => 'PAGES',
 			'emails'    => 'LEAD_NURTURING_MANAGER',
 			'leads'     => 'LEADS',
-			'reports'   => 'REPORTS',
-			'utilities' => 'UTILITIES'
+			'reports'   => 'REPORTS'
 		);
+		$addCategories = false;
+		
+		if (JInbound::version()->isCompatible('3.0.0')) {
+			$addCategories = true;
+			$subMenuItems = array_merge($subMenuItems, array(
+				'campaigns'  => 'CAMPAIGNS',
+				'statuses'   => 'STATUSES',
+				'priorities' => 'PRIORITIES'
+			));
+		}
+		else {
+			$subMenuItems['utilities'] = 'UTILITIES';
+		}
+		
 		foreach ($subMenuItems as $sub => $txt) {
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
-			$active = ($vName == $sub);
+			$active = ($vName == $sub && JInbound::COM == $option);
 			JSubMenuHelper::addEntry($label, $href, $active);
+			if ($addCategories && 'reports' == $sub) {
+				JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM . "_CATEGORIES")), JInboundHelperUrl::_(array('option' => 'com_categories', 'view' => 'categories', 'extension' => JInbound::COM)), $option == JInbound::COM && in_array($vName, array('', 'categories')));
+			}
 		}
 	}
 
