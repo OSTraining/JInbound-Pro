@@ -186,12 +186,12 @@ class JInboundListModel extends JModelList
 			return;
 		}
 		// search by column text
-		$search = $db->Quote('%' . $db->getEscaped($search, true) . '%');
+		$search = $db->quote('%' . (method_exists($db, 'escape') ? $db->escape($search, true) : $db->getEscaped($search, true)) . '%', false);
 		$where = array();
 		if (!empty($columns)) {
 			foreach ($columns as &$column) {
 				$column = $filter->clean($column, 'cmd');
-				$where[] = $column . ' LIKE ' . $search;
+				$where[] = (false === strpos($column, '.') ? $tablename . '.' : '') . $column . ' LIKE ' . $search;
 			}
 			$query->where('(' . implode(' OR ', $where) . ')');
 		}

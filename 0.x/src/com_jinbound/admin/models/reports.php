@@ -33,16 +33,7 @@ class JInboundModelReports extends JInboundListModel
 		->select('1')
 		->from('#__jinbound_pages AS Page')
 		;
-		// add author to query
-		$this->appendAuthorToQuery($query, 'Page');
-		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page');
-
-		// Add the list ordering clause.
-		$orderCol = trim($this->state->get('list.ordering'));
-		$orderDirn = trim($this->state->get('list.direction'));
-		if (strlen($orderCol)) {
-			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
-		}
+		
 		return $query;
 	}
 	

@@ -38,14 +38,14 @@ class JInboundModelStages extends JInboundListModel
 		;
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Stage');
-		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Stage');
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Stage', 'id', array('name', 'description'));
 		$this->filterPublished($query, $this->getState('filter.published'), 'Stage');
 
 		// Add the list ordering clause.
 		$orderCol = trim($this->state->get('list.ordering'));
 		$orderDirn = trim($this->state->get('list.direction'));
 		if (strlen($orderCol)) {
-			$query->order($db->getEscaped($orderCol.' '.$orderDirn));
+			$query->order((method_exists($db, 'escape') ? $db->escape($orderCol.' '.$orderDirn, true) : $db->getEscaped($orderCol.' '.$orderDirn, true)));
 		}
 
 		return $query;

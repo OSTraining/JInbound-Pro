@@ -61,7 +61,7 @@ class JInboundModelEmails extends JInboundListModel
 		;
 		
 		$this->appendAuthorToQuery($query, 'Email');
-		$this->filterSearchQuery($query, $this->state->get('filter.search'), 'Email', 'id', array('Email.name', 'Email.subject', 'Campaign.name'));
+		$this->filterSearchQuery($query, $this->state->get('filter.search'), 'Email', 'id', array('name', 'subject', 'Campaign.name'));
 		$this->filterPublished($query, $this->getState('filter.published'), 'Email');
 		
 		// Add the list ordering clause.
