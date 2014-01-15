@@ -19,9 +19,9 @@ div.liveupdate-stuck {
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-border-radius: 10px;
-	-moz-box-shadow: 5px 5px 5px #f88;
-	-webkit-box-shadow: 5px 5px 5px #f88;
-	box-shadow: 5px 5px 5px #f88;
+	-moz-box-shadow: 5px 5px 5px none;
+	-webkit-box-shadow: 5px 5px 5px none;
+	box-shadow: 5px 5px 5px none;
 }
 div.liveupdate-notsupported h3,
 div.liveupdate-stuck h3 {
@@ -42,9 +42,9 @@ div.liveupdate-hasupdates {
 	-webkit-border-radius: 4px;
 	-border-radius: 4px;
 	border-radius: 4px;
-	-moz-box-shadow: 5px 5px 5px #ff8;
-	-webkit-box-shadow: 5px 5px 5px #ff8;
-	box-shadow: 5px 5px 5px #ff8;
+	-moz-box-shadow: 5px 5px 5px none;
+	-webkit-box-shadow: 5px 5px 5px none;
+	box-shadow: 5px 5px 5px none;
 }
 
 div.liveupdate-hasupdates h3 {
@@ -63,9 +63,9 @@ div.liveupdate-noupdates {
 	-webkit-border-radius: 4px;
 	-border-radius: 4px;
 	border-radius: 4px;
-	-moz-box-shadow: 5px 5px 5px #8f8;
-	-webkit-box-shadow: 5px 5px 5px #8f8;
-	box-shadow: 5px 5px 5px #8f8;
+	-moz-box-shadow: 5px 5px 5px none;
+	-webkit-box-shadow: 5px 5px 5px none;
+	box-shadow: 5px 5px 5px none;
 }
 
 div.liveupdate-noupdates h3 {
@@ -76,7 +76,7 @@ div.liveupdate-noupdates h3 {
 }
 
 div.liveupdate-infotable {
-	width: 620px;
+	width: 720px;
 	margin: auto auto;
 	padding: 2px;
 	border: thin solid #333;
@@ -106,9 +106,9 @@ p.liveupdate-error-needsauth {
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-border-radius: 10px;
-	-moz-box-shadow: 5px 5px 5px #f88;
-	-webkit-box-shadow: 5px 5px 5px #f88;
-	box-shadow: 5px 5px 5px #f88;
+	-moz-box-shadow: 5px 5px 5px none;
+	-webkit-box-shadow: 5px 5px 5px none;
+	box-shadow: 5px 5px 5px none;
 }
 
 p.liveupdate-poweredby { font-size: 8pt; color: silver; margin: 1em 0 0.5em 0 }
@@ -128,7 +128,7 @@ div.liveupdate-ftp p { margin: 1em 2em; line-height: 140%; border: thin solid #0
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-border-radius: 10px;
-	-moz-box-shadow: 5px 5px 5px #f88;
-	-webkit-box-shadow: 5px 5px 5px #f88;
-	box-shadow: 5px 5px 5px #f88;
+	-moz-box-shadow: 5px 5px 5px none;
+	-webkit-box-shadow: 5px 5px 5px none;
+	box-shadow: 5px 5px 5px none;
 }
