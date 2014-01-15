@@ -97,7 +97,9 @@ class JInboundModelEmails extends JInboundListModel
 			->select('Contact.email_to AS email')
 			->select('Contact.id AS contact_id')
 			->select('Page.id AS page_id')
+			->select('Page.formname AS form_name')
 			->select('Campaign.id AS campaign_id')
+			->select('Campaign.name AS campaign_name')
 			->select('Email.id AS email_id')
 			->select('Email.sendafter AS sendafter')
 			->select('Email.fromname AS fromname')
@@ -152,6 +154,7 @@ class JInboundModelEmails extends JInboundListModel
 			foreach (array_keys($arr['lead']) as $tag) {
 				$tags[] = 'email.lead.' . $tag;
 			}
+			array_unique($tags);
 			$reg = $reg->toObject();
 			// trigger an event before parsing
 			$status = $dispatcher->trigger('onContentBeforeDisplay', array('com_jinbound.email', &$result, &$params, 0));
@@ -161,6 +164,10 @@ class JInboundModelEmails extends JInboundListModel
 			// replace email tags
 			$result->htmlbody  = $this->_replaceTags($result->htmlbody,  $reg, $tags);
 			$result->plainbody = $this->_replaceTags($result->plainbody, $reg, $tags);
+			// replace other tags
+			$tags = array('email.campaign_name', 'email.form_name');
+			$result->htmlbody  = $this->_replaceTags($result->htmlbody,  $result, $tags);
+			$result->plainbody = $this->_replaceTags($result->plainbody, $result, $tags);
 			// add unsubscribe link to email contents
 			$unsubscribe       = JInboundHelperUrl::toFull(JInboundHelperUrl::task('unsubscribe', false, array('email' => $result->email)));
 			$result->htmlbody  = $result->htmlbody  . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_HTML',  $unsubscribe);
@@ -214,7 +221,7 @@ class JInboundModelEmails extends JInboundListModel
 	
 	
 	private static function _replaceTags($string, $object, $extra = false) {
-		$out  = JInbound::config("debug", 0);
+		$out  = false;//JInbound::config("debug", 0);
 		if ($out) echo ('<h3>Email Tags</h3>');
 		$tags = array(
 			'email.lead.first_name'

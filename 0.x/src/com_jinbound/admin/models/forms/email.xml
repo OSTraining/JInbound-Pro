@@ -87,6 +87,14 @@
 			size="30"
 			required="true"
 		/>
+	</fieldset>
+	<fieldset
+		name="content"
+		label="COM_JINBOUND_EMAIL_FIELDSET_CONTENT"
+	>
+		<field
+			type="jinboundtips" name="email_tips" id="email_tips"
+		/>
 
 		<field
 			id="htmlbody" name="htmlbody"
