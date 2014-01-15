@@ -152,7 +152,7 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 					tr.append($('<td></td>').text(parseInt(data.items[i].hits, 10)));
 					tr.append($('<td></td>').text(parseInt(data.items[i].submissions, 10)));
 					tr.append($('<td></td>').text(parseInt(data.items[i].conversions, 10)));
-					tr.append($('<td></td>').text(parseInt(data.items[i].conversion_rate, 10)));
+					tr.append($('<td></td>').text(data.items[i].conversion_rate + ' %'));
 					b.append(tr);
 				}
 				t.append(b);
