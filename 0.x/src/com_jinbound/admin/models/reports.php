@@ -46,6 +46,7 @@ class JInboundModelReports extends JInboundListModel
 		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
 			->select('SUM(Page.hits)')
 			->from('#__jinbound_pages AS Page')
+			->where('Page.published = 1')
 		);
 		
 		try {
@@ -70,6 +71,7 @@ class JInboundModelReports extends JInboundListModel
 			->from('#__jinbound_leads AS Lead')
 			->leftJoin('#__jinbound_lead_statuses AS Status ON Lead.status_id = Status.id')
 			->where('(Status.active = 1 OR Status.active IS NULL)') // users with no status are probably new and something went wonky
+			->where('Lead.published = 1')
 		);
 		
 		try {
@@ -148,6 +150,7 @@ class JInboundModelReports extends JInboundListModel
 				->from('#__jinbound_leads AS Lead')
 				->leftJoin('#__jinbound_lead_statuses AS Status ON Lead.status_id = Status.id')
 				->where('Status.final = 1')
+				->where('Lead.published = 1')
 				->group('Lead.id')
 			);
 			
