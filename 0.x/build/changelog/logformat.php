@@ -73,8 +73,6 @@ if (empty($rawlog)) {
 
 $entries = json_decode(trim($rawlog));
 
-print_r($entries);
-
 $out = '';
 
 // title
