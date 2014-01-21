@@ -134,7 +134,7 @@ class plgContentJInbound extends JPlugin
 	 */
 	public function onContentBeforeDisplay($context, &$table, &$params, $offset = 0) {
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
-			return true;
+			return;
 		}
 		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
@@ -150,19 +150,18 @@ class plgContentJInbound extends JPlugin
 				}
 				// empty first match, however, is not
 				if (empty($matches[0])) {
-					return true;
+					return;
 				}
 				// "fix" the urls
 				JInbound::registerHelper('url');
 				foreach ($matches as $match) {
 					$table->htmlbody = str_replace($match[0], $match['attr'] . '=' . $match['qte'] . JInboundHelperUrl::toFull($match['url']) . $match['qte'], $table->htmlbody);
 				}
-				return true;
+				return;
 				// TODO plaintext emails?
 			default:
 				break;
 		}
-		return true;
 	}
 	
 	/**
@@ -175,11 +174,10 @@ class plgContentJInbound extends JPlugin
 	 */
 	public function onContentAfterDisplay($context, &$table, &$params, $offset = 0) {
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
-			return true;
+			return;
 		}
 		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
 		}
-		return true;
 	}
 }
