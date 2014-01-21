@@ -35,9 +35,6 @@ class JInboundControllerLead extends JInboundBaseController
 			$this->setError(JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
 			return;
 		}
-		if ($debug) {
-			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_PAGE', htmlspecialchars(print_r($page, 1))));
-		}
 		// get the form data
 		if (!method_exists($page->formbuilder, 'toArray')) {
 			$reg = new JRegistry();
@@ -84,15 +81,8 @@ class JInboundControllerLead extends JInboundBaseController
 		$isNew       = true;
 		// see if there is an existing lead for this user
 		if ($lead->load(array('first_name' => $bind['first_name'], 'last_name' => $bind['last_name']))) {
-			if ($debug) {
-				$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_BEFORE_SAVE', htmlspecialchars(print_r($lead, 1))));
-			}
 			$bind['id'] = $lead->id;
 			$isNew = false;
-		}
-		// show data before bind
-		if ($debug) {
-			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_DATA_BEFORE_BIND', htmlspecialchars(print_r($bind, 1))));
 		}
 		// bind the data
 		if (!$lead->bind($bind)) {
@@ -117,9 +107,6 @@ class JInboundControllerLead extends JInboundBaseController
 		}
 		// fire after save event
 		$dispatcher->trigger('onContentAfterSave', array('com_jinbound.lead', &$lead, $isNew));
-		if ($debug) {
-			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_DEBUG_LEAD_AFTER_SAVE', htmlspecialchars(print_r($lead, 1))));
-		}
 		
 		// alert if necessary
 		$emails = $page->notification_email;
