@@ -8,4 +8,3 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-modal

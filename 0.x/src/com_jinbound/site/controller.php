@@ -109,9 +109,7 @@ class JInboundController extends JInboundBaseController
 			$data['error'] = JText::_('COM_JINBOUND_NOT_FOUND');
 		}
 		
-		done: {
-			echo json_encode($data);
-			die;
-		}
+		echo json_encode($data);
+		die;
 	}
 }

@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package		JInbound
+ * @subpackage	com_jinbound
+@ant_copyright_header@
+ */
+
 // no direct access
 defined('_JEXEC') or die;
 

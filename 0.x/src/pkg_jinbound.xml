@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension type="package" version="2.5" method="upgrade">
 	<name>PKG_JINBOUND</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<packagename>jinbound</packagename>
 	<version>@ant_version_number@</version>
 	<author>Anything Digital</author>
