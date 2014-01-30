@@ -17,6 +17,15 @@ defined('JPATH_PLATFORM') or die;
 	catch (err) {
 		console.log(err);
 	}
+	
+	var fixOrdering = function() {
+		var order = [];
+		$("#<?php echo $this->input->id; ?>_elements li").each(function(idx, el) {
+			order.push($(el).attr('data-id'));
+		});
+		$("#<?php echo $this->input->id; ?>_ordering").val(order.join('|'));
+	};
+	
 	$("#<?php echo $this->input->id; ?>_elements, #<?php echo $this->input->id; ?>_fields").sortable({
 		connectWith: ".<?php echo $this->input->id; ?>_connected",
 		revert: false,
@@ -55,6 +64,7 @@ defined('JPATH_PLATFORM') or die;
 			
 			if (orig.parent().attr('id') == parent.attr('id')) {
 				console.log('Stopped sort');
+				fixOrdering();
 				return;
 			}
 			
@@ -117,6 +127,8 @@ defined('JPATH_PLATFORM') or die;
 			else if (clone) {
 				parent.prepend(clone);
 			}
+
+			fixOrdering();
 			
 			console.log('Stopped sort');
 		}
@@ -124,11 +136,13 @@ defined('JPATH_PLATFORM') or die;
 	$("#<?php echo $this->input->id; ?>_elements").on("sortreceive", function(e, ui) {
 		console.log('Receiving sort - elements');
 		$('#<?php echo $this->input->id; ?>_' + ui.item.attr('data-id') + '_enabled').val(1);
+		fixOrdering();
 	});
 	$("#<?php echo $this->input->id; ?>_fields").on("sortreceive", function(e, ui) {
 		console.log('Receiving sort - fields');
 		$(ui.item).removeClass('btn-primary');
 		$('#<?php echo $this->input->id; ?>_' + ui.item.attr('data-id') + '_enabled').val(0);
+		fixOrdering();
 	});
 	$(document).on('click', "#<?php echo $this->input->id; ?>_elements .btn-block", function(e){
 		$("#<?php echo $this->input->id; ?>_elements .btn-block.btn-primary").removeClass('btn-primary');
@@ -147,6 +161,8 @@ defined('JPATH_PLATFORM') or die;
 			btn.text(title);
 		}
 	});
+
+	fixOrdering();
 
 	console.log('Hiding default');
 	$('.formbuilder-default-option').hide();
@@ -194,7 +210,7 @@ defined('JPATH_PLATFORM') or die;
 <?php
 if (!empty($this->value)) :
 	foreach ($this->value as $ename => $element) :
-		if (0 == $element['enabled']) :
+		if (0 == $element['enabled'] || '__ordering' == $ename) :
 			continue;
 		endif;
 		switch ($ename) :
@@ -219,6 +235,7 @@ endif;
 
 <div>
 	<input id="<?php echo $this->input->id; ?>_value" name="<?php echo $this->escape($this->input->name); ?>" type="<?php echo (JInbound::config("debug", 0)) ? 'text' : 'hidden'; ?>" value="" />
+	<input id="<?php echo $this->input->id; ?>_ordering" name="<?php echo $this->escape($this->input->name . '[__ordering]'); ?>" type="<?php echo (JInbound::config("debug", 0)) ? 'text' : 'hidden'; ?>" value="<?php echo $this->escape((array_key_exists('__ordering', $this->value) ? $this->value['__ordering'] : '')); ?>" />
 </div>
 <?php if (JInbound::config("debug", 0)) : ?>
 <h4>Values:</h4>

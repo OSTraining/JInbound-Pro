@@ -48,10 +48,37 @@ class JInboundModelPage extends JInboundAdminModel
 			$reg = new JRegistry();
 			$formbuilder = $reg;
 		}
+		// order fields
+		$unordered = $formbuilder->toArray();
+		$ordered   = array();
+		if (!array_key_exists('__ordering', $unordered)) {
+			$ordered = $unordered;
+		}
+		else {
+			if (empty($unordered['__ordering'])) {
+				$ordered = $unordered;
+			}
+			else {
+				$ordering = explode('|', $unordered['__ordering']);
+				unset($unordered['__ordering']);
+				foreach ($ordering as $orderkey) {
+					if (array_key_exists($orderkey, $unordered)) {
+						$ordered[$orderkey] = $unordered[$orderkey];
+					}
+				}
+				foreach ($unordered as $orderkey => $orderval) {
+					if (!array_key_exists($orderkey, $ordered)) {
+						$ordered[$orderkey] = $orderval;
+					}
+				}
+			}
+		}
+		
+		
 		// count how many fields we've added
 		$allowedFields = 0;
 		// add the fields
-		foreach ($formbuilder->toArray() as $name => $field) {
+		foreach ($ordered as $name => $field) {
 			// if this field isn't enabled, don't add
 			if (0 == $field['enabled']) {
 				continue;

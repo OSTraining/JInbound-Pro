@@ -96,6 +96,31 @@ class JFormFieldJinboundFormBuilder extends JFormField
 			}
 		}
 		
+		$ordering = $this->value->get('__ordering');
+		
+		if (empty($ordering)) {
+			return $this->value->toArray();
+		}
+		
+		if (!is_array($ordering)) {
+			$ordering = explode('|', $ordering);
+		}
+		
+		$unordered = $this->value->toArray();
+		$ordered   = new JRegistry();
+		foreach ($ordering as $key) {
+			if (array_key_exists($key, $unordered)) {
+				$ordered->set($key, $unordered[$key]);
+			}
+		}
+		foreach ($unordered as $key => $value) {
+			if (!array_key_exists($key, $ordered)) {
+				$ordered->set($key, $value);
+			}
+		}
+		
+		$this->value = $ordered;
+		
 		return $this->value->toArray();
 	}
 	
