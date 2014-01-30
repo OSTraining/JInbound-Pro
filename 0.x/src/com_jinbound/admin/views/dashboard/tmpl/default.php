@@ -121,5 +121,7 @@ defined('JPATH_PLATFORM') or die;
 </div>
 <?php
 
+echo $this->loadTemplate('footer');
+
 echo $this->reports->script;
 

@@ -19,3 +19,4 @@ defined('JPATH_PLATFORM') or die;
 		</ul>
 	</div>
 </div>
+<?php echo $this->loadTemplate('footer'); ?>

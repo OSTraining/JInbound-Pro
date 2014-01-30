@@ -13,6 +13,8 @@ abstract class JInbound
 {
 	const COM = 'com_jinbound';
 	
+	const VERSION = '@ant_version_number@';
+	
 	private static $_actions = array('core.admin', 'core.manage', 'core.create', 'core.create.private', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete', 'core.moderate');
 	
 	/**

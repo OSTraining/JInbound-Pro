@@ -38,6 +38,7 @@ $listDirn  = $this->state->get('list.direction');
 		</div>
 	</form>
 </div>
+<?php echo $this->loadTemplate('footer'); ?>
 <?php if (JInbound::config("debug", 0)) : ?>
 <h3>State</h3>
 <pre><?php echo $this->escape(print_r($this->state, 1)); ?></pre>

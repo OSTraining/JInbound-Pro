@@ -28,7 +28,7 @@ $hiddenFieldset   = $this->form->getFieldset('hidden');
 </div>
 
 <div class="clearfix"></div>
-
+<?php echo $this->loadTemplate('footer'); ?>
 
 <div>
 		<?php foreach ($hiddenFieldset as $name => $field) echo $field->input; ?>

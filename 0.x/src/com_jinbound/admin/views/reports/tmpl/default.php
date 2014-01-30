@@ -27,4 +27,5 @@ JHtml::_('behavior.calendar');
 	</div>
 	</form>
 </div>
+<?php echo $this->loadTemplate('footer'); ?>
 <?php echo $this->loadTemplate('script'); ?>
