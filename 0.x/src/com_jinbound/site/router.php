@@ -43,7 +43,13 @@ function JinboundBuildRoute(&$query) {
 	}
 	// check page view
 	if (isset($view) && $view == 'page') {
-		list ($pid, $tmp) = explode(':', $id, 2);
+		if (false !== strpos($id, ':')) {
+			list ($pid, $tmp) = explode(':', $id, 2);
+		}
+		else {
+			$pid = (int) $id;
+			$tmp = '';
+		}
 		$pid = (int) $pid;
 		if ($pid) {
 			$db = JFactory::getDbo();

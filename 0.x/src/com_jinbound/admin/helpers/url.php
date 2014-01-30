@@ -40,12 +40,16 @@ abstract class JInboundHelperUrl
 		if (JInbound::COM == $urlparams['option']) {
 			// here comes some fun - we can't just call this method without constructing a needles array :(
 			$needles = null;
+			// jinbound only has one frontend view, so if there's an ID add the Itemid along with it
+			if (array_key_exists('id', $urlparams)) {
+				$needles = array('page' => array($urlparams['id']));
+			}
 			// apparently we can only append the Itemid if we don't have a task
 			if (array_key_exists('task', $urlparams)) {
 				if (array_key_exists('Itemid', $urlparams)) unset($urlparams['Itemid']);
 			}
 			else {
-				$Itemid = false;//self::findItemid($needles);
+				$Itemid = self::findItemid($needles);
 				if ($Itemid && !array_key_exists('Itemid', $urlparams)) $urlparams['Itemid'] = $Itemid;
 			}
 		}
@@ -199,5 +203,77 @@ abstract class JInboundHelperUrl
 	public static function toFull($url) {
 		if (preg_match('/^https?\:\/{2}/', $url)) return $url;
 		return str_replace('/administrator', '', rtrim(str_replace('/administrator', '', JUri::root()), '/') . '/' . ltrim(str_replace(JUri::root(true), '', $url), '/'));
+	}
+	
+	
+	
+	/**
+	 * private class method to find an Itemid
+	 * code mostly borrowed from a core route helper
+	 *
+	 * @param $needles
+	 */
+	public static function findItemid($needles = null) {
+		// TODO: should we always return null in admin? hmm...
+		// import the component helper so we can get the component id
+		jimport('joomla.application.component.helper');
+		// get our menu items
+		$menus  = JFactory::getApplication()->getMenu('site');
+		$active = $menus->getActive();
+		// prepare the lookup array
+		if (is_null(self::$lookup)) {
+			// start by setting as an array
+			self::$lookup = array();
+			// get the component
+			$component = JComponentHelper::getComponent('com_jinbound');
+			// get the items from the menu that correspond to our component
+			$items = $menus->getItems('component_id', $component->id);
+			// if there ARE items, start looping them
+			if (!empty($items)) {
+				foreach ($items as $item) {
+					// if there's a view associated with this menu item, use that as the key
+					if (isset($item->query) && isset($item->query['view'])) {
+						$view = $item->query['view'];
+						// initialize this view's array in the lookup
+						if (!isset(self::$lookup[$view])) {
+							self::$lookup[$view] = array();
+						}
+						// add the menu item's id (Itemid) as the value of this lookup
+						if (isset($item->query['id'])) {
+							self::$lookup[$view]['id_' . $item->query['id']] = array_key_exists($item->query['id'], self::$lookup[$view]) ? self::$lookup[$view][$item->query['id']] : $item->id;
+						}
+					}
+				}
+			}
+		}
+		// if we have needles, look them up in our lookup array
+		if (!empty($needles)) {
+			foreach ($needles as $view => $ids) {
+				if (isset(self::$lookup[$view])) {
+					foreach($ids as $id) {
+						if (isset(self::$lookup[$view]['id_' . $id])) {
+							return self::$lookup[$view]['id_' . $id];
+						}
+					}
+					// reset the lookup & return the current
+					reset(self::$lookup[$view]);
+					return current(self::$lookup[$view]);
+				}
+			}
+		}
+		// no needles - return the active id
+		// NOTE: even if we have an active menu item, we only want to use it if it's ours
+		if ($active && 'com_jinbound' == $active->component) {
+			return $active->id;
+		}
+		else {
+			foreach (self::$lookup as $key => $id) {
+				// reset the lookup & return the current
+				reset(self::$lookup[$key]);
+				return current(self::$lookup[$key]);
+			}
+		}
+		// ouch, couldn't find anything - send back either the active id or nothing at all
+		return $active ? $active->id : null;
 	}
 }
