@@ -7,6 +7,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
+$this->optionsInputName = 'options';
+
+JText::script('COM_JINBOUND_CANNOT_REMOVE_LAST_OPTION');
+
 ?>
 <script type="text/javascript">
 (function($){$(function(){

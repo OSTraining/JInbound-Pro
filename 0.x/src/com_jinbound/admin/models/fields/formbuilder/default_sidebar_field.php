@@ -69,7 +69,13 @@ switch ($this->_currentField->id) {
 	
 	<input id="<?php echo $id; ?>_type" type="hidden" name="<?php echo $name; ?>[type]" value="<?php echo $this->escape($this->_currentField->type); ?>" />
 	
-	<?php echo $this->loadTemplate('sidebar_field_' . $this->_currentField->type); ?>
+	<?php
+		echo $this->loadTemplate('sidebar_field_' . $this->_currentField->type);
+		
+		$this->optionsInputName = 'attributes';
+		echo $this->loadTemplate('sidebar_field_options');
+		$this->optionsInputName = 'options';
+	?>
 	<?php if (JInbound::config("debug", 0)) : ?>
 	<div class="row-fluid">
 		<h4>Value:</h4>

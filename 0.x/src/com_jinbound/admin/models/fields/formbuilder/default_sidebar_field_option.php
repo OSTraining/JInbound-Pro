@@ -21,10 +21,12 @@ defined('JPATH_PLATFORM') or die;
 	<span class="btn formbuilder-option-del">
 		<i class="icon-minus"></i>
 	</span>
+<?php if ('attributes' != $this->optionsInputName) : ?>
 	<span class="btn formbuilder-option-move formbuilder-option-up">
 		<i class="icon-arrow-up"></i>
 	</span>
 	<span class="btn formbuilder-option-move formbuilder-option-down">
 		<i class="icon-arrow-down"></i>
 	</span>
+<?php endif; ?>
 </div>

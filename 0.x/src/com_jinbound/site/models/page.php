@@ -118,6 +118,15 @@ class JInboundModelPage extends JInboundAdminModel
 					$xmlOpt->addAttribute('value', $field['options']['value'][$k]);
 				}
 			}
+			// add the options
+			if (array_key_exists('attributes', $field) && is_array($field['attributes']) && array_key_exists('name', $field['attributes'])) {
+				foreach ($field['attributes']['name'] as $k => $v) {
+					if (empty($v)) {
+						continue;
+					}
+					$xmlField->addAttribute($v, $field['options']['value'][$k]);
+				}
+			}
 			// add the class
 			if (!empty($class)) {
 				$xmlField->addAttribute('class', $class);
