@@ -16,7 +16,16 @@ echo $this->loadTemplate('edit');
 	$.ajax('../index.php?option=com_jinbound&task=landingpageurl&id=<?php echo (int) $this->item->id; ?>', {
 		dataType: 'json',
 		success: function(response) {
-			$('#jform_alias').closest('.row-fluid').after($('<div class="row-fluid"><div class="span12"><a href="' + response.sef + '" target="_blank">' + response.sef + '</a></div></div>'));
+			if (response) {
+				var link = '';
+				if (response.error) {
+					link = response.error;
+				}
+				else if (response.sef) {
+					link = '<a href="' + response.sef + '" target="_blank">' + response.sef + '</a>';
+				}
+				$('#jform_alias').closest('.row-fluid').after($('<div class="row-fluid"><div class="span12">' + link + '</div></div>'));
+			}
 		}
 	});
 <?php endif; ?>

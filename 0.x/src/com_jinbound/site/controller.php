@@ -99,11 +99,17 @@ class JInboundController extends JInboundBaseController
 		if ($id) {
 			JInbound::registerHelper('url');
 			$nonsef         = JInboundHelperUrl::view('page', false, array('id' => $id));
-			$sef            = JInboundHelperUrl::view('page', true, array('id' => $id));
-			$data['nonsef'] = JInboundHelperUrl::toFull($nonsef);
-			$data['sef']    = JInboundHelperUrl::toFull($sef);
-			$data['root']   = JURI::root();
-			$data['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
+			// Before continuing make sure we had an Itemid
+			if (!preg_match('/Itemid\=[1-9][0-9]*?/', $nonsef)) {
+				$data['error'] = JText::_('COM_JINBOUND_NEEDS_MENU');
+			}
+			else {
+				$sef            = JInboundHelperUrl::view('page', true, array('id' => $id));
+				$data['nonsef'] = JInboundHelperUrl::toFull($nonsef);
+				$data['sef']    = JInboundHelperUrl::toFull($sef);
+				$data['root']   = JURI::root();
+				$data['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
+			}
 		}
 		else {
 			$data['error'] = JText::_('COM_JINBOUND_NOT_FOUND');
