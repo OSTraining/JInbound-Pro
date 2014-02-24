@@ -28,6 +28,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging/modules" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/akeebasubs" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/content" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/system" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/user" />
@@ -35,6 +36,9 @@
 		
 		<!-- calculate version strings -->
 		<condition property="str.versionforxml" value="${cfg.version}.${build.number}${cfg.versionsuffix}" else="${cfg.version}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.versionforxml.akeebasubs" value="${cfg.version.akeebasubs}.${build.number}${cfg.versionsuffix}" else="${cfg.version.akeebasubs}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<tstamp>
@@ -48,6 +52,9 @@
 		<condition property="str.version" value="${cfg.versionprefix}${cfg.version}" else="${cfg.version}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
+		<condition property="str.version.akeebasubs" value="${cfg.versionprefix}${cfg.version.akeebasubs}" else="${cfg.version.akeebasubs}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
@@ -57,6 +64,8 @@
 		<property name="str.com.file" value="${cfg.packages}/temp/packages/${str.com.filename}" />
 		<property name="str.tpl.filename" value="${cfg.pfx.tpl}${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.tpl.file" value="${cfg.packages}/temp/packages/${str.tpl.filename}" />
+		<property name="str.plg.akeebasubs.filename" value="${cfg.pfx.plg}akeebasubs_${cfg.name}_${str.version.akeebasubs}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.akeebasubs.file" value="${cfg.packages}/current/${str.plg.akeebasubs.filename}" />
 		<property name="str.plg.content.filename" value="${cfg.pfx.plg}content_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.content.file" value="${cfg.packages}/temp/packages/${str.plg.content.filename}" />
 		<property name="str.plg.sys.filename" value="${cfg.pfx.plg}system_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
@@ -107,13 +116,14 @@
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.install.php,admin/,language/,site/"
-				excludes="admin/liveupdate/"
+				excludes="admin/liveupdate/,**.git"
 			/>
 		</copy>
 		<copy todir="${cfg.packages}/temp/staging/component/admin" filtering="false">
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/admin"
 				includes="liveupdate/"
+				excludes="**.git"
 			/>
 		</copy>
 		<mkdir dir="${cfg.packages}/temp/staging/component/media" />
@@ -121,12 +131,14 @@
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/media"
 				includes="index.html,css/,js/"
+				excludes="**.git"
 			/>
 		</copy>
 		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="false">
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/media"
 				includes="images/,bootstrap/,ui/"
+				excludes="**.git"
 			/>
 		</copy>
 		<!-- now read xml file (the one in temp directory, after search/replace operation -->
@@ -137,6 +149,7 @@
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.tpl}${cfg.name}"
 				includes="templateDetails.xml,index.php,index.html,language/,css/"
+				excludes="**.git"
 			/>
 		</copy>
 		
@@ -145,12 +158,23 @@
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark"
 				includes="${cfg.pfx.mod}${cfg.name}_social_bookmark.php,${cfg.pfx.mod}${cfg.name}_social_bookmark.xml,index.html,css/"
+				excludes="**.git"
 			/>
 		</copy>
 		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark" filtering="false">
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark"
 				includes="icons/"
+				excludes="**.git"
+			/>
+		</copy>
+
+		<!-- akeeba subs plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/akeebasubs" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/akeebasubs/${cfg.name}"
+				includes="${cfg.name}.xml,${cfg.name}.php,index.html,language/"
+				excludes="**.git"
 			/>
 		</copy>
 
@@ -159,6 +183,7 @@
 			<fileset
 				dir="${cfg.dir}/plugins/content/${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.php,index.html,language/"
+				excludes="**.git"
 			/>
 		</copy>
 
@@ -167,6 +192,7 @@
 			<fileset
 				dir="${cfg.dir}/plugins/system/${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.php,index.html,language/"
+				excludes="**.git"
 			/>
 		</copy>
 
@@ -175,6 +201,7 @@
 			<fileset
 				dir="${cfg.dir}/plugins/user/${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.php,index.html,forms/,language/"
+				excludes="**.git"
 			/>
 		</copy>
 		
@@ -249,6 +276,9 @@
 		</zip>
 		<zip destfile="${str.tpl.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/template" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.akeebasubs.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/akeebasubs" excludes="" />
 		</zip>
 		<zip destfile="${str.plg.content.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/content" excludes="" />

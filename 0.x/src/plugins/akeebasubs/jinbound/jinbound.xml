@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="akeebasubs" method="upgrade">
+	<name>plg_akeebasubs_jinbound</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_version_number@</version>
+	<description>PLG_AKEEBASUBS_JINBOUND_XML_DESCRIPTION</description>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_akeebasubs_jinbound.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinbound">jinbound.php</filename>
+		<filename>index.html</filename>
+	</files>
+	<compatibility>
+		<version>2</version>
+		<version>3</version>
+	</compatibility>
+	<config>
+		<fields name="params" addfieldpath="/administrator/components/com_jinbound/models/fields">
+			<fieldset name="basic">
+				<field
+					name="purchase_status"
+					label="PLG_AKEEBASUBS_JINBOUND_FIELD_PURCHASE_STATUS"
+					description="PLG_AKEEBASUBS_JINBOUND_FIELD_PURCHASE_STATUS_DESC"
+					type="jinboundstatuses"
+					final="true"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
