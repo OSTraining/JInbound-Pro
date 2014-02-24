@@ -104,7 +104,7 @@
 			class="input-block-level"
 			cols="60" rows="12"
 			buttons="0"
-			filter="safehtml"
+			filter="JComponentHelper::filterText"
 		/>
 
 		<field

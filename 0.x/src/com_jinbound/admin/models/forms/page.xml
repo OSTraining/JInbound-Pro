@@ -102,7 +102,7 @@
 		<field
 			id="maintext" name="maintext"
 			type="editor"
-			filter="safehtml"
+			filter="JComponentHelper::filterText"
 			label="COM_JINBOUND_MAINTEXT"
 			description="COM_JINBOUND_MAINTEXT_DESC"
 			class="input-block-level"
@@ -112,7 +112,7 @@
 		<field
 			id="sidebartext" name="sidebartext"
 			type="editor"
-			filter="safehtml"
+			filter="JComponentHelper::filterText"
 			label="COM_JINBOUND_SIDEBARTEXT"
 			description="COM_JINBOUND_SIDEBARTEXT_DESC"
 			cols="60" rows="12"
@@ -297,7 +297,7 @@
 			label="COM_JINBOUND_PAGE_TEMPLATE"
 			description="COM_JINBOUND_PAGE_TEMPLATE_DESC"
 			class="input-block-level"
-			filter="safehtml"
+			filter="JComponentHelper::filterText"
 		>
 			<tag value="heading" />
 			<tag value="subheading" />
