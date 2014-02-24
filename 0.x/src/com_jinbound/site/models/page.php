@@ -123,7 +123,7 @@ class JInboundModelPage extends JInboundAdminModel
 					if (empty($v)) {
 						continue;
 					}
-					$xmlField->addAttribute($v, $field['options']['value'][$k]);
+					$xmlField->addAttribute($v, $field['attributes']['value'][$k]);
 				}
 			}
 			// add the class
