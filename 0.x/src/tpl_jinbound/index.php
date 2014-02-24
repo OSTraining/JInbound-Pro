@@ -23,11 +23,6 @@ if (!JFile::exists($helper)) {
 }
 require_once $helper;
 
-$option = $app->input->get('option');
-if ('com_jinbound' !== $option) {
-	$app->redirect(JRoute::_('index.php'));
-}
-
 JInbound::registerHelper('url');
 $document = JFactory::getDocument();
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
