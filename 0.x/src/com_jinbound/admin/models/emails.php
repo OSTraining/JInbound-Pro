@@ -108,6 +108,7 @@ class JInboundModelEmails extends JInboundListModel
 			->select('Email.htmlbody AS htmlbody')
 			->select('Email.plainbody AS plainbody')
 			->select('Record.id AS record_id')
+			->select('MAX(Version.id) AS version_id')
 			->from('#__contact_details AS Contact')
 			->leftJoin('#__jinbound_leads AS Lead ON Lead.contact_id = Contact.id')
 			->leftJoin('#__jinbound_pages AS Page ON Lead.page_id = Page.id')
@@ -115,6 +116,7 @@ class JInboundModelEmails extends JInboundListModel
 			->leftJoin('#__jinbound_emails AS Email ON Email.campaign_id = Campaign.id')
 			->leftJoin('#__jinbound_emails_records AS Record ON Record.lead_id = Lead.id AND Record.email_id = Email.id')
 			->leftJoin('#__jinbound_subscriptions AS Sub ON Contact.id = Sub.contact_id')
+			->leftJoin('#__jinbound_emails_versions AS Version ON Version.email_id = Email.id')
 			->where('Record.id IS NULL')
 			->where('DATE_ADD(Lead.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
 			->where('Email.published = 1')
@@ -201,9 +203,10 @@ class JInboundModelEmails extends JInboundListModel
 				continue;
 			}
 			$object = new stdClass;
-			$object->email_id = $result->email_id;
-			$object->lead_id  = $result->lead_id;
-			$object->sent     = $now->toSql();
+			$object->email_id   = $result->email_id;
+			$object->lead_id    = $result->lead_id;
+			$object->sent       = $now->toSql();
+			$object->version_id = $result->version_id;
 			try {
 				$db->insertObject('#__jinbound_emails_records', $object);
 			}

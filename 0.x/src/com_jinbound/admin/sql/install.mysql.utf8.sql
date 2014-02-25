@@ -123,6 +123,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_emails_records` (
 
 	`email_id` int(11) NOT NULL
 	COMMENT 'Primary Key of associated Email',
+
+	`version_id` int(11) NOT NULL DEFAULT 0
+	COMMENT 'Primary Key of associated Email version',
 	
 	`lead_id` int(11) NOT NULL
 	COMMENT 'Primary key of associated Lead',
@@ -464,7 +467,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_notes` (
 	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
 	
 	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
+	COMMENT 'when record was created, in UTC',
 	 
 	`created_by` int(11) NOT NULL default '0'
 	COMMENT 'User id of record creator',
@@ -501,6 +504,30 @@ CREATE TABLE IF NOT EXISTS #__jinbound_subscriptions (
 	
 	`enabled` int(1) NOT NULL DEFAULT 1
 	COMMENT 'If 0 emails will not be sent',
+	
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+########################################
+##    Email Versions                  ##
+##                                    ##
+##    stores copies of previous       ##
+##    versions of emails for accurate ##
+##    recordkeeping                   ##
+########################################;
+
+CREATE TABLE IF NOT EXISTS #__jinbound_emails_versions (
+	
+	`id` int(11) NOT NULL AUTO_INCREMENT
+	COMMENT 'Primary Key',
+	
+	`email_id` int(11) NOT NULL
+	COMMENT 'FK to #__jinbound_emails.id',
+	
+	`subject` varchar(255),
+	`htmlbody` blob,
+	`plainbody` blob,
 	
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

@@ -256,10 +256,14 @@ class JInboundModelLead extends JInboundAdminModel
 		$db = JFactory::getDbo();
 		$db->setQuery($db->getQuery(true)
 			->select('Record.*')
-			->from('#__jinbound_emails_records AS Record')
+			->select('Version.subject AS version_subject')
+			->select('Version.htmlbody AS version_htmlbody')
+			->select('Version.plainbody AS version_plainbody')
 			->select('Email.subject AS email_subject')
 			->select('Email.name AS email_name')
+			->from('#__jinbound_emails_records AS Record')
 			->leftJoin('#__jinbound_emails AS Email ON Email.id = Record.email_id')
+			->leftJoin('#__jinbound_emails_versions AS Version ON Email.id = Version.email_id AND Version.id = Record.version_id')
 			->where('Record.lead_id = ' . (int) $item->id)
 			->group('Record.id')
 		);
@@ -317,9 +321,13 @@ class JInboundModelLead extends JInboundAdminModel
 		// fetch the emails associated with this campaign
 		$db->setQuery($db->getQuery(true)
 			->select('Email.*')
-			->from('#__jinbound_emails AS Email')
 			->select('Record.sent')
+			->select('Version.subject AS version_subject')
+			->select('Version.htmlbody AS version_htmlbody')
+			->select('Version.plainbody AS version_plainbody')
+			->from('#__jinbound_emails AS Email')
 			->leftJoin('#__jinbound_emails_records AS Record ON Record.email_id = Email.id AND Record.lead_id = ' . (int) $item->id)
+			->leftJoin('#__jinbound_emails_versions AS Version ON Version.email_id = Email.id AND Version.id = Record.version_id')
 			->where('Email.campaign_id = ' . (int) $item->campaign_id)
 			->group('Email.id')
 		);

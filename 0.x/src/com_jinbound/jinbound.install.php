@@ -104,8 +104,54 @@ class com_JInboundInstallerScript
 				$this->_checkContactSubscriptions();
 				$this->_checkDefaultPriorities();
 				$this->_checkDefaultStatuses();
+				$this->_checkEmailVersions();
 				$this->_fixMissingLanguageDefaults();
 				break;
+		}
+	}
+	
+	/**
+	 * adds initial versions to all emails, updates records to reflect
+	 * 
+	 * NOTE: can't do anything about data we didn't track before, sorry folks
+	 * 
+	 */
+	private function _checkEmailVersions() {
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		
+		// get all the emails that don't appear in the email versions table
+		$db->setQuery('SELECT Email.id FROM #__jinbound_emails AS Email LEFT JOIN #__jinbound_emails_versions AS Version ON Email.id = Version.email_id WHERE Version.id IS NULL GROUP BY Email.id');
+		try {
+			$emails = $db->loadObjectList();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage(), 'error');
+			return;
+		}
+		
+		if (empty($emails)) {
+			return;
+		}
+		
+		foreach ($emails as $email) {
+			$db->setQuery('INSERT INTO #__jinbound_emails_versions (email_id, subject, htmlbody, plainbody) SELECT id, subject, htmlbody, plainbody FROM #__jinbound_emails WHERE id = ' . $email->id);
+			try {
+				$db->query();
+			}
+			catch (Exception $e) {
+				$app->enqueueMessage($e->getMessage(), 'error');
+				continue;
+			}
+			// update version_id in records table to match the newly created version
+			$db->setQuery('UPDATE #__jinbound_emails_records SET version_id = ((SELECT MAX(id) FROM #__jinbound_emails_versions WHERE email_id = ' . $email->id . ')) WHERE email_id = ' . $email->id);
+			try {
+				$db->query();
+			}
+			catch (Exception $e) {
+				$app->enqueueMessage($e->getMessage(), 'error');
+				continue;
+			}
 		}
 	}
 	

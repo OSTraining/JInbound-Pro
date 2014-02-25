@@ -97,7 +97,7 @@ defined('JPATH_PLATFORM') or die;
 									<table class="table table-striped">
 										<?php foreach ($this->campaign->emails as $email) : ?>
 										<tr>
-											<td><a href="<?php echo JInboundHelperUrl::edit('email', $email->id); ?>"><?php echo $this->escape($email->name); ?></a></td>
+											<td><a href="<?php echo JInboundHelperUrl::edit('email', $email->id); ?>"><?php echo $this->escape($email->version_subject); ?></a></td>
 											<td><?php echo ($email->sent ? $this->escape($email->sent->format(DateTime::RSS)) : ''); ?></td>
 										</tr>
 										<?php endforeach; ?>
