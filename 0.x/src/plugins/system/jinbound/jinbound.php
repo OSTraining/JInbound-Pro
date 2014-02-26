@@ -44,24 +44,6 @@ class plgSystemJInbound extends JPlugin
 	}
 	
 	/**
-	 * onAfterInitialise
-	 * 
-	 * forces template
-	 */
-	public function onAfterInitialise() {
-		$app = JFactory::getApplication();
-		
-		if (!self::$_run) {
-			return;
-		}
-		if (JInbound::COM != JFactory::getApplication()->input->get('option')) {
-			return;
-		}
-		
-		$app->input->set('template', 'jinbound');
-	}
-	
-	/**
 	 * onAfterDispatch
 	 * 
 	 * handles flair after dispatch
