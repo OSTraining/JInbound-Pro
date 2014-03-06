@@ -152,10 +152,8 @@ class JInboundModelReports extends JInboundListModel
 			$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
 				->select('COUNT(Lead.id) AS conversions')
 				->from('#__jinbound_leads AS Lead')
-				->leftJoin('#__jinbound_lead_statuses AS Status ON Lead.status_id = Status.id')
-				->where('Status.final = 1')
+				->innerJoin('#__jinbound_lead_statuses AS Status ON Lead.status_id = Status.id AND Status.final = 1')
 				->where('Lead.published = 1')
-				->group('Lead.id')
 			);
 			
 			try {
