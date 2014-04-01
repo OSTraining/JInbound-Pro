@@ -171,9 +171,11 @@ class JInboundModelEmails extends JInboundListModel
 			$result->htmlbody  = $this->_replaceTags($result->htmlbody,  $result, $tags);
 			$result->plainbody = $this->_replaceTags($result->plainbody, $result, $tags);
 			// add unsubscribe link to email contents
-			$unsubscribe       = JInboundHelperUrl::toFull(JInboundHelperUrl::task('unsubscribe', false, array('email' => $result->email)));
-			$result->htmlbody  = $result->htmlbody  . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_HTML',  $unsubscribe);
-			$result->plainbody = $result->plainbody . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_PLAIN', $unsubscribe);
+			if (JInbound::config('unsubscribe', 1)) {
+				$unsubscribe       = JInboundHelperUrl::toFull(JInboundHelperUrl::task('unsubscribe', false, array('email' => $result->email)));
+				$result->htmlbody  = $result->htmlbody  . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_HTML',  $unsubscribe);
+				$result->plainbody = $result->plainbody . JText::sprintf('COM_JINBOUND_UNSUBSCRIBE_PLAIN', $unsubscribe);
+			}
 			// trigger an event after parsing
 			$dispatcher->trigger('onContentAfterDisplay', array('com_jinbound.email', &$result, &$params, 0));
 			

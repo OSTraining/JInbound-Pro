@@ -10,6 +10,16 @@
 			description="COM_JINBOUND_DOWNLOAD_ID_DESC"
 		/>
 		<field
+			name="unsubscribe" id="unsubscribe"
+			type="list"
+			label="COM_JINBOUND_UNSUBSCRIBE"
+			description="COM_JINBOUND_UNSUBSCRIBE_DESC"
+			default="1"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
 			name="cron_type"
 			type="list"
 			label="COM_JINBOUND_CRON_TYPE"
