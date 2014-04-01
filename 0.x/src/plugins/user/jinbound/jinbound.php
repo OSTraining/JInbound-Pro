@@ -82,8 +82,13 @@ class plgUserJInbound extends JPlugin
 	 * Adds the necessary fields to the user profile
 	 * 
 	 * @param JForm $form
+	 * 
+	 * @deprecated form code will be removed/changed in the future
 	 */
 	public function onContentPrepareForm($form) {
+		
+		return true;
+		
 		// make sure form is a JForm
 		if (!($form instanceof JForm)) {
 			$this->_subject->setError('JERROR_NOT_A_FORM');
