@@ -18,7 +18,7 @@ class JInboundViewPage extends JInboundItemView
 		// display the item
 		$display = parent::display($tpl, $echo);
 		// if we don't have an item, it's a 404
-		if (0 == $this->item->id) {
+		if (0 == $this->item->id || 1 != (int) $this->item->published) {
 			JError::raiseError('404', JText::_('COM_JINBOUND_NOT_FOUND'));
 		}
 		// increase the hit count
