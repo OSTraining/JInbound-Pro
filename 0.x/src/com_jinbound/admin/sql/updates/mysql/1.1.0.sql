@@ -12,11 +12,59 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_contacts` (
 	`user_id` int(11) NOT NULL DEFAULT 0
 	COMMENT 'FK to #__users table',
 	
+	`core_contact_id` int(11) NOT NULL DEFAULT 0
+	COMMENT 'FK to #__contact_details table',
+	
+	`alias` varchar(255) NOT NULL
+	COMMENT 'Slug for URL',
+	
 	`first_name` varchar(255) NOT NULL
-	COMMENT 'First name of Lead (contacts uses single column for both names)',
+	COMMENT 'First name of Lead',
 	
 	`last_name` varchar(255) NOT NULL
-	COMMENT 'Last name of Lead (contacts uses single column for both names)',
+	COMMENT 'Last name of Lead',
+	
+	`email` varchar(255) NOT NULL
+	COMMENT 'Email of Lead',
+	
+	`address` TEXT NOT NULL DEFAULT ''
+	COMMENT 'Address of Lead',
+	
+	`suburb` varchar(100) NOT NULL DEFAULT ''
+	COMMENT 'City/suburb of Lead',
+	
+	`state` varchar(100) NOT NULL DEFAULT ''
+	COMMENT 'State of Lead',
+	
+	`country` varchar(100) NOT NULL DEFAULT ''
+	COMMENT 'Country of Lead',
+	
+	`postcode` varchar(100) NOT NULL DEFAULT ''
+	COMMENT 'Postal code of Lead',
+	
+	`telephone` varchar(255) NOT NULL DEFAULT ''
+	COMMENT 'Telephone number of Lead',
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when record was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of record creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when record was last modified in UTC',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time record was checked out',
 	
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -49,6 +97,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_tracks` (
 	`type` ENUM('GET', 'POST', 'HEAD', 'PUT')
 	COMMENT 'Request type',
 	
+	`request` TEXT
+	COMMENT 'JSON encoded copy of request',
+	
 	PRIMARY KEY (`id`(128))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -64,6 +115,30 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_conversions` (
 	
 	`contact_id` int(11) NOT NULL
 	COMMENT 'FK to #__jinbound_contacts table',
+	
+	`published` tinyint(1) default '0'
+	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when record was created, in UTC',	
+	 
+	`created_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of record creator',
+	
+	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when record was last modified in UTC',	
+	 
+	`modified_by` int(11) NOT NULL default '0'
+	COMMENT 'User id of last modifier',
+	
+	`checked_out` int(11) unsigned NOT NULL default '0'
+	COMMENT 'Locking column to prevent simultaneous updates',
+	
+	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'Date and Time record was checked out',
+	
+	`formdata` TEXT
+	COMMENT 'JSON encoded form data',
 	
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
