@@ -185,8 +185,8 @@ class JInboundModelEmails extends JInboundListModel
 			
 			$mailer = JFactory::getMailer();
 			$mailer->ClearAllRecipients();
-			$mailer->AddBCC($result->email, $result->first_name . ' ' . $result->last_name);
 			$mailer->SetFrom($result->fromemail, $result->fromname);
+			$mailer->addRecipient($result->email, $result->first_name . ' ' . $result->last_name);
 			$mailer->setSubject($result->subject);
 			$mailer->setBody($result->htmlbody);
 			$mailer->IsHTML(true);
