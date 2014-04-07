@@ -33,6 +33,8 @@ class JInboundCsvView extends JInboundBaseView
 		header("Content-Disposition: attachment; filename=\"$fileName-$date.csv\";" );
 		header("Content-Transfer-Encoding: binary");
 		
+		echo "\xEF\xBB\xBF"; // UTF-8 BOM
+		
 		if (empty($data)) {
 			jexit();
 		}
