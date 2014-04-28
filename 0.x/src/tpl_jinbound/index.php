@@ -31,6 +31,7 @@ $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-
 ?><!DOCTYPE html>
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<jdoc:include type="head" />
 		<style>
 .tip,.tooltip {
