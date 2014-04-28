@@ -19,6 +19,8 @@ class plgSystemJInbound extends JPlugin
 	
 	private static $_debug;
 	
+	private static $_setCookieInJs;
+	
 	/**
 	 * Constructor
 	 * 
@@ -41,6 +43,14 @@ class plgSystemJInbound extends JPlugin
 	
 	public function loadLanguage($extension = 'plg_system_jinbound.sys', $basePath = JPATH_ADMINISTRATOR) {
 		parent::loadLanguage($extension, $basePath);
+	}
+	
+	public function onAfterInitialise()
+	{
+		if (!JFactory::getApplication()->isAdmin())
+		{
+			$this->setUserCookie();
+		}
 	}
 	
 	/**
@@ -97,18 +107,174 @@ class plgSystemJInbound extends JPlugin
 		}
 	}
 	
+	/**
+	 * Alter the response body before sending to the client
+	 * 
+	 */
 	public function onAfterRender() {
 		if (!self::$_run || JFactory::getApplication()->isAdmin()) {
 			return;
 		}
-		// just plow on through yo
-		if (0 == intval(JInbound::config()->def('cron_type', ''))) {
-			JInbound::registerHelper('url');
-			JInbound::registerHelper('filter');
+		JInbound::registerHelper('filter');
+		JInbound::registerHelper('url');
+		// get the response body so it can be altered
+		$body = JResponse::getBody();
+		// this is our addition
+		$add  = '';
+		// show cron iframe
+		if (0 == intval(JInbound::config()->def('cron_type', '')))
+		{
 			$url  = JInboundHelperFilter::escape(JInboundHelperUrl::task('cron', false));
-			$body = JResponse::getBody();
-			$body = str_replace('</body>', '<iframe src="' . $url . '" style="width:1px;height:1px;position:absolute;left:-999px;border:0px"></iframe></body>', $body);
+			$add .= '<iframe src="' . $url . '" style="width:1px;height:1px;position:absolute;left:-999px;border:0px"></iframe>';
+		}
+		// add cookie script
+		if (static::$_setCookieInJs)
+		{
+			$cookie = JInboundHelperFilter::escape($this->getCookieValue());
+			$add .= '<script data-jib="' . $cookie . '" id="jinbound_tracks" type="text/javascript" src="' . JInboundHelperUrl::media() . '/js/track.js"></script>';
+		}
+		// only alter if needed
+		if (!empty($add))
+		{
+			$body = str_replace('</body>', $add . '</body>', $body);
 			JResponse::setBody($body);
 		}
+		$this->recordUserTrack();
+	}
+	
+	/**
+	 * Sets the jInbound user cookie
+	 * 
+	 * TODO stupid EU cookie law crap
+	 * 
+	 */
+	private function setUserCookie()
+	{
+		if (headers_sent())
+		{
+			static::$_setCookieInJs = true;
+		}
+		else
+		{
+			static::$_setCookieInJs = !setcookie('__jib__', $this->getCookieValue());
+		}
+	}
+	
+	/**
+	 * records the user's request
+	 * 
+	 */
+	private function recordUserTrack()
+	{
+		$db           = JFactory::getDbo();
+		// collect the data
+		$ua           = $_SERVER['HTTP_USER_AGENT'];
+		$ip           = $_SERVER['REMOTE_ADDR'];
+		$cookie       = $this->getCookieValue();
+		$session      = session_id();
+		$date         = new DateTime();
+		$type         = $_SERVER['REQUEST_METHOD'];
+		$uri          = $_SERVER['REQUEST_URI'];
+		$id           = microtime() . $ip . md5($session);
+		$currentuser  = JFactory::getUser()->get('id');
+		$detecteduser = $this->getCookieUser();
+		// check detected?
+		if (is_array($detecteduser))
+		{
+			$detecteduser = $detecteduser[0];
+		}
+		// our track
+		$track   = array(
+			'id'               => $db->quote($id)
+		,	'cookie'           => $db->quote($cookie)
+		,	'detected_user_id' => $db->quote($detecteduser) // TODO
+		,	'current_user_id'  => $db->quote($currentuser)
+		,	'user_agent'       => $db->quote($ua)
+		,	'created'          => $db->quote($date->format('Y-m-d H:i:s'))
+		,	'ip'               => $db->quote($ip)
+		,	'session_id'       => $db->quote($session)
+		,	'type'             => $db->quote(strtoupper($type))
+		,	'url'              => $db->quote($uri)
+		);
+		$db->setQuery($db->getQuery(true)
+			->insert('#__jinbound_tracks')
+			->columns(array_keys($track))
+			->values(implode(',', $track))
+		);
+		try {
+			$db->query();
+		}
+		catch (Exception $e) {}
+		
+		// only record user cookie for non-guests
+		if (0 === $detecteduser && $currentuser)
+		{
+			$db->setQuery($db->getQuery(true)
+				->insert('#__jinbound_users_tracks')
+				->columns(array('user_id', 'cookie'))
+				->values($track['current_user_id'] . ', ' . $track['cookie'])
+			);
+			try {
+				$db->query();
+			}
+			catch (Exception $e) {}
+		}
+	}
+	
+	/**
+	 * Checks the database for a user previously associated with this cookie
+	 * 
+	 * @return array if more than one user is detected
+	 * @return int   detected user id, or 0 if no user
+	 */
+	private function getCookieUser()
+	{
+		$db = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->select('user_id')
+			->from('#__jinbound_users_tracks')
+			->where('cookie = ' . $db->quote($this->getCookieValue()))
+		);
+		
+		try {
+			$ids = $db->loadColumn();
+		} catch (Exception $e) {
+			return 0;
+		}
+		
+		if (empty($ids))
+		{
+			return 0;
+		}
+		
+		if (1 < count($ids))
+		{
+			JArrayHelper::toInteger($ids);
+			return $ids;
+		}
+		
+		return (int) $ids[0];
+	}
+	
+	/**
+	 * Derives a unique cookie name for this user
+	 * 
+	 * @return string
+	 */
+	private function getCookieValue()
+	{
+		if (isset($_COOKIE['__jib__']))
+		{
+			return $_COOKIE['__jib__'];
+		}
+		static $cookie;
+		if (is_null($cookie))
+		{
+			$ua     = $_SERVER['HTTP_USER_AGENT'];
+			$ip     = $_SERVER['REMOTE_ADDR'];
+			$salt   = strrev(md5(JFactory::getConfig()->get('secret')));
+			$cookie = sha1("$ua.$salt.$ip", false);
+		}
+		return $cookie;
 	}
 }

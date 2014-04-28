@@ -189,10 +189,12 @@ class JInboundView extends JInboundBaseView
 		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
 		$subMenuItems = array(
-			'pages'     => 'PAGES',
-			'emails'    => 'LEAD_NURTURING_MANAGER',
-			'leads'     => 'LEADS',
-			'reports'   => 'REPORTS'
+			'pages'       => 'PAGES',
+			'emails'      => 'LEAD_NURTURING_MANAGER',
+			//'leads'       => 'LEADS',
+			'contacts'    => 'CONTACTS',
+			'conversions' => 'CONVERSIONS',
+			'reports'     => 'REPORTS'
 		);
 		$addCategories = false;
 		
@@ -208,14 +210,19 @@ class JInboundView extends JInboundBaseView
 			$subMenuItems['utilities'] = 'UTILITIES';
 		}
 		
+		if (defined('JDEBUG') && JDEBUG)
+		{
+			$subMenuItems['tracks'] = 'TRACKS';
+		}
+		
 		foreach ($subMenuItems as $sub => $txt) {
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub && JInbound::COM == $option);
 			JSubMenuHelper::addEntry($label, $href, $active);
-			if ($addCategories && 'reports' == $sub) {
+			/*if ($addCategories && 'reports' == $sub) {
 				JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM . "_CATEGORIES")), JInboundHelperUrl::_(array('option' => 'com_categories', 'view' => 'categories', 'extension' => JInbound::COM)), $option == JInbound::COM && in_array($vName, array('', 'categories')));
-			}
+			}*/
 		}
 	}
 

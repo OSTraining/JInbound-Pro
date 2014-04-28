@@ -69,6 +69,19 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_contacts` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+#####################################################
+## Associates tracks to contacts
+#####################################################;
+
+CREATE TABLE IF NOT EXISTS `#__jinbound_users_tracks` (
+	
+	`user_id` int(11) NOT NULL DEFAULT 0
+	COMMENT 'FK to #__users table',
+	
+	`cookie` VARCHAR(255)
+	COMMENT 'Cookie value'
+	
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 #####################################################
 ## Tracks, details about where a user has been
@@ -79,11 +92,17 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_tracks` (
 	`id` VARCHAR(128) NOT NULL
 	COMMENT 'Primary Key, microtime + ip + md5(session id)',
 	
-	`contact_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_contacts table',
+	`cookie` VARCHAR(255)
+	COMMENT 'Cookie value for this track',
 	
-	`cookie_id` VARCHAR(255)
-	COMMENT 'Cookie ID for this track',
+	`detected_user_id` int(11) NOT NULL DEFAULT 0
+	COMMENT 'FK to #__users table',
+	
+	`current_user_id` int(11) NOT NULL DEFAULT 0
+	COMMENT 'FK to #__users table',
+	
+	`user_agent` TEXT
+	COMMENT 'Browser User Agent',
 	
 	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
 	COMMENT 'Date this request was made',
@@ -97,8 +116,8 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_tracks` (
 	`type` ENUM('GET', 'POST', 'HEAD', 'PUT')
 	COMMENT 'Request type',
 	
-	`request` TEXT
-	COMMENT 'JSON encoded copy of request',
+	`url` TEXT
+	COMMENT 'URL of the request',
 	
 	PRIMARY KEY (`id`(128))
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
