@@ -14,7 +14,8 @@ JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 class JInboundViewReports extends JInboundListView
 {
 	public function getRecentLeads() {
-		return $this->_callModelMethod('getRecentLeads');
+		return $this->_callModelMethod('getRecentContacts');
+		//return $this->_callModelMethod('getRecentLeads');
 	}
 	
 	public function getVisitCount() {
@@ -26,15 +27,18 @@ class JInboundViewReports extends JInboundListView
 	}
 	
 	public function getLeadCount() {
-		return $this->_callModelMethod('getLeadCount');
+		return $this->_callModelMethod('getContactsCount');
+		//return $this->_callModelMethod('getLeadCount');
 	}
 	
 	public function getTopLandingPages() {
-		return $this->_callModelMethod('getTopLandingPages');
+		return $this->_callModelMethod('getTopPages');
+		//return $this->_callModelMethod('getTopLandingPages');
 	}
 	
 	public function getConversionCount() {
-		return $this->_callModelMethod('getConversionCount');
+		return $this->_callModelMethod('getConversionsCount');
+		//return $this->_callModelMethod('getConversionCount');
 	}
 	
 	public function getConversionRate() {

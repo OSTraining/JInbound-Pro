@@ -51,8 +51,8 @@ class JInboundController extends JInboundBaseController
 		// lookup contact based on email
 		$db->setQuery($db->getQuery(true)
 			->select('id')
-			->from('#__contact_details')
-			->where('email_to = ' . $db->quote($email))
+			->from('#__jinbound_contacts')
+			->where('email = ' . $db->quote($email))
 		);
 		try {
 			$contact_id = (int) $db->loadResult();

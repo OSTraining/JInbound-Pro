@@ -42,6 +42,7 @@ class JInboundModelPages extends JInboundListModel
 			,	'Page.hits'
 			,	'submissions'
 			,	'conversions'
+			,	'conversion_rate'
 			);
 		}
 		
@@ -102,26 +103,84 @@ class JInboundModelPages extends JInboundListModel
 	{
 		// Create a new query object.
 		$db = $this->getDbo();
-		
 		// main query
 		$query = $db->getQuery(true)
-			// Select the required fields from the table.
-			->select('Page.*, Category.title as category_name')
+			->select('Page.*')
+			->select('Category.title AS category_name')
+			->select('Campaign.name AS campaign_name')
+			->select('COUNT(DISTINCT Contact.id) AS contact_submissions')
+			->select('GROUP_CONCAT(DISTINCT Contact.id) AS contact_submission_ids')
+			->select('COUNT(DISTINCT Submission.id) AS submissions')
+			->select('GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids')
+			->select('COUNT(DISTINCT Conversion.contact_id) AS conversions')
+			->select('GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids')
+			->select('ROUND(IF(COUNT(DISTINCT Contact.id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Contact.id)) * 100, 0), 2) AS conversion_rate')
 			->from('#__jinbound_pages AS Page')
 			->leftJoin('#__categories AS Category ON Category.id = Page.category')
-			// add on the conversion count by rejoining the leads based on final status
-			->select('COUNT(DISTINCT Conversion.id) AS conversions')
-			->select('GROUP_CONCAT(DISTINCT Conversion.id) AS conversion_ids')
-			->leftJoin('#__jinbound_leads AS Conversion ON Conversion.page_id = Page.id AND Conversion.published = 1 AND Conversion.status_id IN ((SELECT Status.id FROM #__jinbound_lead_statuses AS Status WHERE Status.final = 1 AND Status.published = 1))')
-			// add on the total submissions by counting leads
-			->select('COUNT(DISTINCT Lead.id) AS submissions')
-			->select('GROUP_CONCAT(DISTINCT Lead.id) AS submission_ids')
-			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Page.id AND Lead.published = 1 AND (Lead.status_id IN ((SELECT Status.id FROM #__jinbound_lead_statuses AS Status WHERE Status.active = 1 AND Status.published = 1)) OR Lead.status_id = 0)')
-			// add on the conversion rate based on submissions
-			->select('ROUND(IF(COUNT(DISTINCT Lead.id) > 0, (COUNT(DISTINCT Conversion.id) / COUNT(DISTINCT Lead.id)) * 100, 0), 2) AS conversion_rate')
-			// group by page
+			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Page.campaign')
+			->leftJoin('#__jinbound_contacts AS Contact ON Contact.id IN (('
+				. $db->getQuery(true)
+					->select('DISTINCT ContactConversion.contact_id')
+					->from('#__jinbound_conversions AS ContactConversion')
+					->where('ContactConversion.page_id = Page.id')
+					->where('ContactConversion.published = 1')
+			. '))')
+			->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
+			->leftJoin('#__jinbound_contacts_statuses AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id IN (('
+				. $db->getQuery(true)
+					->select('DISTINCT ConversionConversion.contact_id')
+					->from('#__jinbound_conversions AS ConversionConversion')
+					->where('ConversionConversion.page_id = Page.id')
+					->where('ConversionConversion.published = 1')
+			. ')) AND Conversion.status_id IN (('
+				. $db->getQuery(true)
+					->select('Status.id')
+					->from('#__jinbound_lead_statuses AS Status')
+					->where('Status.final = 1')
+					->where('Status.published = 1')
+			. '))')
 			->group('Page.id')
 		;
+		/*
+SELECT Page.*, Category.title AS category_name, Campaign.name AS campaign_name
+, COUNT(DISTINCT Contact.id) AS contact_submissions
+, GROUP_CONCAT(DISTINCT Contact.id) AS contact_submission_ids
+, COUNT(DISTINCT Submission.id) AS submissions
+, GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids
+, COUNT(DISTINCT Conversion.contact_id) AS conversions
+, GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids
+, ROUND(IF(COUNT(DISTINCT Contact.id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Contact.id)) * 100, 0), 2) AS conversion_rate
+FROM cxsgv_jinbound_pages AS Page
+LEFT JOIN cxsgv_categories AS Category
+	ON Category.id = Page.category
+LEFT JOIN cxsgv_jinbound_campaigns AS Campaign
+	ON Campaign.id = Page.campaign
+LEFT JOIN cxsgv_jinbound_contacts AS Contact
+	ON Contact.id IN ((
+		SELECT DISTINCT ContactConversion.contact_id
+		FROM cxsgv_jinbound_conversions AS ContactConversion
+		WHERE ContactConversion.page_id = Page.id
+		AND ContactConversion.published = 1
+	))
+LEFT JOIN cxsgv_jinbound_conversions AS Submission
+	ON Submission.page_id = Page.id
+	AND Submission.published = 1
+LEFT JOIN cxsgv_jinbound_contacts_statuses AS Conversion
+	ON Conversion.campaign_id = Campaign.id
+	AND Conversion.contact_id IN ((
+		SELECT DISTINCT ConversionConversion.contact_id
+		FROM cxsgv_jinbound_conversions AS ConversionConversion
+		WHERE ConversionConversion.page_id = Page.id
+		AND ConversionConversion.published = 1
+	))
+	AND Conversion.status_id IN ((
+		SELECT Status.id
+		FROM cxsgv_jinbound_lead_statuses AS Status
+		WHERE Status.final = 1
+		AND Status.published = 1
+	))
+GROUP BY Page.id
+		 */
 		
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Page');
@@ -144,8 +203,8 @@ class JInboundModelPages extends JInboundListModel
 				$date = false;
 			}
 			if ($date) {
-				$query->where('Lead.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
-				$query->where('Conversion.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Submission.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Contact.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
 			}
 		}
 		
@@ -158,8 +217,8 @@ class JInboundModelPages extends JInboundListModel
 				$date = false;
 			}
 			if ($date) {
-				$query->where('Lead.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
-				$query->where('Conversion.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Submission.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Contact.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
 			}
 		}
 		

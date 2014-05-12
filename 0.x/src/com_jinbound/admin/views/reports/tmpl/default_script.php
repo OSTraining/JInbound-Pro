@@ -19,7 +19,7 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 ?>
 <script type="text/javascript">
 (function($){
-	window.jinbound_leads_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=leads&format=json&filter_order=Lead.created&filter_order_Dir=desc', false); ?>';
+	window.jinbound_leads_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=contacts&format=json&filter_order=latest&filter_order_Dir=desc', false); ?>';
 	window.jinbound_leads_limit = 10;
 	window.jinbound_leads_start = 0;
 	window.jinbound_pages_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=pages&format=json&filter_order=Page.hits&filter_order_Dir=desc', false); ?>';
@@ -89,6 +89,7 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_NAME')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_DATE')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_FORM_CONVERTED_ON')));
+				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_LANDING_PAGE_NAME')));
 				t.append(h);
 				if (!n) {
 					return;
@@ -99,14 +100,20 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 						tr.append($('<td></td>').text(' '));
 					}
 					else {
-						tr.append($('<td></td>').append($('<a href="' + data.items[i].url + '"></a>').text(data.items[i].name)));
+						tr.append($('<td></td>').append($('<a href="' + data.items[i].url + '"></a>').text(data.items[i].full_name)));
 					}
-					tr.append($('<td></td>').text(data.items[i].created));
-					if (null === data.items[i].formname) {
+					tr.append($('<td></td>').text(data.items[i].latest));
+					if (null === data.items[i].latest_conversion_page_formname) {
 						tr.append($('<td></td>').text(' '));
 					}
 					else {
-						tr.append($('<td></td>').append($('<a href="' + data.items[i].page_url + '"></a>').text(data.items[i].formname)));
+						tr.append($('<td></td>').append($('<a href="' + data.items[i].page_url + '"></a>').text(data.items[i].latest_conversion_page_formname)));
+					}
+					if (null === data.items[i].latest_conversion_page_name) {
+						tr.append($('<td></td>').text(' '));
+					}
+					else {
+						tr.append($('<td></td>').append($('<a href="' + data.items[i].page_url + '"></a>').text(data.items[i].latest_conversion_page_name)));
 					}
 					b.append(tr);
 				}

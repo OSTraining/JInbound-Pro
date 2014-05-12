@@ -16,5 +16,10 @@ DROP TABLE IF EXISTS `#__jinbound_subscriptions`;
 
 
 DROP TABLE IF EXISTS `#__jinbound_contacts`;
+DROP TABLE IF EXISTS `#__jinbound_contacts_campaigns`;
+DROP TABLE IF EXISTS `#__jinbound_contacts_priorities`;
+DROP TABLE IF EXISTS `#__jinbound_contacts_statuses`;
 DROP TABLE IF EXISTS `#__jinbound_contacts_tracks`;
+DROP TABLE IF EXISTS `#__jinbound_conversions`;
 DROP TABLE IF EXISTS `#__jinbound_tracks`;
+DROP TABLE IF EXISTS `#__jinbound_users_tracks`;

@@ -87,6 +87,48 @@ class JInboundModelEmails extends JInboundListModel
 		$params     = new JRegistry;
 		$dispatcher = JDispatcher::getInstance();
 		
+		$db->setQuery($db->getQuery(true)
+			->select('Contact.first_name AS first_name')
+			->select('Contact.last_name AS last_name')
+			->select('Contact.created AS created')
+			->select('Conversion.formdata AS form')
+			->select('Contact.email AS email')
+			->select('Contact.id AS contact_id')
+			->select('Conversion.id AS conversion_id')
+			->select('Page.id AS page_id')
+			->select('Page.formname AS form_name')
+			->select('Campaign.id AS campaign_id')
+			->select('Campaign.name AS campaign_name')
+			->select('Email.id AS email_id')
+			->select('Email.sendafter AS sendafter')
+			->select('Email.fromname AS fromname')
+			->select('Email.fromemail AS fromemail')
+			->select('Email.subject AS subject')
+			->select('Email.htmlbody AS htmlbody')
+			->select('Email.plainbody AS plainbody')
+			->select('Record.id AS record_id')
+			->select('MAX(Version.id) AS version_id')
+			->from('#__jinbound_contacts AS Contact')
+			->leftJoin('#__jinbound_conversions AS Conversion ON Conversion.contact_id = Contact.id')
+			->leftJoin('#__jinbound_pages AS Page ON Conversion.page_id = Page.id')
+			->leftJoin('#__jinbound_campaigns AS Campaign ON Page.campaign = Campaign.id')
+			->leftJoin('#__jinbound_emails AS Email ON Email.campaign_id = Campaign.id')
+			->leftJoin('#__jinbound_emails_records AS Record ON Record.lead_id = Contact.id AND Record.email_id = Email.id')
+			->leftJoin('#__jinbound_subscriptions AS Sub ON Contact.id = Sub.contact_id')
+			->leftJoin('#__jinbound_emails_versions AS Version ON Version.email_id = Email.id')
+			->where('Record.id IS NULL')
+			->where('DATE_ADD(Conversion.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
+			->where('Email.published = 1')
+			->where('Page.published = 1')
+			->where('Campaign.published = 1')
+			->where('Sub.enabled <> 0')
+			// NOTE: Grouping order is VERY important here!!!!!
+			// the query has to be grouped FIRST by emails, THEN by contacts
+			// otherwise we don't get the correct data!!!!!!
+			->group('Email.id')
+			->group('Contact.id')
+		);
+		/*
 		// NOTE: This query is kind of hairy and a little complicated, edit at your own risk!!!
 		$db->setQuery($db->getQuery(true)
 			->select('Lead.first_name AS first_name')
@@ -129,6 +171,7 @@ class JInboundModelEmails extends JInboundListModel
 			->group('Email.id')
 			->group('Contact.id')
 		);
+		*/
 		
 		if ($out) {
 			echo '<h3>Query</h3><pre>' . print_r((string) $db->getQuery(false), 1) . '</pre>';
@@ -206,7 +249,7 @@ class JInboundModelEmails extends JInboundListModel
 			}
 			$object = new stdClass;
 			$object->email_id   = $result->email_id;
-			$object->lead_id    = $result->lead_id;
+			$object->lead_id    = $result->conversion_id;
 			$object->sent       = $now->toSql();
 			$object->version_id = $result->version_id;
 			try {

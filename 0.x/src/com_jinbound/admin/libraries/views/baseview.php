@@ -193,7 +193,7 @@ class JInboundView extends JInboundBaseView
 			'emails'      => 'LEAD_NURTURING_MANAGER',
 			//'leads'       => 'LEADS',
 			'contacts'    => 'CONTACTS',
-			'conversions' => 'CONVERSIONS',
+			//'conversions' => 'CONVERSIONS',
 			'reports'     => 'REPORTS'
 		);
 		$addCategories = false;

@@ -34,7 +34,7 @@ defined('JPATH_PLATFORM') or die;
 	      	</span>
       		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_NURTURING_MANAGER'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('leads'); ?>" class="span3 btn text-center">
+      	<a href="<?php echo JInboundHelperUrl::view('contacts'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
 	      	</span>
@@ -75,7 +75,7 @@ defined('JPATH_PLATFORM') or die;
 				<ul>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('campaign.add'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('lead.add'), JText::_('COM_JINBOUND_LEAD')); ?></li>
+					<li><?php echo JHtml::link(JInboundHelperUrl::task('contact.add'), JText::_('COM_JINBOUND_LEAD')); ?></li>
 				</ul>
 				<h3><img alt="<?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/view_reports.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?></span></h3>
 				<ul>

@@ -130,7 +130,7 @@ class plgSystemJInbound extends JPlugin
 		// add cookie script
 		if (static::$_setCookieInJs)
 		{
-			$cookie = JInboundHelperFilter::escape($this->getCookieValue());
+			$cookie = JInboundHelperFilter::escape(static::getCookieValue());
 			$add .= '<script data-jib="' . $cookie . '" id="jinbound_tracks" type="text/javascript" src="' . JInboundHelperUrl::media() . '/js/track.js"></script>';
 		}
 		// only alter if needed
@@ -148,7 +148,7 @@ class plgSystemJInbound extends JPlugin
 	 * TODO stupid EU cookie law crap
 	 * 
 	 */
-	private function setUserCookie()
+	public static function setUserCookie()
 	{
 		if (headers_sent())
 		{
@@ -156,7 +156,7 @@ class plgSystemJInbound extends JPlugin
 		}
 		else
 		{
-			static::$_setCookieInJs = !setcookie('__jib__', $this->getCookieValue());
+			static::$_setCookieInJs = !setcookie('__jib__', static::getCookieValue());
 		}
 	}
 	
@@ -170,14 +170,14 @@ class plgSystemJInbound extends JPlugin
 		// collect the data
 		$ua           = $_SERVER['HTTP_USER_AGENT'];
 		$ip           = $_SERVER['REMOTE_ADDR'];
-		$cookie       = $this->getCookieValue();
+		$cookie       = static::getCookieValue();
 		$session      = session_id();
 		$date         = new DateTime();
 		$type         = $_SERVER['REQUEST_METHOD'];
 		$uri          = $_SERVER['REQUEST_URI'];
 		$id           = microtime() . $ip . md5($session);
 		$currentuser  = JFactory::getUser()->get('id');
-		$detecteduser = $this->getCookieUser();
+		$detecteduser = static::getCookieUser();
 		// check detected?
 		if (is_array($detecteduser))
 		{
@@ -227,13 +227,13 @@ class plgSystemJInbound extends JPlugin
 	 * @return array if more than one user is detected
 	 * @return int   detected user id, or 0 if no user
 	 */
-	private function getCookieUser()
+	static public function getCookieUser()
 	{
 		$db = JFactory::getDbo();
 		$db->setQuery($db->getQuery(true)
 			->select('user_id')
 			->from('#__jinbound_users_tracks')
-			->where('cookie = ' . $db->quote($this->getCookieValue()))
+			->where('cookie = ' . $db->quote(static::getCookieValue()))
 		);
 		
 		try {
@@ -261,7 +261,7 @@ class plgSystemJInbound extends JPlugin
 	 * 
 	 * @return string
 	 */
-	private function getCookieValue()
+	static public function getCookieValue()
 	{
 		if (isset($_COOKIE['__jib__']))
 		{
