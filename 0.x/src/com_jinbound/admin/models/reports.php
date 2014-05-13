@@ -157,26 +157,61 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getRecentContacts()
 	{
+		$input = JFactory::getApplication()->input;
+		$start = $input->get('filter_begin', '', 'string');
+		$end   = $input->get('filter_end', '', 'string');
+		$query = $this->getDbo()->getQuery(true)
+			->select('Contact.id AS id')
+			->select('Contact.created AS date')
+			->select('CONCAT_WS(' . $this->getDbo()->quote(' ') . ', Contact.first_name, Contact.last_name) AS name')
+			->select('Conversion.formdata AS formdata')
+			->select('Page.id AS page_id')
+			->select('Page.formname AS formname')
+			->select('Contact.website AS website')
+			->from('#__jinbound_contacts AS Contact')
+			->leftJoin('#__jinbound_conversions AS Conversion ON Contact.id = Conversion.contact_id')
+			->leftJoin('#__jinbound_pages AS Page ON Conversion.page_id = Page.id')
+			->where('Contact.published = 1')
+			->where('Conversion.published = 1')
+			->where('Page.published = 1')
+			->group('Contact.id')
+			->group('Conversion.id')
+			->order('Contact.created ASC')
+		;
+		
+		if (!empty($start))
+		{
+			try
+			{
+				$start = new DateTime($start);
+				if ($start)
+				{
+					$query->where('Conversion.created > ' . $this->getDbo()->quote($start->format('Y-m-d h:i:s')));
+				}
+			}
+			catch (Exception $e)
+			{
+			}
+		}
+		
+		if (!empty($end))
+		{
+			try
+			{
+				$end = new DateTime($end);
+				if ($end)
+				{
+					$query->where('Conversion.created > ' . $this->getDbo()->quote($end->format('Y-m-d h:i:s')));
+				}
+			}
+			catch (Exception $e)
+			{
+			}
+		}
+		
 		try
 		{
-			$contacts = $this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-				->select('Contact.id AS id')
-				->select('Contact.created AS date')
-				->select('CONCAT_WS(' . $this->getDbo()->quote(' ') . ', Contact.first_name, Contact.last_name) AS name')
-				->select('Conversion.formdata AS formdata')
-				->select('Page.id AS page_id')
-				->select('Page.formname AS formname')
-				->select('Contact.website AS website')
-				->from('#__jinbound_contacts AS Contact')
-				->leftJoin('#__jinbound_conversions AS Conversion ON Contact.id = Conversion.contact_id')
-				->leftJoin('#__jinbound_pages AS Page ON Conversion.page_id = Page.id')
-				->where('Contact.published = 1')
-				->where('Conversion.published = 1')
-				->where('Page.published = 1')
-				->group('Contact.id')
-				->group('Conversion.id')
-				->order('Contact.created ASC')
-			)->loadObjectList();
+			$contacts = $this->getDbo()->setQuery($query)->loadObjectList();
 		}
 		catch (Exception $e)
 		{
@@ -192,48 +227,88 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getTopPages()
 	{
+		$input = JFactory::getApplication()->input;
+		$start = $input->get('filter_begin', '', 'string');
+		$end   = $input->get('filter_end', '', 'string');
+		$query = $this->getDbo()->getQuery(true)
+			->select('Page.id AS id')
+			->select('Page.name AS name')
+			->select('Page.hits AS hits')
+			->select('Campaign.name AS campaign_name')
+			->select('COUNT(DISTINCT Contact.id) AS contact_submissions')
+			->select('GROUP_CONCAT(DISTINCT Contact.id) AS contact_submission_ids')
+			->select('COUNT(DISTINCT Submission.id) AS submissions')
+			->select('GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids')
+			->select('COUNT(DISTINCT Conversion.contact_id) AS conversions')
+			->select('GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids')
+			->select('ROUND(IF(COUNT(DISTINCT Contact.id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Contact.id)) * 100, 0), 2) AS conversion_rate')
+			->from('#__jinbound_pages AS Page')
+			->leftJoin('#__categories AS Category ON Category.id = Page.category')
+			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Page.campaign')
+			->leftJoin('#__jinbound_contacts AS Contact ON Contact.id IN (('
+				. $this->getDbo()->getQuery(true)
+					->select('DISTINCT ContactConversion.contact_id')
+					->from('#__jinbound_conversions AS ContactConversion')
+					->where('ContactConversion.page_id = Page.id')
+					->where('ContactConversion.published = 1')
+			. '))')
+			->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
+			->leftJoin('(' . $this->getDbo()->getQuery(true)
+				->select('s1.*')
+				->from('#__jinbound_contacts_statuses AS s1')
+				->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+				->where('s2.contact_id IS NULL')
+			. ') AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id IN (('
+				. $this->getDbo()->getQuery(true)
+					->select('DISTINCT ConversionConversion.contact_id')
+					->from('#__jinbound_conversions AS ConversionConversion')
+					->where('ConversionConversion.page_id = Page.id')
+					->where('ConversionConversion.published = 1')
+			. ')) AND Conversion.status_id IN (('
+				. $this->getDbo()->getQuery(true)
+					->select('Status.id')
+					->from('#__jinbound_lead_statuses AS Status')
+					->where('Status.final = 1')
+					->where('Status.published = 1')
+			. '))')
+			->group('Page.id')
+			->order('conversion_rate DESC')
+			->order('Page.hits DESC')
+		;
+		
+		if (!empty($start))
+		{
+			try
+			{
+				$start = new DateTime($start);
+				if ($start)
+				{
+					$query->where('Contact.created > ' . $this->getDbo()->quote($start->format('Y-m-d h:i:s')));
+				}
+			}
+			catch (Exception $e)
+			{
+			}
+		}
+		
+		if (!empty($end))
+		{
+			try
+			{
+				$end = new DateTime($end);
+				if ($end)
+				{
+					$query->where('Contact.created > ' . $this->getDbo()->quote($end->format('Y-m-d h:i:s')));
+				}
+			}
+			catch (Exception $e)
+			{
+			}
+		}
+		
 		try
 		{
-			$pages = $this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-				->select('Page.id AS id')
-				->select('Page.name AS name')
-				->select('Page.hits AS hits')
-				->select('Campaign.name AS campaign_name')
-				->select('COUNT(DISTINCT Contact.id) AS contact_submissions')
-				->select('GROUP_CONCAT(DISTINCT Contact.id) AS contact_submission_ids')
-				->select('COUNT(DISTINCT Submission.id) AS submissions')
-				->select('GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids')
-				->select('COUNT(DISTINCT Conversion.contact_id) AS conversions')
-				->select('GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids')
-				->select('ROUND(IF(COUNT(DISTINCT Contact.id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Contact.id)) * 100, 0), 2) AS conversion_rate')
-				->from('#__jinbound_pages AS Page')
-				->leftJoin('#__categories AS Category ON Category.id = Page.category')
-				->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Page.campaign')
-				->leftJoin('#__jinbound_contacts AS Contact ON Contact.id IN (('
-					. $this->getDbo()->getQuery(true)
-						->select('DISTINCT ContactConversion.contact_id')
-						->from('#__jinbound_conversions AS ContactConversion')
-						->where('ContactConversion.page_id = Page.id')
-						->where('ContactConversion.published = 1')
-				. '))')
-				->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
-				->leftJoin('#__jinbound_contacts_statuses AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id IN (('
-					. $this->getDbo()->getQuery(true)
-						->select('DISTINCT ConversionConversion.contact_id')
-						->from('#__jinbound_conversions AS ConversionConversion')
-						->where('ConversionConversion.page_id = Page.id')
-						->where('ConversionConversion.published = 1')
-				. ')) AND Conversion.status_id IN (('
-					. $this->getDbo()->getQuery(true)
-						->select('Status.id')
-						->from('#__jinbound_lead_statuses AS Status')
-						->where('Status.final = 1')
-						->where('Status.published = 1')
-				. '))')
-				->group('Page.id')
-				->order('conversion_rate DESC')
-				->order('Page.hits DESC')
-			)->loadObjectList();
+			$pages = $this->getDbo()->setQuery($query)->loadObjectList();
 		}
 		catch (Exception $e)
 		{
@@ -392,4 +467,125 @@ class JInboundModelReports extends JInboundListModel
 		return $rate;
 	}
 	
+	public function send()
+	{
+		$dbg = JInbound::config("debug", 0);
+		if ($dbg) echo "<h3>Sending reports</h3>";
+		// only send if configured to
+		if (!JInbound::config('send_reports', 1))
+		{
+			if ($dbg) echo "<p>Reports not enabled!</p>";
+			return;
+		}
+		// init
+		$db     = JFactory::getDbo();
+		$emails = JInbound::config('report_recipients', '');
+		// only send if there are emails
+		if (empty($emails))
+		{
+			if ($dbg) echo "<p>No emails provided!</p>";
+			return;
+		}
+		// convert emails to an array
+		if (false !== strpos($emails, ','))
+		{
+			$emails = explode(',', $emails);
+		}
+		else
+		{
+			$emails = array($emails);
+		}
+		if ($dbg) echo "<p>Found emails: " . implode(', ', $emails) . "</p>";
+		// quote emails for use in db query
+		$quoted = array();
+		foreach ($emails as &$email)
+		{
+			$email = trim($email);
+			$quoted[] = $db->quote($email);
+		}
+		unset($email);
+		// get the interval
+		$freq = (int) JInbound::config('report_frequency', 0);
+		switch ($freq)
+		{
+			// no interval, no emails
+			case 0:
+				if ($dbg) echo "<p>No interval!</p>";
+				return;
+			// all others will be in hours
+			default:
+				// get the previous records
+				try
+				{
+					$interval = JInbound::config("debug", 0) ? 'MINUTE' : 'HOUR';
+					if ($dbg) echo "<p>Sending at interval $freq $interval</p>";
+					$records = $db->setQuery($db->getQuery(true)
+						->select('email')
+						->from('#__jinbound_reports_emails')
+						->where('email IN(' . implode(',', $quoted) . ')')
+						->where("created > (NOW() - INTERVAL $freq $interval)")
+					)->loadColumn();
+				}
+				catch (Exception $e)
+				{
+					if ($dbg) echo "<p>" . $e->getMessage() . "</p>";
+					return;
+				}
+				// if there are no records, we can send
+				// otherwise skip
+				$sendto = array();
+				foreach ($emails as $email)
+				{
+					if (in_array($email, $records))
+					{
+						if ($dbg) echo "<p>skipping " . $email . "</p>";
+						continue;
+					}
+					$sendto[] = $email;
+				}
+				// only send if sendto isn't empty
+				if (empty($sendto))
+				{
+					if ($dbg) echo "<p>No emails are being sent</p>";
+					return;
+				}
+				// construct body
+				// TODO
+				$subject = JText::_('COM_JINBOUND_REPORTS_EMAIL_SUBJECT');
+				$body    = JText::_('COM_JINBOUND_REPORTS_EMAIL_BODY');
+				// send emails
+				$mailer = JFactory::getMailer();
+				$mailer->ClearAllRecipients();
+				$mailer->addRecipient($sendto);
+				$mailer->setSubject($subject);
+				$mailer->setBody($body);
+				if ($mailer->send())
+				{
+					$query = $db->getQuery(true)
+						->insert('#__jinbound_reports_emails')
+						->columns(array('email', 'created'))
+					;
+					foreach ($sendto as $email)
+					{
+						$query->values($db->quote($email) . ', NOW()');
+					}
+					try
+					{
+						$db->setQuery($query)->query();
+					}
+					catch (Exception $e)
+					{
+						if ($dbg) echo "<p>" . $e->getMessage() . "</p>";
+						return;
+					}
+					if ($dbg) echo "<p>Mailer succeeded!</p>";
+				}
+				else
+				{
+					if ($dbg) echo "<p>Mailer failed!</p>";
+				}
+				// done
+				return;
+		}
+	}
 }

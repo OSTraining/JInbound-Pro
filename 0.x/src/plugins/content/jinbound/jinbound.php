@@ -46,7 +46,7 @@ class plgContentJInbound extends JPlugin
 	 * @param unknown_type $table
 	 * @param unknown_type $isNew
 	 */
-	public function onContentBeforeSave($context, &$table, $isNew) {
+	public function onContentBeforeSave($context, $table, $isNew) {
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}
@@ -63,7 +63,7 @@ class plgContentJInbound extends JPlugin
 	 * @param unknown_type $table
 	 * @param unknown_type $isNew
 	 */
-	public function onContentAfterSave($context, &$table, $isNew) {
+	public function onContentAfterSave($context, $table, $isNew) {
 		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
 			return true;
 		}

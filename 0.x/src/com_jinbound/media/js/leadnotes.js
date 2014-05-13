@@ -79,5 +79,45 @@ window.jinbound_leadnotes_token = false;
 			console.log('dblclick');
 			e.stopPropagation();
 		});
+		var deleteNote = function(e) {
+			var $this  = $(this);
+			var note   = $this.closest('.leadnote');
+			var data   = {
+				task    : 'note.delete'
+			,	format  : 'json'
+			,	id      : [parseInt($this.attr('data-noteid'), 10)]
+			,	leadid  : parseInt($this.attr('data-leadid'), 10)
+			}
+			data[window.jinbound_leadnotes_token] = 1;
+			$.ajax('index.php?option=com_jinbound', {
+				data     : data
+			,	dataType : 'json'
+			,	type     : 'post'
+			,	success  : function(response) {
+					var container = $this.closest('.leadnotes');
+					var notes     = container.find('.leadnotes-notes');
+					var count     = container.find('.leadnotes-count');
+					var single    = $('#jinbound_leadnotes_table');
+					notes.empty();
+					if (single && single.length) {
+						single.empty();
+					}
+					count.text(parseInt(response.notes.length, 10));
+					for (var i = 0, n = response.notes.length; i < n; i++) {
+						var row = $('<div class="leadnote alert" data-stopPropagation="true"><a class="close" data-dismiss="alert" data-noteid="' + response.notes[i].id + '" data-leadid="' + response.notes[i].lead_id + '" href="#" onclick="(function(){return confirm(Joomla.JText._(\'COM_JINBOUND_CONFIRM_DELETE\'));})();">&times;</a><span class="label" data-stopPropagation="true">' + response.notes[i].created + '</span> ' + response.notes[i].author + '<div class="leadnote-text" data-stopPropagation="true">' + response.notes[i].text + '</div></div>');
+						notes.append(row);
+						if (single && single.length) {
+							var trow = $('<tr><td><span class="label"></span></td><td class="note"></td></tr>');
+							trow.find('.label').text(response.notes[i].created);
+							trow.find('.note').text(response.notes[i].text);
+							single.find('tbody').append(trow);
+						}
+					}
+					container.on('click', '.close', deleteNote);
+					container.find('textarea').val('');
+				}
+			});
+		};
+		$('.leadnotes-notes .leadnote').on('click', '.close', deleteNote);
 	});
 })(jQuery);

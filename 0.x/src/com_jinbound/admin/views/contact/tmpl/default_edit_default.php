@@ -70,7 +70,28 @@ defined('JPATH_PLATFORM') or die;
 										<?php if (array_key_exists('lead', $data->formdata)) foreach ($data->formdata['lead'] as $key => $value) : ?>
 										<tr>
 											<td><?php echo $this->escape($key); ?></td>
-											<td><?php echo $this->escape(print_r($value, 1)); ?></td>
+											<td>
+												<?php
+												if (is_object($value) || is_array($value)) :
+													$array = (array) $value;
+													if (1 === count($array)) :
+														echo $this->escape(array_shift($array));
+													else :
+												?>
+												<ul>
+													<?php foreach ((array) $value as $k => $v) : ?>
+													<li>
+														<?php echo $this->escape(print_r($v, 1)); ?>
+													</li>
+													<?php endforeach;?>
+												</ul>
+												<?php
+													endif;
+												else :
+													echo $this->escape(print_r($value, 1));
+												endif;
+												?>
+											</td>
 										</tr>
 										<?php endforeach; ?>
 									</table>

@@ -186,6 +186,7 @@ class com_JInboundInstallerScript
 						$fieldvalue = $field->__get('value');
 						// handle some compat params
 						switch ($fieldname) {
+							case 'load_jquery_back':
 							case 'load_bootstrap_back':
 								$fieldvalue = (int) (!$version->isCompatible('3.0.0'));
 								break;

@@ -187,11 +187,12 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_campaigns` (
 	COMMENT 'FK to #__jinbound_contacts table',
 	
 	`campaign_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__jinbound_campaigns table'
+	COMMENT 'FK to #__jinbound_campaigns table',
+	
+	`enabled` tinyint(1) NOT NULL DEFAULT 1
+	COMMENT 'enabled status, 1 = enabled, 0 = disabled'
 	
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
 
 
 #####################################################
@@ -253,3 +254,19 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_priorities` (
 	COMMENT 'User id of last modifier'
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+#####################################################
+## reports email records
+#####################################################;
+
+CREATE TABLE IF NOT EXISTS `#__jinbound_reports_emails` (
+	
+	`email` TEXT NOT NULL
+	COMMENT 'Email the reports were sent to',
+	
+	`created` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when record was created, in UTC'
+	
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

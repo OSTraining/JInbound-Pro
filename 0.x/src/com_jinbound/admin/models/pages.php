@@ -126,7 +126,23 @@ class JInboundModelPages extends JInboundListModel
 					->where('ContactConversion.published = 1')
 			. '))')
 			->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
-			->leftJoin('#__jinbound_contacts_statuses AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id IN (('
+			
+			->leftJoin('('
+				. $db->getQuery(true)
+					->select('s1.*')
+					->from('#__jinbound_contacts_statuses AS s1')
+					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+					->where('s2.contact_id IS NULL')
+				. ') AS ContactStatus ON (ContactStatus.contact_id = Contact.id)'
+			)
+			
+			->leftJoin('('
+				. $db->getQuery(true)
+					->select('s1.*')
+					->from('#__jinbound_contacts_statuses AS s1')
+					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+					->where('s2.contact_id IS NULL')
+				. ') AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id IN (('
 				. $db->getQuery(true)
 					->select('DISTINCT ConversionConversion.contact_id')
 					->from('#__jinbound_conversions AS ConversionConversion')
@@ -141,46 +157,6 @@ class JInboundModelPages extends JInboundListModel
 			. '))')
 			->group('Page.id')
 		;
-		/*
-SELECT Page.*, Category.title AS category_name, Campaign.name AS campaign_name
-, COUNT(DISTINCT Contact.id) AS contact_submissions
-, GROUP_CONCAT(DISTINCT Contact.id) AS contact_submission_ids
-, COUNT(DISTINCT Submission.id) AS submissions
-, GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids
-, COUNT(DISTINCT Conversion.contact_id) AS conversions
-, GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids
-, ROUND(IF(COUNT(DISTINCT Contact.id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Contact.id)) * 100, 0), 2) AS conversion_rate
-FROM cxsgv_jinbound_pages AS Page
-LEFT JOIN cxsgv_categories AS Category
-	ON Category.id = Page.category
-LEFT JOIN cxsgv_jinbound_campaigns AS Campaign
-	ON Campaign.id = Page.campaign
-LEFT JOIN cxsgv_jinbound_contacts AS Contact
-	ON Contact.id IN ((
-		SELECT DISTINCT ContactConversion.contact_id
-		FROM cxsgv_jinbound_conversions AS ContactConversion
-		WHERE ContactConversion.page_id = Page.id
-		AND ContactConversion.published = 1
-	))
-LEFT JOIN cxsgv_jinbound_conversions AS Submission
-	ON Submission.page_id = Page.id
-	AND Submission.published = 1
-LEFT JOIN cxsgv_jinbound_contacts_statuses AS Conversion
-	ON Conversion.campaign_id = Campaign.id
-	AND Conversion.contact_id IN ((
-		SELECT DISTINCT ConversionConversion.contact_id
-		FROM cxsgv_jinbound_conversions AS ConversionConversion
-		WHERE ConversionConversion.page_id = Page.id
-		AND ConversionConversion.published = 1
-	))
-	AND Conversion.status_id IN ((
-		SELECT Status.id
-		FROM cxsgv_jinbound_lead_statuses AS Status
-		WHERE Status.final = 1
-		AND Status.published = 1
-	))
-GROUP BY Page.id
-		 */
 		
 		// add author to query
 		$this->appendAuthorToQuery($query, 'Page');

@@ -225,7 +225,9 @@ EOF
 					<div class="leadnotes-notes" data-stopPropagation="true">
 <?php if (!empty($notes[$key])) : foreach ($notes[$key] as $note) : ?>
 						<div class="leadnote alert" data-stopPropagation="true">
-							<a class="close" data-dismiss="alert" href="#" onclick="(function(){return confirm(Joomla.JText._('COM_JINBOUND_CONFIRM_DELETE'));})();">&times;</a>
+							<a class="close" data-dismiss="alert" data-noteid="<?php echo $note->id; ?>" data-leadid="<?php echo $note->lead_id; ?>" href="#"
+								onclick="(function(){return confirm(Joomla.JText._('COM_JINBOUND_CONFIRM_DELETE'));})();"
+							>&times;</a>
 							<span class="label" data-stopPropagation="true"><?php echo $note->created; ?></span> <?php echo $filter->clean($note->author, 'string'); ?>
 							<div class="leadnote-text" data-stopPropagation="true"><?php echo $filter->clean($note->text, 'string'); ?></div>
 						</div>

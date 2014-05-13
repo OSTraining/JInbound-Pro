@@ -239,7 +239,7 @@ class JInboundView extends JInboundBaseView
 		if ($canAdd) {
 			if (JInbound::version()->isCompatible('3.0.0')) {
 				JHtml::_('behavior.framework', true);
-				JHtml::_('jquery.ui', array('core', 'sortable'));
+				JHtml::_('jquery.ui', array('core', 'sortable', 'tabs'));
 				JHtml::_('bootstrap.tooltip');
 			}
 			else {

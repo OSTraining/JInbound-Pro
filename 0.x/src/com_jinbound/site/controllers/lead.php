@@ -265,6 +265,7 @@ class JInboundControllerLead extends JInboundBaseController
 		
 		// remove this contact from this page's campaign, if necessary
 		// TODO integrate fix for #214
+		
 		$db->setQuery($db->getQuery(true)
 			->delete('#__jinbound_contacts_campaigns')
 			->where('contact_id = ' . $db->quote($contact->id))

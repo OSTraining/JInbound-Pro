@@ -10,6 +10,14 @@ defined('JPATH_PLATFORM') or die;
 JHtml::_('behavior.calendar');
 
 ?>
+<script type="text/javascript">
+Joomla.submitbutton = function(task)
+{
+	console.log('submitbutton');
+	console.log(task);
+	Joomla.submitform(task, document.getElementById('adminForm'));
+};
+</script>
 <div class="container-fluid" id="jinbound_component">
 	<h2><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></h2>
 	<form action="<?php echo JInboundHelperUrl::view('reports'); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">

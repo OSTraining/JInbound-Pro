@@ -25,9 +25,15 @@ class JInboundController extends JInboundBaseController
 	 * TODO
 	 */
 	function cron() {
+		// send reports emails
+		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/reports.php';
+		$model = $this->getModel('Reports', 'JInboundModel');
+		$model->send();
+		// handle sending campaign emails
 		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/emails.php';
 		$model = $this->getModel('Emails', 'JInboundModel');
 		$model->send();
+		// exit
 		jexit();
 	}
 	
