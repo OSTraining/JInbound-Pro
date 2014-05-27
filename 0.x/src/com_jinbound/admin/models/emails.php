@@ -249,7 +249,7 @@ class JInboundModelEmails extends JInboundListModel
 			}
 			$object = new stdClass;
 			$object->email_id   = $result->email_id;
-			$object->lead_id    = $result->conversion_id;
+			$object->lead_id    = $result->contact_id;
 			$object->sent       = $now->toSql();
 			$object->version_id = $result->version_id;
 			try {

@@ -33,7 +33,9 @@ if (jimport('joomla.application.component.view')) {
 	}
 }
 else {
-	jimport('legacy.view.legacy');
+	if (!class_exists('JViewLegacy', false)) {
+		jimport('cms.view.legacy') or jimport('legacy.view.legacy');
+	}
 	class JInboundBaseCompatView extends JViewLegacy
 	{
 		
@@ -179,7 +181,8 @@ class JInboundView extends JInboundBaseView
 		$app = JFactory::getApplication();
 		
 		// only fire in administrator
-		if (!$app->isAdmin()) {
+		if (!$app->isAdmin())
+		{
 			return;
 		}
 		
@@ -198,7 +201,8 @@ class JInboundView extends JInboundBaseView
 		);
 		$addCategories = false;
 		
-		if (JInbound::version()->isCompatible('3.0.0')) {
+		if (JInbound::version()->isCompatible('3.0.0'))
+		{
 			$addCategories = true;
 			$subMenuItems = array_merge($subMenuItems, array(
 				'campaigns'  => 'CAMPAIGNS_MANAGER',
@@ -206,7 +210,8 @@ class JInboundView extends JInboundBaseView
 				'priorities' => 'PRIORITIES'
 			));
 		}
-		else {
+		else
+		{
 			$subMenuItems['utilities'] = 'UTILITIES';
 		}
 		
@@ -215,14 +220,16 @@ class JInboundView extends JInboundBaseView
 			$subMenuItems['tracks'] = 'TRACKS';
 		}
 		
-		foreach ($subMenuItems as $sub => $txt) {
+		foreach ($subMenuItems as $sub => $txt)
+		{
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub && JInbound::COM == $option);
 			JSubMenuHelper::addEntry($label, $href, $active);
-			/*if ($addCategories && 'reports' == $sub) {
+			if ($addCategories && 'reports' == $sub)
+			{
 				JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM . "_CATEGORIES")), JInboundHelperUrl::_(array('option' => 'com_categories', 'view' => 'categories', 'extension' => JInbound::COM)), $option == JInbound::COM && in_array($vName, array('', 'categories')));
-			}*/
+			}
 		}
 	}
 

@@ -80,7 +80,7 @@ class JInboundControllerLead extends JInboundBaseController
 		
 		$formbuilder = $page->formbuilder->toArray();
 		// build data from formbuilder
-		foreach ($page->formbuilder->toArray() as $name => $element)
+		foreach ($formbuilder as $name => $element)
 		{
 			if (1 !== (int) $element['enabled'])
 			{
@@ -186,12 +186,19 @@ class JInboundControllerLead extends JInboundBaseController
 		$isNew = empty($contact->id);
 		
 		// fill in the data to be bound to the jinbound contact
-		$contact_data['user_id']         = $user_id;
-		$contact_data['core_contact_id'] = $contact_id;
 		$contact_data['email']           = $email;
 		$contact_data['first_name']      = $first_name;
 		$contact_data['last_name']       = $last_name;
 		$contact_data['cookie']          = plgSystemJInbound::getCookieValue();
+		// only fill in the FK columns if the new values are not empty and the old ones are
+		if ($user_id && empty($contact->user_id))
+		{
+			$contact_data['user_id'] = $user_id;
+		}
+		if ($contact_id && empty($contact->core_contact_id))
+		{
+			$contact_data['core_contact_id'] = $contact_id;
+		}
 		// some of these may not be set
 		foreach (array(
 			'address'   => array('address')

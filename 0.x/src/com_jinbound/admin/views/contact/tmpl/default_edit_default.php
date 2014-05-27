@@ -111,7 +111,7 @@ defined('JPATH_PLATFORM') or die;
 											<?php foreach ($this->item->statuses[$campaign->id] as $status) : ?>
 									<div class="row-fluid">
 										<div class="span6"><?php echo $this->escape($status->name); ?></div>
-										<div class="span4"><?php echo $this->escape($status->created); ?></div>
+										<div class="span3"><?php echo $this->escape($status->created); ?></div>
 										<div class="span2"><?php echo $this->escape($status->created_by); ?></div>
 									</div>
 											<?php endforeach; ?>
@@ -121,6 +121,9 @@ defined('JPATH_PLATFORM') or die;
 									<?php endif; ?>
 									
 									<div class="row-fluid">
+										<div class="alert alert-error"><?php echo JText::_('COM_JINBOUND_WARNING_GET_PERMISSION_BEFORE_ADDING_TO_CAMPAIGN'); ?></div>
+									</div>
+									<div class="row-fluid">
 										<div class="span12">
 											<?php
 												$this->_currentFieldset = $this->form->getFieldset('campaigns');
@@ -129,6 +132,25 @@ defined('JPATH_PLATFORM') or die;
 										</div>
 									</div>
 								</div>
+								<?php if (!empty($this->item->previous_campaigns)) : ?>
+								
+								<h4><?php echo JText::_('COM_JINBOUND_PREVIOUS_LEAD_NURTURING_CAMPAIGNS'); ?></h4>
+								<div class="well">
+									<?php echo JHtml::_('jinbound.startSlider', 'previousCampaignSlider'); ?>
+									<?php foreach ($this->item->previous_campaigns as $i => $campaign) : ?>
+										<?php echo JHtml::_('jinbound.addSlide', 'previousCampaignSlider', $campaign->name, 'previouscampaignslider-' . $i); ?>
+										<?php foreach ($this->item->statuses[$campaign->id] as $status) : ?>
+									<div class="row-fluid">
+										<div class="span6"><?php echo $this->escape($status->name); ?></div>
+										<div class="span3"><?php echo $this->escape($status->created); ?></div>
+										<div class="span2"><?php echo $this->escape($status->created_by); ?></div>
+									</div>
+										<?php endforeach; ?>
+										<?php echo JHtml::_('jinbound.endSlide'); ?>
+									<?php endforeach; ?>
+									<?php echo JHtml::_('jinbound.endSlider'); ?>
+								</div>
+								<?php endif; ?>
 							</div>
 							<div class="span6">
 								<h4><?php echo JText::_('COM_JINBOUND_NOTES'); ?></h4>

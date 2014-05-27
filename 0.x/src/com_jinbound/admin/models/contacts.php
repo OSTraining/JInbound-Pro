@@ -101,10 +101,11 @@ class JInboundModelContacts extends JInboundListModel
 			$db = JFactory::getDbo();
 			foreach ($items as &$item)
 			{
-				$item->conversions = JInboundHelperContact::getContactConversions($item->id);
-				$item->campaigns   = JInboundHelperContact::getContactCampaigns($item->id);
-				$item->statuses    = JInboundHelperContact::getContactStatuses($item->id);
-				$item->priorities  = JInboundHelperContact::getContactPriorities($item->id);
+				$item->conversions        = JInboundHelperContact::getContactConversions($item->id);
+				$item->campaigns          = JInboundHelperContact::getContactCampaigns($item->id);
+				$item->previous_campaigns = JInboundHelperContact::getContactCampaigns($item->id, true);
+				$item->statuses           = JInboundHelperContact::getContactStatuses($item->id);
+				$item->priorities         = JInboundHelperContact::getContactPriorities($item->id);
 				// add forms
 				$item->forms = array();
 				if (!empty($item->conversions))

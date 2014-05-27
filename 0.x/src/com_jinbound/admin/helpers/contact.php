@@ -47,24 +47,50 @@ abstract class JInboundHelperContact
 	/**
 	 * Load campaigns for a given contact
 	 * 
-	 * @param unknown_type $contact_id
+	 * @param int  $contact_id
+	 * @param bool $previous
 	 */
-	static public function getContactCampaigns($contact_id)
+	static public function getContactCampaigns($contact_id, $previous = false)
 	{
 		$db = JFactory::getDbo();
-		try
+		$query = $db->getQuery(true)
+			->select('Campaign.*')
+			->from('#__jinbound_campaigns AS Campaign')
+		;
+		// previous entries are those that have statuses but not campaigns
+		if ($previous)
 		{
-			$campaigns = $db->setQuery($db->getQuery(true)
-				->select('Campaign.*')
-				->from('#__jinbound_campaigns AS Campaign')
-				->where('Campaign.id IN(('
+			$query
+				->where('Campaign.id NOT IN(('
 					. $db->getQuery(true)
-						->select('ContactCampaigns.campaign_id')
+						->select('DISTINCT ContactCampaigns.campaign_id')
 						->from('#__jinbound_contacts_campaigns AS ContactCampaigns')
 						->where('ContactCampaigns.contact_id = ' . $db->quote($contact_id))
 					. '))'
 				)
-			)->loadObjectList();
+				->where('Campaign.id IN(('
+					. $db->getQuery(true)
+						->select('DISTINCT ContactStatuses.campaign_id')
+						->from('#__jinbound_contacts_statuses AS ContactStatuses')
+						->where('ContactStatuses.contact_id = ' . $db->quote($contact_id))
+					. '))'
+				)
+			;
+		}
+		// current campaigns
+		else
+		{
+			$query->where('Campaign.id IN(('
+				. $db->getQuery(true)
+					->select('ContactCampaigns.campaign_id')
+					->from('#__jinbound_contacts_campaigns AS ContactCampaigns')
+					->where('ContactCampaigns.contact_id = ' . $db->quote($contact_id))
+				. '))'
+			);
+		}
+		try
+		{
+			$campaigns = $db->setQuery($query)->loadObjectList();
 		}
 		catch (Exception $e)
 		{

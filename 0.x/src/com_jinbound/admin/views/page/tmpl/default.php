@@ -43,7 +43,7 @@ echo $this->loadTemplate('edit');
 		}
 		// check for tabs
 		tabs = $('#jinbound_default_tabsTabs');
-		tab  = '.nav-tabs li';
+		tab  = 'li';
 		if (!tabs.length)
 		{
 			tabs = $('#jinbound_default_tabs');

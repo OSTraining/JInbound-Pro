@@ -34,10 +34,7 @@ if (!empty($this->items)) :
 		<td class="hidden-phone">
 			<?php echo $item->id;  ?>
 		</td>
-		<td>
-			<a href="<?php echo $this->escape(JURI::root() . 'index.php?option=com_jinbound&view=page&id=' . $item->id); ?>" target="_blank" title="<?php echo JText::_('COM_JINBOUND_OPEN_IN_NEW_WINDOW'); ?>">
-				<img src="../media/system/images/weblink.png" />
-			</a>
+		<td id="landingpagelink_<?php echo $item->id; ?>">
 		</td>
 		<td class="nowrap has-context">
 			<div class="pull-left">
@@ -58,6 +55,9 @@ if (!empty($this->items)) :
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'pages.', $canChange, 'cb'); ?>
 		</td>
 		<td class="hidden-phone">
+			<?php echo $item->campaign_name; ?>
+		</td>
+		<td class="hidden-phone">
 			<?php echo $item->category_name; ?>
 		</td>
 		<td class="hidden-phone">
@@ -68,6 +68,9 @@ if (!empty($this->items)) :
 		</td>
 		<td class="hidden-phone">
 			<?php echo $item->submissions; ?>
+		</td>
+		<td class="hidden-phone">
+			<?php echo $item->contact_submissions; ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $item->conversions; ?>

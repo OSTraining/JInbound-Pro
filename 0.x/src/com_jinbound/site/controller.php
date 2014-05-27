@@ -100,26 +100,38 @@ class JInboundController extends JInboundBaseController
 	}
 	
 	function landingpageurl() {
-		$id   = JFactory::getApplication()->input->get('id', 0, 'int');
-		$data = array();
-		if ($id) {
+		$id   = JFactory::getApplication()->input->get('id', array(), 'array');
+		$data = array('links' => array());
+		if (!empty($id)) {
 			JInbound::registerHelper('url');
-			$nonsef         = JInboundHelperUrl::view('page', false, array('id' => $id));
-			// Before continuing make sure we had an Itemid
-			if (!preg_match('/Itemid\=[1-9][0-9]*?/', $nonsef)) {
-				$data['error'] = JText::_('COM_JINBOUND_NEEDS_MENU');
+			if (!is_array($id)) {
+				$id = array($id);
 			}
-			else {
-				$sef            = JInboundHelperUrl::view('page', true, array('id' => $id));
-				$data['nonsef'] = JInboundHelperUrl::toFull($nonsef);
-				$data['sef']    = JInboundHelperUrl::toFull($sef);
-				$data['root']   = JURI::root();
-				$data['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
+			foreach ($id as $i) {
+				$link   = array();
+				$nonsef = JInboundHelperUrl::view('page', false, array('id' => $i));
+				// Before continuing make sure we had an Itemid
+				if (!preg_match('/Itemid\=[1-9][0-9]*?/', $nonsef)) {
+					$link['error'] = JText::_('COM_JINBOUND_NEEDS_MENU');
+				}
+				else {
+					$sef            = JInboundHelperUrl::view('page', true, array('id' => $i));
+					$link['nonsef'] = JInboundHelperUrl::toFull($nonsef);
+					$link['sef']    = JInboundHelperUrl::toFull($sef);
+					$link['root']   = JURI::root();
+					$link['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
+				}
+				$link['id'] = $i;
+				$data['links'][] = $link;
+			}
+			if (1 == count($id)) {
+				$data = array_shift($data['links']);
 			}
 		}
 		else {
 			$data['error'] = JText::_('COM_JINBOUND_NOT_FOUND');
 		}
+		$data['request'] = array('id' => $id);
 		
 		echo json_encode($data);
 		die;

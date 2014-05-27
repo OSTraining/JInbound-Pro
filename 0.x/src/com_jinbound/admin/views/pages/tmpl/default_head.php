@@ -28,6 +28,9 @@ $listDirn  = $this->state->get('list.direction');
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Page.published', $listDirn, $listOrder); ?>
 	</th>
 	<th class="hidden-phone">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN', 'campaign_name', $listDirn, $listOrder); ?>
+	</th>
+	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY', 'Page.category', $listDirn, $listOrder); ?>
 	</th>
 	<th class="hidden-phone">
@@ -38,6 +41,9 @@ $listDirn  = $this->state->get('list.direction');
 	</th>
 	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_SUBMISSIONS', 'submissions', $listDirn, $listOrder); ?>
+	</th>
+	<th class="hidden-phone">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEADS', 'contact_submissions', $listDirn, $listOrder); ?>
 	</th>
 	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'conversions', $listDirn, $listOrder); ?>

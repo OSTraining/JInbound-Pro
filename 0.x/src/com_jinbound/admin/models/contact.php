@@ -55,17 +55,19 @@ class JInboundModelContact extends JInboundAdminModel
 		$item = parent::getItem($id);
 		$db   = JFactory::getDbo();
 		
-		$item->conversions = array();
-		$item->campaigns   = array();
-		$item->statuses    = array();
-		$item->priorities  = array();
+		$item->conversions        = array();
+		$item->campaigns          = array();
+		$item->statuses           = array();
+		$item->previous_campaigns = array();
+		$item->priorities         = array();
 		
 		if ($item->id)
 		{
-			$item->conversions = JInboundHelperContact::getContactConversions($item->id);
-			$item->campaigns   = JInboundHelperContact::getContactCampaigns($item->id);
-			$item->statuses    = JInboundHelperContact::getContactStatuses($item->id);
-			$item->priorities  = JInboundHelperContact::getContactPriorities($item->id);
+			$item->conversions        = JInboundHelperContact::getContactConversions($item->id);
+			$item->campaigns          = JInboundHelperContact::getContactCampaigns($item->id);
+			$item->previous_campaigns = JInboundHelperContact::getContactCampaigns($item->id, true);
+			$item->statuses           = JInboundHelperContact::getContactStatuses($item->id);
+			$item->priorities         = JInboundHelperContact::getContactPriorities($item->id);
 		}
 		
 		// add tracks
