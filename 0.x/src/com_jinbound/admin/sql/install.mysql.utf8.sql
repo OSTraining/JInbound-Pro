@@ -25,6 +25,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 	`label` tinyint(1) default '0'
 	COMMENT 'label type',
 	
+	`greedy` tinyint(1) default '0'
+	COMMENT 'this campaign wants the contacts to itself',
+	
 	`published` tinyint(1) default '0'
 	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
 	
@@ -807,3 +810,15 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_reports_emails` (
 	
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+#####################################################
+## pages hits records
+#####################################################;
+
+CREATE TABLE IF NOT EXISTS `#__jinbound_landing_pages_hits` (
+	
+	`day` DATE NOT NULL,
+	`page_id` INT(11) NOT NULL DEFAULT 0,
+	`hits` INT(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`day`, `page_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

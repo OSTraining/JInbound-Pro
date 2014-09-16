@@ -28,8 +28,12 @@ if (!empty($this->items)) :
 		// combine rows so we can keep the campaigns aligned
 		$rowSpan = '';
 		$rowsNum = count($item->campaigns);
+		// 3.x template uses nth row for styling, so let's fake it up
+		// more than one row? use a rowspan
 		if (2 <= $rowsNum)
 		{
+			// double and subtract 1 to get the "number" of rows
+			$rowsNum = (2 * $rowsNum) - 1;
 			$rowSpan = ' rowspan="' . $rowsNum . '"';
 		}
 		$rowData = array();
@@ -37,8 +41,8 @@ if (!empty($this->items)) :
 		{
 			$rowData[] = array(
 				'campaign' => $campaign
-			,	'priority' => $item->priorities[$campaign->id]
-			,	'status'   => $item->statuses[$campaign->id]
+			,	'priority' => array_key_exists($campaign->id, $item->priorities) ? $item->priorities[$campaign->id] : null
+			,	'status'   => array_key_exists($campaign->id, $item->statuses) ? $item->statuses[$campaign->id] : null
 			);
 		}
 		
@@ -78,13 +82,13 @@ if (!empty($this->items)) :
 			<?php echo $this->escape($item->created); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JHtml::_('jinbound.priority', $item->id, $firstRow['priority'][0]->priority_id, $firstRow['campaign']->id, 'contacts.', $canChange); ?>
+			<?php echo empty($firstRow['priority'][0]) ? '' : JHtml::_('jinbound.priority', $item->id, $firstRow['priority'][0]->priority_id, $firstRow['campaign']->id, 'contacts.', $canChange); ?>
 		</td>
 		<td class="nowrap hidden-phone">
-			<a href="<?php echo JInboundHelperUrl::task('campaign.edit', false, array('id' => $firstRow['campaign']->id)); ?>"><?php echo $this->escape($firstRow['campaign']->name); ?></a>
+			<?php if (is_object($firstRow['campaign'])) : ?><a href="<?php echo JInboundHelperUrl::task('campaign.edit', false, array('id' => $firstRow['campaign']->id)); ?>"><?php echo $this->escape($firstRow['campaign']->name); ?></a><?php endif; ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JHtml::_('jinbound.status', $item->id, $firstRow['status'][0]->status_id, $firstRow['campaign']->id, 'contacts.', $canChange); ?>
+			<?php echo empty($firstRow['status'][0]) ? '' : JHtml::_('jinbound.status', $item->id, $firstRow['status'][0]->status_id, $firstRow['campaign']->id, 'contacts.', $canChange); ?>
 		</td>
 		<td class="hidden-phone"<?php echo $rowSpan; ?>>
 			<?php echo JHtml::_('jinbound.leadnotes', $item->id, $canChange); ?>
@@ -95,14 +99,19 @@ if (!empty($this->items)) :
 	</tr>
 	<?php if (!empty($rowData)) : foreach ($rowData as $row) : ?>
 	<tr>
+		<td class="hidden-phone hidden-tablet hidden-desktop" colspan="3"><!--
+			This is here for nth child css striping only
+		--></td>
+	</tr>
+	<tr>
 		<td class="hidden-phone">
-			<?php echo JHtml::_('jinbound.priority', $item->id, $row['priority'][0]->priority_id, $row['campaign']->id, 'contacts.', $canChange); ?>
+			<?php echo empty($row['priority'][0]) ? '' : JHtml::_('jinbound.priority', $item->id, $row['priority'][0]->priority_id, $row['campaign']->id, 'contacts.', $canChange); ?>
 		</td>
 		<td class="nowrap hidden-phone">
 			<a href="<?php echo JInboundHelperUrl::task('campaign.edit', false, array('id' => $row['campaign']->id)); ?>"><?php echo $this->escape($row['campaign']->name); ?></a>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JHtml::_('jinbound.status', $item->id, $row['status'][0]->status_id, $row['campaign']->id, 'contacts.', $canChange); ?>
+			<?php echo empty($row['status'][0]) ? '' : JHtml::_('jinbound.status', $item->id, $row['status'][0]->status_id, $row['campaign']->id, 'contacts.', $canChange); ?>
 		</td>
 	</tr>
 	<?php endforeach; endif; ?>

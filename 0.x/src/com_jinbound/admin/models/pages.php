@@ -108,23 +108,16 @@ class JInboundModelPages extends JInboundListModel
 			->select('Page.*')
 			->select('Category.title AS category_name')
 			->select('Campaign.name AS campaign_name')
-			->select('COUNT(DISTINCT Contact.id) AS contact_submissions')
-			->select('GROUP_CONCAT(DISTINCT Contact.id) AS contact_submission_ids')
+			->select('COUNT(DISTINCT Submission.contact_id) AS contact_submissions')
+			->select('GROUP_CONCAT(DISTINCT Submission.contact_id) AS contact_submission_ids')
 			->select('COUNT(DISTINCT Submission.id) AS submissions')
 			->select('GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids')
 			->select('COUNT(DISTINCT Conversion.contact_id) AS conversions')
 			->select('GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids')
-			->select('ROUND(IF(COUNT(DISTINCT Contact.id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Contact.id)) * 100, 0), 2) AS conversion_rate')
+			->select('ROUND(IF(COUNT(DISTINCT Submission.contact_id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Submission.contact_id)) * 100, 0), 2) AS conversion_rate')
 			->from('#__jinbound_pages AS Page')
 			->leftJoin('#__categories AS Category ON Category.id = Page.category')
 			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Page.campaign')
-			->leftJoin('#__jinbound_contacts AS Contact ON Contact.id IN (('
-				. $db->getQuery(true)
-					->select('DISTINCT ContactConversion.contact_id')
-					->from('#__jinbound_conversions AS ContactConversion')
-					->where('ContactConversion.page_id = Page.id')
-					->where('ContactConversion.published = 1')
-			. '))')
 			->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
 			
 			->leftJoin('('
@@ -133,22 +126,7 @@ class JInboundModelPages extends JInboundListModel
 					->from('#__jinbound_contacts_statuses AS s1')
 					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
 					->where('s2.contact_id IS NULL')
-				. ') AS ContactStatus ON (ContactStatus.contact_id = Contact.id)'
-			)
-			
-			->leftJoin('('
-				. $db->getQuery(true)
-					->select('s1.*')
-					->from('#__jinbound_contacts_statuses AS s1')
-					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
-					->where('s2.contact_id IS NULL')
-				. ') AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id IN (('
-				. $db->getQuery(true)
-					->select('DISTINCT ConversionConversion.contact_id')
-					->from('#__jinbound_conversions AS ConversionConversion')
-					->where('ConversionConversion.page_id = Page.id')
-					->where('ConversionConversion.published = 1')
-			. ')) AND Conversion.status_id IN (('
+				. ') AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id = Submission.contact_id AND Conversion.status_id IN (('
 				. $db->getQuery(true)
 					->select('Status.id')
 					->from('#__jinbound_lead_statuses AS Status')

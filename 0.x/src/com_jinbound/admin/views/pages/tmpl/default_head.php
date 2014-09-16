@@ -18,7 +18,7 @@ $listDirn  = $this->state->get('list.direction');
 	<th width="1%" class="nowrap hidden-phone">
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
 	</th>
-	<th width="1%" class="nowrap">
+	<th style="min-width:24px;">
 		&nbsp;
 	</th>
 	<th>

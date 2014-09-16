@@ -33,6 +33,24 @@ class JInboundController extends JInboundBaseController
 		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/emails.php';
 		$model = $this->getModel('Emails', 'JInboundModel');
 		$model->send();
+		// handle old tracks
+		$debug    = (int) JInbound::config('debug', 0);
+		$history  = (int) JInbound::config('history', 365);
+		$interval = $debug ? 'SECOND' : 'DAY';
+		if (0 < $history)
+		{
+			$db = JFactory::getDbo();
+			$db->setQuery($db->getQuery(true)
+				->delete('#__jinbound_tracks')
+				->where("created < DATE_SUB(NOW(), INTERVAL $history $interval)")
+			)->query();
+			if ($debug)
+			{
+				$count = $db->getAffectedRows();
+				echo "\n<h4>Clearing old Tracks...</h4>";
+				echo "\n<p>Removed $count tracks!</p>\n";
+			}
+		}
 		// exit
 		jexit();
 	}

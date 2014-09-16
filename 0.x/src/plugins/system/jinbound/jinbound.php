@@ -86,8 +86,8 @@ class plgSystemJInbound extends JPlugin
 			case 'com_categories':
 				// we want to add some extras to com_categories
 				if (class_exists('JInbound') && JInbound::COM == $app->input->get('extension', '', 'cmd')) {
-					// UPDATE: don't do this in edit layout in 3.0+
-					if (JInbound::version()->isCompatible('3.0') && 'edit' == $app->input->get('layout')) {
+					// joomla 3 handles this via helper
+					if (JInbound::version()->isCompatible('3.0')) {
 						return;
 					}
 					// add submenu to categories
@@ -128,9 +128,9 @@ class plgSystemJInbound extends JPlugin
 			$add .= '<iframe src="' . $url . '" style="width:1px;height:1px;position:absolute;left:-999px;border:0px"></iframe>';
 		}
 		// add cookie script
-		if (static::$_setCookieInJs)
+		if (self::$_setCookieInJs)
 		{
-			$cookie = JInboundHelperFilter::escape(static::getCookieValue());
+			$cookie = JInboundHelperFilter::escape(self::getCookieValue());
 			$add .= '<script data-jib="' . $cookie . '" id="jinbound_tracks" type="text/javascript" src="' . JInboundHelperUrl::media() . '/js/track.js"></script>';
 		}
 		// only alter if needed
@@ -152,11 +152,11 @@ class plgSystemJInbound extends JPlugin
 	{
 		if (headers_sent())
 		{
-			static::$_setCookieInJs = true;
+			self::$_setCookieInJs = true;
 		}
 		else
 		{
-			static::$_setCookieInJs = !setcookie('__jib__', static::getCookieValue());
+			self::$_setCookieInJs = !setcookie('__jib__', self::getCookieValue());
 		}
 	}
 	
@@ -167,17 +167,10 @@ class plgSystemJInbound extends JPlugin
 	private function recordUserTrack()
 	{
 		$db           = JFactory::getDbo();
-		// collect the data
-		$ua           = $_SERVER['HTTP_USER_AGENT'];
 		$ip           = $_SERVER['REMOTE_ADDR'];
-		$cookie       = static::getCookieValue();
 		$session      = session_id();
-		$date         = new DateTime();
-		$type         = $_SERVER['REQUEST_METHOD'];
-		$uri          = $_SERVER['REQUEST_URI'];
 		$id           = microtime() . $ip . md5($session);
-		$currentuser  = JFactory::getUser()->get('id');
-		$detecteduser = static::getCookieUser();
+		$detecteduser = self::getCookieUser();
 		// check detected?
 		if (is_array($detecteduser))
 		{
@@ -186,15 +179,15 @@ class plgSystemJInbound extends JPlugin
 		// our track
 		$track   = array(
 			'id'               => $db->quote($id)
-		,	'cookie'           => $db->quote($cookie)
+		,	'cookie'           => $db->quote(self::getCookieValue())
 		,	'detected_user_id' => $db->quote($detecteduser) // TODO
-		,	'current_user_id'  => $db->quote($currentuser)
-		,	'user_agent'       => $db->quote($ua)
-		,	'created'          => $db->quote($date->format('Y-m-d H:i:s'))
+		,	'current_user_id'  => $db->quote(JFactory::getUser()->get('id'))
+		,	'user_agent'       => $db->quote($_SERVER['HTTP_USER_AGENT'])
+		,	'created'          => $db->quote(JFactory::getDate()->toSql())
 		,	'ip'               => $db->quote($ip)
 		,	'session_id'       => $db->quote($session)
-		,	'type'             => $db->quote(strtoupper($type))
-		,	'url'              => $db->quote($uri)
+		,	'type'             => $db->quote(strtoupper($_SERVER['REQUEST_METHOD']))
+		,	'url'              => $db->quote($_SERVER['REQUEST_URI'])
 		);
 		$db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_tracks')
@@ -207,7 +200,7 @@ class plgSystemJInbound extends JPlugin
 		catch (Exception $e) {}
 		
 		// only record user cookie for non-guests
-		if (0 === $detecteduser && $currentuser)
+		if (0 === $detecteduser && $track['current_user_id'])
 		{
 			$db->setQuery($db->getQuery(true)
 				->insert('#__jinbound_users_tracks')
@@ -233,7 +226,7 @@ class plgSystemJInbound extends JPlugin
 		$db->setQuery($db->getQuery(true)
 			->select('user_id')
 			->from('#__jinbound_users_tracks')
-			->where('cookie = ' . $db->quote(static::getCookieValue()))
+			->where('cookie = ' . $db->quote(self::getCookieValue()))
 		);
 		
 		try {

@@ -11,6 +11,9 @@ JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/help
 JInbound::registerHelper('contact');
 JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
 
+JPluginHelper::importPlugin('content');
+JPluginHelper::importPlugin('jinbound');
+
 /**
  * This models supports retrieving a contact.
  *
@@ -55,19 +58,21 @@ class JInboundModelContact extends JInboundAdminModel
 		$item = parent::getItem($id);
 		$db   = JFactory::getDbo();
 		
-		$item->conversions        = array();
 		$item->campaigns          = array();
-		$item->statuses           = array();
+		$item->conversions        = array();
+		$item->emails             = array();
 		$item->previous_campaigns = array();
 		$item->priorities         = array();
+		$item->statuses           = array();
 		
 		if ($item->id)
 		{
-			$item->conversions        = JInboundHelperContact::getContactConversions($item->id);
 			$item->campaigns          = JInboundHelperContact::getContactCampaigns($item->id);
+			$item->conversions        = JInboundHelperContact::getContactConversions($item->id);
+			$item->emails             = JInboundHelperContact::getContactEmails($item->id);
 			$item->previous_campaigns = JInboundHelperContact::getContactCampaigns($item->id, true);
-			$item->statuses           = JInboundHelperContact::getContactStatuses($item->id);
 			$item->priorities         = JInboundHelperContact::getContactPriorities($item->id);
+			$item->statuses           = JInboundHelperContact::getContactStatuses($item->id);
 		}
 		
 		// add tracks
@@ -97,14 +102,12 @@ class JInboundModelContact extends JInboundAdminModel
 	 * @return mixed
 	 */
 	public function status($contact_id, $campaign_id, $status_id, $creator = null) {
-		//$dispatcher = JDispatcher::getInstance();
-		//JPluginHelper::importPlugin('content');
+		$dispatcher = JDispatcher::getInstance();
 		
 		$db = JFactory::getDbo();
 		
 		// some info for the status and priority
-		$date    = new DateTime();
-		$created = $date->format('Y-m-d H:i:s');
+		$created = JFactory::getDate()->toSql();
 		$creator = JFactory::getUser($creator)->get('id');
 		// save the status
 		$return = $db->setQuery($db->getQuery(true)
@@ -124,18 +127,13 @@ class JInboundModelContact extends JInboundAdminModel
 			)
 		)->query();
 		
-		/*
-		 * TODO fix this for campaign id
-		 * 
-		// Trigger the onContentChangeState event.
-		$result = $dispatcher->trigger('onContentChangeState', array(
-			'com_jinbound.contact.status'
-		,	array($contact_id), $status_id));
+		$result = $dispatcher->trigger('onJInboundChangeState', array(
+			'com_jinbound.contact.status', $campaign_id, array($contact_id), $status_id)
+		);
 		
-		if (in_array(false, $result, true)) {
+		if (is_array($result) && !empty($result) && in_array(false, $result, true)) {
 			return false;
 		}
-		*/
 		
 		return $return;
 	}
@@ -148,14 +146,12 @@ class JInboundModelContact extends JInboundAdminModel
 	 * @return mixed
 	 */
 	public function priority($contact_id, $campaign_id, $priority_id, $creator = null) {
-		//$dispatcher = JDispatcher::getInstance();
-		//JPluginHelper::importPlugin('content');
+		$dispatcher = JDispatcher::getInstance();
 		
 		$db = JFactory::getDbo();
 		
 		// some info for the status and priority
-		$date    = new DateTime();
-		$created = $date->format('Y-m-d H:i:s');
+		$created = JFactory::getDate()->toSql();
 		$creator = JFactory::getUser($creator)->get('id');
 		// save the status
 		$return = $db->setQuery($db->getQuery(true)
@@ -175,18 +171,13 @@ class JInboundModelContact extends JInboundAdminModel
 			)
 		)->query();
 		
-		/*
-		 * TODO fix this for campaign id
-		 * 
-		// Trigger the onContentChangeState event.
-		$result = $dispatcher->trigger('onContentChangeState', array(
-			'com_jinbound.contact.priority'
-		,	array($contact_id), $priority_id));
+		$result = $dispatcher->trigger('onJInboundChangeState', array(
+			'com_jinbound.contact.priority', $campaign_id, array($contact_id), $priority_id)
+		);
 		
-		if (in_array(false, $result, true)) {
+		if (is_array($result) && !empty($result) && in_array(false, $result, true)) {
 			return false;
 		}
-		*/
 		
 		return $return;
 	}

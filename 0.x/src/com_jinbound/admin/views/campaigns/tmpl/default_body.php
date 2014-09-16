@@ -23,6 +23,7 @@ if (!empty($this->items)) :
 		$this->_itemNum = $i;
 
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.campaign.'.$item->id);
+		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.campaign.'.$item->id) && $item->created_by == $userId;
 		$canChange  = $user->authorise('core.edit.state', JInbound::COM.'.campaign.'.$item->id);
 	?>

@@ -190,6 +190,7 @@ EOF
 			$document->addScript(JInboundHelperUrl::media() . '/js/leadnotes.js');
 			
 			JText::script('COM_JINBOUND_CONFIRM_DELETE');
+			JText::script('COM_JINBOUND_NO_NOTES_FOUND');
 		}
 		
 		$id  = (int) $id;
@@ -225,7 +226,7 @@ EOF
 					<div class="leadnotes-notes" data-stopPropagation="true">
 <?php if (!empty($notes[$key])) : foreach ($notes[$key] as $note) : ?>
 						<div class="leadnote alert" data-stopPropagation="true">
-							<a class="close" data-dismiss="alert" data-noteid="<?php echo $note->id; ?>" data-leadid="<?php echo $note->lead_id; ?>" href="#"
+							<a class="close" data-dismiss="alert" data-noteid="<?php echo $note->id; ?>" data-leadid="<?php echo $note->lead_id; ?>" href="javascript:;"
 								onclick="(function(){return confirm(Joomla.JText._('COM_JINBOUND_CONFIRM_DELETE'));})();"
 							>&times;</a>
 							<span class="label" data-stopPropagation="true"><?php echo $note->created; ?></span> <?php echo $filter->clean($note->author, 'string'); ?>
@@ -324,7 +325,7 @@ EOF
 	public static function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
 				1       => array('unsetFinal',        'COM_JINBOUND_FINAL', 'COM_JINBOUND_HTML_UNSETFINAL_ITEM',      'COM_JINBOUND_FINAL',     false,  'default',              'default'),
-				0       => array('setFinal',          '',                     'COM_JINBOUND_HTML_SETFINAL_ITEM',    '',                     false,  'unfeatured',   'unfeatured'),
+				0       => array('setFinal',          '',                     'COM_JINBOUND_HTML_SETFINAL_ITEM',    '',                     false,  'notdefault',   'notdefault'),
 		);
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
@@ -332,7 +333,7 @@ EOF
 	public static function isactive($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
 				1       => array('unsetActive',        'COM_JINBOUND_ACTIVE', 'COM_JINBOUND_HTML_UNSETACTIVE_ITEM',      'COM_JINBOUND_ACTIVE',     false,  'default',              'default'),
-				0       => array('setActive',          '',                     'COM_JINBOUND_HTML_SETACTIVE_ITEM',    '',                     false,  'unfeatured',   'unfeatured'),
+				0       => array('setActive',          '',                     'COM_JINBOUND_HTML_SETACTIVE_ITEM',    '',                     false,  'notdefault',   'notdefault'),
 		);
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}

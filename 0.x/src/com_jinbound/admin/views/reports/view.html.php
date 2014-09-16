@@ -13,9 +13,32 @@ JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 class JInboundViewReports extends JInboundListView
 {
+	
+	function display($tpl = null, $safeparams = false) {
+		$display  = parent::display($tpl, $safeparams);
+		$min      = defined('JDEBUG') && JDEBUG ? '' : '.min';
+		$js       = $min . '.js';
+		$css      = $min . '.css';
+		$document = JFactory::getDocument();
+		if (method_exists($document, 'addScript'))
+		{
+			$document->addScript('../media/jinbound/jqplot/excanvas' . $js);
+			$document->addScript('../media/jinbound/jqplot/jquery.jqplot' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.dateAxisRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasTextRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasAxisTickRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.categoryAxisRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.barRenderer' . $js);
+		}
+		if (method_exists($document, 'addStyleSheet'))
+		{
+			$document->addStyleSheet('../media/jinbound/jqplot/jquery.jqplot' . $css);
+		}
+		return $display;
+	}
+	
 	public function getRecentLeads() {
 		return $this->_callModelMethod('getRecentContacts');
-		//return $this->_callModelMethod('getRecentLeads');
 	}
 	
 	public function getVisitCount() {

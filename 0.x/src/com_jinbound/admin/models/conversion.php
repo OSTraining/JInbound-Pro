@@ -15,7 +15,7 @@ JLoader::register('JInboundAdminModel', JPATH_ADMINISTRATOR.'/components/com_jin
  * @package		JInbound
  * @subpackage	com_jinbound
  */
-class JInboundModelContact extends JInboundAdminModel
+class JInboundModelConversion extends JInboundAdminModel
 {
 	/**
 	 * Model context string.

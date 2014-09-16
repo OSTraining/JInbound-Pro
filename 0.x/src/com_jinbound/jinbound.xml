@@ -39,6 +39,7 @@
 		<folder>bootstrap</folder>
 		<folder>css</folder>
 		<folder>images</folder>
+		<folder>jqplot</folder>
 		<folder>js</folder>
 		<folder>ui</folder>
 		<filename>index.html</filename>

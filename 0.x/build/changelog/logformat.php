@@ -71,6 +71,8 @@ if (empty($rawlog)) {
 	exit();
 }
 
+echo "Processing: " . strlen($rawlog) . " characters ...\n";
+
 $entries = json_decode(trim($rawlog));
 
 $out = '';
@@ -84,6 +86,19 @@ $out .= str_pad( '(' . $dateBuild . ')', $linelength, ' ', STR_PAD_BOTH) . $nl .
 
 $milestone = false;
 $started = false;
+
+if (empty($entries)) {
+	echo 'Entries is empty';
+	exit();
+}
+if (!is_array($entries)) {
+	echo 'No Entries ';
+	print_r($entries);
+	exit();
+}
+
+// NOTE: using milestones as versions, cannot rely on them being in order!
+$versions = array();
 
 foreach($entries as $entry) {
 	// check the tag
@@ -109,14 +124,14 @@ foreach($entries as $entry) {
 		continue;
 	}
 	
-	if (false === $milestone || ($milestone && $milestone != $entry->milestone->title)) {
-		$milestone = $entry->milestone->title;
-		
+	$version_key = $entry->milestone->title;
+	if (!array_key_exists($version_key, $versions)) {
 		$date = new DateTime($entry->milestone->due_on);
-		
-		$out .= $nl . $nl . $sep;
-		$out .= sprintf($relString, $date->format('Y-m-d'), $entry->milestone->title);
-		$out .= $nl . $sep . $nl;
+		$versions[$version_key] = array(
+			'date'    => $date->format('Y-m-d')
+		,	'title'   => $entry->milestone->title
+		,	'entries' => array()
+		);
 	}
 	
 	$date = new DateTime($entry->created_at);
@@ -124,77 +139,20 @@ foreach($entries as $entry) {
 	$msg = formatMsg($entry->title, $linelength - strlen( $itemOtherLine));
 	foreach( $msg as $nbr => $line) {
 		if( $nbr == 0) {
-			$out .= $nl . sprintf( $itemFirstLine, strtolower($entryTag), $msg[$nbr]);
+			$versions[$version_key]['entries'][] = $nl . sprintf( $itemFirstLine, strtolower($entryTag), $msg[$nbr]);
 		} else {
-			$out .= $nl . sprintf( $itemOtherLine,	$msg[$nbr]);
+			$versions[$version_key]['entries'][] = $nl . sprintf( $itemOtherLine,	$msg[$nbr]);
 		}
 	}
-	
-	
-	continue;
-	
-	// OLD CODE DO NOT USE
-	
-	$entry = trim($entry);
-	if (empty($entry)) {
-		continue;
-	}
-	echo "Found entry: #$entry# \n";
-	
-	continue;
-	
-	$msgs = explode("\n", $entry);
-	while (preg_match('/^[A-Z]*?\:/i', $msgs[0])) {
-		$var = preg_replace('/^([A-Z]*?)\:.*/Di', '$1', $msgs[0]);
-		${"m$var"} = trim('' . preg_replace('/^[A-Z]*?\:/i', '', array_shift($msgs)));
-		$msgs = array_values($msgs);
-	}
-	$dateString = trim('' . $mCommitDate);
-	foreach ($msgs as $msg) {
-		$msg = trim('' . $msg);
-		if (empty($msg)) {
-			continue;
-		}
-		$date = new DateTime($dateString);
-		$type = strtoupper(substr( $msg, 0, 5));
-	
-		// commit messages starts with a tag?
-		$toLog = in_array( $type, $tags);
-		if($toLog) {
-			// remove tag from message
-			$msg = substr( $msg, 5);
-			
-			// just add a fake release for now
-			if ('[REL]' != $type && !$started) {
-				echo "Found a development release!";
-					$out .= $nl . $nl . $sep;
-					$out .= sprintf($relString, $date->format( 'Y-m-d'), 'DEVELOPMENT RELEASE');
-					$out .= $nl . $sep . $nl;
-			}
-			
-			$started = true;
-			switch($type) {
-				case '[REL]':
-					// if release, adjust message
-					$out .= $nl . $nl . $sep;
-					$out .= sprintf( $relString, $date->format( 'Y-m-d'), $msg);
-					$out .= $nl . $sep . $nl;
-					break;
-				default:
-					$type = trim($type, '[]');
-					$msg = formatMsg( $msg, $linelength - strlen( $itemOtherLine));
-					foreach( $msg as $nbr => $line) {
-						if( $nbr == 0) {
-							$out .= $nl . sprintf( $itemFirstLine, strtolower($type), $msg[$nbr]);
-						} else {
-							$out .= $nl . sprintf( $itemOtherLine,	$msg[$nbr]);
-						}
-					}
-					break;
-			}
-		}
-	}
+}
 
+foreach ($versions as $version => $version_data) {
+	$out .= $nl . $nl . $sep;
+	$out .= sprintf($relString, $version_data['date'], $version_data['title']);
+	$out .= $nl . $sep . $nl;
+	foreach ($version_data['entries'] as $entry) {
+		$out .= $entry;
+	}
 }
 
 // write to target file

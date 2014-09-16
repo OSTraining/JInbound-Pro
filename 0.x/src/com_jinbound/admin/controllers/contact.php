@@ -10,6 +10,7 @@ defined('JPATH_PLATFORM') or die;
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerHelper('contact');
 JInbound::registerHelper('status');
+JInbound::registerHelper('priority');
 JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerform');
 
 class JInboundControllerContact extends JInboundFormController
@@ -37,20 +38,23 @@ class JInboundControllerContact extends JInboundFormController
 	 * (non-PHPdoc)
 	 * @see JControllerForm::postSaveHook()
 	 */
-	protected function postSaveHook(JModelLegacy $model, $validData = array())
+	protected function postSaveHook($model, $validData = array())
 	{
 		// only operate on valid records
-		if ($contact = (int) $validData['id'])
+		$contact = (int) $model->getState('contact.id');
+		if ($contact)
 		{
 			// clear this contact's campaigns
 			$db = JFactory::getDbo();
 			$db->setQuery($db->getQuery(true)
 				->delete('#__jinbound_contacts_campaigns')
-				->where('contact_id = ' . $db->quote($validData['id']))
+				->where('contact_id = ' . $db->quote($contact))
 			)->query();
 			
 			// ensure campaigns is an array
-			$campaigns = is_array($validData['_campaigns']) ? $validData['_campaigns'] : (empty($validData['_campaigns']) ? array() : array($validData['_campaigns']));
+			$campaigns = is_array($validData['_campaigns']) ? $validData['_campaigns'] : (
+				empty($validData['_campaigns']) ? array() : array($validData['_campaigns'])
+			);
 			JArrayHelper::toInteger($campaigns);
 			
 			// re-add to the desired campaigns
@@ -68,7 +72,6 @@ class JInboundControllerContact extends JInboundFormController
 				$db->setQuery($query)->query();
 				
 				// find campaigns this contact has no status for yet
-				// SELECT campaign_id FROM `cxsgv_jinbound_contacts_campaigns` WHERE campaign_id NOT IN (( SELECT DISTINCT campaign_id FROM `cxsgv_jinbound_contacts_statuses` WHERE contact_id = 1))
 				$new_campaigns = $db->setQuery($db->getQuery(true)
 					->select('campaign_id')
 					->from('#__jinbound_contacts_campaigns')
@@ -89,6 +92,30 @@ class JInboundControllerContact extends JInboundFormController
 					foreach ($new_campaigns as $new_campaign)
 					{
 						JInboundHelperStatus::setContactStatusForCampaign($status_id, $contact, $new_campaign);
+					}
+				}
+				
+				// find campaigns this contact has no priority for yet
+				$new_campaigns = $db->setQuery($db->getQuery(true)
+					->select('campaign_id')
+					->from('#__jinbound_contacts_campaigns')
+					->where('campaign_id NOT IN(('
+					.	$db->getQuery(true)
+							->select('DISTINCT campaign_id')
+							->from('#__jinbound_contacts_priorities')
+							->where('contact_id = ' . $contact)
+					. '))')
+				)->loadColumn();
+				
+				// this user does not have a status for these campaigns - add a default status for each
+				if (!empty($new_campaigns))
+				{
+					// the default status
+					$priority_id = JInboundHelperPriority::getDefaultPriority();
+					
+					foreach ($new_campaigns as $new_campaign)
+					{
+						JInboundHelperPriority::setContactPriorityForCampaign($priority_id, $contact, $new_campaign);
 					}
 				}
 			}

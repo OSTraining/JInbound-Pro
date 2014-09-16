@@ -142,4 +142,36 @@ class JInboundModelStatus extends JInboundAdminModel
 		
 		return true;
 	}
+	
+	public function unsetActive($id = 0) {
+		// Initialise variables.
+		$user   = JFactory::getUser();
+		$db             = $this->getDbo();
+		
+		// Access checks.
+		if (!$user->authorise('core.edit.state', 'com_jinbound')) {
+			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
+		}
+		
+		$status = JTable::getInstance('Status', 'JInboundTable');
+		if (!$status->load((int)$id)) {
+			throw new Exception(JText::_('COM_JINBOUND_ERROR_STATUS_NOT_FOUND'));
+		}
+		
+		// Set the active status
+		$db->setQuery(
+				'UPDATE #__jinbound_lead_statuses' .
+				' SET active = 0' .
+				' WHERE id = ' . (int) $id
+		);
+		
+		if (!$db->query()) {
+			throw new Exception($db->getErrorMsg());
+		}
+		
+		// Clean the cache.
+		$this->cleanCache();
+		
+		return true;
+	}
 }

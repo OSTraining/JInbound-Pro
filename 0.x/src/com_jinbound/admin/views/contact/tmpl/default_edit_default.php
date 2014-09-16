@@ -7,6 +7,16 @@
 
 defined('JPATH_PLATFORM') or die;
 
+JHtml::_('jinbound.leadupdate');
+
+$user       = JFactory::getUser();
+$userId     = $user->get('id');
+$context    = JInbound::COM.'.contact.'.$this->item->id;
+$canEdit    = $user->authorise('core.edit', $context);
+$canCheckin = $user->authorise('core.manage', 'com_checkin') || $this->item->checked_out == $userId || $this->item->checked_out == 0;
+$canEditOwn = $user->authorise('core.edit.own', $context) && $this->item->created_by == $userId;
+$canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
+
 ?>
 <div class="row-fluid">
 	<div class="span12">
@@ -108,13 +118,29 @@ defined('JPATH_PLATFORM') or die;
 										<?php echo JHtml::_('jinbound.startSlider', 'campaignSlider'); ?>
 										<?php foreach ($this->item->campaigns as $i => $campaign) : ?>
 											<?php echo JHtml::_('jinbound.addSlide', 'campaignSlider', $campaign->name, 'campaignslider-' . $i); ?>
-											<?php foreach ($this->item->statuses[$campaign->id] as $status) : ?>
-									<div class="row-fluid">
-										<div class="span6"><?php echo $this->escape($status->name); ?></div>
-										<div class="span3"><?php echo $this->escape($status->created); ?></div>
-										<div class="span2"><?php echo $this->escape($status->created_by); ?></div>
+									<div class="row-fluid current-priority current-priority-<?php echo $campaign->id; ?>">
+										<div class="span6"><?php echo JText::_('COM_JINBOUND_CURRENT_PRIORITY'); ?></div>
+										<div class="span5"><?php
+											echo JHtml::_('jinbound.priority', $this->item->id, $this->item->priorities[$campaign->id][0]->priority_id, $campaign->id, 'contacts.', $canChange);
+										?></div>
 									</div>
+									<div class="row-fluid current-status current-status-<?php echo $campaign->id; ?>">
+										<div class="span6"><?php echo JText::_('COM_JINBOUND_CURRENT_STATUS'); ?></div>
+										<div class="span5"><?php
+											echo JHtml::_('jinbound.status', $this->item->id, $this->item->statuses[$campaign->id][0]->status_id, $campaign->id, 'contacts.', $canChange);
+										?></div>
+									</div>
+									<div class="row-fluid">
+										<div class="span12 current-statuses current-statuses-<?php echo $campaign->id; ?>">
+											<?php foreach ($this->item->statuses[$campaign->id] as $status) : ?>
+											<div class="row-fluid">
+												<div class="span4 status-name"><?php echo $this->escape($status->name); ?></div>
+												<div class="span3 status-date"><?php echo $this->escape($status->created); ?></div>
+												<div class="span4 status-author"><?php echo $this->escape($status->created_by_name); ?></div>
+											</div>
 											<?php endforeach; ?>
+										</div>
+									</div>
 											<?php echo JHtml::_('jinbound.endSlide'); ?>
 										<?php endforeach; ?>
 										<?php echo JHtml::_('jinbound.endSlider'); ?>
@@ -166,7 +192,9 @@ defined('JPATH_PLATFORM') or die;
 												<td class="note"><?php echo $this->escape($note->author); ?></td>
 												<td class="note"><?php echo $this->escape($note->text); ?></td>
 											</tr>
-										<?php endforeach; endif; ?>
+										<?php endforeach; else: ?>
+											<tr><td><div class="alert alert-error"><?php echo JText::_('COM_JINBOUND_NO_NOTES_FOUND'); ?></div></td></tr>
+										<?php endif; ?>
 										</tbody>
 									</table>
 								</div>
@@ -177,7 +205,7 @@ defined('JPATH_PLATFORM') or die;
 								<?php else: ?>
 									<?php foreach ($this->item->tracks as $i => $track) : if (20 < $i) break; ?>
 									<div class="well">
-										<span class="pull-right"><i class="icon-<?php echo ($track->current_user_id ? 'ok' : 'remove')?>"> </i></span>
+										<span class="pull-right"><i class="hasTip hasTooltip icon-<?php echo ($track->current_user_id ? 'user' : 'warning'); ?>" title="<?php echo JText::_('COM_JINBOUND_' . ($track->current_user_id ? 'USER' : 'AUTHOR_GUEST')); ?>"> </i></span>
 										<span class="label"><?php echo $this->escape($track->created); ?></span>
 										<div class="track-url"><?php echo $this->escape($track->url); ?></div>
 									</div>
@@ -194,3 +222,26 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+(function($,d){$(function(){
+	$(d.body).on('jinboundleadupdate', function(e, response) {
+		if (!(response && response.success)) {
+			return;
+		}
+		var cid = response.request.campaign_id, container = $('.current-statuses-' + cid);
+		if (!container.length) {
+			return;
+		}
+		var html = '<div class="row-fluid"><div class="span4 status-name"></div><div class="span3 status-date"></div><div class="span4 status-author"></div></div>';
+		container.empty();
+		$(response.list[cid]).each(function(i, el){
+			console.log(el);
+			var inner = $(html);
+			inner.find('.status-name').text(el.name);
+			inner.find('.status-date').text(el.created);
+			inner.find('.status-author').text(el.created_by_name);
+			container.append(inner);
+		});
+	});
+});})(jQuery,document);
+</script>

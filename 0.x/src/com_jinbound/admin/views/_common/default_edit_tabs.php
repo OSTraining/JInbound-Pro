@@ -13,7 +13,7 @@ if (!empty($fieldsets) && !(1 == count($fieldsets) && array_key_exists('default'
 ?>
 
 <div id="jinbound_default_tabset">
-	<?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab')); ?>
+	<?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => (isset($this->default_tab) ? $this->default_tab : 'content_tab'))); ?>
 	<?php foreach ($fieldsets as $name => $fieldset) : if ('default' == $name) continue; ?>
 		<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', $name . '_tab', JText::_('COM_JINBOUND_' . $this->getName() . '_FIELDSET_' . $name, true)); ?>
 		<fieldset class="container-fluid">

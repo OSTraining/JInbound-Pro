@@ -10,6 +10,15 @@ defined('JPATH_PLATFORM') or die;
 ?>
 <!-- Main Component container -->
 <div class="container-fluid" id="jinbound_component">
+<?php if (!empty( $this->sidebar)) : ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
+		
 	<!-- Main Dashboard columns -->
   <div class="row-fluid">
   	<!-- Left panel -->
@@ -22,29 +31,29 @@ defined('JPATH_PLATFORM') or die;
       </div>
       <!-- Row 2 - Buttons -->
       <div class="row-fluid" id="welcome_buttons">
-      	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
+      	<a href="<?php echo JInboundHelperUrl::view('campaigns'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/landing_pages.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LANDING_PAGES'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_1_CREATE_A_CAMPAIGN'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('emails'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/leads_nurturing.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_NURTURING_MANAGER'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_2_WRITE_EMAILS_FOR_YOUR_CAMPAIGN'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('contacts'); ?>" class="span3 btn text-center">
+      	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/landing_pages.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_MANAGER'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_3_CREATE_LANDING_PAGES_TO_GET_PEOPLE_INTO_YOUR_CAMPAIGN'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('reports'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/reports.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_4_GET_REPORTS_ON_PEOPLE_WHO_SIGNED_UP'); ?></span>
       	</a>
       </div>
       
@@ -73,9 +82,9 @@ defined('JPATH_PLATFORM') or die;
 			<div class="well">
 				<img alt="<?php echo JText::_('COM_JINBOUND_CREATE_A_NEW'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/start_by_creating.png'; ?>" />
 				<ul>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('campaign.add'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('contact.add'), JText::_('COM_JINBOUND_LEAD')); ?></li>
+					<li><?php echo JHtml::link(JInboundHelperUrl::task('email.add'), JText::_('COM_JINBOUND_EMAIL')); ?></li>
+					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 				</ul>
 				<h3><img alt="<?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/view_reports.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?></span></h3>
 				<ul>
@@ -118,6 +127,8 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 
   </div>
+	
+	</div>
 </div>
 <?php
 

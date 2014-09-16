@@ -8,6 +8,7 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerHelper('contact');
 JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller');
 
 class JInboundControllerContact extends JInboundBaseController
@@ -27,8 +28,30 @@ class JInboundControllerContact extends JInboundBaseController
 		$value    = $app->input->get('value');
 		$model    = $this->getModel('Contact', 'JInboundModel', array('ignore_request' => true));
 		$result   = $model->$how($id, $campaign, $value);
+		$list     = array();
+		if ('priority' == $how)
+		{
+			$list = JInboundHelperContact::getContactPriorities($id);
+		}
+		else if ('status' == $how)
+		{
+			$statuses  = JInboundHelperContact::getContactStatuses($id);
+			$campaigns = JInboundHelperContact::getContactCampaigns($id);
+			$list      = array();
+			if (!empty($campaigns))
+			{
+				foreach ($campaigns as $c)
+				{
+					if (array_key_exists($c->id, $statuses))
+					{
+						$list[$c->id] = $statuses[$c->id];
+					}
+				}
+			}
+		}
 		echo json_encode(array(
 			'success' => $result
+		,	'list'    => $list
 		,	'request' => array(
 				'contact_id'  => $id
 			,	'campaign_id' => $campaign

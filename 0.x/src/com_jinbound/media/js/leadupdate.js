@@ -27,10 +27,11 @@ window.jinbound_leadupdate_token = false;
 				};
 				data[window.jinbound_leadupdate_token] = 1;
 				$.ajax('index.php?option=com_jinbound', {
-					type    : 'post',
-					data    : data,
-					success : function(response) {
-						console.log(response);
+					type     : 'post',
+					data     : data,
+					dataType : 'json',
+					success  : function(response) {
+						$(document.body).trigger('jinboundleadupdate', [response]);
 					}
 				});
 			});

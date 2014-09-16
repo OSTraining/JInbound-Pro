@@ -16,21 +16,48 @@ JText::script('COM_JINBOUND_SUBMISSIONS');
 JText::script('COM_JINBOUND_VISITS');
 JText::script('COM_JINBOUND_CONVERSIONS');
 JText::script('COM_JINBOUND_CONVERSION_RATE');
+JText::script('COM_JINBOUND_ERROR_LOADING_PLOT_DATA');
+JText::script('COM_JINBOUND_VISITS');
 
 ?>
 <script type="text/javascript">
 (function($){
-	window.jinbound_leads_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=contacts&format=json&filter_order=latest&filter_order_Dir=desc', false); ?>';
+	window.jinbound_leads_baseurl = '<?php
+		echo JRoute::_('index.php?option=com_jinbound&view=contacts&format=json&filter_order=latest&filter_order_Dir=desc', false);
+	?>';
 	window.jinbound_leads_limit = 10;
 	window.jinbound_leads_start = 0;
-	window.jinbound_pages_baseurl = '<?php echo JRoute::_('index.php?option=com_jinbound&view=pages&format=json&filter_order=Page.hits&filter_order_Dir=desc', false); ?>';
+	window.jinbound_pages_baseurl = '<?php
+		echo JRoute::_('index.php?option=com_jinbound&view=pages&format=json&filter_order=Page.hits&filter_order_Dir=desc', false);
+	?>';
 	window.jinbound_pages_limit = 10;
 	window.jinbound_pages_start = 0;
+	window.jinbound_plot_baseurl = '<?php
+		echo JRoute::_('index.php?option=com_jinbound&task=reports.plot&format=json', false);
+	?>';
 	var makeButtons = function(callback, pagination, cols) {
-		var f = $('<tfoot></tfoot>'), fr = $('<tr colspan="' + cols + '"></tr>'), fc = $('<td class="btn-group"></td>');
+		var foot    = $('<tfoot></tfoot>')
+		,   frow    = $('<tr></tr>')
+		,   fcol    = $('<td class="btn-group" colspan="' + cols + '"></td>')
+		,   current = 1
+		,   range   = 1
+		,   step    = 5
+		,   i, n, p
+		;
+		if (pagination.pagesTotal > 1) {
+			for (i = 0, n = pagination.pagesTotal; n > i; i++) {
+				p = i + 1;
+				if (p == pagination.pagesCurrent) {
+					current = p;
+				}
+			}
+		}
+		if (current >= step) {
+			range = Math.ceil(current / step) + (0 === current % step ? 1 : 0);
+		}
 		if (pagination.pagesTotal > 1) {
 			var prev = $('<button class="btn"><i class="icon-arrow-left"> </i></button>'), next = $('<button class="btn"><i class="icon-arrow-right"> </i></button>'), page;
-			if (0 != pagination.limitstart) {
+			if (0 !== pagination.limitstart) {
 				prev.click(function(e){
 					callback(Math.max(0, pagination.limitstart - pagination.limit), pagination.limit);
 					e.preventDefault();
@@ -50,26 +77,34 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 			else {
 				next.attr('disabled', 'disabled');
 			}
-			fc.append(prev);
+			fcol.append(prev);
+			var range = [], hi = range * step, lo = range * step - (step + 1), c = hi - lo + 1;
+			while (c--) range[c] = hi--;
 			for (i = 0, n = pagination.pagesTotal; n > i; i++) {
-				page = $('<button class="btn"></button>').text(1 + i);
-				if (1 + i == pagination.pagesCurrent) {
+				var num = 1 + i, txt = num;
+				if (num < pagination.pagesStart || num >= pagination.pagesStop) {
+					continue;
+				}
+				if ($.inArray(num, range) && ((num % step === 0 || num === range * step - (step + 1)) && num !== current && num !== range * step - step)) {
+					txt = '...';
+				}
+				page = $('<button class="btn" data-jinbound-page="' + num + '"></button>').text(txt);
+				if (num == pagination.pagesCurrent) {
 					page.addClass('btn-primary');
 				}
 				page.click(function(e){
-					var num = parseInt($(this).text(), 10);
+					var num = parseInt($(this).attr('data-jinbound-page'), 10);
 					callback(Math.max(0, (num * pagination.limit) - pagination.limit), pagination.limit);
 					e.preventDefault();
 					return false;
 				});
-				fc.append(page);
+				fcol.append(page);
 			}
-			fc.append(next);
-			fr.append(fc);
-			f.append(fr);
-
-			return f;
+			fcol.append(next);
 		}
+		frow.append(fcol);
+		foot.append(frow);
+		return foot;
 	};
 	window.fetchLeads = function(start, limit) {
 		window.jinbound_leads_limit = limit;
@@ -119,7 +154,7 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 					b.append(tr);
 				}
 				t.append(b);
-				t.append(makeButtons(window.fetchLeads, data.pagination, 3));
+				t.append(makeButtons(window.fetchLeads, data.pagination, 4));
 				$('#reports_recent_leads').append(t);
 			}
 		});
@@ -166,8 +201,76 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 					b.append(tr);
 				}
 				t.append(b);
-				t.append(makeButtons(window.fetchPages, data.pagination, 4));
+				t.append(makeButtons(window.fetchPages, data.pagination, 6));
 				$('#reports_top_pages').append(t);
+			}
+		});
+	};
+	window.fetchPlots = function() {
+		var filter = '';
+		if (arguments.length > 0) {
+			filter += '&filter_start=' + arguments[0];
+		}
+		if (arguments.length > 1) {
+			filter += '&filter_end=' + arguments[1];
+		}
+		$.ajax(window.jinbound_plot_baseurl + filter, {
+			dataType: 'json'
+		,	success: function(data, textStatus, jqXHR) {
+				if (!(data && data.hits)) {
+					alert(Joomla.JText._('COM_JINBOUND_ERROR_LOADING_PLOT_DATA'));
+					return;
+				}
+				var i = 0, n = data.hits.length, max = 0, v, x, y;
+				for (; n > i; i++) {
+					v = parseInt(data.hits[i][1], 10);
+					max = max > v ? max : v;
+				}
+				for (i = 0, n = data.leads.length; n > i; i++) {
+					v = parseInt(data.leads[i][1], 10);
+					max = max > v ? max : v;
+				}
+				for (i = 0, n = data.conversions.length; n > i; i++) {
+					v = parseInt(data.conversions[i][1], 10);
+					max = max > v ? max : v;
+				}
+				max = max + (0 < max % 5 ? (5 - (max % 5)) : 5);
+				y = {
+					min: 0
+				,	max: max
+				};
+				x = {
+					renderer: $.jqplot.DateAxisRenderer
+				,	tickInterval: '1 day'
+				,	tickOptions: {
+						angle: -30
+					}
+				};
+				$.jqplot('jinbound-reports-graph', [data.hits, data.leads, data.conversions], {
+					animate: true
+				,	animateReplot: true
+				,	series: [
+						{
+							label: Joomla.JText._('COM_JINBOUND_VISITS')
+						}
+					,	{
+							label: Joomla.JText._('COM_JINBOUND_LEADS')
+						}
+					,	{
+							label: Joomla.JText._('COM_JINBOUND_CONVERSIONS')
+						}
+					]
+				, legend: {
+						show: true
+					}
+				,	axesDefaults: {
+						tickRenderer: $.jqplot.CanvasAxisTickRenderer
+					}
+				,	axes: {
+						xaxis: x
+					,	yaxis: y
+					}
+				});
 			}
 		});
 	};
@@ -178,5 +281,8 @@ JText::script('COM_JINBOUND_CONVERSION_RATE');
 	}
 	window.fetchLeads(0, 10, start_date, end_date);
 	window.fetchPages(0, 10, start_date, end_date);
+	if (document.getElementById('jinbound-reports-graph')) {
+		window.fetchPlots(start_date, end_date);
+	}
 })(jQuery);
 </script>

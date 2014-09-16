@@ -209,4 +209,14 @@ class JInboundModelContacts extends JInboundListModel
 
 		return $query;
 	}
+	
+	public function getCampaignsOptions() {
+		$query = $this->getDbo()->getQuery(true)
+		->select('Campaign.id AS value, Campaign.name as text')
+		->from('#__jinbound_campaigns AS Campaign')
+		->where('Campaign.published = 1')
+		->group('Campaign.id')
+		;
+		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_CAMPAIGN'));
+	}
 }

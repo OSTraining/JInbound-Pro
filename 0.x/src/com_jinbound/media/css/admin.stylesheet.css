@@ -105,3 +105,9 @@
 #jinbound_component .mixalot {
 	margin-bottom: 20px;
 }
+
+/* yuck, legacy fix */
+#jinbound_component fieldset label, #jinbound_component fieldset span.faux-label {
+	clear: none !important;
+	float: none !important;
+}

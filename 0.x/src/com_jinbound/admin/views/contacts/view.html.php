@@ -19,10 +19,13 @@ class JInboundViewContacts extends JInboundListView
 	 * @see JInboundListView::display()
 	 */
 	function display($tpl = null, $safeparams = false) {
-		$state = $this->get('State');
+		$campaigns = $this->get('CampaignsOptions');
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode('<br />', $errors));
 			return false;
+		}
+		if (1 >= count($campaigns)) {
+			$this->app->enqueueMessage(JText::_('COM_JINBOUND_NO_CAMPAIGNS_YET'), 'warning');
 		}
 		return parent::display($tpl, $safeparams);
 	}

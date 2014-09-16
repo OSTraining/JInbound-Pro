@@ -142,6 +142,7 @@ class plgContentJInbound extends JPlugin
 		// handle known contexts
 		switch ($context) {
 			case 'com_jinbound.email':
+				$matches = array();
 				// handle html attributes
 				preg_match_all('#(?P<attr>src|href)\=(?P<qte>\"|\\\')(?P<url>.*?)(?P=qte)#Di', $table->htmlbody, $matches, PREG_SET_ORDER);
 				// empty match array is an error
@@ -178,6 +179,62 @@ class plgContentJInbound extends JPlugin
 		}
 		if (JInbound::config("debug", 0)) {
 			JFactory::getApplication()->enqueueMessage(__METHOD__ . ' ' . $context);
+		}
+	}
+	
+	/**
+	 * onJInboundChangeState event
+	 * 
+	 * @param unknown_type $context
+	 * @param unknown_type $campaign
+	 * @param unknown_type $pks
+	 * @param unknown_type $value
+	 */
+	public function onJInboundChangeState($context, $campaign, $pks, $value) {
+		$app = JFactory::getApplication();
+		if (!self::$_run || 0 !== strpos($context, 'com_jinbound')) {
+			return true;
+		}
+		if (JInbound::config("debug", 0)) {
+			$app->enqueueMessage(__METHOD__ . ' ' . $context);
+		}
+		$db = JFactory::getDbo();
+		switch ($context) {
+			case 'com_jinbound.contact.status':
+				// if this is a final status, then greedy campaigns need to be checked
+				if (empty($pks)) {
+					return true;
+				}
+				JArrayHelper::toInteger($pks);
+				try
+				{
+					$final = (int) $db->setQuery($db->getQuery(true)
+						->select('final')
+						->from('#__jinbound_lead_statuses')
+						->where('id = ' . $db->quote($value))
+					)->loadResult();
+					$greedy = (int) $db->setQuery($db->getQuery(true)
+						->select('greedy')
+						->from('#__jinbound_campaigns')
+						->where('id = ' . $db->quote($campaign))
+					)->loadResult();
+					if (!($greedy && $final))
+					{
+						return true;
+					}
+					$db->setQuery($db->getQuery(true)
+						->delete('#__jinbound_contacts_campaigns')
+						->where($db->quoteName('contact_id') . ' IN(' . implode('', $pks) . ')')
+						->where($db->quoteName('campaign_id') . ' <> ' . $db->quote($campaign))
+					)->query();
+				}
+				catch (Exception $e)
+				{
+					$app->enqueueMessage($e->getMessage(), 'error');
+				}
+				return true;
+			default:
+				return true;
 		}
 	}
 }

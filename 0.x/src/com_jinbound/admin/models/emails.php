@@ -187,7 +187,7 @@ class JInboundModelEmails extends JInboundListModel
 			if ($out) {
 				echo $e->getMessage() . "\n<pre>" . $e->getTraceAsString() . "</pre>";
 			}
-			jexit();
+			return;
 		}
 		
 		foreach ($results as $result) {
@@ -264,7 +264,6 @@ class JInboundModelEmails extends JInboundListModel
 		}
 		
 		echo "\n";
-		jexit();
 	}
 	
 	

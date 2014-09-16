@@ -286,9 +286,6 @@ class JInboundControllerLead extends JInboundBaseController
 			->values($db->quote($contact->id) . ', ' . $db->quote($page->campaign))
 		)->query();
 		
-		// some info for the status and priority
-		$date    = new DateTime();
-		$created = $date->format('Y-m-d H:i:s');
 		// save the status
 		JInboundHelperStatus::setContactStatusForCampaign($status_id, $contact->id, $page->campaign, $user_id);
 		
@@ -350,6 +347,10 @@ class JInboundControllerLead extends JInboundBaseController
 		$emails = $page->notification_email;
 		if (!empty($emails))
 		{
+			$campaign_name = $db->setQuery($db->getQuery(true)
+				->select('name')->from('#__jinbound_campaigns')
+				->where('id = ' . (int) $page->campaign)
+			)->loadResult();
 			$html   = array();
 			$html[] = '<table>';
 			foreach ($raw_data['lead'] as $key => $val)
@@ -366,7 +367,7 @@ class JInboundControllerLead extends JInboundBaseController
 			$html[]  = '</table>';
 			$emails  = explode(',', $emails);
 			$subject = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_SUBJECT');
-			$body    = JText::sprintf('COM_JINBOUND_NOTIFICATION_EMAIL_BODY', $page->formname, implode("\n", $html));
+			$body    = JText::sprintf('COM_JINBOUND_NOTIFICATION_EMAIL_BODY', $campaign_name, $page->formname, implode("\n", $html));
 			$mailer  = JFactory::getMailer();
 			$mailer->IsHTML(true);
 			$mailer->setSubject($subject);

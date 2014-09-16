@@ -14,15 +14,9 @@ defined('JPATH_PLATFORM') or die;
 			<?php echo $this->loadTemplate('image'); ?>
 		</div>
 <?php if (!empty($this->item->subheading)) : ?>
-		<div class="row-fluid">
-			<div class="span12">
-				<h2><?php echo $this->escape($this->item->subheading); ?></h2>
-			</div>
-		</div>
+		<h2><?php echo $this->escape($this->item->subheading); ?></h2>
 <?php endif; ?>
-		<div class="row-fluid">
-			<?php echo $this->loadTemplate('body'); ?>
-		</div>
+		<?php echo $this->loadTemplate('body'); ?>
 	</div>
 	<div class="span3 well">
 		<?php echo $this->loadTemplate('form'); ?>

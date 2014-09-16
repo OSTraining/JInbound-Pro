@@ -35,12 +35,20 @@ echo $this->loadTemplate('list');
 					}
 					if (!(response.links && response.links.length))
 					{
+						if (response.id)
+						{
+							var cell = $('#landingpagelink_' + response.id);
+							if (cell && response.sef)
+							{
+								cell.append($('<a href="' + response.sef + '" target="_blank" title="<?php echo JText::_('COM_JINBOUND_OPEN_IN_NEW_WINDOW'); ?>"><img src="../media/system/images/weblink.png" /></a>'));
+							}
+						}
 						return;
 					}
-					$.each(response.links, function(idx, el)
+					$.each(response.links, function(i, el)
 					{
 						var cell = $('#landingpagelink_' + el.id);
-						if (cell && cell.sef)
+						if (cell && el.sef)
 						{
 							cell.append($('<a href="' + el.sef + '" target="_blank" title="<?php echo JText::_('COM_JINBOUND_OPEN_IN_NEW_WINDOW'); ?>"><img src="../media/system/images/weblink.png" /></a>'));
 						}

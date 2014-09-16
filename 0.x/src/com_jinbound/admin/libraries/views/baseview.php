@@ -50,16 +50,20 @@ class JInboundBaseView extends JInboundBaseCompatView
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
 		
-		$app = JFactory::getApplication();
+		$this->app = JFactory::getApplication();
 		
-		// add the common tmpl path so we can load our commonly shared files
-		$templateBase = ($app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site()) . '/views';
-		foreach (array('_common', $this->_name . '/tmpl') as $path) {
-			if (JFolder::exists("$templateBase/$path")) {
-				$this->addTemplatePath("$templateBase/$path");
-			}
+		// set the layout paths, in order of importance
+		$root = $this->app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
+		$layout_override = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/com_jinbound/' . $this->getName();
+		$common_override = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/com_jinbound/_common';
+		if (JFolder::exists($layout_override)) {
+			$this->addTemplatePath($layout_override);
 		}
-		
+		if (JFolder::exists($common_override)) {
+			$this->addTemplatePath($common_override);
+		}
+		$this->addTemplatePath($root . '/views/_common');
+		$this->addTemplatePath($root . '/views/' . $this->getName() . '/tmpl');
 	}
 	
 	/**
@@ -93,8 +97,6 @@ class JInboundView extends JInboundBaseView
 		$profiler = JProfiler::getInstance('Application');
 		$profiler->mark('onJInboundViewDisplayStart');
 		
-		$app = JFactory::getApplication();
-		
 		$this->viewClass = 'jcl_component';
 		if (JInbound::version()->isCompatible('3.0.0')) {
 			$this->viewClass .= ' jcl_bootstrap';
@@ -104,13 +106,12 @@ class JInboundView extends JInboundBaseView
 		$this->viewName     = $this->_name;
 		
 		// are we in component view?
-		$this->tpl = 'component' == $app->input->get('tmpl', '', 'cmd');
+		$this->tpl = 'component' == $this->app->input->get('tmpl', '', 'cmd');
 		
-		if ($app->isAdmin()) {
+		if ($this->app->isAdmin()) {
 			$this->addToolbar();
 			$this->addMenuBar();
 		}
-		
 		// not in admin
 		else {
 			// Initialise variables
@@ -124,7 +125,7 @@ class JInboundView extends JInboundBaseView
 				$params  = new JRegistry();
 			}
 			// are we in a raw view?
-			$this->raw = ('raw' == $app->input->get('format', '', 'cmd'));
+			$this->raw = ('raw' == $this->app->input->get('format', '', 'cmd'));
 			// component params
 			$cparams   = JComponentHelper::getParams(JInbound::COM);
 			// Escape strings for HTML output
@@ -164,7 +165,7 @@ class JInboundView extends JInboundBaseView
 		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name)), 'jinbound-'.strtolower($this->_name));
 		
 		// only fire in administrator
-		if (!JFactory::getApplication()->isAdmin()) return;
+		if (!$this->app->isAdmin()) return;
 		
 		if (JFactory::getUser()->authorise('core.manage', JInbound::COM)) {
 			JToolBarHelper::preferences(JInbound::COM);
@@ -178,18 +179,22 @@ class JInboundView extends JInboundBaseView
 	
 	public function addMenuBar() {
 		
-		$app = JFactory::getApplication();
-		
 		// only fire in administrator
-		if (!$app->isAdmin())
+		if (!$this->app->isAdmin())
 		{
 			return;
 		}
 		
-		$vName  = $app->input->get('view', '', 'cmd');
-		$option = $app->input->get('option', '', 'cmd');
+		$vName  = $this->app->input->get('view', '', 'cmd');
+		$option = $this->app->input->get('option', '', 'cmd');
+		
+		if (empty($vName)) {
+			$vName = 'dashboard';
+		}
+		
+		$vName = strtolower($vName);
 		// Dashboard
-		JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
+		$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
 		$subMenuItems = array(
 			'pages'       => 'PAGES',
@@ -225,12 +230,31 @@ class JInboundView extends JInboundBaseView
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub && JInbound::COM == $option);
-			JSubMenuHelper::addEntry($label, $href, $active);
+			$this->addSubMenuEntry($label, $href, $active);
 			if ($addCategories && 'reports' == $sub)
 			{
-				JSubMenuHelper::addEntry(JText::_(strtoupper(JInbound::COM . "_CATEGORIES")), JInboundHelperUrl::_(array('option' => 'com_categories', 'view' => 'categories', 'extension' => JInbound::COM)), $option == JInbound::COM && in_array($vName, array('', 'categories')));
+				$extension = $this->app->input->get('extension');
+				$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM . "_CATEGORIES")), JInboundHelperUrl::_(array('option' => 'com_categories', 'view' => 'categories', 'extension' => JInbound::COM)), $option == 'com_categories' && $extension == JInbound::COM && in_array($vName, array('', 'categories')));
 			}
 		}
+		
+		$this->sidebar = false;
+		if (class_exists('JHtmlSidebar')) {
+			$this->renderFilters();
+			$this->sidebar = JHtmlSidebar::render();
+		}
+	}
+	
+	protected function addSubMenuEntry($label, $href, $active) {
+		if (class_exists('JHtmlSidebar')) {
+			return JHtmlSidebar::addEntry($label, $href, $active);
+		}
+		return JSubMenuHelper::addEntry($label, $href, $active);
+	}
+	
+	public function renderFilters() {
+		// STUB
+		return '';
 	}
 
 	/**
@@ -238,11 +262,10 @@ class JInboundView extends JInboundBaseView
 	 */
 	protected function _prepareDocument() {
 		
-		$app    = JFactory::getApplication();
 		$doc    = JFactory::getDocument();
 		$canAdd = method_exists($doc, 'addStyleSheet');
 		$ext    = (JInbound::config("debug", 0) ? '.min' : '');
-		$sfx    = $app->isAdmin() ? 'back' : 'front';
+		$sfx    = $this->app->isAdmin() ? 'back' : 'front';
 		if ($canAdd) {
 			if (JInbound::version()->isCompatible('3.0.0')) {
 				JHtml::_('behavior.framework', true);
@@ -269,7 +292,7 @@ class JInboundView extends JInboundBaseView
 		// we don't want to run this whole function in admin,
 		// but there's still a bit we need - specifically, styles for header icons
 		// if we're in admin, just load the stylesheet and bail
-		if ($app->isAdmin()) {
+		if ($this->app->isAdmin()) {
 			if (method_exists($doc, 'addStyleSheet')) {
 				$doc->addStyleSheet(JInboundHelperUrl::media() . '/css/admin.stylesheet.css');
 			}
@@ -278,10 +301,10 @@ class JInboundView extends JInboundBaseView
 		
 		$doc->addStyleSheet(JInboundHelperUrl::media() . '/css/stylesheet.css');
 		
-		$menus   = $app->getMenu();
-		$pathway = $app->getPathway();
+		$menus   = $this->app->getMenu();
+		$pathway = $this->app->getPathway();
 		$title   = null;
-		$layout  = $app->input->get('layout', '', 'cmd');
+		$layout  = $this->app->input->get('layout', '', 'cmd');
 
 		// Because the application sets a default page title,
 		// we need to get it from the menu item itself
@@ -294,13 +317,13 @@ class JInboundView extends JInboundBaseView
 		}
 		$title = $this->params->get('page_title', '');
 		if (empty($title)) {
-			$title = $app->getCfg('sitename');
+			$title = $this->app->getCfg('sitename');
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
-			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+		elseif ($this->app->getCfg('sitename_pagetitles', 0) == 1) {
+			$title = JText::sprintf('JPAGETITLE', $this->app->getCfg('sitename'), $title);
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
-			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
+		elseif ($this->app->getCfg('sitename_pagetitles', 0) == 2) {
+			$title = JText::sprintf('JPAGETITLE', $title, $this->app->getCfg('sitename'));
 		}
 		$this->document->setTitle($title);
 		

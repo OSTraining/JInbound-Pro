@@ -21,5 +21,6 @@ DROP TABLE IF EXISTS `#__jinbound_contacts_priorities`;
 DROP TABLE IF EXISTS `#__jinbound_contacts_statuses`;
 DROP TABLE IF EXISTS `#__jinbound_contacts_tracks`;
 DROP TABLE IF EXISTS `#__jinbound_conversions`;
+DROP TABLE IF EXISTS `#__jinbound_landing_pages_hits`;
 DROP TABLE IF EXISTS `#__jinbound_tracks`;
 DROP TABLE IF EXISTS `#__jinbound_users_tracks`;

@@ -19,6 +19,15 @@ Joomla.submitbutton = function(task)
 };
 </script>
 <div class="container-fluid" id="jinbound_component">
+<?php if (!empty( $this->sidebar)) : ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
+		
 	<h2><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></h2>
 	<form action="<?php echo JInboundHelperUrl::view('reports'); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
 	<div class="row-fluid">
@@ -42,6 +51,8 @@ Joomla.submitbutton = function(task)
 		<input name="task" value="" type="hidden" />
 	</div>
 	</form>
+	
+	</div>
 </div>
 <?php echo $this->loadTemplate('footer'); ?>
 <?php echo $this->loadTemplate('script'); ?>

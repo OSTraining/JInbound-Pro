@@ -32,5 +32,17 @@
 			default="1"
 		/>
 
+		<field
+			id="greedy" name="greedy"
+			type="radio"
+			label="COM_JINBOUND_GREEDY_CAMPAIGN"
+			description="COM_JINBOUND_GREEDY_CAMPAIGN_DESC"
+			class="radio btn-group"
+			default="0"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+
 	</fieldset>
 </form>

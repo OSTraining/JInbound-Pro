@@ -7,7 +7,7 @@
 # @copyright    Copyright (C) 2009 Yannick Gaultier. All rights reserved.
 # @copyright    Copyright (C) 2011 Anything Digital. All rights reserved.
 # @license      GNU/GPL
-###################################################################
+############################media#######################################
 -->
 <project name="jinbound" default="dist" basedir=".">
 	<property file="config.ini" />
@@ -128,8 +128,8 @@
 		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="false">
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/media"
-				includes="images/,bootstrap/,ui/"
-				excludes="**.git"
+				includes="images/,bootstrap/,jqplot/,ui/"
+				excludes="**.git,jqplot/jquery.js,jqplot/jquery.min.js,jqplot/test.html"
 			/>
 		</copy>
 		<!-- now read xml file (the one in temp directory, after search/replace operation -->
@@ -206,6 +206,7 @@
 	<!-- Automatic changelog from svn commits comments -->
 	<target name="doChangelog" if="do.changelog">
 		<echo message="Building    | ${git.title}" />
+		<echo message="File        | ${git.log.file}" />
 		<echo message="--------------------------------------------" />
 		
 		<echo>Making changelog ...</echo>
@@ -216,8 +217,8 @@
 		<input message="GitHub password for user ${cfg.git.username}" addproperty="git.password">
 		</input>
 
-		<exec executable="${cfg.curl.bin}" outputproperty="gitlog.out" output="${git.log.file}">
-			<arg line="-s 'https://api.github.com/repos/${git.user}/${git.repo}/issues?filter=all&amp;state=closed&amp;labels=CL' -u ${cfg.git.username}:${git.password}" />
+		<exec executable="${cfg.curl.bin}">
+			<arg line="-o ${git.log.file} -s 'https://api.github.com/repos/${git.user}/${git.repo}/issues?filter=all&amp;state=closed&amp;labels=CL' -u ${cfg.git.username}:${git.password}" />
 		</exec>
 		<echo>Raw data fetched from repository</echo>
 		

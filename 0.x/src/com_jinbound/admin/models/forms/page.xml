@@ -151,7 +151,7 @@
 	>
 		<field
 			id="formname" name="formname"
-			type="text"
+			type="text" required="true"
 			label="COM_JINBOUND_PAGE_FORMNAME"
 			description="COM_JINBOUND_PAGE_FORMNAME_DESC"
 			class="input-block-level"
