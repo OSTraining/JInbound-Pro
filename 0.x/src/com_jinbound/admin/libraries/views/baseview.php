@@ -199,9 +199,7 @@ class JInboundView extends JInboundBaseView
 		$subMenuItems = array(
 			'pages'       => 'PAGES',
 			'emails'      => 'LEAD_NURTURING_MANAGER',
-			//'leads'       => 'LEADS',
-			'contacts'    => 'CONTACTS',
-			//'conversions' => 'CONVERSIONS',
+			'contacts'    => 'LEADS',
 			'reports'     => 'REPORTS'
 		);
 		$addCategories = false;
