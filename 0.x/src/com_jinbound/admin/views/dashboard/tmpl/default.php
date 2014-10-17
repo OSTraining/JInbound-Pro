@@ -86,12 +86,7 @@ defined('JPATH_PLATFORM') or die;
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('email.add'), JText::_('COM_JINBOUND_EMAIL')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 				</ul>
-				<h3><img alt="<?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/view_reports.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?></span></h3>
-				<ul>
-					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_CONVERSIONS')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_LANDING_PAGE_REPORT')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
-				</ul>
+				<h3><?php echo JHtml::link(JInboundHelperUrl::view('reports'), '<img alt="' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '" src="' . JInboundHelperUrl::media() . '/images/view_reports.png" /> <span>' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '</span>'); ?></h3>
 			</div>
 			<?php /*
 			<!-- Row 2: Updates -->
