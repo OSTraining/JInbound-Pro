@@ -33,6 +33,30 @@ abstract class JInboundHelperStatus
 		return $default;
 	}
 	
+	static public function getFinalStatus()
+	{
+		static $final;
+		
+		if (is_null($final))
+		{
+			$db = JFactory::getDbo();
+			
+			$final = $db->setQuery($db->getQuery(true)
+					->select($db->quoteName('id'))
+					->from('#__jinbound_lead_statuses')
+					->where($db->quoteName('final') . ' = 1')
+					->where($db->quoteName('published') . ' = 1')
+			)->loadResult();
+			
+			if (is_null($final))
+			{
+				$final = false;
+			}
+		}
+		
+		return $final;
+	}
+	
 	static public function setContactStatusForCampaign($status_id, $contact_id, $campaign_id, $user_id = null)
 	{
 		$db   = JFactory::getDbo();
@@ -51,7 +75,7 @@ abstract class JInboundHelperStatus
 			. ', ' . $db->quote($campaign_id)
 			. ', ' . $db->quote($contact_id)
 			. ', ' . $db->quote($date)
-			. ', ' . $db->quote(JFactory::getUser($user_id)->get(id))
+			. ', ' . $db->quote(JFactory::getUser($user_id)->get('id'))
 			)
 		)->query();
 	}
