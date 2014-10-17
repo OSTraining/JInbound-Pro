@@ -128,50 +128,6 @@ class JInboundModelEmails extends JInboundListModel
 			->group('Email.id')
 			->group('Contact.id')
 		);
-		/*
-		// NOTE: This query is kind of hairy and a little complicated, edit at your own risk!!!
-		$db->setQuery($db->getQuery(true)
-			->select('Lead.first_name AS first_name')
-			->select('Lead.last_name AS last_name')
-			->select('Lead.created AS created')
-			->select('Lead.id AS lead_id')
-			->select('Lead.formdata AS form')
-			->select('Contact.email_to AS email')
-			->select('Contact.id AS contact_id')
-			->select('Page.id AS page_id')
-			->select('Page.formname AS form_name')
-			->select('Campaign.id AS campaign_id')
-			->select('Campaign.name AS campaign_name')
-			->select('Email.id AS email_id')
-			->select('Email.sendafter AS sendafter')
-			->select('Email.fromname AS fromname')
-			->select('Email.fromemail AS fromemail')
-			->select('Email.subject AS subject')
-			->select('Email.htmlbody AS htmlbody')
-			->select('Email.plainbody AS plainbody')
-			->select('Record.id AS record_id')
-			->select('MAX(Version.id) AS version_id')
-			->from('#__contact_details AS Contact')
-			->leftJoin('#__jinbound_leads AS Lead ON Lead.contact_id = Contact.id')
-			->leftJoin('#__jinbound_pages AS Page ON Lead.page_id = Page.id')
-			->leftJoin('#__jinbound_campaigns AS Campaign ON Page.campaign = Campaign.id')
-			->leftJoin('#__jinbound_emails AS Email ON Email.campaign_id = Campaign.id')
-			->leftJoin('#__jinbound_emails_records AS Record ON Record.lead_id = Lead.id AND Record.email_id = Email.id')
-			->leftJoin('#__jinbound_subscriptions AS Sub ON Contact.id = Sub.contact_id')
-			->leftJoin('#__jinbound_emails_versions AS Version ON Version.email_id = Email.id')
-			->where('Record.id IS NULL')
-			->where('DATE_ADD(Lead.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
-			->where('Email.published = 1')
-			->where('Page.published = 1')
-			->where('Campaign.published = 1')
-			->where('Sub.enabled <> 0')
-			// NOTE: Grouping order is VERY important here!!!!!
-			// the query has to be grouped FIRST by emails, THEN by contacts
-			// otherwise we don't get the correct data!!!!!!
-			->group('Email.id')
-			->group('Contact.id')
-		);
-		*/
 		
 		if ($out) {
 			echo '<h3>Query</h3><pre>' . print_r((string) $db->getQuery(false), 1) . '</pre>';
@@ -269,7 +225,9 @@ class JInboundModelEmails extends JInboundListModel
 	
 	private static function _replaceTags($string, $object, $extra = false) {
 		$out  = false;//JInbound::config("debug", 0);
-		if ($out) echo ('<h3>Email Tags</h3>');
+		if ($out) {
+			echo ('<h3>Email Tags</h3>');
+		}
 		$tags = array(
 			'email.lead.first_name'
 		,	'email.lead.last_name'
@@ -281,54 +239,71 @@ class JInboundModelEmails extends JInboundListModel
 		}
 		array_unique($tags);
 		
-		if ($out) echo ('<h4>Tags</h4><pre>' . print_r($tags, 1) . '</pre>');
-		if ($out) echo ('<h4>Object</h4><pre>' . print_r($object, 1) . '</pre>');
-	
-		if (!empty($tags)) foreach ($tags as $tag) {
-			if (false === stripos($string, $tag)) {
-				continue;
-			}
-			$parts   = explode('.', $tag);
-			$context = array_shift($parts);
-			$params  = false;
-			$value   = false;
-			if ($out) echo ('<h4>Context</h4><pre>' . print_r($context, 1) . '</pre>');
-			if ($out) echo ('<h4>Parts</h4><pre>' . print_r($parts, 1) . '</pre>');
-			while (!empty($parts)) {
-				$part = array_shift($parts);
-				if ($out) echo ('<h4>Part</h4><pre>' . print_r($part, 1) . '</pre>');
-				// handle the value differently based on it's type
-				if ($value) {
-					// arrays should have the key available
-					if (is_array($value) && array_key_exists($part, $value)) {
-						$value = $value[$part];
-					}
-					// JRegistry uses get() for values
-					else if (is_object($value) && $value instanceof JRegistry) {
-						$value = $value->get($part);
-					}
-					// normal object
-					else if (is_object($value) && property_exists($value, $part)) {
-						$value = $value->{$part};
-					}
-					// object with this method
-					else if (is_object($value) && method_exists($value, $part)) {
-						$value = call_user_func(array($value, $part));
-					}
-					// don't know what to do here...
-					else {
-						$value = '';
-						break;
-					}
-				}
-				else {
-					$value = $object->{$part};
-				}
-				if ($out) echo ('<h4>Value</h4><pre>' . print_r($value, 1) . '</pre>');
-			}
-			$string = str_ireplace("{%$tag%}", $value, $string);
+		if ($out) {
+			echo ('<h4>Tags</h4><pre>' . print_r($tags, 1) . '</pre>');
+			echo ('<h4>Object</h4><pre>' . print_r($object, 1) . '</pre>');
 		}
-		if ($out) echo ('<h4>String</h4><pre>' . htmlspecialchars(print_r($string, 1)) . '</pre>');
+	
+		if (!empty($tags)) {
+			foreach ($tags as $tag) {
+				if (false === stripos($string, $tag)) {
+					continue;
+				}
+				$parts   = explode('.', $tag);
+				$context = array_shift($parts);
+				$params  = false;
+				$value   = false;
+				if ($out) {
+					echo ('<h4>Context</h4><pre>' . print_r($context, 1) . '</pre>');
+					echo ('<h4>Parts</h4><pre>' . print_r($parts, 1) . '</pre>');
+				}
+				while (!empty($parts)) {
+					$part = array_shift($parts);
+					if ($out) {
+						echo ('<h4>Part</h4><pre>' . print_r($part, 1) . '</pre>');
+					}
+					// handle the value differently based on it's type
+					if ($value) {
+						// arrays should have the key available
+						if (is_array($value) && array_key_exists($part, $value)) {
+							$value = $value[$part];
+						}
+						// JRegistry uses get() for values
+						else if (is_object($value) && $value instanceof JRegistry) {
+							$value = $value->get($part);
+						}
+						// normal object
+						else if (is_object($value) && property_exists($value, $part)) {
+							$value = $value->{$part};
+						}
+						// object with this method
+						else if (is_object($value) && method_exists($value, $part)) {
+							$value = call_user_func(array($value, $part));
+						}
+						// don't know what to do here...
+						else {
+							$value = '';
+							break;
+						}
+					}
+					else {
+						$value = $object->{$part};
+					}
+					if ($out) {
+						echo ('<h4>Value</h4><pre>' . print_r($value, 1) . '</pre>');
+					}
+				}
+				// last checks on value
+				if (is_array($value) || is_object($value)) {
+					$value = print_r($value, 1);
+				}
+				// replace tag
+				$string = str_ireplace("{%$tag%}", $value, $string);
+			}
+		}
+		if ($out) {
+			echo ('<h4>String</h4><pre>' . htmlspecialchars(print_r($string, 1)) . '</pre>');
+		}
 		return $string;
 	}
 }
