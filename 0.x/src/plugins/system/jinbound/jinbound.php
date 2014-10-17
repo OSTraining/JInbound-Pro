@@ -21,6 +21,8 @@ class plgSystemJInbound extends JPlugin
 	
 	private static $_setCookieInJs;
 	
+	protected $app;
+	
 	/**
 	 * Constructor
 	 * 
@@ -28,6 +30,7 @@ class plgSystemJInbound extends JPlugin
 	 * @param unknown_type $config
 	 */
 	public function __construct(&$subject, $config) {
+		$this->app = JFactory::getApplication();
 		// if something happens & the helper class can't be found, we don't want a fatal error here
 		if (class_exists('JInbound')) {
 			JInbound::language(JInbound::COM, JPATH_ADMINISTRATOR);
@@ -35,7 +38,7 @@ class plgSystemJInbound extends JPlugin
 		}
 		else {
 			$this->loadLanguage();
-			JFactory::getApplication()->enqueueMessage(JText::_('PLG_SYSTEM_JINBOUND_COMPONENT_NOT_INSTALLED'));
+			$this->app->enqueueMessage(JText::_('PLG_SYSTEM_JINBOUND_COMPONENT_NOT_INSTALLED'));
 			self::$_run = false;
 		}
 		parent::__construct($subject, $config);
@@ -47,7 +50,7 @@ class plgSystemJInbound extends JPlugin
 	
 	public function onAfterInitialise()
 	{
-		if (!JFactory::getApplication()->isAdmin())
+		if (!$this->app->isAdmin())
 		{
 			$this->setUserCookie();
 		}
@@ -62,9 +65,8 @@ class plgSystemJInbound extends JPlugin
 		if (!self::$_run) {
 			return;
 		}
-		$app = JFactory::getApplication();
-		$opt = $app->input->get('option', '', 'cmd');
-		if ($app->isAdmin()) {
+		$opt = $this->app->input->get('option', '', 'cmd');
+		if ($this->app->isAdmin()) {
 			$this->onAfterDispatchAdmin($opt);
 		}
 		else {
@@ -72,20 +74,15 @@ class plgSystemJInbound extends JPlugin
 		}
 	}
 	
-	// stub for now
 	public function onAfterDispatchSite($option) {
-		$app = JFactory::getApplication();
-		switch ($option) {
-			default: break;
-		}
+		// stub
 	}
 	
 	public function onAfterDispatchAdmin($option) {
-		$app = JFactory::getApplication();
 		switch ($option) {
 			case 'com_categories':
 				// we want to add some extras to com_categories
-				if (class_exists('JInbound') && JInbound::COM == $app->input->get('extension', '', 'cmd')) {
+				if (class_exists('JInbound') && JInbound::COM == $this->app->input->get('extension', '', 'cmd')) {
 					// joomla 3 handles this via helper
 					if (JInbound::version()->isCompatible('3.0')) {
 						return;
@@ -98,7 +95,7 @@ class plgSystemJInbound extends JPlugin
 				break;
 			case 'com_menus':
 				JInbound::registerHelper('url');
-				if ('edit' == $app->input->get('layout') && 'item' == $app->input->get('view')) {
+				if ('edit' == $this->app->input->get('layout') && 'item' == $this->app->input->get('view')) {
 					JText::script('COM_JINBOUND_MENU_NOT_SET_TO_USE_JINBOUND_TEMPLATE');
 					JFactory::getDocument()->addScript(JInboundHelperUrl::media() . '/js/admin.menu.js');
 				}
@@ -107,12 +104,88 @@ class plgSystemJInbound extends JPlugin
 		}
 	}
 	
+	public function onAfterRoute()
+	{
+		// read from the database any campaign params given the cookie value
+		$db     = JFactory::getDbo();
+		$cookie = $this->getCookieValue();
+		try
+		{
+			$campaign_data = $db->setQuery($db->getQuery(true)
+				->select('ContactCampaign.contact_id AS contact_id')
+				->select('ContactCampaign.campaign_id AS campaign_id')
+				->select('Campaign.conversion_url')
+				->from('#__jinbound_contacts_campaigns AS ContactCampaign')
+				->leftJoin('#__jinbound_contacts AS Contact ON Contact.id = ContactCampaign.contact_id')
+				->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = ContactCampaign.campaign_id')
+				->where('Contact.cookie = ' . $db->quote($cookie))
+				->where('Campaign.conversion_url <> ' . $db->quote(''))
+			)->loadObjectList();
+		}
+		catch (Exception $e)
+		{
+			if (defined('JDEBUG') && JDEBUG)
+			{
+				$this->app->enqueueMessage($e->getMessage(), 'error');
+			}
+			return;
+		}
+		// this visitor is not associated
+		if (empty($campaign_data))
+		{
+			return;
+		}
+		// this visitor is detected as being in one or more campaigns
+		// check if this request is for one of the conversion urls
+		foreach ($campaign_data as $data)
+		{
+			$params = array();
+			$param_string = trim($data->conversion_url);
+			// remove "index.php?"
+			if (substr($param_string, 0, 10) === 'index.php?')
+			{
+				$param_string = substr($param_string, 10);
+			}
+			// remove leading ? and parse
+			parse_str(ltrim($param_string, '?'), $params);
+			if (empty($params))
+			{
+				continue;
+			}
+			// get just the given params from request and compare the arrays
+			$request = array();
+			foreach (array_keys($params) as $param)
+			{
+				$request[$param] = $this->app->input->get($param);
+			}
+			// fix ids, catids, etc, for slugs
+			foreach (array('id', 'a_id', 'cat', 'catid') as $fix)
+			{
+				if (array_key_exists($fix, $request))
+				{
+					$request[$fix] = preg_replace('/^([1-9][0-9]*?).*$/', '$1', $request[$fix]);
+				}
+			}
+			// get the diff
+			$diff = array_diff_assoc($params, $request);
+			// get the final status
+			JInbound::registerHelper('status');
+			$status_id = JInboundHelperStatus::getFinalStatus();
+			// if the arrays are the same, there's a match - assign if there's a final status
+			if (empty($diff) && $status_id)
+			{
+				JInboundHelperStatus::setContactStatusForCampaign($status_id, $data->contact_id, $data->campaign_id);
+				continue;
+			}
+		}
+	}
+	
 	/**
 	 * Alter the response body before sending to the client
 	 * 
 	 */
 	public function onAfterRender() {
-		if (!self::$_run || JFactory::getApplication()->isAdmin()) {
+		if (!self::$_run || $this->app->isAdmin()) {
 			return;
 		}
 		JInbound::registerHelper('filter');
