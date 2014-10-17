@@ -27,6 +27,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 	
 	`greedy` tinyint(1) default '0'
 	COMMENT 'this campaign wants the contacts to itself',
+
+	`conversion_url` TEXT NOT NULL default ''
+	COMMENT 'query params that denote a successful conversion',
 	
 	`published` tinyint(1) default '0'
 	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
