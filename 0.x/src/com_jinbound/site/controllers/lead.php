@@ -357,7 +357,7 @@ class JInboundControllerLead extends JInboundBaseController
 			{
 				$html[] = '	<tr>';
 				$html[] = '		<td>';
-				$html[] = '			' . htmlspecialchars($key);
+				$html[] = '			' . htmlspecialchars(JText::_($formbuilder[$key]['title']));
 				$html[] = '		</td>';
 				$html[] = '		<td>';
 				$html[] = '			' . htmlspecialchars($val);
