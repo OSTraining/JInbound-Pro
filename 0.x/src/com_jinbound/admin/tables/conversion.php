@@ -21,7 +21,7 @@ class JInboundTableConversion extends JInboundTable
 	 */
 	protected function _getAssetName() {
 		$k = $this->_tbl_key;
-		return 'com_jinbound.conversion.'.(int) $this->k;
+		return 'com_jinbound.conversion.'.(int) $this->$k;
 	}
 	
 	/**

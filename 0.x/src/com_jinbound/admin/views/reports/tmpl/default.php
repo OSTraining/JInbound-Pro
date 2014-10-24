@@ -33,15 +33,17 @@ Joomla.submitbutton = function(task)
 	<div class="row-fluid">
 		<div class="span12 text-center">
 			<div class="reports_search">
-				<?php echo JHtml::_('calendar', $this->state->get('filter_begin'), 'filter_begin', 'filter_begin', '%Y-%m-%d', array(
+				<?php echo $this->campaign_filter; ?>
+				<?php echo $this->page_filter; ?>
+				<?php echo JHtml::_('calendar', $this->state->get('filter_start'), 'filter_start', 'filter_start', '%Y-%m-%d', array(
 					'size'        => 10
 				,	'placeholder' => JText::_('COM_JINBOUND_FROM')
-				,	'onchange'    => "window.fetchLeads(window.jinbound_leads_start, window.jinbound_leads_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val());window.fetchPages(window.jinbound_pages_start, window.jinbound_pages_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val())"
+				,	'onchange'    => $this->filter_change_code
 				)); ?>
 				<?php echo JHtml::_('calendar', $this->state->get('filter_end'), 'filter_end', 'filter_end', '%Y-%m-%d', array(
-					'size'     => 10
+					'size'        => 10
 				,	'placeholder' => JText::_('COM_JINBOUND_TO')
-				,	'onchange' => "window.fetchLeads(window.jinbound_leads_start, window.jinbound_leads_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val());window.fetchPages(window.jinbound_pages_start, window.jinbound_pages_limit, jQuery('#filter_begin').val(), jQuery('#filter_end').val())"
+				,	'onchange'    => $this->filter_change_code
 				)); ?>
 			</div>
 		</div>

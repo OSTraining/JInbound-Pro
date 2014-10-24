@@ -31,4 +31,53 @@ class JInboundController extends JInboundBaseController
 		$app->input->set('view', $view);
 		parent::display($cachable);
 	}
+	
+	public function reset()
+	{
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		if (!JFactory::getUser()->authorise('core.admin', 'com_jinbound'))
+		{
+			JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
+		JInbound::registerHelper('url');
+		$db = JFactory::getDbo();
+		$app = JFactory::getApplication();
+		$errors = array();
+		$queries = array(
+			'TRUNCATE TABLE #__jinbound_contacts'
+		,	'TRUNCATE TABLE #__jinbound_contacts_campaigns'
+		,	'TRUNCATE TABLE #__jinbound_contacts_priorities'
+		,	'TRUNCATE TABLE #__jinbound_contacts_statuses'
+		,	'TRUNCATE TABLE #__jinbound_conversions'
+		,	'TRUNCATE TABLE #__jinbound_emails_records'
+		,	'TRUNCATE TABLE #__jinbound_emails_versions'
+		,	'TRUNCATE TABLE #__jinbound_landing_pages_hits'
+		,	'TRUNCATE TABLE #__jinbound_leads'
+		,	'TRUNCATE TABLE #__jinbound_notes'
+		,	'TRUNCATE TABLE #__jinbound_subscriptions'
+		,	'TRUNCATE TABLE #__jinbound_tracks'
+		,	'TRUNCATE TABLE #__jinbound_users_tracks'
+		,	'UPDATE #__jinbound_pages SET hits = 0 WHERE 1'
+		);
+		foreach ($queries as $query)
+		{
+			try
+			{
+				$db->setQuery($query)->query();
+			}
+			catch (Exception $e)
+			{
+				$errors[] = $e->getMessage();
+			}
+		}
+		if (!empty($errors))
+		{
+			$app->enqueueMessage(JText::sprintf('COM_JINBOUND_RESET_FAILED', implode('<br>', $errors)), 'error');
+		}
+		else
+		{
+			$app->enqueueMessage(JText::_('COM_JINBOUND_RESET_SUCCESS'));
+		}
+		$app->redirect(JInboundHelperUrl::_());
+	}
 }

@@ -23,6 +23,7 @@ class JInboundModelPages extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.pages';
 	protected $context  = 'com_jinbound.pages';
 	
 	private $_registryColumns = array('formbuilder');
@@ -62,16 +63,17 @@ class JInboundModelPages extends JInboundListModel
 		$format = $app->input->get('format', '', 'cmd');
 		
 		foreach (array('category', 'campaign') as $var) {
-			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
+			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string');
+			$this->setState('filter.' . $var, $value);
 		}
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
-		if ('json' != $format) $value = '';
-		$this->setState('filter.start', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
-		if ('json' != $format) $value = '';
-		$this->setState('filter.end', $value);
+		foreach (array('start', 'end', 'page') as $var) {
+			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string');
+			if ('json' != $format) {
+				$value = '';
+			}
+			$this->setState('filter.' . $var, $value);
+		}
 		
 		$this->setState('layout.json', 'json' == $format);
 	}
@@ -92,6 +94,7 @@ class JInboundModelPages extends JInboundListModel
 		// Compile the store id.
 		$id	.= ':'.$this->getState('filter.category');
 		$id	.= ':'.$this->getState('filter.campaign');
+		$id	.= ':'.$this->getState('filter.page');
 		$id	.= ':'.$this->getState('filter.start');
 		$id	.= ':'.$this->getState('filter.end');
 		$id	.= ':'.$this->getState('layout.json');
@@ -103,6 +106,26 @@ class JInboundModelPages extends JInboundListModel
 	{
 		// Create a new query object.
 		$db = $this->getDbo();
+		// filters
+		$start = $this->getState('filter.start');
+		$end = $this->getState('filter.end');
+		if (!empty($start)) {
+			try {
+				$startdate = new DateTime($start);
+			}
+			catch (Exception $e) {
+				$startdate = false;
+			}
+		}
+		
+		if (!empty($end)) {
+			try {
+				$enddate = new DateTime($end);
+			}
+			catch (Exception $e) {
+				$enddate = false;
+			}
+		}
 		// main query
 		$query = $db->getQuery(true)
 			->select('Page.*')
@@ -147,33 +170,17 @@ class JInboundModelPages extends JInboundListModel
 				$query->where('Page.' . $column . ' = ' . (int) $filter);
 			}
 		}
-		
-		$value = $this->getState('filter.start');
-		if (!empty($value)) {
-			try {
-				$date = new DateTime($value);
-			}
-			catch (Exception $e) {
-				$date = false;
-			}
-			if ($date) {
-				$query->where('Submission.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
-				$query->where('Contact.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
-			}
+		$filter = $this->getState('filter.page');
+		if (!empty($filter)) {
+			$query->where('Page.id = ' . (int) $filter);
 		}
 		
-		$value = $this->getState('filter.end');
-		if (!empty($value)) {
-			try {
-				$date = new DateTime($value);
-			}
-			catch (Exception $e) {
-				$date = false;
-			}
-			if ($date) {
-				$query->where('Submission.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
-				$query->where('Contact.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
-			}
+		if (!empty($startdate)) {
+			$query->where('Submission.created > ' . $db->quote($startdate->format('Y-m-d h:i:s')));
+		}
+		
+		if (!empty($enddate)) {
+			$query->where('Submission.created < ' . $db->quote($enddate->format('Y-m-d h:i:s')));
 		}
 		
 		// Add the list ordering clause.

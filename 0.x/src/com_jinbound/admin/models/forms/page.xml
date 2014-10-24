@@ -326,7 +326,6 @@
 			<tag value="form:radio:fieldtitle" />
 			<tag value="form:dropdown:fieldtitle" />
 			-->
-			<tag value="captcha" />
 			<tag value="submit" />
 		</field>
 

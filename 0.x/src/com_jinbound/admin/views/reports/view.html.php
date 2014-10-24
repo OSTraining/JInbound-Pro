@@ -15,6 +15,10 @@ class JInboundViewReports extends JInboundListView
 {
 	
 	function display($tpl = null, $safeparams = false) {
+		$this->state = $this->get('State');
+		$this->filter_change_code = $this->getReportFormFilterChangeCode();
+		$this->campaign_filter = $this->getCampaignFilter();
+		$this->page_filter = $this->getPageFilter();
 		$display  = parent::display($tpl, $safeparams);
 		$min      = defined('JDEBUG') && JDEBUG ? '' : '.min';
 		$js       = $min . '.js';
@@ -35,6 +39,50 @@ class JInboundViewReports extends JInboundListView
 			$document->addStyleSheet('../media/jinbound/jqplot/jquery.jqplot' . $css);
 		}
 		return $display;
+	}
+	
+	public function getReportFormFilterChangeCode()
+	{
+		return "window.fetchReports("
+			. "window.jinbound_leads_start, "
+			. "window.jinbound_leads_limit, "
+			. "jQuery('#filter_start').val(), "
+			. "jQuery('#filter_end').val(), "
+			. "jQuery('#filter_campaign').find(':selected').val(), "
+			. "jQuery('#filter_page').find(':selected').val()"
+			. ");";
+	}
+	
+	public function getCampaignFilter()
+	{
+		$db = JFactory::getDbo();
+		$options = $db->setQuery($db->getQuery(true)
+			->select('id AS value, name AS text')
+			->from('#__jinbound_campaigns')
+			->order('name ASC')
+		)->loadObjectList();
+		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_CAMPAIGN')));
+		return JHtml::_('select.genericlist', $options, 'filter_campaign', array(
+			'list.attr' => array(
+				'onchange' => $this->filter_change_code
+			)
+		));
+	}
+	
+	public function getPageFilter()
+	{
+		$db = JFactory::getDbo();
+		$options = $db->setQuery($db->getQuery(true)
+			->select('id AS value, name AS text')
+			->from('#__jinbound_pages')
+			->order('name ASC')
+		)->loadObjectList();
+		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PAGE')));
+		return JHtml::_('select.genericlist', $options, 'filter_page', array(
+			'list.attr' => array(
+				'onchange' => $this->filter_change_code
+			)
+		));
 	}
 	
 	public function getRecentLeads() {

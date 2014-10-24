@@ -18,6 +18,7 @@ JText::script('COM_JINBOUND_CONVERSIONS');
 JText::script('COM_JINBOUND_CONVERSION_RATE');
 JText::script('COM_JINBOUND_ERROR_LOADING_PLOT_DATA');
 JText::script('COM_JINBOUND_VISITS');
+JText::script('COM_JINBOUND_NOT_FOUND');
 
 ?>
 <script type="text/javascript">
@@ -34,6 +35,9 @@ JText::script('COM_JINBOUND_VISITS');
 	window.jinbound_pages_start = 0;
 	window.jinbound_plot_baseurl = '<?php
 		echo JRoute::_('index.php?option=com_jinbound&task=reports.plot&format=json', false);
+	?>';
+	window.jinbound_glance_baseurl = '<?php
+		echo JRoute::_('index.php?option=com_jinbound&task=reports.glance&format=json', false);
 	?>';
 	var makeButtons = function(callback, pagination, cols) {
 		var foot    = $('<tfoot></tfoot>')
@@ -116,6 +120,12 @@ JText::script('COM_JINBOUND_VISITS');
 		if (arguments.length > 3) {
 			filter += '&filter_end=' + arguments[3];
 		}
+		if (arguments.length > 4) {
+			filter += '&filter_campaign=' + arguments[4];
+		}
+		if (arguments.length > 5) {
+			filter += '&filter_page=' + arguments[5];
+		}
 		$.ajax(window.jinbound_leads_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
@@ -128,6 +138,7 @@ JText::script('COM_JINBOUND_VISITS');
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_LANDING_PAGE_NAME')));
 				t.append(h);
 				if (!n) {
+					b.append($('<tr><td colspan="4">' + Joomla.JText._('COM_JINBOUND_NOT_FOUND') + '</td></tr>'));
 					return;
 				}
 				for (; n > i; i++) {
@@ -169,6 +180,12 @@ JText::script('COM_JINBOUND_VISITS');
 		if (arguments.length > 3) {
 			filter += '&filter_end=' + arguments[3];
 		}
+		if (arguments.length > 4) {
+			filter += '&filter_campaign=' + arguments[4];
+		}
+		if (arguments.length > 5) {
+			filter += '&filter_page=' + arguments[5];
+		}
 		$.ajax(window.jinbound_pages_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
@@ -183,6 +200,7 @@ JText::script('COM_JINBOUND_VISITS');
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_CONVERSION_RATE')));
 				t.append(h);
 				if (!n) {
+					b.append($('<tr><td colspan="6">' + Joomla.JText._('COM_JINBOUND_NOT_FOUND') + '</td></tr>'));
 					return;
 				}
 				for (; n > i; i++) {
@@ -214,6 +232,12 @@ JText::script('COM_JINBOUND_VISITS');
 		if (arguments.length > 1) {
 			filter += '&filter_end=' + arguments[1];
 		}
+		if (arguments.length > 2) {
+			filter += '&filter_campaign=' + arguments[2];
+		}
+		if (arguments.length > 3) {
+			filter += '&filter_page=' + arguments[3];
+		}
 		$.ajax(window.jinbound_plot_baseurl + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
@@ -221,7 +245,7 @@ JText::script('COM_JINBOUND_VISITS');
 					alert(Joomla.JText._('COM_JINBOUND_ERROR_LOADING_PLOT_DATA'));
 					return;
 				}
-				var i = 0, n = data.hits.length, max = 0, v, x, y;
+				var i = 0, n = data.hits.length, max = 0, v, x, y, opts;
 				for (; n > i; i++) {
 					v = parseInt(data.hits[i][1], 10);
 					max = max > v ? max : v;
@@ -246,7 +270,7 @@ JText::script('COM_JINBOUND_VISITS');
 						angle: -30
 					}
 				};
-				$.jqplot('jinbound-reports-graph', [data.hits, data.leads, data.conversions], {
+				opts = {
 					animate: true
 				,	animateReplot: true
 				,	series: [
@@ -270,19 +294,66 @@ JText::script('COM_JINBOUND_VISITS');
 						xaxis: x
 					,	yaxis: y
 					}
-				});
+				};
+				try
+				{
+					window.reportsPlot.destroy();
+				}
+				catch (e) {}
+				window.reportsPlot = $.jqplot('jinbound-reports-graph', [data.hits, data.leads, data.conversions], opts);
 			}
 		});
 	};
-	var start = $('#filter_begin'), end = $('#filter_end'), start_date = '', end_date = '';
+	window.fetchGlance = function() {
+		var filter = '';
+		if (arguments.length > 0) {
+			filter += '&filter_start=' + arguments[0];
+		}
+		if (arguments.length > 1) {
+			filter += '&filter_end=' + arguments[1];
+		}
+		if (arguments.length > 2) {
+			filter += '&filter_campaign=' + arguments[2];
+		}
+		if (arguments.length > 3) {
+			filter += '&filter_page=' + arguments[3];
+		}
+		$.ajax(window.jinbound_glance_baseurl + filter, {
+			dataType: 'json'
+		,	success: function(data, textStatus, jqXHR) {
+				if (!data) {
+					alert(Joomla.JText._('COM_JINBOUND_ERROR_LOADING_PLOT_DATA'));
+					return;
+				}
+				for(var i=0,a=['views','leads','views-to-leads','conversion-count','conversion-rate'],n=a.length;n>i;i++) {
+					$('#jinbound-reports-glance-'+a[i]).text(data[a[i]]);
+				}
+			}
+		});
+	};
+	window.fetchReports = function(a,b,c,d,e,f) {
+		window.fetchLeads(a,b,c,d,e,f);
+		window.fetchPages(a,b,c,d,e,f);
+		if (document.getElementById('jinbound-reports-glance')) {
+			window.fetchGlance(c,d,e,f);
+		}
+		if (document.getElementById('jinbound-reports-graph')) {
+			window.fetchPlots(c,d,e,f);
+		}
+	};
+	var start = $('#filter_start'), end = $('#filter_end'),
+	campaign = $('#filter_campaign'), page = $('#filter_page'),
+	start_date = '', end_date = '', campaign_value = '', page_value = '';
 	if (start.length && end.length) {
 		start_date = start.val();
 		end_date = end.val();
 	}
-	window.fetchLeads(0, 10, start_date, end_date);
-	window.fetchPages(0, 10, start_date, end_date);
-	if (document.getElementById('jinbound-reports-graph')) {
-		window.fetchPlots(start_date, end_date);
+	if (campaign.length) {
+		campaign_value = campaign.find(':selected').val();
 	}
+	if (page.length) {
+		page_value = page.find(':selected').val();
+	}
+	window.fetchReports(0, 10, start_date, end_date, campaign_value, page_value);
 })(jQuery);
 </script>

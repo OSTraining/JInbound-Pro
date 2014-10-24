@@ -14,6 +14,7 @@ JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
 class JInboundModelPage extends JInboundAdminModel
 {
 	public $_context = 'com_jinbound.page';
+	protected $context = 'com_jinbound.page';
 	
 	private $_registryColumns = array('formbuilder');
 	
@@ -120,9 +121,6 @@ class JInboundModelPage extends JInboundAdminModel
 				if (!array_key_exists('validate', $field['attributes'])) {
 					$field['attributes']['validate'] = 'email';
 				}
-				if (!array_key_exists('validate', $field['attributes'])) {
-					$field['attributes']['validate'] = 'email';
-				}
 				$class = trim(trim($class) . ' validate-email');
 			}
 			// add the field
@@ -158,12 +156,39 @@ class JInboundModelPage extends JInboundAdminModel
 				$xmlField->addAttribute('required', true);
 			}
 		}
+		$dispatcher     = JDispatcher::getInstance();
+		$dispatcher->trigger('onJinboundFormbuilderDisplay', array(&$xml));
 		// if we have allowed fields, add them
 		if (0 < $allowedFields) {
 			// ok, we should have enough now to add to the form
 			$form->load($xml, false);
 		}
 		
+		// rebind data
+		if ($loadData) {
+			// Get the data for the form.
+			$data = $this->loadFormData();
+		}
+
+		// Load the data into the form after the plugins have operated.
+		$form->bind($data);
+		
 		return $form;
+	}
+	
+	protected function loadFormData()
+	{
+		if ($this->data === null)
+		{
+			$this->data = new stdClass;
+			$app = JFactory::getApplication();
+			// Override the base user data with any data in the session.
+			$temp = (array) $app->getUserState('com_jinbound.page.data', array());
+			foreach ($temp as $k => $v)
+			{
+				$this->data->$k = $v;
+			}
+		}
+		return $this->data;
 	}
 }

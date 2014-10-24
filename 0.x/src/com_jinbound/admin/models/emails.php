@@ -23,6 +23,7 @@ class JInboundModelEmails extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.emails';
 	protected $context  = 'com_jinbound.emails';
 	
 	/**

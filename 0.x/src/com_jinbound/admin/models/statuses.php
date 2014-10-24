@@ -19,6 +19,14 @@ JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
 class JInboundModelStatuses extends JInboundListModel
 {
 	/**
+	 * Model context string.
+	 *
+	 * @var		string
+	 */
+	public $_context = 'com_jinbound.statuses';
+	protected $context  = 'com_jinbound.statuses';
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param       array   An optional associative array of configuration settings.
@@ -39,12 +47,6 @@ class JInboundModelStatuses extends JInboundListModel
 		
 		parent::__construct($config);
 	}
-	/**
-	 * Model context string.
-	 *
-	 * @var		string
-	 */
-	protected $context  = 'com_jinbound.statuses';
 	
 	protected function getListQuery()
 	{

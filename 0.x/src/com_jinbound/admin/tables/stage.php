@@ -22,7 +22,7 @@ class JInboundTableStage extends JInboundTable
 	 */
 	protected function _getAssetName() {
 		$k = $this->_tbl_key;
-		return 'com_jinbound.stage.'.(int) $this->k;
+		return 'com_jinbound.stage.'.(int) $this->$k;
 	}
 	
 	/**

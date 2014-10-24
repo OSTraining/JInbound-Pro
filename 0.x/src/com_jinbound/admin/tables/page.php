@@ -21,7 +21,7 @@ class JInboundTablePage extends JInboundTable
 	 */
 	protected function _getAssetName() {
 		$k = $this->_tbl_key;
-		return 'com_jinbound.page.'.(int) $this->k;
+		return 'com_jinbound.page.'.(int) $this->$k;
 	}
 	
 	/**

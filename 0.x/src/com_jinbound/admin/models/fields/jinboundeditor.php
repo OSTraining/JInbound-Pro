@@ -34,6 +34,9 @@ class JFormFieldJinboundEditor extends JFormFieldEditor
 			$tags[] = $tmp;
 		}
 		
+		$dispatcher = JDispatcher::getInstance();
+		$dispatcher->trigger('onJinboundEditorTags', array(&$this, &$tags));
+		
 		reset($tags);
 		
 		return $tags;

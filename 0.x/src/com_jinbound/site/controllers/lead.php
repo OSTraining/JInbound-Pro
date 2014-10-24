@@ -15,6 +15,9 @@ JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller'
 
 class JInboundControllerLead extends JInboundBaseController
 {
+	public $_context = 'com_jinbound.page';
+	protected $context = 'com_jinbound.page';
+	
 	public function save()
 	{
 		$app             = JFactory::getApplication();
@@ -53,6 +56,22 @@ class JInboundControllerLead extends JInboundBaseController
 		// get a page model so we can pull the formbuilder variable from it
 		$model      = $this->getModel('Page', 'JInboundModel');
 		$page       = $model->getItem($page_id);
+		$form       = $model->getForm();
+		if (false === $model->validate($form, $raw_data))
+		{
+			$errors = $model->getErrors();
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+				if ($errors[$i] instanceof Exception) {
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				}
+				else {
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+			$app->setUserState('com_jinbound.page.data', $raw_data);
+			$app->redirect(JRoute::_('index.php?option=com_jinbound&view=page&id='.$page_id.'&Itemid='.(int)$app->input->get('Itemid',0), false));
+			return false;
+		}
 		$redirect   = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
 		if (!$page || empty($page->id))
 		{
@@ -318,7 +337,10 @@ class JInboundControllerLead extends JInboundBaseController
 		$result = $dispatcher->trigger('onContentBeforeSave', array('com_jinbound.conversion', &$conversion, true));
 		if (in_array(false, $result, true))
 		{
-			throw new RuntimeException($conversion->getError(), 500);
+			$app->enqueueMessage($conversion->getError(), 'warning');
+			$app->setUserState('com_jinbound.page.data', $raw_data);
+			$app->redirect(JRoute::_('index.php?option=com_jinbound&view=page&id='.$page_id.'&Itemid='.(int)$app->input->get('Itemid',0), false));
+			return false;
 		}
 		// store the data
 		if (!$conversion->store())
@@ -404,6 +426,8 @@ class JInboundControllerLead extends JInboundBaseController
 				$redirect = JURI::root();
 				break;
 		}
+		
+		$app->setUserState('com_jinbound.page.data', array());
 		
 		if (empty($message))
 		{

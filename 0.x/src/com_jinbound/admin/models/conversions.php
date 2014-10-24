@@ -23,6 +23,7 @@ class JInboundModelConversions extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.conversions';
 	protected $context  = 'com_jinbound.conversions';
 	
 	/**

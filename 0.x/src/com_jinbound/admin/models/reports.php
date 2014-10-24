@@ -18,6 +18,43 @@ JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
  */
 class JInboundModelReports extends JInboundListModel
 {
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 */
+	protected function populateState($ordering = null, $direction = null)
+	{
+		parent::populateState($ordering, $direction);
+		
+		$app    = JFactory::getApplication();
+		
+		foreach (array('page', 'campaign', 'start', 'end') as $var) {
+			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
+		}
+	}
+
+	/**
+	 * Method to get a store id based on model configuration state.
+	 *
+	 * This is necessary because the model is used by the component and
+	 * different modules that might need different sets of data or different
+	 * ordering requirements.
+	 *
+	 * @param	string		$id	A prefix for the store id.
+	 *
+	 * @return	string		A store id.
+	 */
+	protected function getStoreId($id = '')
+	{
+		// Compile the store id.
+		$id	.= ':'.$this->getState('filter.campaign');
+		$id	.= ':'.$this->getState('filter.page');
+
+		return parent::getStoreId($id);
+	}
+	
 	/**
 	 * Model context string.
 	 *
@@ -43,11 +80,15 @@ class JInboundModelReports extends JInboundListModel
 	 * @return integer
 	 */
 	public function getVisitCount() {
-		$this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-			->select('SUM(Page.hits)')
-			->from('#__jinbound_pages AS Page')
+		$query = $this->getDbo()->getQuery(true)
+			->select('SUM(PageHits.hits)')
+			->from('#__jinbound_landing_pages_hits AS PageHits')
+			->leftJoin('#__jinbound_pages AS Page ON Page.id = PageHits.page_id')
 			->where('Page.published = 1')
-		);
+		;
+		
+		
+		$this->getDbo()->setQuery($query);
 		
 		try {
 			$count = $this->getDbo()->loadResult();
@@ -67,21 +108,23 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getContactsCount()
 	{
+		$query = $this->getDbo()->getQuery(true)
+			->select('COUNT(DISTINCT Contact.id)')
+			->from('#__jinbound_contacts AS Contact')
+			->leftJoin('(' . $this->getDbo()->getQuery(true)
+				->select('s1.*')
+				->from('#__jinbound_contacts_statuses AS s1')
+				->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+				->where('s2.contact_id IS NULL')
+			. ') AS ContactStatus ON (ContactStatus.contact_id = Contact.id)')
+			->leftJoin('#__jinbound_lead_statuses AS Status ON ContactStatus.status_id = Status.id')
+			->where('(Status.active = 1 OR Status.active IS NULL)') // users with no status are probably new and something went wonky
+			->where('Contact.published = 1')
+		;
+		
 		try
 		{
-			$count = $this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-				->select('COUNT(DISTINCT Contact.id)')
-				->from('#__jinbound_contacts AS Contact')
-				->leftJoin('(' . $this->getDbo()->getQuery(true)
-					->select('s1.*')
-					->from('#__jinbound_contacts_statuses AS s1')
-					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
-					->where('s2.contact_id IS NULL')
-				. ') AS ContactStatus ON (ContactStatus.contact_id = Contact.id)')
-				->leftJoin('#__jinbound_lead_statuses AS Status ON ContactStatus.status_id = Status.id')
-				->where('(Status.active = 1 OR Status.active IS NULL)') // users with no status are probably new and something went wonky
-				->where('Contact.published = 1')
-			)->loadResult();
+			$count = $this->getDbo()->setQuery($query)->loadResult();
 		}
 		catch (Exception $e)
 		{
@@ -129,11 +172,13 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getRecentContacts()
 	{
-		$app   = JFactory::getApplication();
-		$input = $app->input;
-		$start = $input->get('filter_begin', '', 'string');
-		$end   = $input->get('filter_end', '', 'string');
-		$query = $this->getDbo()->getQuery(true)
+		$app      = JFactory::getApplication();
+		$input    = $app->input;
+		$start    = $input->get('filter_start', '', 'string');
+		$end      = $input->get('filter_end', '', 'string');
+		$campaign = $input->get('filter_campaign', '', 'string');
+		$page     = $input->get('filter_page', '', 'string');
+		$query    = $this->getDbo()->getQuery(true)
 			->select('Contact.id AS id')
 			->select('Contact.created AS date')
 			->select('CONCAT_WS(' . $this->getDbo()->quote(' ') . ', Contact.first_name, Contact.last_name) AS name')
@@ -151,6 +196,22 @@ class JInboundModelReports extends JInboundListModel
 			->group('Conversion.id')
 			->order('Contact.created ASC')
 		;
+		
+		if (!empty($campaign))
+		{
+			$query->where('Contact.id IN (('
+				. $this->getDbo()->getQuery(true)
+				->select('ContactCampaign.contact_id')
+				->from('#__jinbound_contacts_campaigns AS ContactCampaign')
+				->where('ContactCampaign.campaign_id = ' . (int) $campaign)
+				->where('ContactCampaign.enabled = 1')
+				. '))');
+		}
+		
+		if (!empty($page))
+		{
+			$query->where('Page.id = ' . (int) $page);
+		}
 		
 		if (!empty($start))
 		{
@@ -203,11 +264,13 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getTopPages()
 	{
-		$app   = JFactory::getApplication();
-		$input = $app->input;
-		$start = $input->get('filter_begin', '', 'string');
-		$end   = $input->get('filter_end', '', 'string');
-		$query = $this->getDbo()->getQuery(true)
+		$app      = JFactory::getApplication();
+		$input    = $app->input;
+		$start    = $input->get('filter_start', '', 'string');
+		$end      = $input->get('filter_end', '', 'string');
+		$campaign = $input->get('filter_campaign', '', 'string');
+		$page     = $input->get('filter_page', '', 'string');
+		$query    = $this->getDbo()->getQuery(true)
 			->select('Page.id AS id')
 			->select('Page.name AS name')
 			->select('Page.hits AS hits')
@@ -225,13 +288,13 @@ class JInboundModelReports extends JInboundListModel
 			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Page.campaign')
 			->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
 			->leftJoin('('
-				. $db->getQuery(true)
+				. $this->getDbo()->getQuery(true)
 					->select('s1.*')
 					->from('#__jinbound_contacts_statuses AS s1')
 					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
 					->where('s2.contact_id IS NULL')
 				. ') AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id = Submission.contact_id AND Conversion.status_id IN (('
-				. $db->getQuery(true)
+				. $this->getDbo()->getQuery(true)
 					->select('Status.id')
 					->from('#__jinbound_lead_statuses AS Status')
 					->where('Status.final = 1')
@@ -241,6 +304,16 @@ class JInboundModelReports extends JInboundListModel
 			->order('conversion_rate DESC')
 			->order('Page.hits DESC')
 		;
+		
+		if (!empty($campaign))
+		{
+			$query->where('Campaign.id = ' . (int) $campaign);
+		}
+		
+		if (!empty($page))
+		{
+			$query->where('Page.id = ' . (int) $page);
+		}
 		
 		if (!empty($start))
 		{
@@ -464,17 +537,33 @@ class JInboundModelReports extends JInboundListModel
 	{
 		$dates = $this->_getDateRanges($start, $end);
 		$query = $this->getDbo()->getQuery(true)
-			->select('day, SUM(hits) AS hits')
-			->from('#__jinbound_landing_pages_hits')
-			->group('day')
+			->select('PageHit.day, SUM(PageHit.hits) AS hits')
+			->from('#__jinbound_landing_pages_hits AS PageHit')
+			->group('PageHit.day')
 		;
 		if (!empty($start))
 		{
-			$query->where('day >= ' . $this->getDbo()->quote($start));
+			$query->where('PageHit.day >= ' . $this->getDbo()->quote($start));
 		}
 		if (!empty($end))
 		{
-			$query->where('day <= ' . $this->getDbo()->quote($end));
+			$query->where('PageHit.day <= ' . $this->getDbo()->quote($end));
+		}
+		$campaign = $this->getState('filter.campaign');
+		if (!empty($campaign))
+		{
+			$query->where('PageHit.page_id IN (('
+				. $this->getDbo()->getQuery(true)
+				->select('Page.id')
+				->from('#__jinbound_pages AS Page')
+				->where('Page.campaign = ' . (int) $campaign)
+				. '))'
+			);
+		}
+		$page = $this->getState('filter.page');
+		if (!empty($page))
+		{
+			$query->where('PageHit.page_id = ' . (int) $page);
 		}
 		$days = $this->getDbo()->setQuery($query)->loadObjectList();
 		$data = array();
@@ -501,17 +590,52 @@ class JInboundModelReports extends JInboundListModel
 	{
 		$dates = $this->_getDateRanges($start, $end);
 		$query = $this->getDbo()->getQuery(true)
-			->select('DATE(created) AS day, COUNT(id)')
-			->from('#__jinbound_contacts')
+			->select('DATE(Contact.created) AS day, COUNT(Contact.id) AS total')
+			->from('#__jinbound_contacts AS Contact')
 			->group('day')
 		;
 		if (!empty($start))
 		{
-			$query->where('created LIKE ' . $this->getDbo()->quote($start . '%'));
+			try {
+				$startdate = new DateTime($start);
+				$query->where('Contact.created > ' . $this->getDbo()->quote($startdate->format('Y-m-d H:i:s')));
+			}
+			catch (Exception $ex) {
+				// nothing
+			}
 		}
 		if (!empty($end))
 		{
-			$query->where('created LIKE ' . $this->getDbo()->quote($end . '%'));
+			try {
+				$enddate = new DateTime($end);
+				$query->where('Contact.created < ' . $this->getDbo()->quote($enddate->format('Y-m-d H:i:s')));
+			}
+			catch (Exception $ex) {
+				// nothing
+			}
+		}
+		$campaign = $this->getState('filter.campaign');
+		if (!empty($campaign))
+		{
+			$query->where('Contact.id IN (('
+				. $this->getDbo()->getQuery(true)
+				->select('ContactCampaign.contact_id')
+				->from('#__jinbound_contacts_campaigns AS ContactCampaign')
+				->where('ContactCampaign.campaign_id = ' . (int) $campaign)
+				->where('ContactCampaign.enabled = 1')
+				. '))'
+			);
+		}
+		$page = $this->getState('filter.page');
+		if (!empty($page))
+		{
+			$query->where('Contact.id IN (('
+				. $this->getDbo()->getQuery(true)
+				->select('Conversion.contact_id')
+				->from('#__jinbound_conversions AS Conversion')
+				->where('Conversion.page_id = ' . (int) $page)
+				. '))'
+			);
 		}
 		$days = $this->getDbo()->setQuery($query)->loadObjectList();
 		$data = array();
@@ -523,7 +647,7 @@ class JInboundModelReports extends JInboundListModel
 			{
 				if ($day->day == $date)
 				{
-					$count++;
+					$count += (int) $day->total;
 					break;
 				}
 			}
@@ -545,11 +669,39 @@ class JInboundModelReports extends JInboundListModel
 		;
 		if (!empty($start))
 		{
-			$query->where('a.created LIKE ' . $this->getDbo()->quote($start . '%'));
+			try {
+				$startdate = new DateTime($start);
+				$query->where('a.created > ' . $this->getDbo()->quote($startdate->format('Y-m-d H:i:s')));
+			}
+			catch (Exception $ex) {
+				// nothing
+			}
 		}
 		if (!empty($end))
 		{
-			$query->where('a.created LIKE ' . $this->getDbo()->quote($end . '%'));
+			try {
+				$enddate = new DateTime($end);
+				$query->where('a.created < ' . $this->getDbo()->quote($enddate->format('Y-m-d H:i:s')));
+			}
+			catch (Exception $ex) {
+				// nothing
+			}
+		}
+		$campaign = $this->getState('filter.campaign');
+		if (!empty($campaign))
+		{
+			$query->where('a.campaign_id = ' . (int) $campaign);
+		}
+		$page = $this->getState('filter.page');
+		if (!empty($page))
+		{
+			$query->where('a.campaign_id IN (('
+				. $this->getDbo()->getQuery(true)
+				->select('p.campaign')
+				->from('#__jinbound_pages AS p')
+				->where('p.id = ' . (int) $page)
+				. '))'
+			);
 		}
 		$days = $this->getDbo()->setQuery($query)->loadObjectList();
 		$data = array();

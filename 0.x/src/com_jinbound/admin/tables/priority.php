@@ -22,7 +22,7 @@ class JInboundTablePriority extends JInboundTable
 	 */
 	protected function _getAssetName() {
 		$k = $this->_tbl_key;
-		return 'com_jinbound.priority.'.(int) $this->k;
+		return 'com_jinbound.priority.'.(int) $this->$k;
 	}
 	
 	/**

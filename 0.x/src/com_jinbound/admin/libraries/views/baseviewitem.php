@@ -29,6 +29,8 @@ class JInboundItemView extends JInboundView
 		$this->item = $item;
 		$this->canDo = JInbound::getActions();
 		
+		$this->prepareItem();
+		
 		parent::display($tpl, $safeparams);
 		$this->setDocument();
 	}
@@ -94,5 +96,9 @@ class JInboundItemView extends JInboundView
 		$isNew = ($this->item->id < 1);
 		$document = JFactory::getDocument();
 		$document->setTitle(JText::_(strtoupper(JInbound::COM).'_'.strtoupper($this->_name).'_'.($isNew ? 'CREATING' : 'EDITING')));
+	}
+	
+	public function prepareItem() {
+		// stub
 	}
 }

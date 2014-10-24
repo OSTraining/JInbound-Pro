@@ -24,6 +24,7 @@ class JInboundModelContacts extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.contacts';
 	protected $context  = 'com_jinbound.contacts';
 	
 	/**
@@ -58,17 +59,10 @@ class JInboundModelContacts extends JInboundListModel
 		$format = $app->input->get('format', '', 'cmd');
 		$end    = ('json' == $format ? '.json' : '');
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start'.$end, 'filter_start', '', 'string');
-		$this->setState('filter.start', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end'.$end, 'filter_end', '', 'string');
-		$this->setState('filter.end', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.priority'.$end, 'filter_priority', '', 'int');
-		$this->setState('filter.priority', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.status'.$end, 'filter_status', '', 'int');
-		$this->setState('filter.status', $value);
+		foreach (array('start', 'end', 'campaign', 'page', 'priority', 'status') as $var) {
+			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var.$end, 'filter_'.$var, '', 'string');
+			$this->setState('filter.'.$var, $value);
+		}
 	}
 
 	/**
@@ -87,6 +81,8 @@ class JInboundModelContacts extends JInboundListModel
 		// Compile the store id.
 		$id	.= ':'.serialize($this->getState('filter.start'));
 		$id	.= ':'.serialize($this->getState('filter.end'));
+		$id	.= ':'.serialize($this->getState('filter.campaign'));
+		$id	.= ':'.serialize($this->getState('filter.page'));
 		$id	.= ':'.serialize($this->getState('filter.priority'));
 		$id	.= ':'.serialize($this->getState('filter.status'));
 
@@ -136,8 +132,38 @@ class JInboundModelContacts extends JInboundListModel
 	
 	protected function getListQuery()
 	{
-		// Create a new query object.
+		$start    = $this->getState('filter.start');
+		$end      = $this->getState('filter.end');
+		$campaign = $this->getState('filter.campaign');
+		$page     = $this->getState('filter.page');
+		
+		// what the hell?
+		if (is_object($page)) {
+			$page = '';
+		}
+		
 		$db = $this->getDbo();
+		$join = $db->getQuery(true);
+		
+		// start preparing a subquery that will be joined to the main query
+		// that determines the latest conversion by a contact
+		$on = array('c1.contact_id = c2.contact_id', 'c1.created < c2.created');
+		// add in page filter
+		if (!empty($page))
+		{
+			$on[] = 'c2.page_id = ' . (int) $page;
+		}
+		if (!empty($campaign))
+		{
+			$on[] = 'c2.page_id IN ((SELECT id FROM #__jinbound_pages WHERE campaign = ' . ((int) $campaign) . '))';
+		}
+		// create the join for latest
+		$join
+			->select('c1.*')
+			->from('#__jinbound_conversions AS c1')
+			->leftJoin('#__jinbound_conversions AS c2 ON ' . implode(' AND ', $on))
+			->where('c2.contact_id IS NULL')
+		;
 		
 		// select columns
 		$query = $db->getQuery(true)
@@ -150,15 +176,24 @@ class JInboundModelContacts extends JInboundListModel
 			->select('Latest.page_id AS latest_conversion_page_id')
 			->select('LatestPage.name AS latest_conversion_page_name')
 			->select('LatestPage.formname AS latest_conversion_page_formname')
-			->leftJoin('(' . $this->getDbo()->getQuery(true)
-				->select('c1.*')
-				->from('#__jinbound_conversions AS c1')
-				->leftJoin('#__jinbound_conversions AS c2 ON c1.contact_id = c2.contact_id AND c1.created < c2.created')
-				->where('c2.contact_id IS NULL')
-			. ') AS Latest ON (Latest.contact_id = Contact.id)')
+			->leftJoin('(' . $join . ') AS Latest ON (Latest.contact_id = Contact.id)')
 			->leftJoin('#__jinbound_pages AS LatestPage ON LatestPage.id = Latest.page_id')
+			->where('LatestPage.id IS NOT NULL')
 			->group('Contact.id')
 		;
+		
+		// filter pages
+		if (!empty($page))
+		{
+			$query->where('LatestPage.id = ' . (int) $page);
+		}
+		
+		// filter campaigns
+		if (!empty($campaign))
+		{
+			$query->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.contact_id = Contact.id AND ContactCampaign.campaign_id = ' . (int) $campaign);
+			$query->where('ContactCampaign.campaign_id IS NOT NULL');
+		}
 		
 		// add author to query
 		//$this->appendAuthorToQuery($query, 'Contact');
@@ -168,37 +203,35 @@ class JInboundModelContacts extends JInboundListModel
 		));
 		$this->filterPublished($query, $this->getState('filter.published'), 'Contact');
 		
-		$value = $this->getState('filter.start');
-		if (!empty($value))
+		if (!empty($start))
 		{
 			try
 			{
-				$date = new DateTime($value);
+				$startdate = new DateTime($start);
 			}
 			catch (Exception $e)
 			{
-				$date = false;
+				$startdate = false;
 			}
-			if ($date)
+			if ($startdate)
 			{
-				$query->where('Contact.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Contact.created > ' . $db->quote($startdate->format('Y-m-d h:i:s')));
 			}
 		}
 		
-		$value = $this->getState('filter.end');
-		if (!empty($value))
+		if (!empty($end))
 		{
 			try
 			{
-				$date = new DateTime($value);
+				$enddate = new DateTime($end);
 			}
 			catch (Exception $e)
 			{
-				$date = false;
+				$enddate = false;
 			}
-			if ($date)
+			if ($enddate)
 			{
-				$query->where('Contact.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
+				$query->where('Contact.created < ' . $db->quote($enddate->format('Y-m-d h:i:s')));
 			}
 		}
 		
