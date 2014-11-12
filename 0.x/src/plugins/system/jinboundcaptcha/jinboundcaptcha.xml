@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>plg_system_jinboundcaptcha</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_captcha_version_number@</version>
+	<description>PLG_SYSTEM_JINBOUNDCAPTCHA_XML_DESCRIPTION</description>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundcaptcha.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinboundcaptcha">jinboundcaptcha.php</filename>
+		<filename>tmpl/default_sidebar_field_captcha.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+			</fieldset>
+		</fields>
+	</config>
+</extension>
