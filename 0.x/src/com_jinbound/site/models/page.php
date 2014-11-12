@@ -178,6 +178,10 @@ class JInboundModelPage extends JInboundAdminModel
 	
 	protected function loadFormData()
 	{
+		if (!property_exists($this, 'data'))
+		{
+			$this->data = null;
+		}
 		if ($this->data === null)
 		{
 			$this->data = new stdClass;
