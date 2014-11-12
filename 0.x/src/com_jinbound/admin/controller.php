@@ -67,7 +67,10 @@ class JInboundController extends JInboundBaseController
 			}
 			catch (Exception $e)
 			{
-				$errors[] = $e->getMessage();
+				// this query should not generate an error
+				if ('TRUNCATE TABLE #__jinbound_leads' !== $query) {
+					$errors[] = $e->getMessage();
+				}
 			}
 		}
 		if (!empty($errors))
