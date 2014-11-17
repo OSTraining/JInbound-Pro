@@ -152,8 +152,11 @@ JText::script('COM_JINBOUND_CANNOT_REMOVE_LAST_OPTION');
 		$("#<?php echo $this->input->id; ?>_elements .btn-block.btn-primary").removeClass('btn-primary');
 		$(this).addClass('btn-primary');
 		var tabs = $('#<?php echo $this->input->id; ?>_sidebar');
-		tabs.tabs('refresh');
-		tabs.tabs('option', 'active', -1);
+		if ('function' == typeof tabs.tabs)
+		{
+			tabs.tabs('refresh');
+			tabs.tabs('option', 'active', -1);
+		}
 		$('.<?php echo $this->input->id; ?>_fieldsettingsform').hide();
 		$('#<?php echo $this->input->id; ?>_' + $(this).attr('data-id')).show();
 	});
@@ -214,7 +217,7 @@ JText::script('COM_JINBOUND_CANNOT_REMOVE_LAST_OPTION');
 <?php
 if (!empty($this->value)) :
 	foreach ($this->value as $ename => $element) :
-		if (0 == $element['enabled'] || '__ordering' == $ename) :
+		if (!is_array($element) || (is_array($element) && 0 == $element['enabled']) || '__ordering' == $ename) :
 			continue;
 		endif;
 		switch ($ename) :

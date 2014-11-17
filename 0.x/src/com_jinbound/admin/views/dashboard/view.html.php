@@ -60,4 +60,14 @@ class JInboundViewDashboard extends JInboundView
 		
 		return parent::display($tpl, $safeparams);
 	}
+	
+	/**
+	 * used to add administrator toolbar
+	 */
+	public function addToolBar() {
+		parent::addToolBar();
+		if (JFactory::getUser()->authorise('core.admin', JInbound::COM)) {
+			JToolbarHelper::custom('reset', 'refresh.png', 'refresh_f2.png', 'COM_JINBOUND_RESET', false);
+		}
+	}
 }

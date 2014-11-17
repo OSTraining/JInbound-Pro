@@ -23,6 +23,7 @@ class JInboundModelPriorities extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.priorities';
 	protected $context  = 'com_jinbound.priorities';
 	
 	/**

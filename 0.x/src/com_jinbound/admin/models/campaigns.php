@@ -23,6 +23,7 @@ class JInboundModelCampaigns extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.campaigns';
 	protected $context  = 'com_jinbound.campaigns';
 	
 	/**

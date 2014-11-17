@@ -11,9 +11,17 @@ JHtml::_('behavior.tooltip');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 ?>
-
 <div id="jinbound_component" class="<?php echo $this->viewClass; ?>">
 	<form action="<?php echo JInboundHelperUrl::view($this->viewName); ?>" method="post" name="adminForm" id="adminForm">
+<?php if (!empty( $this->sidebar)) : ?>
+		<div id="j-sidebar-container" class="span2">
+			<?php echo $this->sidebar; ?>
+		</div>
+		<div id="j-main-container" class="span10">
+<?php else : ?>
+		<div id="j-main-container">
+<?php endif;?>
+	
 <?php echo $this->loadTemplate('list_top'); ?>
 		<div class="row-fluid">
 			<?php
@@ -36,6 +44,8 @@ $listDirn  = $this->state->get('list.direction');
 				<?php echo JHtml::_('form.token'); ?>
 			</div>
 		</div>
+	</div>
+	
 	</form>
 </div>
 <?php echo $this->loadTemplate('footer'); ?>

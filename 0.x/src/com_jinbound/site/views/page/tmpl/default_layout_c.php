@@ -25,10 +25,12 @@ defined('JPATH_PLATFORM') or die;
 	<div class="span9">
 		<div class="row-fluid">
 			<div class="span12">
-				<div class="pull-right">
-					<?php echo $this->loadTemplate('image'); ?>
+				<div>
+					<div class="pull-right">
+						<?php echo $this->loadTemplate('image'); ?>
+					</div>
+					<?php echo $this->loadTemplate('body'); ?>
 				</div>
-				<?php echo $this->loadTemplate('body'); ?>
 			</div>
 		</div>
 	</div>

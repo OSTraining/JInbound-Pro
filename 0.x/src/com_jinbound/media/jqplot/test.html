@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>jqplot test</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="excanvas.js"></script><![endif]-->
+		<script language="javascript" type="text/javascript" src="jquery.min.js"></script>
+		<script language="javascript" type="text/javascript" src="jquery.jqplot.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="jquery.jqplot.css" />
+	</head>
+	<body>
+		<div id="chartdiv" style="height:400px;width:300px;"></div>
+		<script type="text/javascript">
+			(function($){$(function(){
+				$.jqplot('chartdiv',
+					[
+						[
+							[1, 2]
+						,	[3, 5.12]
+						,	[5, 13.1]
+						,	[7, 33.6]
+						,	[9, 85.9]
+						,	[11, 219.9]
+						]
+					,	[
+							[2, 1]
+						,	[5.12, 3]
+						,	[13.1, 5]
+						,	[33.6, 7]
+						,	[85.9, 9]
+						,	[219.9, 11]
+						]
+					]
+				,	{
+						title: 'Test Plot'
+					,	series: [
+							{}
+						,	{
+								xaxis: 'x2axis', yaxis: 'y2axis'
+							}
+						]
+					,	axes: {
+							xaxis: {min: 0, max: 300, label: 'Test 1 X'}
+						,	yaxis: {min: 0, max: 300, label: 'Test 1 Y'}
+						,	x2axis: {min: 0, max: 200, label: 'Test 2 X', autoscale: true}
+						,	y2axis: {min: 0, max: 200, label: 'Test 2 Y', autoscale: true}
+						}
+					}
+				);
+			});})(jQuery);
+		</script>
+	</body>
+</html>

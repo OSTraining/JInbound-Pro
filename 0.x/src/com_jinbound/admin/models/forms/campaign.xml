@@ -31,6 +31,26 @@
 			class="input-block-level"
 			default="1"
 		/>
+		
+		<field
+			id="conversion_url" name="conversion_url"
+			type="text"
+			label="COM_JINBOUND_CONVERSION_URL"
+			description="COM_JINBOUND_CONVERSION_URL_DESC"
+			class="input-block-level"
+		/>
+
+		<field
+			id="greedy" name="greedy"
+			type="radio"
+			label="COM_JINBOUND_GREEDY_CAMPAIGN"
+			description="COM_JINBOUND_GREEDY_CAMPAIGN_DESC"
+			class="radio btn-group btn-group-yesno"
+			default="0"
+		>
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
 
 	</fieldset>
 </form>

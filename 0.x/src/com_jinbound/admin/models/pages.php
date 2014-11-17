@@ -23,6 +23,7 @@ class JInboundModelPages extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.pages';
 	protected $context  = 'com_jinbound.pages';
 	
 	private $_registryColumns = array('formbuilder');
@@ -42,6 +43,7 @@ class JInboundModelPages extends JInboundListModel
 			,	'Page.hits'
 			,	'submissions'
 			,	'conversions'
+			,	'conversion_rate'
 			);
 		}
 		
@@ -61,16 +63,17 @@ class JInboundModelPages extends JInboundListModel
 		$format = $app->input->get('format', '', 'cmd');
 		
 		foreach (array('category', 'campaign') as $var) {
-			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
+			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string');
+			$this->setState('filter.' . $var, $value);
 		}
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start', 'filter_start', '', 'string');
-		if ('json' != $format) $value = '';
-		$this->setState('filter.start', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end', 'filter_end', '', 'string');
-		if ('json' != $format) $value = '';
-		$this->setState('filter.end', $value);
+		foreach (array('start', 'end', 'page') as $var) {
+			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string');
+			if ('json' != $format) {
+				$value = '';
+			}
+			$this->setState('filter.' . $var, $value);
+		}
 		
 		$this->setState('layout.json', 'json' == $format);
 	}
@@ -91,6 +94,7 @@ class JInboundModelPages extends JInboundListModel
 		// Compile the store id.
 		$id	.= ':'.$this->getState('filter.category');
 		$id	.= ':'.$this->getState('filter.campaign');
+		$id	.= ':'.$this->getState('filter.page');
 		$id	.= ':'.$this->getState('filter.start');
 		$id	.= ':'.$this->getState('filter.end');
 		$id	.= ':'.$this->getState('layout.json');
@@ -102,24 +106,56 @@ class JInboundModelPages extends JInboundListModel
 	{
 		// Create a new query object.
 		$db = $this->getDbo();
+		// filters
+		$start = $this->getState('filter.start');
+		$end = $this->getState('filter.end');
+		if (!empty($start)) {
+			try {
+				$startdate = new DateTime($start);
+			}
+			catch (Exception $e) {
+				$startdate = false;
+			}
+		}
 		
+		if (!empty($end)) {
+			try {
+				$enddate = new DateTime($end);
+			}
+			catch (Exception $e) {
+				$enddate = false;
+			}
+		}
 		// main query
 		$query = $db->getQuery(true)
-			// Select the required fields from the table.
-			->select('Page.*, Category.title as category_name')
+			->select('Page.*')
+			->select('Category.title AS category_name')
+			->select('Campaign.name AS campaign_name')
+			->select('COUNT(DISTINCT Submission.contact_id) AS contact_submissions')
+			->select('GROUP_CONCAT(DISTINCT Submission.contact_id) AS contact_submission_ids')
+			->select('COUNT(DISTINCT Submission.id) AS submissions')
+			->select('GROUP_CONCAT(DISTINCT Submission.id) AS submission_ids')
+			->select('COUNT(DISTINCT Conversion.contact_id) AS conversions')
+			->select('GROUP_CONCAT(DISTINCT Conversion.contact_id) AS conversion_ids')
+			->select('ROUND(IF(COUNT(DISTINCT Submission.contact_id) > 0, (COUNT(DISTINCT Conversion.contact_id) / COUNT(DISTINCT Submission.contact_id)) * 100, 0), 2) AS conversion_rate')
 			->from('#__jinbound_pages AS Page')
 			->leftJoin('#__categories AS Category ON Category.id = Page.category')
-			// add on the conversion count by rejoining the leads based on final status
-			->select('COUNT(DISTINCT Conversion.id) AS conversions')
-			->select('GROUP_CONCAT(DISTINCT Conversion.id) AS conversion_ids')
-			->leftJoin('#__jinbound_leads AS Conversion ON Conversion.page_id = Page.id AND Conversion.published = 1 AND Conversion.status_id IN ((SELECT Status.id FROM #__jinbound_lead_statuses AS Status WHERE Status.final = 1 AND Status.published = 1))')
-			// add on the total submissions by counting leads
-			->select('COUNT(DISTINCT Lead.id) AS submissions')
-			->select('GROUP_CONCAT(DISTINCT Lead.id) AS submission_ids')
-			->leftJoin('#__jinbound_leads AS Lead ON Lead.page_id = Page.id AND Lead.published = 1 AND (Lead.status_id IN ((SELECT Status.id FROM #__jinbound_lead_statuses AS Status WHERE Status.active = 1 AND Status.published = 1)) OR Lead.status_id = 0)')
-			// add on the conversion rate based on submissions
-			->select('ROUND(IF(COUNT(DISTINCT Lead.id) > 0, (COUNT(DISTINCT Conversion.id) / COUNT(DISTINCT Lead.id)) * 100, 0), 2) AS conversion_rate')
-			// group by page
+			->leftJoin('#__jinbound_campaigns AS Campaign ON Campaign.id = Page.campaign')
+			->leftJoin('#__jinbound_conversions AS Submission ON Submission.page_id = Page.id AND Submission.published = 1')
+			
+			->leftJoin('('
+				. $db->getQuery(true)
+					->select('s1.*')
+					->from('#__jinbound_contacts_statuses AS s1')
+					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+					->where('s2.contact_id IS NULL')
+				. ') AS Conversion ON Conversion.campaign_id = Campaign.id AND Conversion.contact_id = Submission.contact_id AND Conversion.status_id IN (('
+				. $db->getQuery(true)
+					->select('Status.id')
+					->from('#__jinbound_lead_statuses AS Status')
+					->where('Status.final = 1')
+					->where('Status.published = 1')
+			. '))')
 			->group('Page.id')
 		;
 		
@@ -134,33 +170,17 @@ class JInboundModelPages extends JInboundListModel
 				$query->where('Page.' . $column . ' = ' . (int) $filter);
 			}
 		}
-		
-		$value = $this->getState('filter.start');
-		if (!empty($value)) {
-			try {
-				$date = new DateTime($value);
-			}
-			catch (Exception $e) {
-				$date = false;
-			}
-			if ($date) {
-				$query->where('Lead.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
-				$query->where('Conversion.created > ' . $db->quote($date->format('Y-m-d h:i:s')));
-			}
+		$filter = $this->getState('filter.page');
+		if (!empty($filter)) {
+			$query->where('Page.id = ' . (int) $filter);
 		}
 		
-		$value = $this->getState('filter.end');
-		if (!empty($value)) {
-			try {
-				$date = new DateTime($value);
-			}
-			catch (Exception $e) {
-				$date = false;
-			}
-			if ($date) {
-				$query->where('Lead.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
-				$query->where('Conversion.created < ' . $db->quote($date->format('Y-m-d h:i:s')));
-			}
+		if (!empty($startdate)) {
+			$query->where('Submission.created > ' . $db->quote($startdate->format('Y-m-d h:i:s')));
+		}
+		
+		if (!empty($enddate)) {
+			$query->where('Submission.created < ' . $db->quote($enddate->format('Y-m-d h:i:s')));
 		}
 		
 		// Add the list ordering clause.

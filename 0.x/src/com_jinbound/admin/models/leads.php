@@ -23,6 +23,7 @@ class JInboundModelLeads extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.leads';
 	protected $context  = 'com_jinbound.leads';
 	
 	/**

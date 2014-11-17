@@ -162,3 +162,23 @@ abstract class JInbound
 		return $result;
 	}
 }
+
+if (class_exists('JHelperContent')) {
+	class JinboundHelper extends JHelperContent
+	{
+		public static $extension = 'com_jinbound';
+		/**
+		 * Configure the Linkbar.
+		 *
+		 * @param   string  $vName  The name of the active view.
+		 *
+		 * @return  void
+		 */
+		public static function addSubmenu($vName)
+		{
+			JInbound::registerLibrary('JInboundView', 'views/baseview');
+			$comView = new JInboundView();
+			$comView->addMenuBar();
+		}
+	}
+}

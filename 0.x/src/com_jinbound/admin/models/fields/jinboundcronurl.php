@@ -18,7 +18,7 @@ class JFormFieldJinboundCronUrl extends JFormField
 	 * @see JFormField::getInput()
 	 */
 	protected function getInput() {
-		$url = JURI::root() . 'index.php?option=com_jinbound&task=cron';
+		$url = JURI::root() . 'index.php?option=com_jinbound&task=cron&format=raw&tmpl=component';
 		return '<a href="' . $url . '" target="_blank" style="float:left;">' . $url . '</a>';
 	}
 }

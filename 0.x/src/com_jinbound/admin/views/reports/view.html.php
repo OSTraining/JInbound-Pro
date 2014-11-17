@@ -13,8 +13,80 @@ JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 class JInboundViewReports extends JInboundListView
 {
+	
+	function display($tpl = null, $safeparams = false) {
+		$this->state = $this->get('State');
+		$this->filter_change_code = $this->getReportFormFilterChangeCode();
+		$this->campaign_filter = $this->getCampaignFilter();
+		$this->page_filter = $this->getPageFilter();
+		$display  = parent::display($tpl, $safeparams);
+		$min      = defined('JDEBUG') && JDEBUG ? '' : '.min';
+		$js       = $min . '.js';
+		$css      = $min . '.css';
+		$document = JFactory::getDocument();
+		if (method_exists($document, 'addScript'))
+		{
+			$document->addScript('../media/jinbound/jqplot/excanvas' . $js);
+			$document->addScript('../media/jinbound/jqplot/jquery.jqplot' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.dateAxisRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasTextRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasAxisTickRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.categoryAxisRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.barRenderer' . $js);
+		}
+		if (method_exists($document, 'addStyleSheet'))
+		{
+			$document->addStyleSheet('../media/jinbound/jqplot/jquery.jqplot' . $css);
+		}
+		return $display;
+	}
+	
+	public function getReportFormFilterChangeCode()
+	{
+		return "window.fetchReports("
+			. "window.jinbound_leads_start, "
+			. "window.jinbound_leads_limit, "
+			. "jQuery('#filter_start').val(), "
+			. "jQuery('#filter_end').val(), "
+			. "jQuery('#filter_campaign').find(':selected').val(), "
+			. "jQuery('#filter_page').find(':selected').val()"
+			. ");";
+	}
+	
+	public function getCampaignFilter()
+	{
+		$db = JFactory::getDbo();
+		$options = $db->setQuery($db->getQuery(true)
+			->select('id AS value, name AS text')
+			->from('#__jinbound_campaigns')
+			->order('name ASC')
+		)->loadObjectList();
+		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_CAMPAIGN')));
+		return JHtml::_('select.genericlist', $options, 'filter_campaign', array(
+			'list.attr' => array(
+				'onchange' => $this->filter_change_code
+			)
+		));
+	}
+	
+	public function getPageFilter()
+	{
+		$db = JFactory::getDbo();
+		$options = $db->setQuery($db->getQuery(true)
+			->select('id AS value, name AS text')
+			->from('#__jinbound_pages')
+			->order('name ASC')
+		)->loadObjectList();
+		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PAGE')));
+		return JHtml::_('select.genericlist', $options, 'filter_page', array(
+			'list.attr' => array(
+				'onchange' => $this->filter_change_code
+			)
+		));
+	}
+	
 	public function getRecentLeads() {
-		return $this->_callModelMethod('getRecentLeads');
+		return $this->_callModelMethod('getRecentContacts');
 	}
 	
 	public function getVisitCount() {
@@ -26,15 +98,18 @@ class JInboundViewReports extends JInboundListView
 	}
 	
 	public function getLeadCount() {
-		return $this->_callModelMethod('getLeadCount');
+		return $this->_callModelMethod('getContactsCount');
+		//return $this->_callModelMethod('getLeadCount');
 	}
 	
 	public function getTopLandingPages() {
-		return $this->_callModelMethod('getTopLandingPages');
+		return $this->_callModelMethod('getTopPages');
+		//return $this->_callModelMethod('getTopLandingPages');
 	}
 	
 	public function getConversionCount() {
-		return $this->_callModelMethod('getConversionCount');
+		return $this->_callModelMethod('getConversionsCount');
+		//return $this->_callModelMethod('getConversionCount');
 	}
 	
 	public function getConversionRate() {

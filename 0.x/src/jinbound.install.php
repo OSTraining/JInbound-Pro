@@ -16,6 +16,8 @@ class pkg_JInboundInstallerScript
 		$debug = defined('JDEBUG') && JDEBUG;
 		$app   = JFactory::getApplication();
 		$db    = JFactory::getDbo();
+		// bugfixes
+		$this->runBugFixes();
 		// enable the plugins
 		$db->setQuery('UPDATE `#__extensions` SET `enabled`=1 WHERE `element`="jinbound" AND `folder` IN ("system", "content", "user") AND `type`="plugin"');
 		try {
@@ -116,5 +118,49 @@ class pkg_JInboundInstallerScript
 			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 		}
 	
+	}
+	
+	protected function runBugFixes()
+	{
+		$this->fixAssets();
+	}
+	
+	protected function fixAssets()
+	{
+		$parent = JTable::getInstance('Asset');
+		$parent->loadByName('com_jinbound');
+		$db     = JFactory::getDbo();
+		$db->setQuery($db->getQuery(true)
+			->delete('#__assets')
+			->where('name LIKE "%__jinbound_leads.%"')
+		)->query();
+		$assets = $db->setQuery($db->getQuery(true)
+			->select('id,name')->from('#__assets')
+			->where('name LIKE "%_jinbound%"')
+			->where('parent_id <> ' . (int) $parent->id)
+		)->loadObjectList();
+		if (empty($assets))
+		{
+			return;
+		}
+		$map = array(
+			'#__jinbound_campaigns'     => 'com_jinbound.campaign'
+		,	'#__jinbound_contacts'      => 'com_jinbound.contact'
+		,	'#__jinbound_conversions'   => 'com_jinbound.conversion'
+		,	'#__jinbound_emails'        => 'com_jinbound.email'
+		,	'#__jinbound_notes'         => 'com_jinbound.note'
+		,	'#__jinbound_pages'         => 'com_jinbound.page'
+		,	'#__jinbound_priorities'    => 'com_jinbound.priority'
+		,	'#__jinbound_stages'        => 'com_jinbound.stage'
+		,	'#__jinbound_lead_statuses' => 'com_jinbound.status'
+		);
+		foreach ($assets as $asset)
+		{
+			$table = JTable::getInstance('Asset');
+			$table->load($asset->id);
+			$table->name  = str_replace(array_keys($map), array_values($map), $table->name);
+			$table->title = $table->name;
+			$table->check() && $table->store() && $table->moveByReference($parent->id, 'last-child');
+		}
 	}
 }

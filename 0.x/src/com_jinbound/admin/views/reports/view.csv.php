@@ -23,7 +23,7 @@ class JInboundViewReports extends JInboundCsvView
 		}
 		switch ($this->getLayout()) {
 			case 'leads':
-				$leads = $model->getRecentLeads();
+				$leads = $model->getRecentContacts(); //$model->getRecentLeads();
 				$data  = array();
 				$extra = array();
 				if (!empty($leads)) {
@@ -52,7 +52,7 @@ class JInboundViewReports extends JInboundCsvView
 				$this->data = $data;
 				break;
 			case 'pages':
-				$this->data = $model->getTopLandingPages();
+				$this->data = $model->getTopPages(); // $model->getTopLandingPages();
 				break;
 			default:
 				JError::raiseError(400, JText::_('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND'));

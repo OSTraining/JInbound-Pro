@@ -26,6 +26,13 @@ class JInboundControllerReports extends JControllerAdmin
 	}
 	
 	protected function export($layout) {
-		$this->setRedirect(JInboundHelperUrl::view('reports', false, array('format' => 'csv', 'layout' => $layout)));
+		$input  = JFactory::getApplication()->input;
+		$params = array(
+			'format'       => 'csv'
+		,	'layout'       => $layout
+		,	'filter_start' => $input->get('filter_start', '', 'string')
+		,	'filter_end'   => $input->get('filter_end', '', 'string')
+		);
+		$this->setRedirect(JInboundHelperUrl::view('reports', false, $params));
 	}
 }

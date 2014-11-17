@@ -27,4 +27,23 @@ class JInboundTableNote extends JInboundTable
 	function __construct(&$db) {
 		parent::__construct('#__jinbound_notes', 'id', $db);
 	}
+	
+	/**
+	 * Redefined asset name, as we support action control
+	 */
+	protected function _getAssetName() {
+		$k = $this->_tbl_key;
+		return 'com_jinbound.note.'.(int) $this->$k;
+	}
+	
+	/**
+	 * We provide our global ACL as parent
+	 * @see JTable::_getAssetParentId()
+	 */
+	protected function _getAssetParentId($table = null, $id = null)
+	{
+		$asset = JTable::getInstance('Asset');
+		$asset->loadByName('com_jinbound');
+		return $asset->id;
+	}
 }

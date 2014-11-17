@@ -39,17 +39,20 @@ class JInboundCsvView extends JInboundBaseView
 			jexit();
 		}
 		
+		$out = fopen('php://output', 'w');
+		
 		$headers = array_keys(get_object_vars($data[0]));
-		echo '"' . implode('","', $headers) . '"';
+		fputcsv($out, $headers);
 		
 		foreach ($data as $item) {
 			$cols = array();
 			foreach ($headers as $col) {
-				$cols[] = $item->$col;
+				$cols[] = (is_object($item->$col) || is_array($item->$col) ? json_encode($item->$col) : $item->$col);
 			}
-			echo "\n" . '"' . implode('","', $cols) . '"';
+			fputcsv($out, $cols);
 		}
 		
+		fclose($out);
 		jexit();
 	}
 }

@@ -12,6 +12,24 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerNote extends JInboundFormController
 {
+	public function delete()
+	{
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		$model  = $this->getModel();
+		$input  = JFactory::getApplication()->input;
+		$ids    = $input->get('id', array(), 'array');
+		$lead   = $input->get('leadid', 0, 'int');
+		$delete = $model->delete($ids);
+		$notes  = $this->_getNotes($lead);
+		$return = array(
+			'notes'   => $notes
+		,	'error'   => $model->getError()
+		);
+		
+		echo json_encode($return);
+		jexit();
+	}
+	
 	public function save() {
 		$save = parent::save();
 		$data = JFactory::getApplication()->input->get('jform', array(), 'array');
@@ -19,22 +37,8 @@ class JInboundControllerNote extends JInboundFormController
 		if (is_array($data) && array_key_exists('lead_id', $data)) {
 			$lead = (int) $data['lead_id'];
 		}
-		$db = JFactory::getDbo();
-		$db->setQuery($db->getQuery(true)
-			->select('id, created, text')
-			->from('#__jinbound_notes')
-			->where('lead_id = ' . $lead)
-			->where('published = 1')
-		);
-		try {
-			$notes = $db->loadObjectList();
-			if (!is_array($notes) || empty($notes)) {
-				throw new Exception('Empty');
-			}
-		}
-		catch (Exception $e) {
-			$notes = array();
-		}
+		
+		$notes = $this->_getNotes($lead);
 		
 		$return = array(
 			'notes'   => $notes
@@ -44,5 +48,31 @@ class JInboundControllerNote extends JInboundFormController
 		
 		echo json_encode($return);
 		jexit();
+	}
+	
+	private function _getNotes($lead)
+	{
+		$db = JFactory::getDbo();
+		try
+		{
+			$notes = $db->setQuery($db->getQuery(true)
+				->select('n.id, n.lead_id, n.created, u.username AS author, n.text')
+				->from('#__jinbound_notes AS n')
+				->leftJoin('#__users AS u ON u.id = n.created_by')
+				->where('n.lead_id = ' . $lead)
+				->where('n.published = 1')
+				->group('n.id')
+			)->loadObjectList();
+			if (!is_array($notes) || empty($notes))
+			{
+				throw new Exception('Empty');
+			}
+		}
+		catch (Exception $e)
+		{
+			$notes = array();
+		}
+		
+		return $notes;
 	}
 }

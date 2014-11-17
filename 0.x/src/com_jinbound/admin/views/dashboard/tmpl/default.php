@@ -7,9 +7,31 @@
 
 defined('JPATH_PLATFORM') or die;
 
+JText::script('COM_JINBOUND_RESET_CONFIRM');
+
 ?>
+<script type="text/javascript">
+Joomla.submitbutton = function(task) {
+	if ('reset' === task && confirm(Joomla.JText._('COM_JINBOUND_RESET_CONFIRM'))) {
+		Joomla.submitform(task, document.getElementById('adminForm'));
+	}
+};
+</script>
+<form action="<?php echo JInboundHelperUrl::_(); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
+	<input type="hidden" name="task" value="" />
+	<?php echo JHtml::_('form.token'); ?>
+</form>
 <!-- Main Component container -->
 <div class="container-fluid" id="jinbound_component">
+<?php if (!empty( $this->sidebar)) : ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+<?php else : ?>
+	<div id="j-main-container">
+<?php endif;?>
+		
 	<!-- Main Dashboard columns -->
   <div class="row-fluid">
   	<!-- Left panel -->
@@ -22,29 +44,29 @@ defined('JPATH_PLATFORM') or die;
       </div>
       <!-- Row 2 - Buttons -->
       <div class="row-fluid" id="welcome_buttons">
-      	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
+      	<a href="<?php echo JInboundHelperUrl::view('campaigns'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/landing_pages.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LANDING_PAGES'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_1_CREATE_A_CAMPAIGN'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('emails'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/leads_nurturing.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_NURTURING_MANAGER'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_2_WRITE_EMAILS_FOR_YOUR_CAMPAIGN'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('leads'); ?>" class="span3 btn text-center">
+      	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
-	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
+	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/landing_pages.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_LEAD_MANAGER'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_3_CREATE_LANDING_PAGES_TO_GET_PEOPLE_INTO_YOUR_CAMPAIGN'); ?></span>
       	</a>
       	<a href="<?php echo JInboundHelperUrl::view('reports'); ?>" class="span3 btn text-center">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/reports.png'; ?>" />
 	      	</span>
-      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></span>
+      		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_4_GET_REPORTS_ON_PEOPLE_WHO_SIGNED_UP'); ?></span>
       	</a>
       </div>
       
@@ -59,6 +81,17 @@ defined('JPATH_PLATFORM') or die;
 						</div>
 					</div>
 					<?php echo $this->reports->glance; ?>
+					<?php
+						$filter_start = new DateTime();
+						$filter_end = clone $filter_start;
+						$filter_start->modify('-1 month');
+						$filter_end->modify('+1 day');
+						
+					?>
+					<input id="filter_start" type="hidden" value="<?php echo $filter_start->format('Y-m-d'); ?>" />
+					<input id="filter_end" type="hidden" value="<?php echo $filter_end->format('Y-m-d'); ?>" />
+					<select id="filter_campaign" style="display:none"><option value=""></option></select>
+					<select id="filter_page" style="display:none"><option value=""></option></select>
 				</div>
 			</div>
       <?php
@@ -69,55 +102,21 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 		<!-- Sidebar -->
 		<div class="span4">
-			<!-- Row 1 - links -->
 			<div class="well">
 				<img alt="<?php echo JText::_('COM_JINBOUND_CREATE_A_NEW'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/start_by_creating.png'; ?>" />
 				<ul>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 					<li><?php echo JHtml::link(JInboundHelperUrl::task('campaign.add'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('lead.add'), JText::_('COM_JINBOUND_LEAD')); ?></li>
+					<li><?php echo JHtml::link(JInboundHelperUrl::task('email.add'), JText::_('COM_JINBOUND_EMAIL')); ?></li>
+					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 				</ul>
-				<h3><img alt="<?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/view_reports.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_VIEW_REPORTS'); ?></span></h3>
-				<ul>
-					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_CONVERSIONS')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_LANDING_PAGE_REPORT')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::view('reports'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
-				</ul>
+				<h3><?php echo JHtml::link(JInboundHelperUrl::view('reports'), '<img alt="' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '" src="' . JInboundHelperUrl::media() . '/images/view_reports.png" /> <span>' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '</span>'); ?></h3>
 			</div>
-			<?php /*
-			<!-- Row 2: Updates -->
-			<div class="well">
-				<h4><img alt="<?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/alerts.png'; ?>" /> <span><?php echo JText::_('COM_JINBOUND_ALERTS_UPDATES'); ?></span></h4>
-				<div class="well">
-					something here
-				</div>
-				<a href="javascript:alert('need a jed url');" class="btn btn-block"><?php echo JText::_('COM_JINBOUND_PLEASE_RATE_US_ON_JED'); ?></a>
-				<h4><?php echo JText::_('COM_JINBOUND_CONNECT_FOR_GREAT_INBOUND_CONTENT'); ?></h4>
-				<div class="row-fluid">
-					<div class="span3 text-center">
-						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/twitter.jpg'); ?>" /></a>
-					</div>
-					<div class="span3 text-center">
-						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/rss.jpg'); ?>" /></a>
-					</div>
-					<div class="span3 text-center">
-						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/facebook.jpg'); ?>" /></a>
-					</div>
-					<div class="span3 text-center">
-						<a href="#"><img src="<?php echo $this->escape(JInboundHelperUrl::media() . '/images/youtube.jpg'); ?>" /></a>
-					</div>
-				</div>
-			</div>
-			<!-- Row 3 - banner -->
-			<div class="well">
-				AD BANNER
-			</div>
-			*/ ?>
-			<!-- Row 4 - other links -->
 			<div class="well"><?php echo $this->feed; ?></div>
 		</div>
 
   </div>
+	
+	</div>
 </div>
 <?php
 

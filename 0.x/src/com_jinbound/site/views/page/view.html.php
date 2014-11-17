@@ -41,6 +41,22 @@ class JInboundViewPage extends JInboundItemView
 		
 		return $display;
 	}
+	
+	public function prepareItem()
+	{
+		// trigger content events
+		JPluginHelper::importPlugin('content');
+		// "fix" for content plugins
+		foreach (array('maintext', 'sidebartext') as $text) {
+			$this->item->text = $this->item->$text;
+			// get dispatcher and trigger the event
+			$dispatcher = JDispatcher::getInstance();
+			$params = new JRegistry;
+			$dispatcher->trigger('onContentPrepare', array('com_jinbound.page', &$this->item, &$params, 0));
+			$this->item->$text = $this->item->text;
+			unset($this->item->text);
+		}
+	}
 
 	public function setDocument() {
 		parent::setDocument();

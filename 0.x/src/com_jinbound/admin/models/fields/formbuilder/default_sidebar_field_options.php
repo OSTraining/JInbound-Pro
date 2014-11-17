@@ -17,7 +17,7 @@ $this->_optname = $name;
 <div class="row-fluid">
 	<label for="<?php echo $id; ?>_options"><?php echo JText::_('COM_JINBOUND_FIELD_' . strtoupper($this->optionsInputName)); ?></label>
 </div>
-<div class="row-fluid formbuilder-field-options">
+<div class="row-fluid formbuilder-field-options well">
 	<div class="span12">
 		
 		<div class="formbuilder-option formbuilder-default-option">

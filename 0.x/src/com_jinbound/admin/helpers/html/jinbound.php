@@ -19,7 +19,17 @@ JInbound::registerHelper('url');
  */
 abstract class JHtmlJInbound
 {
-	public function priority($id, $priority_id, $prefix, $canChange) {
+	private function _stateSelect($state, $id, $campaign_id, $value, $options, $canChange)
+	{
+		$attr = 'class="change_' . $state . ' input-small" data-id="' . intval($id) . '" data-campaign="' . intval($campaign_id) . '"';
+		if (!$canChange) {
+			$attr .= ' disabled="disabled"';
+		}
+		
+		return JHtml::_('select.genericlist', $options, 'change_' . $state . '[' . $id . ']', $attr, 'id', 'name', $value);
+	}
+	
+	public function priority($id, $priority_id, $campaign_id, $prefix, $canChange) {
 		static $options;
 		
 		if (is_null($options)) {
@@ -43,25 +53,21 @@ abstract class JHtmlJInbound
 			}
 		}
 		
-		$attr = 'class="change_priority input-small"';
-		if (!$canChange) {
-			$attr .= ' disabled="disabled"';
-		}
-		
-		echo JHtml::_('select.genericlist', $options, 'change_priority[' . $id . ']', $attr, 'id', 'name', $priority_id);
+		echo JHtmlJInbound::_stateSelect('priority', $id, $campaign_id, $priority_id, $options, $canChange);
 	}
 	
-	public function status($id, $status_id, $prefix, $canChange) {
+	public function status($id, $status_id, $campaign_id, $prefix, $canChange) {
 		static $options;
 		
 		if (is_null($options)) {
-			// get the priorities
+			// get the statuses
 			$db = JFactory::getDbo();
 			$db->setQuery($db->getQuery(true)
 				->select('Status.id')
 				->select('Status.name')
 				->from('#__jinbound_lead_statuses AS Status')
 				->where('Status.published = 1')
+				->order('Status.ordering ASC')
 			);
 			
 			try {
@@ -75,12 +81,7 @@ abstract class JHtmlJInbound
 			}
 		}
 		
-		$attr = 'class="change_status input-small"';
-		if (!$canChange) {
-			$attr .= ' disabled="disabled"';
-		}
-		
-		echo JHtml::_('select.genericlist', $options, 'change_status[' . $id . ']', $attr, 'id', 'name', $status_id);
+		echo JHtmlJInbound::_stateSelect('status', $id, $campaign_id, $status_id, $options, $canChange);
 	}
 	
 	public function leadupdate() {
@@ -187,6 +188,9 @@ EOF
 			$notes = array();
 			$document = JFactory::getDocument();
 			$document->addScript(JInboundHelperUrl::media() . '/js/leadnotes.js');
+			
+			JText::script('COM_JINBOUND_CONFIRM_DELETE');
+			JText::script('COM_JINBOUND_NO_NOTES_FOUND');
 		}
 		
 		$id  = (int) $id;
@@ -194,9 +198,11 @@ EOF
 		if (!array_key_exists($key, $notes)) {
 			$db = JFactory::getDbo();
 			$db->setQuery($db->getQuery(true)
-				->select('*')
-				->from('#__jinbound_notes')
-				->where($db->quoteName('lead_id') . ' = ' . $id)
+				->select('Note.*, User.name AS author')
+				->from('#__jinbound_notes AS Note')
+				->leftJoin('#__users AS User ON Note.created_by = User.id')
+				->where('Note.lead_id = ' . $id)
+				->group('Note.id')
 			);
 			
 			try {
@@ -210,6 +216,8 @@ EOF
 			}
 		}
 		
+		$filter = JFilterInput::getInstance();
+		
 		?>
 		<div class="leadnotes btn-group">
 			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="leadnotes-count"><?php echo count($notes[$key]); ?></span> <i class="icon-pencil"> </i> <span class="carat"></span></a>
@@ -218,9 +226,11 @@ EOF
 					<div class="leadnotes-notes" data-stopPropagation="true">
 <?php if (!empty($notes[$key])) : foreach ($notes[$key] as $note) : ?>
 						<div class="leadnote alert" data-stopPropagation="true">
-							<a class="close" data-dismiss="alert" href="#" onclick="(function(){return confirm(Joomla.JText._('COM_JINBOUND_CONFIRM_DELETE'));})();">&times;</a>
-							<span class="label" data-stopPropagation="true"><?php echo $note->created; ?></span>
-							<div class="leadnote-text" data-stopPropagation="true"><?php echo JFilterInput::getInstance()->clean($note->text, 'string'); ?></div>
+							<a class="close" data-dismiss="alert" data-noteid="<?php echo $note->id; ?>" data-leadid="<?php echo $note->lead_id; ?>" href="javascript:;"
+								onclick="(function(){return confirm(Joomla.JText._('COM_JINBOUND_CONFIRM_DELETE'));})();"
+							>&times;</a>
+							<span class="label" data-stopPropagation="true"><?php echo $note->created; ?></span> <?php echo $filter->clean($note->author, 'string'); ?>
+							<div class="leadnote-text" data-stopPropagation="true"><?php echo $filter->clean($note->text, 'string'); ?></div>
 						</div>
 <?php endforeach; endif; ?>
 					</div>
@@ -315,7 +325,7 @@ EOF
 	public static function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
 				1       => array('unsetFinal',        'COM_JINBOUND_FINAL', 'COM_JINBOUND_HTML_UNSETFINAL_ITEM',      'COM_JINBOUND_FINAL',     false,  'default',              'default'),
-				0       => array('setFinal',          '',                     'COM_JINBOUND_HTML_SETFINAL_ITEM',    '',                     false,  'unfeatured',   'unfeatured'),
+				0       => array('setFinal',          '',                     'COM_JINBOUND_HTML_SETFINAL_ITEM',    '',                     false,  'notdefault',   'notdefault'),
 		);
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
@@ -323,7 +333,7 @@ EOF
 	public static function isactive($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
 				1       => array('unsetActive',        'COM_JINBOUND_ACTIVE', 'COM_JINBOUND_HTML_UNSETACTIVE_ITEM',      'COM_JINBOUND_ACTIVE',     false,  'default',              'default'),
-				0       => array('setActive',          '',                     'COM_JINBOUND_HTML_SETACTIVE_ITEM',    '',                     false,  'unfeatured',   'unfeatured'),
+				0       => array('setActive',          '',                     'COM_JINBOUND_HTML_SETACTIVE_ITEM',    '',                     false,  'notdefault',   'notdefault'),
 		);
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}

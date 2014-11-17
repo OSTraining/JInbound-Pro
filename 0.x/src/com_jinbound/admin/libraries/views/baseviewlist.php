@@ -49,24 +49,26 @@ class JInboundListView extends JInboundView
 		if (empty($this->_filters)) {
 			return;
 		}
-		if (JInbound::version()->isCompatible('3.0')) {
+		if (class_exists('JHtmlSidebar')) {
 			foreach ($this->_filters as $filter) {
 				if (empty($filter->options)) {
 					continue;
 				}
 				array_shift($filter->options);
 				$options = JHtml::_('select.options', $filter->options, 'value', 'text', $filter->default, true);
-				JSubMenuHelper::addFilter($filter->label, $filter->name, $options);
+				JHtmlSidebar::addFilter($filter->label, $filter->name, $options);
 			}
 			return;
 		}
+		$html = array();
 		foreach ($this->_filters as $filter) {
 			if (empty($filter->options)) {
 				continue;
 			}
 			$this->currentFilter = JHtml::_('select.genericlist', $filter->options, $filter->name, sprintf('id="%s" class="listbox" onchange="this.form.submit()"', $filter->name), 'value', 'text', $filter->default);
-			echo $this->loadTemplate('filter', 'default');
+			$html[] = $this->loadTemplate('filter', 'default');
 		}
+		return implode("\n", $html);
 	}
 
 	public function addToolBar() {

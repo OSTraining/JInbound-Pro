@@ -7,7 +7,7 @@
 # @copyright    Copyright (C) 2009 Yannick Gaultier. All rights reserved.
 # @copyright    Copyright (C) 2011 Anything Digital. All rights reserved.
 # @license      GNU/GPL
-###################################################################
+############################media#######################################
 -->
 <project name="jinbound" default="dist" basedir=".">
 	<property file="config.ini" />
@@ -30,11 +30,15 @@
 		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/content" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/system" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/captcha" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/user" />
 		<mkdir dir="${cfg.packages}/temp/staging/template" />
 		
 		<!-- calculate version strings -->
 		<condition property="str.versionforxml" value="${cfg.version}.${build.number}${cfg.versionsuffix}" else="${cfg.version}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.versioncaptchaforxml" value="${cfg.version.captcha}.${build.number}${cfg.versionsuffix}" else="${cfg.version}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<tstamp>
@@ -46,6 +50,9 @@
 			<istrue value="${cfg.addbuild}" />
 		</condition>
 		<condition property="str.version" value="${cfg.versionprefix}${cfg.version}" else="${cfg.version}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
+		<condition property="str.version.captcha" value="${cfg.versionprefix}${cfg.version.captcha}" else="${cfg.version.captcha}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
@@ -61,6 +68,8 @@
 		<property name="str.plg.content.file" value="${cfg.packages}/temp/packages/${str.plg.content.filename}" />
 		<property name="str.plg.sys.filename" value="${cfg.pfx.plg}system_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.file" value="${cfg.packages}/temp/packages/${str.plg.sys.filename}" />
+		<property name="str.plg.sys.captcha.filename" value="${cfg.pfx.plg}system_${cfg.name}captcha_${str.version.captcha}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sys.captcha.file" value="${cfg.packages}/current/${str.plg.sys.captcha.filename}" />
 		<property name="str.plg.user.filename" value="${cfg.pfx.plg}user_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
 		<property name="str.mod.bookmark.filename" value="${cfg.pfx.mod}${cfg.name}_social_bookmark_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
@@ -68,6 +77,7 @@
 		
 		<!-- perform filtering -->
 		<filter token="ant_version_number" value="${str.versionforxml}" />
+		<filter token="ant_captcha_version_number" value="${str.versioncaptchaforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
 		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
@@ -128,8 +138,8 @@
 		<copy todir="${cfg.packages}/temp/staging/component/media" filtering="false">
 			<fileset
 				dir="${cfg.dir}/${cfg.pfx.com}${cfg.name}/media"
-				includes="images/,bootstrap/,ui/"
-				excludes="**.git"
+				includes="images/,bootstrap/,jqplot/,ui/"
+				excludes="**.git,jqplot/jquery.js,jqplot/jquery.min.js,jqplot/test.html"
 			/>
 		</copy>
 		<!-- now read xml file (the one in temp directory, after search/replace operation -->
@@ -178,6 +188,15 @@
 			/>
 		</copy>
 
+		<!-- captcha plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/captcha" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/system/${cfg.name}captcha"
+				includes="${cfg.name}captcha.xml,${cfg.name}captcha.php,tmpl/,language/"
+				excludes="**.git"
+			/>
+		</copy>
+
 		<!-- user plugin -->
 		<copy todir="${cfg.packages}/temp/staging/plugins/user" filtering="true">
 			<fileset
@@ -206,6 +225,7 @@
 	<!-- Automatic changelog from svn commits comments -->
 	<target name="doChangelog" if="do.changelog">
 		<echo message="Building    | ${git.title}" />
+		<echo message="File        | ${git.log.file}" />
 		<echo message="--------------------------------------------" />
 		
 		<echo>Making changelog ...</echo>
@@ -216,8 +236,8 @@
 		<input message="GitHub password for user ${cfg.git.username}" addproperty="git.password">
 		</input>
 
-		<exec executable="${cfg.curl.bin}" outputproperty="gitlog.out" output="${git.log.file}">
-			<arg line="-s 'https://api.github.com/repos/${git.user}/${git.repo}/issues?filter=all&amp;state=closed&amp;labels=CL' -u ${cfg.git.username}:${git.password}" />
+		<exec executable="${cfg.curl.bin}">
+			<arg line="-o ${git.log.file} -s 'https://api.github.com/repos/${git.user}/${git.repo}/issues?filter=all&amp;state=closed&amp;labels=CL' -u ${cfg.git.username}:${git.password}" />
 		</exec>
 		<echo>Raw data fetched from repository</echo>
 		
@@ -264,6 +284,9 @@
 		</zip>
 		<zip destfile="${str.plg.sys.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/system" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.sys.captcha.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/captcha" excludes="" />
 		</zip>
 		<zip destfile="${str.plg.user.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/user" excludes="" />

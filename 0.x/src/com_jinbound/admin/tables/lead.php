@@ -10,6 +10,11 @@ defined('JPATH_PLATFORM') or die;
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
 JInbound::registerLibrary('JInboundTable', 'table');
 
+/**
+ * As of 1.1.0 this is no longer used
+ * 
+ * @deprecated
+ */
 class JInboundTableLead extends JInboundTable
 {
 	private $_contactData;

@@ -151,7 +151,7 @@
 	>
 		<field
 			id="formname" name="formname"
-			type="text"
+			type="text" required="true"
 			label="COM_JINBOUND_PAGE_FORMNAME"
 			description="COM_JINBOUND_PAGE_FORMNAME_DESC"
 			class="input-block-level"
@@ -163,7 +163,7 @@
 			label="COM_JINBOUND_PAGE_CAMPAIGN"
 			description="COM_JINBOUND_PAGE_CAMPAIGN_DESC"
 		/>
-
+<!--
 		<field
 			id="converts_on_another_form" name="converts_on_another_form"
 			type="list"
@@ -187,7 +187,7 @@
 			<option value="stop">COM_JINBOUND_STOP_THIS_LEAD_NURTURING_CAMPAIGN</option>
 			<option value="donotsend">COM_JINBOUND_DO_NOT_SEND_LEAD_NURTURING_CAMPAIGN</option>
 		</field>
-		
+-->
 		<field
 			id="formbuilder" name="formbuilder"
 			type="jinboundformbuilder"
@@ -326,7 +326,6 @@
 			<tag value="form:radio:fieldtitle" />
 			<tag value="form:dropdown:fieldtitle" />
 			-->
-			<tag value="captcha" />
 			<tag value="submit" />
 		</field>
 

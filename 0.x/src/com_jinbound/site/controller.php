@@ -25,9 +25,33 @@ class JInboundController extends JInboundBaseController
 	 * TODO
 	 */
 	function cron() {
+		// send reports emails
+		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/reports.php';
+		$model = $this->getModel('Reports', 'JInboundModel');
+		$model->send();
+		// handle sending campaign emails
 		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/emails.php';
 		$model = $this->getModel('Emails', 'JInboundModel');
 		$model->send();
+		// handle old tracks
+		$debug    = (int) JInbound::config('debug', 0);
+		$history  = (int) JInbound::config('history', 365);
+		$interval = $debug ? 'SECOND' : 'DAY';
+		if (0 < $history)
+		{
+			$db = JFactory::getDbo();
+			$db->setQuery($db->getQuery(true)
+				->delete('#__jinbound_tracks')
+				->where("created < DATE_SUB(NOW(), INTERVAL $history $interval)")
+			)->query();
+			if ($debug)
+			{
+				$count = $db->getAffectedRows();
+				echo "\n<h4>Clearing old Tracks...</h4>";
+				echo "\n<p>Removed $count tracks!</p>\n";
+			}
+		}
+		// exit
 		jexit();
 	}
 	
@@ -51,8 +75,8 @@ class JInboundController extends JInboundBaseController
 		// lookup contact based on email
 		$db->setQuery($db->getQuery(true)
 			->select('id')
-			->from('#__contact_details')
-			->where('email_to = ' . $db->quote($email))
+			->from('#__jinbound_contacts')
+			->where('email = ' . $db->quote($email))
 		);
 		try {
 			$contact_id = (int) $db->loadResult();
@@ -94,26 +118,38 @@ class JInboundController extends JInboundBaseController
 	}
 	
 	function landingpageurl() {
-		$id   = JFactory::getApplication()->input->get('id', 0, 'int');
-		$data = array();
-		if ($id) {
+		$id   = JFactory::getApplication()->input->get('id', array(), 'array');
+		$data = array('links' => array());
+		if (!empty($id)) {
 			JInbound::registerHelper('url');
-			$nonsef         = JInboundHelperUrl::view('page', false, array('id' => $id));
-			// Before continuing make sure we had an Itemid
-			if (!preg_match('/Itemid\=[1-9][0-9]*?/', $nonsef)) {
-				$data['error'] = JText::_('COM_JINBOUND_NEEDS_MENU');
+			if (!is_array($id)) {
+				$id = array($id);
 			}
-			else {
-				$sef            = JInboundHelperUrl::view('page', true, array('id' => $id));
-				$data['nonsef'] = JInboundHelperUrl::toFull($nonsef);
-				$data['sef']    = JInboundHelperUrl::toFull($sef);
-				$data['root']   = JURI::root();
-				$data['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
+			foreach ($id as $i) {
+				$link   = array();
+				$nonsef = JInboundHelperUrl::view('page', false, array('id' => $i));
+				// Before continuing make sure we had an Itemid
+				if (!preg_match('/Itemid\=[1-9][0-9]*?/', $nonsef)) {
+					$link['error'] = JText::_('COM_JINBOUND_NEEDS_MENU');
+				}
+				else {
+					$sef            = JInboundHelperUrl::view('page', true, array('id' => $i));
+					$link['nonsef'] = JInboundHelperUrl::toFull($nonsef);
+					$link['sef']    = JInboundHelperUrl::toFull($sef);
+					$link['root']   = JURI::root();
+					$link['rel']    = array('nonsef' => $nonsef, 'sef' => $sef);
+				}
+				$link['id'] = $i;
+				$data['links'][] = $link;
+			}
+			if (1 == count($id)) {
+				$data = array_shift($data['links']);
 			}
 		}
 		else {
 			$data['error'] = JText::_('COM_JINBOUND_NOT_FOUND');
 		}
+		$data['request'] = array('id' => $id);
 		
 		echo json_encode($data);
 		die;

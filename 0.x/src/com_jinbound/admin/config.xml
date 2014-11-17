@@ -20,6 +20,20 @@
 			<option value="0">JNO</option>
 		</field>
 		<field
+			name="history" id="history"
+			type="list"
+			label="COM_JINBOUND_HISTORY"
+			description="COM_JINBOUND_HISTORY_DESC"
+			default="365"
+		>
+			<option value="0">COM_JINBOUND_HISTORY_UNLIMITED</option>
+			<option value="90">COM_JINBOUND_HISTORY_3_MONTHS</option>
+			<option value="180">COM_JINBOUND_HISTORY_6_MONTHS</option>
+			<option value="365">COM_JINBOUND_HISTORY_1_YEAR</option>
+			<option value="730">COM_JINBOUND_HISTORY_2_YEARS</option>
+			<option value="1826">COM_JINBOUND_HISTORY_5_YEARS</option>
+		</field>
+		<field
 			name="cron_type"
 			type="list"
 			label="COM_JINBOUND_CRON_TYPE"

@@ -17,7 +17,52 @@ window.jinbound_leadnotes_token = false;
 				window.jinbound_leadnotes_token = $(el).attr('name');
 			}
 		});
-		
+		var stopProp = function(e) {
+			e.stopPropagation();
+		};
+		var deleteNote = function(e) {
+			if (e) stopProp(e);
+			var $this  = $(this);
+			var data   = {
+				task    : 'note.delete'
+			,	format  : 'json'
+			,	id      : [parseInt($this.attr('data-noteid'), 10)]
+			,	leadid  : parseInt($this.attr('data-leadid'), 10)
+			}
+			data[window.jinbound_leadnotes_token] = 1;
+			$.ajax('index.php?option=com_jinbound', {
+				data     : data
+			,	dataType : 'json'
+			,	type     : 'post'
+			,	success  : function(response) {
+					var container  = $this.closest('.leadnotes');
+					var notes      = container.find('.leadnotes-notes');
+					var count      = container.find('.leadnotes-count');
+					var single     = $('#jinbound_leadnotes_table');
+					var editsingle = single && single.length;
+					notes.empty();
+					if (editsingle) {
+						single.find('tbody').empty();
+					}
+					for (var i = 0, n = parseInt(response.notes.length, 10); i < n; i++) {
+						var row = $('<div class="leadnote alert" data-stopPropagation="true"><a class="close" data-dismiss="alert" data-noteid="' + response.notes[i].id + '" data-leadid="' + response.notes[i].lead_id + '" href="#" onclick="(function(){return confirm(Joomla.JText._(\'COM_JINBOUND_CONFIRM_DELETE\'));})();">&times;</a><span class="label" data-stopPropagation="true">' + response.notes[i].created + '</span> ' + response.notes[i].author + '<div class="leadnote-text" data-stopPropagation="true">' + response.notes[i].text + '</div></div>');
+						notes.append(row);
+						if (editsingle) {
+							var trow = $('<tr><td><span class="label"></span></td><td class="note"></td></tr>');
+							trow.find('.label').text(response.notes[i].created);
+							trow.find('.note').text(response.notes[i].text);
+							single.find('tbody').append(trow);
+						}
+					}
+					if (0 == n && editsingle) {
+						single.find('tbody').append($('<div class="alert alert-error"></div>').text(Joomla.JText._('COM_JINBOUND_NO_NOTES_FOUND')));
+					}
+					count.text(n);
+					container.on('click', '.close', deleteNote);
+					container.find('textarea').val('');
+				}
+			});
+		};
 		$('.leadnotes .leadnotes-submit').each(function(idx, el) {
 			$(el).click(function(e) {
 				var $this    = $(this);
@@ -41,21 +86,23 @@ window.jinbound_leadnotes_token = false;
 				,	dataType : 'json'
 				,	type     : 'post'
 				,	success  : function(response) {
-						var container = $this.closest('.leadnotes');
-						var notes     = container.find('.leadnotes-notes');
-						var count     = container.find('.leadnotes-count');
-						var single    = $('#jinbound_leadnotes_table');
+						var container  = $this.closest('.leadnotes');
+						var notes      = container.find('.leadnotes-notes');
+						var count      = container.find('.leadnotes-count');
+						var single     = $('#jinbound_leadnotes_table');
+						var editsingle = single && single.length;
 						notes.empty();
-						if (single && single.length) {
-							single.empty();
+						if (editsingle) {
+							single.find('tbody').empty();
 						}
 						count.text(parseInt(response.notes.length, 10));
 						for (var i = 0, n = response.notes.length; i < n; i++) {
-							var row = $('<div class="leadnote alert-message"><span class="label"></span><div class="leadnote-text"></div></div>');
+							var row = $('<div class="leadnote alert" data-stopPropagation="true"><a class="close" data-dismiss="alert" data-noteid="' + response.notes[i].id + '" data-leadid="' + response.notes[i].lead_id + '" href="javascript:;" onclick="(function(){return confirm(Joomla.JText._(\'COM_JINBOUND_CONFIRM_DELETE\'));})();">&times;</a><span class="label" data-stopPropagation="true"></span><div class="leadnote-text" data-stopPropagation="true"></div></div>');
 							row.find('.label').text(response.notes[i].created);
 							row.find('.leadnote-text').text(response.notes[i].text);
+							row.on('click', '.close', deleteNote);
 							notes.append(row);
-							if (single && single.length) {
+							if (editsingle) {
 								var trow = $('<tr><td><span class="label"></span></td><td class="note"></td></tr>');
 								trow.find('.label').text(response.notes[i].created);
 								trow.find('.note').text(response.notes[i].text);
@@ -67,17 +114,9 @@ window.jinbound_leadnotes_token = false;
 				});
 			});
 		});
-		$('.leadnotes .dropdown-menu').on('contextmenu', '[data-stopPropagation]', function(e) {
-			console.log('contextmenu');
-			e.stopPropagation();
-		});
-		$('.leadnotes .dropdown-menu').on('click', '[data-stopPropagation]', function(e) {
-			console.log('click');
-			e.stopPropagation();
-		});
-		$('.leadnotes .dropdown-menu').on('dblclick', '[data-stopPropagation]', function(e) {
-			console.log('dblclick');
-			e.stopPropagation();
-		});
+		$('.leadnotes .dropdown-menu').on('contextmenu', '[data-stopPropagation]', stopProp);
+		$('.leadnotes .dropdown-menu').on('click', '[data-stopPropagation]', stopProp);
+		$('.leadnotes .dropdown-menu').on('dblclick', '[data-stopPropagation]', stopProp);
+		$('.leadnotes-notes .leadnote').on('click', '.close', deleteNote);
 	});
 })(jQuery);

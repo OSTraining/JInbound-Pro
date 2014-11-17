@@ -30,7 +30,7 @@ echo $this->loadTemplate('edit');
 	});
 <?php endif; ?>
 	var hideSidebar = function() {
-		var row = $('#jform_sidebartext').closest('.row-fluid'), d = [4];
+		var row = $('#jform_sidebartext').closest('.row-fluid'), d = [4], hide = true, tabs, tab;
 		switch($('#jform_layout').val()) {
 			case '0':
 				d = [];
@@ -41,15 +41,45 @@ echo $this->loadTemplate('edit');
 				row.hide();
 				break;
 		}
-		try {
-			$('#jinbound_default_tabs').tabs("option", "disabled", d);
+		// check for tabs
+		tabs = $('#jinbound_default_tabsTabs');
+		tab  = 'li';
+		if (!tabs.length)
+		{
+			tabs = $('#jinbound_default_tabs');
+			tab  = 'dt.tabs';
 		}
-		catch (err) {
-			if (d.length) {
-				$('#jinbound_default_tabs').find('dt.tabs')[d[0]].hide();
+		if ('function' == typeof $().tab)
+		{
+			$('.nav-tabs a').click(function(e){
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		}
+		else if ('function' == typeof $().tabs)
+		{
+			$('#jinbound_default_tabsTabs').tabs("option", "disabled", d);
+			hide = false;
+		}
+		if (hide)
+		{
+			try
+			{
+				if (d.length)
+				{
+					tabs.find(tab)[d[0]].hide();
+				}
+				else
+				{
+					tabs.find(tab).show();
+				}
 			}
-			else {
-				$('#jinbound_default_tabs').find('dt.tabs').show();
+			catch (err)
+			{
+				try {
+					console.log(err);
+				}
+				catch (err2) {}
 			}
 		}
 	};

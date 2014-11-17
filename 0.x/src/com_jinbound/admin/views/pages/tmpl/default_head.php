@@ -18,7 +18,7 @@ $listDirn  = $this->state->get('list.direction');
 	<th width="1%" class="nowrap hidden-phone">
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
 	</th>
-	<th width="1%" class="nowrap">
+	<th style="min-width:24px;">
 		&nbsp;
 	</th>
 	<th>
@@ -26,6 +26,9 @@ $listDirn  = $this->state->get('list.direction');
 	</th>
 	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Page.published', $listDirn, $listOrder); ?>
+	</th>
+	<th class="hidden-phone">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN', 'campaign_name', $listDirn, $listOrder); ?>
 	</th>
 	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY', 'Page.category', $listDirn, $listOrder); ?>
@@ -38,6 +41,9 @@ $listDirn  = $this->state->get('list.direction');
 	</th>
 	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_SUBMISSIONS', 'submissions', $listDirn, $listOrder); ?>
+	</th>
+	<th class="hidden-phone">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_LEADS', 'contact_submissions', $listDirn, $listOrder); ?>
 	</th>
 	<th class="hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CONVERSIONS', 'conversions', $listDirn, $listOrder); ?>

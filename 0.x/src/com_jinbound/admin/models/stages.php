@@ -23,6 +23,7 @@ class JInboundModelStages extends JInboundListModel
 	 *
 	 * @var		string
 	 */
+	public $_context = 'com_jinbound.stages';
 	protected $context  = 'com_jinbound.stages';
 	
 	protected function getListQuery()

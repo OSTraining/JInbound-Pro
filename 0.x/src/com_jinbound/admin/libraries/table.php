@@ -28,10 +28,14 @@ class JInboundTable extends JTable
 		}
 		else {
 			// New item
-			$this->created = $date->toSql();
-			$this->created_by = $user->get('id');
+			if (empty($this->created)) {
+				$this->created = $date->toSql();
+			}
+			if (empty($this->created_by)) {
+				$this->created_by = $user->get('id');
+			}
 		}
-	
+		
 		return parent::store($updateNulls);
 	}
 }

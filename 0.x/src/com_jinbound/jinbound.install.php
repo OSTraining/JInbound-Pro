@@ -99,14 +99,53 @@ class com_JInboundInstallerScript
 				// fix component config
 				$this->_saveDefaults($parent);
 			case 'update':
+				// move data from the older 1.0 schema
+				$this->_migrateOldData($root);
+				// contacts no longer need categories?
 				$this->_checkContactCategory();
 				$this->_checkInboundCategory();
+				$this->_checkCampaigns($root);
 				$this->_checkContactSubscriptions();
 				$this->_checkDefaultPriorities();
 				$this->_checkDefaultStatuses();
 				$this->_checkEmailVersions();
 				$this->_fixMissingLanguageDefaults();
 				break;
+		}
+	}
+	
+	private function _checkCampaigns($sourcepath)
+	{
+		JTable::addIncludePath($sourcepath . '/admin/tables');
+		$db = JFactory::getDbo();
+		try
+		{
+			$campaigns = $db->setQuery($db->getQuery(true)
+				->select('*')
+				->from('#__jinbound_campaigns')
+			)->loadObjectList();
+			
+			if (!empty($campaigns))
+			{
+				return;
+			}
+			
+			$data = array(
+				'name'       => JText::_('COM_JINBOUND_DEFAULT_CAMPAIGN_NAME')
+			,	'published'  => 1
+			,	'created'    => JFactory::getDate()->toSql()
+			,	'created_by' => JFactory::getUser()->get('id')
+			);
+			
+			$table = JTable::getInstance('Campaign', 'JInboundTable');
+			if (!($table->bind($data) && $table->check() && $table->store()))
+			{
+				throw new RuntimeException($table->getError());
+			}
+		}
+		catch (Exception $e)
+		{
+			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 		}
 	}
 	
@@ -186,6 +225,8 @@ class com_JInboundInstallerScript
 						$fieldvalue = $field->__get('value');
 						// handle some compat params
 						switch ($fieldname) {
+							case 'load_jquery_back':
+							case 'load_jquery_ui_back':
 							case 'load_bootstrap_back':
 								$fieldvalue = (int) (!$version->isCompatible('3.0.0'));
 								break;
@@ -315,7 +356,6 @@ class com_JInboundInstallerScript
 	private function _checkDefaultPriorities() {
 		$app = JFactory::getApplication();
 		$db  = JFactory::getDbo();
-		$fix = $db->getQuery(true)->update('#__jinbound_leads')->where('priority_id = 0');
 		$db->setQuery($db->getQuery(true)
 			->select('id')
 			->from('#__jinbound_priorities')
@@ -330,14 +370,6 @@ class com_JInboundInstallerScript
 		}
 		if (is_array($priorities) && !empty($priorities)) {
 			$app->enqueueMessage(JText::_('COM_JINBOUND_PRIORITIES_FOUND'));
-			$fix->set('priority_id = ' . $priorities[0]);
-			$db->setQuery($fix);
-			try {
-				$db->query();
-			}
-			catch (Exception $e) {
-				
-			}
 			return;
 		}
 		jimport('joomla.database.table');
@@ -399,9 +431,15 @@ class com_JInboundInstallerScript
 				'active'      => (int) !('NOT_INTERESTED' == $p),
 				'final'       => (int) ($i == $final)
 			);
-			$table->bind($bind);
-			$table->check();
-			$table->store();
+			if (!$table->bind($bind)) {
+				continue;
+			}
+			if (!$table->check()) {
+				continue;
+			}
+			if (!$table->store()) {
+				continue;
+			}
 		}
 	}
 	
@@ -482,5 +520,216 @@ class com_JInboundInstallerScript
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Takes data from old 1.0.x installs and migrates to new schema
+	 * 
+	 * take #__jinbound_leads and #__contact_details data and move to 
+	 * #__jinbound_contacts and #__jinbound_conversions as well as entries in
+	 * #__jinbound_contacts_campaigns, #__jinbound_contacts_priorities, and
+	 * #__jinbound_contacts_statuses
+	 * 
+	 * Conversion table:
+	 * 
+	 * #__jinbound_leads.id               = NO CONVERSION
+	 * NO CONVERSION                      = #__jinbound_contacts.id
+	 * NO CONVERSION                      = #__jinbound_contacts.asset_id
+	 * NO CONVERSION                      = #__jinbound_contacts.cookie
+	 * NO CONVERSION                      = #__jinbound_contacts.alias
+	 * NO CONVERSION                      = #__jinbound_conversions.id
+	 * NO CONVERSION                      = #__jinbound_conversions.contact_id
+	 * #__jinbound_leads.asset_id         = NO CONVERSION, DELETE ASSET
+	 * #__jinbound_leads.page_id          = #__jinbound_conversions.page_id
+	 * #__jinbound_leads.contact_id       = #__jinbound_contacts.core_contact_id
+	 * #__jinbound_leads.priority_id      = #__jinbound_contacts_priorities.priority_id
+	 * #__jinbound_leads.status_id        = #__jinbound_contacts_statuses.status_id
+	 * #__jinbound_leads.campaign_id      = #__jinbound_contacts_campaigns.campaign_id
+	 * #__jinbound_leads.first_name       = #__jinbound_contacts.first_name
+	 * #__jinbound_leads.last_name        = #__jinbound_contacts.last_name
+	 * #__jinbound_leads.ip               = NO CONVERSION
+	 * #__contact_details.webpage         = #__jinbound_contacts.website
+	 * #__contact_details.email_to        = #__jinbound_contacts.email
+	 * #__contact_details.address         = #__jinbound_contacts.address
+	 * #__contact_details.suburb          = #__jinbound_contacts.suburb
+	 * #__contact_details.state           = #__jinbound_contacts.state
+	 * #__contact_details.country         = #__jinbound_contacts.country
+	 * #__contact_details.postcode        = #__jinbound_contacts.postcode
+	 * #__contact_details.telephone       = #__jinbound_contacts.telephone
+	 * #__contact_details.user_id         = #__jinbound_contacts.user_id
+	 * #__jinbound_leads.published        = #__jinbound_contacts.published
+	 * #__jinbound_leads.created          = #__jinbound_contacts.created
+	 * #__jinbound_leads.created_by       = #__jinbound_contacts.created_by
+	 * #__jinbound_leads.modified         = #__jinbound_contacts.modified
+	 * #__jinbound_leads.modified_by      = #__jinbound_contacts.modified_by
+	 * #__jinbound_leads.checked_out      = #__jinbound_contacts.checked_out
+	 * #__jinbound_leads.checked_out_time = #__jinbound_contacts.checked_out_time
+	 * #__jinbound_leads.formdata         = #__jinbound_conversions.formdata
+	 * 
+	 * #__jinbound_pages.id               = #__jinbound_landing_pages_hits.page_id
+	 * #__jinbound_pages.hits             = #__jinbound_landing_pages_hits.hits
+	 */
+	private function _migrateOldData($source_path)
+	{
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		$cfg = new JConfig;
+		// get the data from the old table if it exists
+		try
+		{
+			$hasolddata = $db->setQuery('SHOW TABLES LIKE "' . $cfg->dbprefix . 'jinbound_leads"')->loadResult();
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+			return;
+		}
+		if (empty($hasolddata))
+		{
+			return;
+		}
+		try
+		{
+			$oldcontacts = $db->setQuery($db->getQuery(true)
+				->select('a.*')
+				->select('b.webpage')
+				->select('b.email_to')
+				->select('b.address')
+				->select('b.suburb')
+				->select('b.state')
+				->select('b.country')
+				->select('b.postcode')
+				->select('b.telephone')
+				->select('b.user_id')
+				->from('#__jinbound_leads AS a')
+				->leftJoin('#__contact_details AS b ON b.id = a.contact_id')
+			)->loadObjectList();
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+			return;
+		}
+		if (empty($oldcontacts))
+		{
+			return;
+		}
+		// get the model
+		require_once $source_path . '/admin/models/contact.php';
+		require_once $source_path . '/admin/tables/contact.php';
+		require_once $source_path . '/admin/tables/conversion.php';
+		$contact_model = new JInboundModelContact();
+		// save all the contacts and conversions
+		foreach ($oldcontacts as $oldcontact)
+		{
+			// init
+			$contact_data    = array();
+			$conversion_data = array();
+			// populate contact
+			$contact_data['user_id']          = (int) $oldcontact->user_id;
+			$contact_data['core_contact_id']  = (int) $oldcontact->contact_id;
+			$contact_data['first_name']       = $oldcontact->first_name;
+			$contact_data['last_name']        = $oldcontact->last_name;
+			$contact_data['website']          = $oldcontact->webpage;
+			$contact_data['email']            = $oldcontact->email_to;
+			$contact_data['address']          = $oldcontact->address;
+			$contact_data['suburb']           = $oldcontact->suburb;
+			$contact_data['state']            = $oldcontact->state;
+			$contact_data['country']          = $oldcontact->country;
+			$contact_data['postcode']         = $oldcontact->postcode;
+			$contact_data['telephone']        = $oldcontact->telephone;
+			$contact_data['published']        = $oldcontact->published;
+			$contact_data['created']          = $oldcontact->created;
+			$contact_data['created_by']       = (int) $oldcontact->created_by;
+			$contact_data['modified']         = $oldcontact->modified;
+			$contact_data['modified_by']      = (int) $oldcontact->modified_by;
+			$contact_data['checked_out']      = (int) $oldcontact->checked_out;
+			$contact_data['checked_out_time'] = $oldcontact->checked_out_time;
+			// bind
+			$contact = JTable::getInstance('Contact', 'JInboundTable');
+			try
+			{
+				if (!$contact->bind($contact_data))
+				{
+					throw new Exception('Cannot migrate contact!');
+				}
+				if (!$contact->check())
+				{
+					throw new Exception('Cannot migrate contact!');
+				}
+				if (!$contact->store())
+				{
+					throw new Exception('Cannot migrate contact!');
+				}
+			}
+			catch (Exception $e)
+			{
+				$app->enqueueMessage($e->getMessage(), 'error');
+				continue;
+			}
+			// populate conversion
+			$conversion_data['page_id']          = (int) $oldcontact->page_id;
+			$conversion_data['contact_id']       = (int) $contact->id;
+			$conversion_data['published']        = (int) $oldcontact->published;
+			$conversion_data['created']          = $oldcontact->created;
+			$conversion_data['created_by']       = (int) $oldcontact->created_by;
+			$conversion_data['modified']         = $oldcontact->modified;
+			$conversion_data['modified_by']      = (int) $oldcontact->modified_by;
+			$conversion_data['checked_out']      = $oldcontact->checked_out;
+			$conversion_data['checked_out_time'] = $oldcontact->checked_out_time;
+			$conversion_data['formdata']         = (array) json_decode($oldcontact->formdata);
+			// bind
+			$conversion = JTable::getInstance('Conversion', 'JInboundTable');
+			try
+			{
+				if (!$conversion->bind($contact_data))
+				{
+					throw new Exception('Cannot migrate conversion');
+				}
+				if (!$conversion->check())
+				{
+					throw new Exception('Cannot migrate conversion');
+				}
+				if (!$conversion->store())
+				{
+					throw new Exception('Cannot migrate conversion');
+				}
+				if ($conversion->id && $contact->id)
+				{
+					$db->setQuery($db->getQuery(true)
+						->update('#__jinbound_conversions')
+						->set('page_id = ' . (int) $conversion_data['page_id'])
+						->set('contact_id = ' . (int) $contact->id)
+						->where('id = ' . (int) $conversion->id)
+					)->query();
+				}
+				else
+				{
+					throw new Exception('Could not find contact or conversion ids');
+				}
+			}
+			catch (Exception $e)
+			{
+				$app->enqueueMessage($e->getMessage(), 'error');
+				continue;
+			}
+			$contact_model->status($contact->id, $oldcontact->campaign_id, $oldcontact->status_id);
+			$contact_model->priority($contact->id, $oldcontact->campaign_id, $oldcontact->priority_id);
+			$db->setQuery($db->getQuery(true)
+				->insert('#__jinbound_contacts_campaigns')
+				->columns(array('contact_id', 'campaign_id', 'enabled'))
+				->values($contact->id . ', ' . $oldcontact->campaign_id . ', 1')
+			)->query();
+		}
+		try
+		{
+			$db->setQuery('DROP TABLE IF EXISTS #__jinbound_leads')->query();
+			$db->setQuery('INSERT INTO #__jinbound_landing_pages_hits SELECT NOW() AS day, id AS page_id, hits FROM #__jinbound_pages')->query();
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+		}
+		
 	}
 }
