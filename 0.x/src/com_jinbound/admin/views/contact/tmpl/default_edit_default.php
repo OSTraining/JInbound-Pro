@@ -74,7 +74,7 @@ $canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
 								<div class="well">
 									<?php echo JHtml::_('jinbound.startSlider', 'leadSlider'); ?>
 									<?php if (!empty($this->item->conversions)) : ?>
-									<?php foreach ($this->item->conversions as $i => $data) : ?>
+									<?php foreach (array_reverse($this->item->conversions) as $i => $data) : ?>
 									<?php echo JHtml::_('jinbound.addSlide', 'leadSlider', $data->created . ' | ' . $data->page_name, 'leadslider-' . $i); ?>
 									<table class="table table-striped">
 										<?php if (array_key_exists('lead', $data->formdata)) foreach ($data->formdata['lead'] as $key => $value) : ?>
