@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>plg_system_jinboundfiles</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_files_version_number@</version>
+	<description>PLG_SYSTEM_JINBOUNDFILES_XML_DESCRIPTION</description>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundfiles.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinboundfiles">jinboundfiles.php</filename>
+		<filename>field/jinboundfilesupdate.php</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundfiles.sys.ini</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
+		<filename>tmpl/default_sidebar_field_file.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldpath="/plugins/system/jinboundfiles/field">
+				<field name="update" type="jinboundfilesupdate"
+							 label="PLG_SYSTEM_JINBOUNDFILES_UPDATE"
+							 description="PLG_SYSTEM_JINBOUNDFILES_UPDATE_DESC"
+				/>
+				<field name="storage_path" type="text"
+							 label="PLG_SYSTEM_JINBOUNDFILES_STORAGE_PATH"
+							 description="PLG_SYSTEM_JINBOUNDFILES_STORAGE_PATH_DESC"
+				/>
+				<field name="downloadid" type="text"
+							 label="PLG_SYSTEM_JINBOUNDFILES_DOWNLOADID"
+							 description="PLG_SYSTEM_JINBOUNDFILES_DOWNLOADID_DESC"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
