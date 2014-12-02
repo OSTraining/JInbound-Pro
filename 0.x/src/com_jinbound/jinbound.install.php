@@ -99,6 +99,7 @@ class com_JInboundInstallerScript
 				// fix component config
 				$this->_saveDefaults($parent);
 			case 'update':
+				$this->_forceReportEmailOption($parent);
 				// move data from the older 1.0 schema
 				$this->_migrateOldData($root);
 				// contacts no longer need categories?
@@ -111,6 +112,56 @@ class com_JInboundInstallerScript
 				$this->_checkEmailVersions();
 				$this->_fixMissingLanguageDefaults();
 				break;
+		}
+	}
+	
+	private function _forceReportEmailOption($parent)
+	{
+		$app = JFactory::getApplication();
+		$db = JFactory::getDbo();
+		// get the params
+		$db->setQuery($db->getQuery(true)
+			->select('params')
+			->from('#__extensions')
+			->where('element = ' . $db->quote($parent->get('element')))
+		);
+		try {
+			$json = $db->loadResult();
+			$params = json_decode($json);
+			if (!is_object($params))
+			{
+				throw new UnexpectedValueException("Data is not an object");
+			}
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage(), 'error');
+			return;
+		}
+		// if this variable is set, don't update the value
+		// defaults method will handle new installs
+		if (property_exists($params, 'report_force_admin'))
+		{
+			return;
+		}
+		// check that there's a value - don't mess with non-empty values
+		if (property_exists($params, 'report_recipients') && !empty($params->report_recipients))
+		{
+			return;
+		}
+		// set from config
+		$config = new JConfig();
+		$params->report_recipients = $config->mailfrom;
+		// save
+		$db->setQuery($db->getQuery(true)
+			->update('#__extensions')
+			->set('params = ' . $db->quote(json_encode($params)))
+			->where('element = ' . $db->quote($parent->get('element')))
+		);
+		try {
+			$db->query();
+		}
+		catch (Exception $e) {
+			$app->enqueueMessage($e->getMessage(), 'error');
 		}
 	}
 	
@@ -199,6 +250,7 @@ class com_JInboundInstallerScript
 		jimport('joomla.form.form');
 		
 		$version = new JVersion;
+		$global_config = new JConfig();
 		
 		if (method_exists($parent, 'extension_root')) {
 			$configfile = $parent->getPath('extension_root') . '/config.xml';
@@ -223,8 +275,12 @@ class com_JInboundInstallerScript
 					foreach ($fields as $name => $field) {
 						$fieldname  = $field->__get('name');
 						$fieldvalue = $field->__get('value');
-						// handle some compat params
 						switch ($fieldname) {
+							// force report email value
+							case 'report_recipients':
+								$fieldvalue = $global_config->mailfrom;
+								break;
+							// handle some compat params
 							case 'load_jquery_back':
 							case 'load_jquery_ui_back':
 							case 'load_bootstrap_back':

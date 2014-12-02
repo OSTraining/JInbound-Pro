@@ -15,11 +15,23 @@
 	</languages>
 	<files>
 		<filename plugin="jinboundcaptcha">jinboundcaptcha.php</filename>
+		<filename>field/jinboundcaptchaupdate.php</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundcaptcha.sys.ini</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
 		<filename>tmpl/default_sidebar_field_captcha.php</filename>
 	</files>
 	<config>
 		<fields name="params">
-			<fieldset name="basic">
+			<fieldset name="basic" addfieldpath="/plugins/system/jinboundcaptcha/field">
+				<field name="update" type="jinboundcaptchaupdate"
+							 label="PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE"
+							 description="PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE_DESC"
+				/>
+				<field name="downloadid" type="text"
+							 label="PLG_SYSTEM_JINBOUNDCAPTCHA_DOWNLOADID"
+							 description="PLG_SYSTEM_JINBOUNDCAPTCHA_DOWNLOADID_DESC"
+				/>
 			</fieldset>
 		</fields>
 	</config>
