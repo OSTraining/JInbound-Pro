@@ -24,6 +24,21 @@ class plgSystemJInboundcaptcha extends JPlugin
 		$this->loadLanguage('plg_system_jinboundcaptcha.sys', JPATH_ADMINISTRATOR);
 	}
 	
+	public function onAfterInitialise()
+	{
+		if (JFactory::getApplication()->isSite())
+		{
+			return;
+		}
+		$option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
+		$view = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
+		if ('plg_system_jinboundcaptcha' === $option && 'liveupdate' === $view)
+		{
+			require_once JPATH_ROOT . '/plugins/system/jinboundcaptcha/liveupdate/liveupdate.php';
+			LiveUpdate::handleRequest();
+		}
+	}
+	
 	public function onJinboundFormbuilderDisplay(&$xml)
 	{
 		// add validate attribute to captcha
@@ -31,7 +46,6 @@ class plgSystemJInboundcaptcha extends JPlugin
 		foreach ($nodes as &$node)
 		{
 			$node['validate'] = 'captcha';
-			$node['required'] = 'true';
 		}
 	}
 	
