@@ -31,4 +31,38 @@ class JInboundViewContact extends JInboundItemView
 		)->loadObjectList();
 		return !empty($campaigns);
 	}
+	
+	public function renderFormField($page_id, $field, $value)
+	{
+		$html       = array();
+		$fromplugin = '';
+		$dispatcher = JDispatcher::getInstance();
+		$dispatcher->trigger('onJinboundFormbuilderRenderValue', array(&$fromplugin, $page_id, $field, $value));
+		if (!empty($fromplugin))
+		{
+			return $fromplugin;
+		}
+		if (is_object($value) || is_array($value))
+		{
+			$array = (array) $value;
+			if (1 === count($array))
+			{
+				$html[] = $this->escape(array_shift($array));
+			}
+			else
+			{
+				$html[] = '<ul>';
+				foreach ($array as $k => $v)
+				{
+					$html[] = '<li>' . $this->escape($v) . '</li>';
+				}
+				$html[] = '</ul>';
+			}
+		}
+		else
+		{
+			$html[] = $this->escape($value);
+		}
+		return implode("\n", $html);
+	}
 }
