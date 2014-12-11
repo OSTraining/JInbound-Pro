@@ -43,7 +43,7 @@ class JInboundModelPage extends JInboundAdminModel
 		$xmlFieldset->addAttribute('name', 'lead');
 		$xmlFieldset->addAttribute('label', JText::_('COM_JINBOUND_FIELDSET_LEAD'));
 		// add each field from the page item's formbuilder property
-		$formbuilder = $this->getItem()->formbuilder;
+		$formbuilder = $this->getItem(JFactory::getApplication()->input->get('page_id'))->formbuilder;
 		// get the form data
 		if (!is_a($formbuilder, 'JRegistry')) {
 			$reg = new JRegistry();
@@ -182,7 +182,7 @@ class JInboundModelPage extends JInboundAdminModel
 		{
 			$this->data = null;
 		}
-		if ($this->data === null)
+		if (is_null($this->data))
 		{
 			$this->data = new stdClass;
 			$app = JFactory::getApplication();

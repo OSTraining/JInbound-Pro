@@ -141,6 +141,9 @@ class JInboundModelContacts extends JInboundListModel
 		if (is_object($page)) {
 			$page = '';
 		}
+		if (is_object($campaign)) {
+			$campaign = '';
+		}
 		
 		$db = $this->getDbo();
 		$join = $db->getQuery(true);

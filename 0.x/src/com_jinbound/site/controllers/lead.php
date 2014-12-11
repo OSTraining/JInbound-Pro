@@ -267,7 +267,7 @@ class JInboundControllerLead extends JInboundBaseController
 		$result = $dispatcher->trigger('onContentBeforeSave', array('com_jinbound.contact', &$contact, $isNew));
 		if (in_array(false, $result, true))
 		{
-			throw new RuntimeException($contact->getError(), 500);
+			throw new RuntimeException('Could not save: ' . $contact->getError(), 500);
 		}
 		// store the data
 		if (!$contact->store())
@@ -337,7 +337,7 @@ class JInboundControllerLead extends JInboundBaseController
 		$result = $dispatcher->trigger('onContentBeforeSave', array('com_jinbound.conversion', &$conversion, true));
 		if (in_array(false, $result, true))
 		{
-			$app->enqueueMessage($conversion->getError(), 'warning');
+			$app->enqueueMessage('Could not save: ' . $conversion->getError(), 'warning');
 			$app->setUserState('com_jinbound.page.data', $raw_data);
 			$app->redirect(JRoute::_('index.php?option=com_jinbound&view=page&id='.$page_id.'&Itemid='.(int)$app->input->get('Itemid',0), false));
 			return false;
@@ -379,16 +379,17 @@ class JInboundControllerLead extends JInboundBaseController
 			{
 				$html[] = '	<tr>';
 				$html[] = '		<td>';
-				$html[] = '			' . htmlspecialchars(JText::_($formbuilder[$key]['title']));
+				$html[] = '			' . htmlspecialchars(JText::_($formbuilder[$key]['title']), ENT_QUOTES, 'UTF-8');
 				$html[] = '		</td>';
 				$html[] = '		<td>';
-				$html[] = '			' . htmlspecialchars($val);
+				$html[] = '			' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8');
 				$html[] = '		</td>';
 				$html[] = '	</tr>';
 			}
 			$html[]  = '</table>';
 			$emails  = explode(',', $emails);
 			$subject = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_SUBJECT');
+			$dispatcher->trigger('onJinboundBeforeNotificationEmail', array(&$emails, &$subject, &$html, $contact, $conversion));
 			$body    = JText::sprintf('COM_JINBOUND_NOTIFICATION_EMAIL_BODY', $campaign_name, $page->formname, implode("\n", $html));
 			$mailer  = JFactory::getMailer();
 			$mailer->IsHTML(true);
