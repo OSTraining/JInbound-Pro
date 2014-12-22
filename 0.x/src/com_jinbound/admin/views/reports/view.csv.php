@@ -14,6 +14,9 @@ JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 class JInboundViewReports extends JInboundCsvView
 {
 	public function display($tpl = null, $safeparams = null) {
+		if (!JFactory::getUser()->authorise('core.create', 'com_jinbound.report')) {
+			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
 		$model = JInboundBaseModel::getInstance('Reports', 'JInboundModel');
 		$state = $this->get('State');
 		if (is_array($state) && !empty($state)) {

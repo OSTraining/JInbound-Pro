@@ -12,4 +12,10 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerPriority extends JInboundFormController
 {
+	public function edit($key = 'id', $urlVar = 'id') {
+		if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.priority')) {
+			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
+		return parent::edit($key, $urlVar);
+	}
 }

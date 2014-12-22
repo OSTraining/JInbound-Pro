@@ -21,6 +21,7 @@ class JFormFieldJinboundPriorities extends JFormFieldList
 			->select('id AS value, name AS text')
 			->from('#__jinbound_priorities')
 			->where('published = 1')
+			->order('ordering ASC')
 		);
 		
 		try {

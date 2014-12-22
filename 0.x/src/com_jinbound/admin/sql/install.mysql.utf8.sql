@@ -317,6 +317,10 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 	`send_to_url` varchar(255) NOT NULL,
 	`sendto_message` text NOT NULL,
 	`template` text NOT NULL,
+	`css` text NOT NULL DEFAULT '',
+
+	`ga` TINYINT(1) NOT NULL DEFAULT 0,
+	`ga_code` VARCHAR(255) NOT NULL DEFAULT '',
 	
 	`hits` int(11) default '0'
 	COMMENT 'number of views for this record',

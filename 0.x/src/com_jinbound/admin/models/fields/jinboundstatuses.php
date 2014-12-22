@@ -23,6 +23,7 @@ class JFormFieldJinboundStatuses extends JFormFieldList
 		->select('id AS value, name AS text')
 		->from('#__jinbound_lead_statuses')
 		->where('published = 1')
+		->order('ordering ASC')
 		;
 		
 		if ($final) {

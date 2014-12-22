@@ -7,6 +7,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
+if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.' . JInboundInflector::singularize($this->viewName))) :
 ?>
 <div class="jinbound-empty">
 	<div class="row">
@@ -18,3 +19,6 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 	</div>
 </div>
+<?php
+
+endif;

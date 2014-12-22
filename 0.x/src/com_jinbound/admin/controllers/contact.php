@@ -15,6 +15,13 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerContact extends JInboundFormController
 {
+	public function edit($key = 'id', $urlVar = 'id') {
+		if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.contact')) {
+			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
+		return parent::edit($key, $urlVar);
+	}
+	
 	public function status() {
 		$this->_changeContact('status');
 	}
@@ -88,8 +95,9 @@ class JInboundControllerContact extends JInboundFormController
 				{
 					// the default status
 					$status_id = JInboundHelperStatus::getDefaultStatus();
+					sort($new_campaigns);
 					
-					foreach ($new_campaigns as $new_campaign)
+					foreach (array_unique($new_campaigns) as $new_campaign)
 					{
 						JInboundHelperStatus::setContactStatusForCampaign($status_id, $contact, $new_campaign);
 					}
@@ -112,8 +120,9 @@ class JInboundControllerContact extends JInboundFormController
 				{
 					// the default status
 					$priority_id = JInboundHelperPriority::getDefaultPriority();
+					sort($new_campaigns);
 					
-					foreach ($new_campaigns as $new_campaign)
+					foreach (array_unique($new_campaigns) as $new_campaign)
 					{
 						JInboundHelperPriority::setContactPriorityForCampaign($priority_id, $contact, $new_campaign);
 					}

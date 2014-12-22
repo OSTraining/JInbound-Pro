@@ -141,6 +141,17 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getConversionsCount()
 	{
+		$state = $this->getState();
+		$start = $state->get('filter.start', null);
+		$end   = $state->get('filter.end', null);
+		$conversions = $this->getConversionsByDate($start, $end);
+		$count = 0;
+		foreach ($conversions as $conversion)
+		{
+			$count += (int) $conversion[1];
+		}
+		return $count;
+		/*
 		try
 		{
 			$count = $this->getDbo()->setQuery($this->getDbo()->getQuery(true)
@@ -163,6 +174,8 @@ class JInboundModelReports extends JInboundListModel
 			$count = 0;
 		}
 		return (int) $count;
+		 * 
+		 */
 	}
 	
 	/**
@@ -515,8 +528,24 @@ class JInboundModelReports extends JInboundListModel
 		if (is_null($range))
 		{
 			$range = $this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-				->select('MIN(day) AS start, MAX(day) AS end')
-				->from('#__jinbound_landing_pages_hits')
+				->select('MIN(t.created) AS start, NOW() AS end')
+				->from('(' . $this->getDbo()->getQuery(true)
+					->select('day AS created')
+					->from('#__jinbound_landing_pages_hits')
+					. ' UNION ' . $this->getDbo()->getQuery(true)
+					->select('created')
+					->from('#__jinbound_contacts')
+					. ' UNION ' . $this->getDbo()->getQuery(true)
+					->select('created')
+					->from('#__jinbound_conversions')
+					. ' UNION ' . $this->getDbo()->getQuery(true)
+					->select('created')
+					->from('#__jinbound_contacts_priorities')
+					. ' UNION ' . $this->getDbo()->getQuery(true)
+					->select('created')
+					->from('#__jinbound_contacts_statuses')
+					. ') as t'
+					)
 			)->loadObject();
 		}
 		$tz   = new DateTimeZone('UTC');
@@ -661,17 +690,20 @@ class JInboundModelReports extends JInboundListModel
 	public function getConversionsByDate($start = null, $end = null)
 	{
 		$dates = $this->_getDateRanges($start, $end);
-		$query = $this->getDbo()->getQuery(true)
-			->select('DATE(a.created) AS day, COUNT(a.created)')
+		$inner = $this->getDbo()->getQuery(true)
+			->select('MAX(a.created) AS created, a.contact_id')
 			->from('#__jinbound_contacts_statuses AS a')
 			->innerJoin('#__jinbound_lead_statuses AS s ON s.id = a.status_id AND s.final = 1')
-			->group('day')
+			->group('a.contact_id')
+		;
+		$query = $this->getDbo()->getQuery(true)
+			->select('DATE(created) AS day, COUNT(contact_id) AS num')
 		;
 		if (!empty($start))
 		{
 			try {
 				$startdate = new DateTime($start);
-				$query->where('a.created > ' . $this->getDbo()->quote($startdate->format('Y-m-d H:i:s')));
+				$query->where('created > ' . $this->getDbo()->quote($startdate->format('Y-m-d H:i:s')));
 			}
 			catch (Exception $ex) {
 				// nothing
@@ -681,7 +713,7 @@ class JInboundModelReports extends JInboundListModel
 		{
 			try {
 				$enddate = new DateTime($end);
-				$query->where('a.created < ' . $this->getDbo()->quote($enddate->format('Y-m-d H:i:s')));
+				$query->where('created < ' . $this->getDbo()->quote($enddate->format('Y-m-d H:i:s')));
 			}
 			catch (Exception $ex) {
 				// nothing
@@ -690,12 +722,12 @@ class JInboundModelReports extends JInboundListModel
 		$campaign = $this->getState('filter.campaign');
 		if (!empty($campaign))
 		{
-			$query->where('a.campaign_id = ' . (int) $campaign);
+			$inner->where('a.campaign_id = ' . (int) $campaign);
 		}
 		$page = $this->getState('filter.page');
 		if (!empty($page))
 		{
-			$query->where('a.campaign_id IN (('
+			$inner->where('a.campaign_id IN (('
 				. $this->getDbo()->getQuery(true)
 				->select('p.campaign')
 				->from('#__jinbound_pages AS p')
@@ -703,7 +735,7 @@ class JInboundModelReports extends JInboundListModel
 				. '))'
 			);
 		}
-		$days = $this->getDbo()->setQuery($query)->loadObjectList();
+		$days = $this->getDbo()->setQuery($query->from('(' . $inner . ') AS t'))->loadObjectList();
 		$data = array();
 		foreach ($dates as $date)
 		{
@@ -713,7 +745,7 @@ class JInboundModelReports extends JInboundListModel
 			{
 				if ($day->day == $date)
 				{
-					$count++;
+					$count += (int) $day->num;
 					break;
 				}
 			}
@@ -878,5 +910,30 @@ class JInboundModelReports extends JInboundListModel
 				// done
 				return;
 		}
+	}
+	
+	public function getPermissions()
+	{
+		$db = JFactory::getDbo();
+		$id = $db->setQuery($db->getQuery(true)
+			->select('id')->from('#__assets')->where('name = ' . $db->quote(JInbound::COM . '.report'))
+		)->loadResult();
+		JInbound::registerHelper('path');
+		jimport('joomla.form.form');
+		$modelpath = JInboundHelperPath::admin('models');
+		$formname  = 'report_rules';
+		if (!file_exists("$modelpath/forms/$formname.xml"))
+		{
+			return false;
+		}
+		JForm::addFormPath("$modelpath/forms");
+		JForm::addFieldPath("$modelpath/fields");
+		$form = $this->loadForm(JInbound::COM . '.' . $formname, $formname, array('control' => '', 'load_data' => false));
+		if (empty($form))
+		{
+			return false;
+		}
+		$form->bind(array('asset_id' => $id));
+		return $form;
 	}
 }

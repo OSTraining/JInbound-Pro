@@ -40,6 +40,7 @@ abstract class JHtmlJInbound
 				->select('Priority.name')
 				->from('#__jinbound_priorities AS Priority')
 				->where('Priority.published = 1')
+				->order('Priority.ordering ASC')
 			);
 			
 			try {

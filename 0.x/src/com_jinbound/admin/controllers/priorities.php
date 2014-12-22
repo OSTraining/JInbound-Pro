@@ -11,6 +11,11 @@ jimport('joomla.application.component.controlleradmin');
 
 class JInboundControllerPriorities extends JControllerAdmin
 {
+	public function permissions() {
+		JInbound::registerHelper('access');
+		JInboundHelperAccess::saveRulesWithRedirect('priority');
+	}
+	
 	public function getModel($name='Priority', $prefix = 'JInboundModel') {
 		return parent::getModel($name, $prefix, array('ignore_request' => true));
 	}

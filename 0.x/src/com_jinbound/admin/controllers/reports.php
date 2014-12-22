@@ -13,6 +13,11 @@ JInbound::registerHelper('url');
 
 class JInboundControllerReports extends JControllerAdmin
 {
+	public function permissions() {
+		JInbound::registerHelper('access');
+		JInboundHelperAccess::saveRulesWithRedirect('report');
+	}
+	
 	public function getModel($name='Reports', $prefix = 'JInboundModel') {
 		return parent::getModel($name, $prefix, array('ignore_request' => true));
 	}
