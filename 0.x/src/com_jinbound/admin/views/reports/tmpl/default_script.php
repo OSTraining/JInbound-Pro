@@ -149,7 +149,7 @@ JText::script('COM_JINBOUND_NOT_FOUND');
 					else {
 						tr.append($('<td></td>').append($('<a href="' + data.items[i].url + '"></a>').text(data.items[i].full_name)));
 					}
-					tr.append($('<td></td>').text(data.items[i].latest));
+					tr.append($('<td></td>').text(data.items[i].latest||data.items[i].created));
 					if (null === data.items[i].latest_conversion_page_formname) {
 						tr.append($('<td></td>').text(' '));
 					}

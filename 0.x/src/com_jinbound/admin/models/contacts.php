@@ -141,6 +141,9 @@ class JInboundModelContacts extends JInboundListModel
 		if (is_object($page)) {
 			$page = '';
 		}
+		if (is_object($campaign)) {
+			$campaign = '';
+		}
 		
 		$db = $this->getDbo();
 		$join = $db->getQuery(true);
@@ -178,7 +181,7 @@ class JInboundModelContacts extends JInboundListModel
 			->select('LatestPage.formname AS latest_conversion_page_formname')
 			->leftJoin('(' . $join . ') AS Latest ON (Latest.contact_id = Contact.id)')
 			->leftJoin('#__jinbound_pages AS LatestPage ON LatestPage.id = Latest.page_id')
-			->where('LatestPage.id IS NOT NULL')
+			//->where('LatestPage.id IS NOT NULL') // causes leads made in admin to disappear
 			->group('Contact.id')
 		;
 		

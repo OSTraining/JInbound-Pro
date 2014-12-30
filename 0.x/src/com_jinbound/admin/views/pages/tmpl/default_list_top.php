@@ -7,6 +7,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
+if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.page')) :
 ?>
 <h2><?php echo JText::_('COM_JINBOUND_CREATE_A_NEW_LANDING_PAGE'); ?></h2>
 <div class="btn-toolbar mixalot">
@@ -31,3 +32,5 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 	</div>
 </div>
+<?php
+endif;

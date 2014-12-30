@@ -22,10 +22,10 @@ if (!empty($this->items)) :
 	foreach ($this->items as $i => $item) :
 		$this->_itemNum = $i;
 
-		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.status.'.$item->id);
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.status.'.$item->id) && $item->created_by == $userId;
-		$canChange  = $user->authorise('core.edit.state', JInbound::COM.'.status.'.$item->id) && $canCheckin;
+		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.status') && $canCheckin;
+		$canChange  = $user->authorise('core.edit.state', JInbound::COM.'.status') && $canCheckin;
+		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.status') && $item->created_by == $userId && $canCheckin;
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="hidden-phone">
@@ -39,7 +39,7 @@ if (!empty($this->items)) :
 				<?php if ($item->checked_out) : ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $item->author_name, $item->checked_out_time, 'statuses.', $canCheckin); ?>
 				<?php endif; ?>
-				<?php if ($canEdit || $canEditOwn) : ?>
+				<?php if ($canEdit || ($canEditOwn && $item->created_by == $user->id)) : ?>
 					<a href="<?php echo JInboundHelperUrl::edit('status', $item->id); ?>">
 						<?php echo $this->escape($item->name); ?>
 					</a>

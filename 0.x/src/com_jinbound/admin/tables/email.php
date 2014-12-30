@@ -32,7 +32,7 @@ class JInboundTableEmail extends JInboundTable
 	protected function _getAssetParentId($table = null, $id = null)
 	{
 		$asset = JTable::getInstance('Asset');
-		$asset->loadByName('com_jinbound');
+		$asset->loadByName('com_jinbound.email');
 		return $asset->id;
 	}
 	

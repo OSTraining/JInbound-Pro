@@ -38,6 +38,11 @@ class JInboundViewPage extends JInboundItemView
 		if (method_exists($doc, 'setDescription')) {
 			$doc->setDescription($this->item->metadescription);
 		}
+		// add custom css
+		if (!empty($this->item->css))
+		{
+			$doc->addStyleDeclaration($this->item->css);
+		}
 		
 		return $display;
 	}
@@ -97,6 +102,22 @@ class JInboundViewPage extends JInboundItemView
 		,	'phone_number' => 'phonenumber'
 		);
 		
+		// BUGFIX names are stored generically for custom fields, fix tags for unique names
+		$tagsToFieldsAlt = array();
+		$formbuilder = $this->item->formbuilder->toArray();
+		foreach ($formbuilder as $formfieldname => $formfield)
+		{
+			if (!is_array($formfield))
+			{
+				continue;
+			}
+			if (!$formfield['enabled'] || !array_key_exists('name', $formfield))
+			{
+				continue;
+			}
+			$tagsToFieldsAlt[$formfieldname] = $formfield['name'];
+		}
+		
 		$fullAddress = array(
 			'address'  => ''
 		,	'suburb'   => ''
@@ -109,6 +130,9 @@ class JInboundViewPage extends JInboundItemView
 			$tagKey = str_replace('jform_lead_', '', $key);
 			if (array_key_exists($tagKey, $tagsToFields)) {
 				$tagKey = $tagsToFields[$tagKey];
+			}
+			else if (array_key_exists($tagKey, $tagsToFieldsAlt)) {
+				$tagKey = $tagsToFieldsAlt[$tagKey];
 			}
 			$this->_currentField = $field;
 			$tags['form:' . $tagKey] = $this->loadTemplate('form_field');

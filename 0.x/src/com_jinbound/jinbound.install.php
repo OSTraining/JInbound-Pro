@@ -7,6 +7,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+jimport('joomla.filesystem.file');
+jimport('joomla.form.form');
+
 class com_JInboundInstallerScript
 {
 	public function uninstall($parent) {
@@ -99,6 +102,7 @@ class com_JInboundInstallerScript
 				// fix component config
 				$this->_saveDefaults($parent);
 			case 'update':
+				$this->_saveDefaultAssets($parent);
 				$this->_forceReportEmailOption($parent);
 				// move data from the older 1.0 schema
 				$this->_migrateOldData($root);
@@ -123,7 +127,7 @@ class com_JInboundInstallerScript
 		$db->setQuery($db->getQuery(true)
 			->select('params')
 			->from('#__extensions')
-			->where('element = ' . $db->quote($parent->get('element')))
+			->where('element = ' . $db->quote('com_jinbound'))
 		);
 		try {
 			$json = $db->loadResult();
@@ -155,7 +159,7 @@ class com_JInboundInstallerScript
 		$db->setQuery($db->getQuery(true)
 			->update('#__extensions')
 			->set('params = ' . $db->quote(json_encode($params)))
-			->where('element = ' . $db->quote($parent->get('element')))
+			->where('element = ' . $db->quote('com_jinbound'))
 		);
 		try {
 			$db->query();
@@ -245,10 +249,40 @@ class com_JInboundInstallerScript
 		}
 	}
 	
+	private function _saveDefaultAssets(&$parent)
+	{
+		if (!class_exists('JInboundHelperAccess'))
+		{
+			if (method_exists($parent, 'extension_root')) {
+				$base = $parent->getPath('extension_root');
+			}
+			else {
+				$base = $parent->getParent()->getPath('extension_root');
+			}
+			foreach (array('jinbound', 'access') as $helper)
+			{
+				$file = "$base/helpers/$helper.php";
+				if (!JFile::exists($file)) {
+					continue;
+				}
+				require_once $file;
+			}
+		}
+		if (!class_exists('JInboundHelperAccess'))
+		{
+			return;
+		}
+		foreach (array('campaign', 'contact', 'conversion', 'email', 'page', 'priority', 'status', 'report') as $type)
+		{
+			if (($parent = JInboundHelperAccess::getParent($type)))
+			{
+				return;
+			}
+			JInboundHelperAccess::saveRules($type, new stdClass, false);
+		}
+	}
+	
 	private function _saveDefaults(&$parent) {
-		jimport('joomla.filesystem.file');
-		jimport('joomla.form.form');
-		
 		$version = new JVersion;
 		$global_config = new JConfig();
 		

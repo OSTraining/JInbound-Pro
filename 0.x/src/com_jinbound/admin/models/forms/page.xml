@@ -330,5 +330,20 @@
 		</field>
 
 	</fieldset>
-
+	
+	<fieldset name="css" label="COM_JINBOUND_PAGE_FIELDSET_CSS">
+		<field
+			name="css"
+			type="editor"
+			editor="none"
+			buttons="no"
+			label="COM_JINBOUND_PAGE_CSS"
+			description="COM_JINBOUND_PAGE_CSS_DESC"
+			height="300px"
+			rows="20"
+			cols="60"
+			syntax="php"
+			filter="raw"
+		/>
+	</fieldset>
 </form>

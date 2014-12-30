@@ -126,9 +126,16 @@ class JInboundModelPages extends JInboundListModel
 				$enddate = false;
 			}
 		}
+		$cols = array('id', 'asset_id', 'layout', 'heading', 'subheading', 'socialmedia', 'maintext',
+		'sidebartext', 'alias', 'name', 'image', 'imagealttext', 'category', 'metatitle',
+		'metadescription', 'formbuilder', 'campaign', 'converts_on_another_form',
+		'converts_on_same_campaign', 'submit_text', 'notify_form_submits',
+		'notification_email', 'after_submit_sendto', 'menu_item', 'send_to_url',
+		'sendto_message', 'template', 'css', 'ga', 'ga_code', 'published', 'created',
+		'created_by', 'modified', 'modified_by', 'checked_out', 'checked_out_time');
 		// main query
 		$query = $db->getQuery(true)
-			->select('Page.*')
+			->select('Page.' . implode(', Page.', $cols))
 			->select('Category.title AS category_name')
 			->select('Campaign.name AS campaign_name')
 			->select('COUNT(DISTINCT Submission.contact_id) AS contact_submissions')
@@ -175,12 +182,37 @@ class JInboundModelPages extends JInboundListModel
 			$query->where('Page.id = ' . (int) $filter);
 		}
 		
+		// load all hits or just some?
+		$allhits = true;
+		$hitjoin = array();
 		if (!empty($startdate)) {
-			$query->where('Submission.created > ' . $db->quote($startdate->format('Y-m-d h:i:s')));
+			$allhits = false;
+			$d = $db->quote($startdate->format('Y-m-d h:i:s'));
+			$hitjoin[] = 'PageHits.day >= ' . $d;
+			$query->where('Submission.created > ' . $d);
 		}
 		
 		if (!empty($enddate)) {
-			$query->where('Submission.created < ' . $db->quote($enddate->format('Y-m-d h:i:s')));
+			$allhits = false;
+			$d = $db->quote($enddate->format('Y-m-d h:i:s'));
+			$hitjoin[] = 'PageHits.day <= ' . $d;
+			$query->where('Submission.created < ' . $d);
+		}
+		
+		if ($allhits)
+		{
+			$query->select('Page.hits');
+		}
+		else
+		{
+			$query->select('('
+				. $db->getQuery(true)
+				->select('SUM(PageHits.hits)')
+				->from('#__jinbound_landing_pages_hits AS PageHits')
+				->where('PageHits.page_id = Page.id')
+				->where('(' . implode(' AND ', $hitjoin) . ')')
+				. ') AS hits')
+			;
 		}
 		
 		// Add the list ordering clause.

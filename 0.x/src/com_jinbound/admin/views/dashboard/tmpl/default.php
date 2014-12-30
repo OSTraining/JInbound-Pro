@@ -9,6 +9,16 @@ defined('JPATH_PLATFORM') or die;
 
 JText::script('COM_JINBOUND_RESET_CONFIRM');
 
+$user = JFactory::getUser();
+foreach (array('campaign', 'email', 'page', 'contact', 'report') as $type)
+{
+	foreach (array('manage', 'create') as $var)
+	{
+		${"can".str_replace(' ', '', ucwords(str_replace('.', ' ', $var))).ucwords($type)} = $user->authorise("core.$var", JInbound::COM . ".$type");
+	}
+}
+$jserror = "javascript:alert('" . JText::_('JERROR_ALERTNOAUTHOR') . "');";
+
 ?>
 <script type="text/javascript">
 Joomla.submitbutton = function(task) {
@@ -44,25 +54,73 @@ Joomla.submitbutton = function(task) {
       </div>
       <!-- Row 2 - Buttons -->
       <div class="row-fluid" id="welcome_buttons">
-      	<a href="<?php echo JInboundHelperUrl::view('campaigns'); ?>" class="span3 btn text-center">
+				<?php
+					$class = 'span3 btn text-center';
+					if ($canManageCampaign)
+					{
+						$href = JInboundHelperUrl::view('campaigns');
+					}
+					else
+					{
+						$href = $jserror;
+						$class .= ' disabled';
+					}
+				?>
+      	<a href="<?php echo $href; ?>" class="<?php echo $class; ?>">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/lead_manager.png'; ?>" />
 	      	</span>
       		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_1_CREATE_A_CAMPAIGN'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('emails'); ?>" class="span3 btn text-center">
+				<?php
+					$class = 'span3 btn text-center';
+					if ($canManageEmail)
+					{
+						$href = JInboundHelperUrl::view('emails');
+					}
+					else
+					{
+						$href = $jserror;
+						$class .= ' disabled';
+					}
+				?>
+      	<a href="<?php echo $href; ?>" class="<?php echo $class; ?>">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/leads_nurturing.png'; ?>" />
 	      	</span>
       		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_2_WRITE_EMAILS_FOR_YOUR_CAMPAIGN'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('pages'); ?>" class="span3 btn text-center">
+				<?php
+					$class = 'span3 btn text-center';
+					if ($canManagePage)
+					{
+						$href = JInboundHelperUrl::view('pages');
+					}
+					else
+					{
+						$href = $jserror;
+						$class .= ' disabled';
+					}
+				?>
+      	<a href="<?php echo $href; ?>" class="<?php echo $class; ?>">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/landing_pages.png'; ?>" />
 	      	</span>
       		<span class="btn-text"><?php echo JText::_('COM_JINBOUND_STEP_3_CREATE_LANDING_PAGES_TO_GET_PEOPLE_INTO_YOUR_CAMPAIGN'); ?></span>
       	</a>
-      	<a href="<?php echo JInboundHelperUrl::view('reports'); ?>" class="span3 btn text-center">
+				<?php
+					$class = 'span3 btn text-center';
+					if ($canManageReport)
+					{
+						$href = JInboundHelperUrl::view('reports');
+					}
+					else
+					{
+						$href = $jserror;
+						$class .= ' disabled';
+					}
+				?>
+      	<a href="<?php echo $href; ?>" class="<?php echo $class; ?>">
       		<span class="row text-center">
 	      		<img class="img-rounded" src="<?php echo JInboundHelperUrl::media() . '/images/reports.png'; ?>" />
 	      	</span>
@@ -70,6 +128,7 @@ Joomla.submitbutton = function(task) {
       	</a>
       </div>
       
+			<?php if ($canManageReport) : ?>
 			<!-- Row 3 - Monthly Report -->
 			<div class="row-fluid">
 				<!-- start the container -->
@@ -95,8 +154,11 @@ Joomla.submitbutton = function(task) {
 				</div>
 			</div>
       <?php
-      	echo $this->reports->top_pages;
-      	echo $this->reports->recent_leads;
+					echo $this->reports->top_pages;
+				endif;
+				if ($canManageContact) :
+					echo $this->reports->recent_leads;
+				endif;
       ?>
 			
 		</div>
@@ -105,11 +167,13 @@ Joomla.submitbutton = function(task) {
 			<div class="well">
 				<img alt="<?php echo JText::_('COM_JINBOUND_CREATE_A_NEW'); ?>" src="<?php echo JInboundHelperUrl::media() . '/images/start_by_creating.png'; ?>" />
 				<ul>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('campaign.add'), JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('email.add'), JText::_('COM_JINBOUND_EMAIL')); ?></li>
-					<li><?php echo JHtml::link(JInboundHelperUrl::task('page.add'), JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
+					<li><?php echo JHtml::link($canCreateCampaign ? JInboundHelperUrl::task('campaign.add') : $jserror, JText::_('COM_JINBOUND_LEAD_NURTURING_CAMPAIGN')); ?></li>
+					<li><?php echo JHtml::link($canCreateEmail ? JInboundHelperUrl::task('email.add') : $jserror, JText::_('COM_JINBOUND_EMAIL')); ?></li>
+					<li><?php echo JHtml::link($canCreatePage ? JInboundHelperUrl::task('page.add') : $jserror, JText::_('COM_JINBOUND_LANDING_PAGE')); ?></li>
 				</ul>
+				<?php if ($canManageReport) : ?>
 				<h3><?php echo JHtml::link(JInboundHelperUrl::view('reports'), '<img alt="' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '" src="' . JInboundHelperUrl::media() . '/images/view_reports.png" /> <span>' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '</span>'); ?></h3>
+				<?php endif; ?>
 			</div>
 			<div class="well"><?php echo $this->feed; ?></div>
 		</div>

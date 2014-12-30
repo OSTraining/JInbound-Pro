@@ -15,7 +15,11 @@ class JInboundViewReports extends JInboundListView
 {
 	
 	function display($tpl = null, $safeparams = false) {
+		if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.report')) {
+			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
 		$this->state = $this->get('State');
+		$this->permissions = $this->get('Permissions');
 		$this->filter_change_code = $this->getReportFormFilterChangeCode();
 		$this->campaign_filter = $this->getCampaignFilter();
 		$this->page_filter = $this->getPageFilter();
@@ -135,8 +139,11 @@ class JInboundViewReports extends JInboundListView
 		
 		if (is_null($set)) {
 			// export icons
-			JToolBarHelper::custom($this->_name.'.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS', false);
-			JToolBarHelper::custom($this->_name.'.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
+			if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.report'))
+			{
+				JToolBarHelper::custom($this->_name.'.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS', false);
+				JToolBarHelper::custom($this->_name.'.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
+			}
 			// skip parent and go to grandparent so we don't have the normal list view icons like "new" and "save"
 			$gpview = new JInboundView(array());
 			$gpview->addToolbar();

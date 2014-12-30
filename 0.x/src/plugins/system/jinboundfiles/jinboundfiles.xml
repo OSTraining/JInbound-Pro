@@ -28,6 +28,11 @@
 							 label="PLG_SYSTEM_JINBOUNDFILES_UPDATE"
 							 description="PLG_SYSTEM_JINBOUNDFILES_UPDATE_DESC"
 				/>
+				<field name="extensions" type="text"
+							 label="PLG_SYSTEM_JINBOUNDFILES_EXTENSIONS"
+							 description="PLG_SYSTEM_JINBOUNDFILES_EXTENSIONS_DESC"
+							 default="bmp,csv,doc,gif,ico,jpg,jpeg,odg,odp,ods,odt,pdf,png,ppt,swf,txt,xcf,xls,BMP,CSV,DOC,GIF,ICO,JPG,JPEG,ODG,ODP,ODS,ODT,PDF,PNG,PPT,SWF,TXT,XCF,XLS"
+				/>
 				<field name="storage_path" type="text"
 							 label="PLG_SYSTEM_JINBOUNDFILES_STORAGE_PATH"
 							 description="PLG_SYSTEM_JINBOUNDFILES_STORAGE_PATH_DESC"

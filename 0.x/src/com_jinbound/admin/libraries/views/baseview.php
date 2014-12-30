@@ -200,23 +200,11 @@ class JInboundView extends JInboundBaseView
 			'pages'       => 'PAGES',
 			'emails'      => 'LEAD_NURTURING_MANAGER',
 			'contacts'    => 'LEADS',
-			'reports'     => 'REPORTS'
+			'reports'     => 'REPORTS',
+			'campaigns'   => 'CAMPAIGNS_MANAGER',
+			'statuses'    => 'STATUSES',
+			'priorities'  => 'PRIORITIES'
 		);
-		$addCategories = false;
-		
-		if (JInbound::version()->isCompatible('3.0.0'))
-		{
-			$addCategories = true;
-			$subMenuItems = array_merge($subMenuItems, array(
-				'campaigns'  => 'CAMPAIGNS_MANAGER',
-				'statuses'   => 'STATUSES',
-				'priorities' => 'PRIORITIES'
-			));
-		}
-		else
-		{
-			$subMenuItems['utilities'] = 'UTILITIES';
-		}
 		
 		if (defined('JDEBUG') && JDEBUG)
 		{
@@ -225,15 +213,15 @@ class JInboundView extends JInboundBaseView
 		
 		foreach ($subMenuItems as $sub => $txt)
 		{
+			$single = JInboundInflector::singularize($sub);
+			if (!JFactory::getUser()->authorise('core.manage', JInbound::COM . '.' . $single))
+			{
+				continue;
+			}
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub && JInbound::COM == $option);
 			$this->addSubMenuEntry($label, $href, $active);
-			if ($addCategories && 'reports' == $sub)
-			{
-				$extension = $this->app->input->get('extension');
-				$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM . "_CATEGORIES")), JInboundHelperUrl::_(array('option' => 'com_categories', 'view' => 'categories', 'extension' => JInbound::COM)), $option == 'com_categories' && $extension == JInbound::COM && in_array($vName, array('', 'categories')));
-			}
 		}
 		
 		$this->sidebar = false;

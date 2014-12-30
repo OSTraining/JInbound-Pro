@@ -11,6 +11,11 @@ jimport('joomla.application.component.controlleradmin');
 
 class JInboundControllerStatuses extends JControllerAdmin
 {
+	public function permissions() {
+		JInbound::registerHelper('access');
+		JInboundHelperAccess::saveRulesWithRedirect('status');
+	}
+	
 	public function getModel($name='Status', $prefix = 'JInboundModel') {
 		return parent::getModel($name, $prefix, array('ignore_request' => true));
 	}

@@ -15,6 +15,9 @@ JInbound::registerLibrary('JInboundPageController', 'controllers/basecontrollerp
 class JInboundControllerPage extends JInboundPageController
 {
 	public function edit($key = 'id', $urlVar = 'id') {
+		if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.page')) {
+			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+		}
 		$model      = $this->getModel('Pages', 'JInboundModel');
 		$canAdd     = true;
 		foreach (array('categories', 'campaigns') as $var) {

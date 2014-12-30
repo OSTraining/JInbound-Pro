@@ -13,6 +13,7 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 $saveOrder = ($listOrder == 'Conversion.id');
 $trashed   = (-2 == $this->state->get('filter.published'));
+$canEditCampaign = $user->authorise('core.edit', JInbound::COM . '.campaign');
 
 if (JInbound::version()->isCompatible('3.0'))
 {
@@ -48,10 +49,10 @@ if (!empty($this->items)) :
 		
 		$firstRow = array_shift($rowData);
 
-		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.contact.'.$item->id);
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.contact.'.$item->id) && $item->created_by == $userId;
-		$canChange  = $user->authorise('core.edit.state', JInbound::COM.'.contact.'.$item->id) && $canCheckin;
+		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.contact') && $canCheckin;
+		$canChange  = $user->authorise('core.edit.state', JInbound::COM.'.contact') && $canCheckin;
+		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM.'.contact') && $item->created_by == $userId && $canCheckin;
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="hidden-phone"<?php echo $rowSpan; ?>>
@@ -62,7 +63,7 @@ if (!empty($this->items)) :
 				<?php if ($item->checked_out) : ?>
 					<?php echo JHtml::_('jgrid.checkedout', $i, $item->full_name, $item->checked_out_time, 'contacts.', $canCheckin); ?>
 				<?php endif; ?>
-				<?php if ($canEdit || $canEditOwn) : ?>
+				<?php if ($canEdit || ($canEditOwn && $item->created_by == $user->id)) : ?>
 					<a href="<?php echo JInboundHelperUrl::edit('contact', $item->id); ?>">
 						<?php echo $this->escape($item->full_name); ?>
 					</a>
@@ -108,7 +109,11 @@ if (!empty($this->items)) :
 			<?php echo empty($row['priority'][0]) ? '' : JHtml::_('jinbound.priority', $item->id, $row['priority'][0]->priority_id, $row['campaign']->id, 'contacts.', $canChange); ?>
 		</td>
 		<td class="nowrap hidden-phone">
+			<?php if ($canEditCampaign) : ?>
 			<a href="<?php echo JInboundHelperUrl::task('campaign.edit', false, array('id' => $row['campaign']->id)); ?>"><?php echo $this->escape($row['campaign']->name); ?></a>
+			<?php else : ?>
+			<?php echo $this->escape($row['campaign']->name); ?>
+			<?php endif; ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo empty($row['status'][0]) ? '' : JHtml::_('jinbound.status', $item->id, $row['status'][0]->status_id, $row['campaign']->id, 'contacts.', $canChange); ?>
