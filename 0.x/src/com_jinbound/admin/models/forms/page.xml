@@ -335,7 +335,7 @@
 		<field
 			name="css"
 			type="editor"
-			editor="codemirror|none"
+			editor="none"
 			buttons="no"
 			label="COM_JINBOUND_PAGE_CSS"
 			description="COM_JINBOUND_PAGE_CSS_DESC"

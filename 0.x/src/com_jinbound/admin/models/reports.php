@@ -689,15 +689,29 @@ class JInboundModelReports extends JInboundListModel
 	
 	public function getConversionsByDate($start = null, $end = null)
 	{
+		/*
+		 * 
+			select DATE(created) as day, count(contact_id) from (
+		 * select s1.*,s.final from jos_jinbound_contacts_statuses as s1 
+		 * left join jos_jinbound_contacts_statuses AS s2 
+		 * ON s1.contact_id = s2.contact_id 
+		 * AND s1.campaign_id = s2.campaign_id 
+		 * AND s1.created < s2.created 
+		 * inner join jos_jinbound_lead_statuses as s 
+		 * on s.id = s1.status_id 
+		 * where s2.contact_id is null) as t where final = 1 group by day;
+
+		 */
 		$dates = $this->_getDateRanges($start, $end);
 		$inner = $this->getDbo()->getQuery(true)
-			->select('MAX(a.created) AS created, a.contact_id')
+			->select('a.*,c.final')
 			->from('#__jinbound_contacts_statuses AS a')
-			->innerJoin('#__jinbound_lead_statuses AS s ON s.id = a.status_id AND s.final = 1')
-			->group('a.contact_id')
+			->leftJoin('#__jinbound_contacts_statuses AS b ON a.contact_id = b.contact_id AND a.campaign_id = b.campaign_id AND a.created < b.created')
+			->innerJoin('#__jinbound_lead_statuses AS c ON c.id = a.status_id')
+			->where('b.contact_id IS NULL')
 		;
 		$query = $this->getDbo()->getQuery(true)
-			->select('DATE(created) AS day, COUNT(contact_id) AS num')
+			->select('DATE(created) AS day, COUNT(contact_id) AS num')->where('final = 1')->group('day')
 		;
 		if (!empty($start))
 		{

@@ -159,7 +159,7 @@ class com_JInboundInstallerScript
 		$db->setQuery($db->getQuery(true)
 			->update('#__extensions')
 			->set('params = ' . $db->quote(json_encode($params)))
-			->where('element = ' . $db->quote($parent->get('element')))
+			->where('element = ' . $db->quote('com_jinbound'))
 		);
 		try {
 			$db->query();
@@ -259,11 +259,18 @@ class com_JInboundInstallerScript
 			else {
 				$base = $parent->getParent()->getPath('extension_root');
 			}
-			$base .=  '/helpers/access.php';
-			if (!JFile::exists($base)) {
-				return;
+			foreach (array('jinbound', 'access') as $helper)
+			{
+				$file = "$base/helpers/$helper.php";
+				if (!JFile::exists($file)) {
+					continue;
+				}
+				require_once $file;
 			}
-			require_once $base;
+		}
+		if (!class_exists('JInboundHelperAccess'))
+		{
+			return;
 		}
 		foreach (array('campaign', 'contact', 'conversion', 'email', 'page', 'priority', 'status', 'report') as $type)
 		{

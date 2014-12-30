@@ -11,7 +11,7 @@ echo $this->loadTemplate('edit');
 
 ?>
 <script type="text/javascript">
-(function($){$(function(){
+(function($){$(document).ready(function(){
 <?php if ($this->item->id) : ?>
 	$.ajax('../index.php?option=com_jinbound&task=landingpageurl&id=<?php echo (int) $this->item->id; ?>', {
 		dataType: 'json',
