@@ -52,7 +52,7 @@ class JInboundViewPage extends JInboundItemView
 		// trigger content events
 		JPluginHelper::importPlugin('content');
 		// "fix" for content plugins
-		foreach (array('maintext', 'sidebartext') as $text) {
+		foreach (array('maintext', 'sidebartext', 'template') as $text) {
 			$this->item->text = $this->item->$text;
 			// get dispatcher and trigger the event
 			$dispatcher = JDispatcher::getInstance();
