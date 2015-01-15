@@ -92,7 +92,13 @@ class JInboundListView extends JInboundView
 			$canEditOwn   = $user->authorise('core.edit.own', JInbound::COM . ".$single");
 			$canEditState = $user->authorise('core.edit.state', JInbound::COM . ".$single");
 			// set the toolbar title
-			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name.'_MANAGER')), 'jinbound-'.strtolower($this->_name));
+			$title = strtoupper(JInbound::COM.'_'.$this->_name.'_MANAGER');
+			$class = 'jinbound-'.strtolower($this->_name);
+			if ('contacts' === $this->_name) {
+				$title = strtoupper(JInbound::COM.'_LEADS_MANAGER');
+				$class = 'jinbound-leads';
+			}
+			JToolBarHelper::title(JText::_($title), $class);
 			if ($canCreate) {
 				JToolBarHelper::addNew($single . '.add', 'JTOOLBAR_NEW');
 			}
