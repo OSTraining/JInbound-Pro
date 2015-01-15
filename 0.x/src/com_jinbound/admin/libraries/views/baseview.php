@@ -162,7 +162,8 @@ class JInboundView extends JInboundBaseView
 	 */
 	public function addToolBar() {
 		// set the default title
-		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$this->_name)), 'jinbound-'.strtolower($this->_name));
+		$name = ('contacts' === $this->_name ? 'leads' : $this->_name);
+		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_'.$name)), 'jinbound-'.strtolower($name));
 		
 		// only fire in administrator
 		if (!$this->app->isAdmin()) return;

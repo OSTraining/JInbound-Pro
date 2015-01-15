@@ -23,6 +23,11 @@
 			required="true"
 		/>
 
+	</fieldset>
+	<fieldset
+		name="content"
+		label="COM_JINBOUND_CAMPAIGN_FIELDSET_DEFAULT"
+	>
 		<field
 			id="published" name="published"
 			type="jinboundpublished"

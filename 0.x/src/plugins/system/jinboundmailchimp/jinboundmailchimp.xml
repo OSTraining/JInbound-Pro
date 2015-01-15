@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>plg_system_jinboundmailchimp</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_mailchimp_version_number@</version>
+	<description>PLG_SYSTEM_JINBOUNDMAILCHIMP_DESCRIPTION</description>
+	<scriptfile>jinboundmailchimp.install.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundmailchimp.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundmailchimp.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinboundmailchimp">jinboundmailchimp.php</filename>
+		<filename>field/jinboundmailchimpgroups.php</filename>
+		<filename>field/jinboundmailchimplists.php</filename>
+		<filename>field/jinboundmailchimpupdate.php</filename>
+		<filename>form/jinboundmailchimp.xml</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundmailchimp.ini</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundmailchimp.sys.ini</filename>
+		<filename>library/MCAPI.class.php</filename>
+		<filename>library/helper.php</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldpath="/plugins/system/jinboundmailchimp/field">
+				<field name="update" type="jinboundmailchimpupdate"
+							 label="PLG_SYSTEM_JINBOUNDMAILCHIMP_UPDATE"
+							 description="PLG_SYSTEM_JINBOUNDMAILCHIMP_UPDATE_DESC"
+				/>
+				<field name="downloadid" type="text"
+							 label="PLG_SYSTEM_JINBOUNDMAILCHIMP_DOWNLOADID"
+							 description="PLG_SYSTEM_JINBOUNDMAILCHIMP_DOWNLOADID_DESC"
+				/>
+				<field name="mailchimp_key" type="text" size="32" default="" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_APIKEY_TITLE" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_APIKEY_DESC"/>
+				<field name="addlists" type="hidden" default="" />
+				<field name="removelists" type="hidden" default="" />
+				<field name="email_type" type="radio" default="html" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAILTYPE_LABEL" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAILTYPE_DESC">
+					<option value="html">PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAILTYPE_HTML</option>
+					<option value="text">PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAILTYPE_TEXT</option>
+					<option value="mobile">PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAILTYPE_MOBILE</option>
+				</field>
+				<field name="double_optin" type="radio" default="false" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_DOUBLEOPTIN_LABEL" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_DOUBLEOPTIN_DESC">
+					<option value="true">PLG_SYSTEM_JINBOUNDMAILCHIMP_DOUBLEOPTIN_TRUE</option>
+					<option value="false">PLG_SYSTEM_JINBOUNDMAILCHIMP_DOUBLEOPTIN_FALSE</option>
+				</field>
+				<field name="send_welcome" type="radio" default="true" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_WELCOME_LABEL" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_WELCOME_DESC">
+					<option value="true">PLG_SYSTEM_JINBOUNDMAILCHIMP_WELCOME_TRUE</option>
+					<option value="false">PLG_SYSTEM_JINBOUNDMAILCHIMP_WELCOME_FALSE</option>
+				</field>
+				<field name="send_goodbye" type="radio" default="true" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_GOODBYE_LABEL" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_GOODBYE_DESC">
+					<option value="true">PLG_SYSTEM_JINBOUNDMAILCHIMP_GOODBYE_TRUE</option>
+					<option value="false">PLG_SYSTEM_JINBOUNDMAILCHIMP_GOODBYE_FALSE</option>
+				</field>
+				<field name="send_notify" type="radio" default="false" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_NOTIFY_LABEL" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_NOTIFY_DESC">
+					<option value="true">PLG_SYSTEM_JINBOUNDMAILCHIMP_NOTIFY_TRUE</option>
+					<option value="false">PLG_SYSTEM_JINBOUNDMAILCHIMP_NOTIFY_FALSE</option>
+				</field>
+				<field name="delete_member" type="radio" default="false" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_DELETEMEMBER_LABEL" description="PLG_SYSTEM_JINBOUNDMAILCHIMP_DELETEMEMBER_DESC">
+					<option value="true">PLG_SYSTEM_JINBOUNDMAILCHIMP_DELETEMEMBER_TRUE</option>
+					<option value="false">PLG_SYSTEM_JINBOUNDMAILCHIMP_DELETEMEMBER_FALSE</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

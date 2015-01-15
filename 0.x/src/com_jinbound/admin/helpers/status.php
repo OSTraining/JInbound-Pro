@@ -59,10 +59,11 @@ abstract class JInboundHelperStatus
 	
 	static public function setContactStatusForCampaign($status_id, $contact_id, $campaign_id, $user_id = null)
 	{
+		$dispatcher = JDispatcher::getInstance();
 		$db   = JFactory::getDbo();
 		$date = JFactory::getDate()->toSql();
 		// save the status
-		return $db->setQuery($db->getQuery(true)
+		$value = $db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_contacts_statuses')
 			->columns(array(
 				'status_id'
@@ -78,5 +79,11 @@ abstract class JInboundHelperStatus
 			. ', ' . $db->quote(JFactory::getUser($user_id)->get('id'))
 			)
 		)->query();
+		
+		$dispatcher->trigger('onJInboundChangeState', array(
+			'com_jinbound.contact.status', $campaign_id, array($contact_id), $status_id)
+		);
+		
+		return $value;
 	}
 }

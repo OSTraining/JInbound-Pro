@@ -86,7 +86,7 @@ JText::script('COM_JINBOUND_NOT_FOUND');
 			while (c--) range[c] = hi--;
 			for (i = 0, n = pagination.pagesTotal; n > i; i++) {
 				var num = 1 + i, txt = num;
-				if (num < pagination.pagesStart || num >= pagination.pagesStop) {
+				if (num < pagination.pagesStart || num > pagination.pagesStop) {
 					continue;
 				}
 				if ($.inArray(num, range) && ((num % step === 0 || num === range * step - (step + 1)) && num !== current && num !== range * step - step)) {

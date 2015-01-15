@@ -72,7 +72,7 @@ $canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
 							<div class="span6">
 								<h4><?php echo JText::_('COM_JINBOUND_FORM_INFORMATION'); ?></h4>
 								<div class="well">
-									<?php echo JHtml::_('jinbound.startSlider', 'leadSlider'); ?>
+									<?php echo JHtml::_('jinbound.startSlider', 'leadSlider', array('active' => 'leadslider-0')); ?>
 									<?php if (!empty($this->item->conversions)) : ?>
 									<?php foreach (array_reverse($this->item->conversions) as $i => $data) : ?>
 									<?php echo JHtml::_('jinbound.addSlide', 'leadSlider', $data->created . ' | ' . $data->page_name, 'leadslider-' . $i); ?>
@@ -95,7 +95,7 @@ $canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
 									<?php if (empty($this->item->campaigns)) : ?>
 									<div class="alert alert-error"><?php echo JText::_('COM_JINBOUND_NO_CAMPAIGNS'); ?></div>
 									<?php else : ?>
-										<?php echo JHtml::_('jinbound.startSlider', 'campaignSlider'); ?>
+										<?php echo JHtml::_('jinbound.startSlider', 'campaignSlider', array('active' => 'campaignslider-0')); ?>
 										<?php foreach ($this->item->campaigns as $i => $campaign) : ?>
 											<?php echo JHtml::_('jinbound.addSlide', 'campaignSlider', $campaign->name, 'campaignslider-' . $i); ?>
 									<div class="row-fluid current-priority current-priority-<?php echo $campaign->id; ?>">
@@ -142,7 +142,7 @@ $canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
 								
 								<h4><?php echo JText::_('COM_JINBOUND_PREVIOUS_LEAD_NURTURING_CAMPAIGNS'); ?></h4>
 								<div class="well">
-									<?php echo JHtml::_('jinbound.startSlider', 'previousCampaignSlider'); ?>
+									<?php echo JHtml::_('jinbound.startSlider', 'previousCampaignSlider', array('active' => 'previouscampaignslider-0')); ?>
 									<?php foreach ($this->item->previous_campaigns as $i => $campaign) : ?>
 										<?php echo JHtml::_('jinbound.addSlide', 'previousCampaignSlider', $campaign->name, 'previouscampaignslider-' . $i); ?>
 										<?php foreach ($this->item->statuses[$campaign->id] as $status) : ?>

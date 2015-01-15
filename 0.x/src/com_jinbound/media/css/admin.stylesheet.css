@@ -111,3 +111,24 @@
 	clear: none !important;
 	float: none !important;
 }
+
+/* icons for contact sliders */
+#jinbound_component #previousCampaignSlider .accordion-toggle:after,
+#jinbound_component #campaignSlider .accordion-toggle:after,
+#jinbound_component #leadSlider .accordion-toggle:after
+{
+	font-family: "IcoMoon";
+	font-style: normal;
+	content: "\e005";
+	float:right;
+}
+
+#jinbound_component #previousCampaignSlider .accordion-toggle.collapsed:after,
+#jinbound_component #campaignSlider .accordion-toggle.collapsed:after,
+#jinbound_component #leadSlider .accordion-toggle.collapsed:after
+{
+	font-family: "IcoMoon";
+	font-style: normal;
+	content: "\e007";
+	float:right;
+}
