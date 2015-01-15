@@ -35,4 +35,32 @@ class JInboundTableCampaign extends JInboundTable
 		$asset->loadByName('com_jinbound.campaign');
 		return $asset->id;
 	}
+	
+	public function load($keys = null, $reset = true) {
+		$load = parent::load($keys, $reset);
+		if (is_string($this->params))
+		{
+			$registry = new JRegistry;
+			$registry->loadString($this->params);
+			$this->params = $registry;
+		}
+		return $load;
+	}
+	
+	public function bind($array, $ignore = '') {
+		if (isset($array['params'])) {
+			$registry = new JRegistry;
+			if (is_array($array['params'])) {
+				$registry->loadArray($array['params']);
+			}
+			else if (is_string($array['params'])) {
+				$registry->loadString($array['params']);
+			}
+			else if (is_object($array['params'])) {
+				$registry->loadArray((array) $array['params']);
+			}
+			$array['params'] = (string) $registry;
+		}
+		return parent::bind($array, $ignore);
+	}
 }

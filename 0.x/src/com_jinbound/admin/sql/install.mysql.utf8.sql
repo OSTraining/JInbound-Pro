@@ -51,6 +51,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 	
 	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
 	COMMENT 'Date and Time record was checked out',
+
+	`params` TEXT
+	COMMENT 'JSON encoded custom parameters',
 	
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
