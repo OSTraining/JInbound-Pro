@@ -105,7 +105,10 @@ class JInboundControllerLead extends JInboundBaseController
 			{
 				continue;
 			}
-			$conversion_data[$name] = $raw_data['lead'][$name];
+			if (array_key_exists($name, $raw_data['lead']))
+			{
+				$conversion_data[$name] = $raw_data['lead'][$name];
+			}
 		}
 		// before saving the data for this contact/conversion
 		// first check who this user is

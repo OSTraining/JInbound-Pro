@@ -14,7 +14,7 @@ class LiveUpdateConfig extends LiveUpdateAbstractConfig
 {
 	var $_extensionName			= 'plg_system_jinboundmailchimp';
 	var $_extensionTitle		= 'System - JInbound MailChimp';
-	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=5';
+	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=6';
 	var $_requiresAuthorization	= true;
 	var $_versionStrategy		= 'vcompare';
 	var $_storageAdapter		= 'file';

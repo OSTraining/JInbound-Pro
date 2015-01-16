@@ -32,6 +32,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/system" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/captcha" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/files" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/mailchimp" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/analytics" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/user" />
 		<mkdir dir="${cfg.packages}/temp/staging/template" />
@@ -63,6 +64,9 @@
 		<condition property="str.version.files" value="${cfg.versionprefix}${cfg.version.files}" else="${cfg.version.files}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
+		<condition property="str.version.mailchimp" value="${cfg.versionprefix}${cfg.version.mailchimp}" else="${cfg.version.mailchimp}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
@@ -80,6 +84,8 @@
 		<property name="str.plg.sys.captcha.file" value="${cfg.packages}/current/${str.plg.sys.captcha.filename}" />
 		<property name="str.plg.sys.files.filename" value="${cfg.pfx.plg}system_${cfg.name}files_${str.version.files}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.files.file" value="${cfg.packages}/current/${str.plg.sys.files.filename}" />
+		<property name="str.plg.sys.mailchimp.filename" value="${cfg.pfx.plg}system_${cfg.name}mailchimp_${str.version.mailchimp}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sys.mailchimp.file" value="${cfg.packages}/current/${str.plg.sys.mailchimp.filename}" />
 		<property name="str.plg.sys.analytics.filename" value="${cfg.pfx.plg}system_${cfg.name}analytics_${str.version.files}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.analytics.file" value="${cfg.packages}/current/${str.plg.sys.analytics.filename}" />
 		<property name="str.plg.user.filename" value="${cfg.pfx.plg}user_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
@@ -90,6 +96,8 @@
 		<!-- perform filtering -->
 		<filter token="ant_version_number" value="${str.versionforxml}" />
 		<filter token="ant_captcha_version_number" value="${str.versioncaptchaforxml}" />
+		<filter token="ant_files_version_number" value="${str.versioncaptchaforxml}" />
+		<filter token="ant_mailchimp_version_number" value="${str.versioncaptchaforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
 		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
@@ -218,6 +226,15 @@
 			/>
 		</copy>
 
+		<!-- mailchimp plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/mailchimp" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/system/${cfg.name}mailchimp"
+				includes="${cfg.name}mailchimp.xml,${cfg.name}mailchimp.php,${cfg.name}mailchimp.install.php,field/,form/,language/,library/,liveupdate/"
+				excludes="**.git"
+			/>
+		</copy>
+
 		<!-- analytics plugin -->
 		<copy todir="${cfg.packages}/temp/staging/plugins/analytics" filtering="true">
 			<fileset
@@ -320,6 +337,9 @@
 		</zip>
 		<zip destfile="${str.plg.sys.files.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/files" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.sys.mailchimp.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/mailchimp" excludes="" />
 		</zip>
 		<zip destfile="${str.plg.sys.analytics.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/analytics" excludes="" />
