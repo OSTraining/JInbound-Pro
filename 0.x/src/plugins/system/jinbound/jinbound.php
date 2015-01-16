@@ -146,33 +146,46 @@ class plgSystemJInbound extends JPlugin
 			{
 				$param_string = substr($param_string, 10);
 			}
-			// remove leading ? and parse
-			parse_str(ltrim($param_string, '?'), $params);
-			if (empty($params))
+			// remove leading ? if needed
+			$param_string = ltrim($param_string, '?');
+			// this url *might* be in sef :(
+			$matches = false;
+			// if so, just compare to query string
+			if (array_key_exists('REQUEST_URI', $_SERVER) && trim($_SERVER['REQUEST_URI'], '/') == trim($param_string, '/'))
 			{
-				continue;
+				$matches = true;
 			}
-			// get just the given params from request and compare the arrays
-			$request = array();
-			foreach (array_keys($params) as $param)
+			else
 			{
-				$request[$param] = $this->app->input->get($param);
-			}
-			// fix ids, catids, etc, for slugs
-			foreach (array('id', 'a_id', 'cat', 'catid') as $fix)
-			{
-				if (array_key_exists($fix, $request))
+				// handle non-sef
+				parse_str($param_string, $params);
+				if (empty($params))
 				{
-					$request[$fix] = preg_replace('/^([1-9][0-9]*?).*$/', '$1', $request[$fix]);
+					continue;
 				}
+				// get just the given params from request and compare the arrays
+				$request = array();
+				foreach (array_keys($params) as $param)
+				{
+					$request[$param] = $this->app->input->get($param);
+				}
+				// fix ids, catids, etc, for slugs
+				foreach (array('id', 'a_id', 'cat', 'catid') as $fix)
+				{
+					if (array_key_exists($fix, $request))
+					{
+						$request[$fix] = preg_replace('/^([1-9][0-9]*?).*$/', '$1', $request[$fix]);
+					}
+				}
+				// get the diff
+				$diff = array_diff_assoc($params, $request);
+				$matches = empty($diff);
 			}
-			// get the diff
-			$diff = array_diff_assoc($params, $request);
 			// get the final status
 			JInbound::registerHelper('status');
 			$status_id = JInboundHelperStatus::getFinalStatus();
 			// if the arrays are the same, there's a match - assign if there's a final status
-			if (empty($diff) && $status_id)
+			if ($matches && $status_id)
 			{
 				JInboundHelperStatus::setContactStatusForCampaign($status_id, $data->contact_id, $data->campaign_id);
 				continue;

@@ -111,10 +111,19 @@ class JinboundMailchimp
 	public function onJinboundSetStatus($status_id, $campaign_id, $contact_id)
 	{
 		// load campaign, status, contact
+		$db = JFactory::getDbo();
 		foreach (array('campaign', 'status', 'contact') as $var)
 		{
-			$$var = JTable::getInstance($var, 'JInboundTable');
+			$class = 'JInboundTable' . ucwords($var);
+			require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/tables/' . $var . '.php';
+			$$var = new $class($db);
 			$$var->load(${$var . '_id'});
+			if (property_exists($$var, 'params') && !is_a($$var->params, 'JRegistry'))
+			{
+				$reg = new JRegistry();
+				$reg->loadString($$var->params);
+				$$var->params = $reg;
+			}
 		}
 		
 		// Load lists
