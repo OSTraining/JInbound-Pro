@@ -54,7 +54,15 @@ class JInboundItemView extends JInboundView
 		$canEdit    = $user->authorise('core.edit', JInbound::COM . ".$name");
 		$canEditOwn = $user->authorise('core.edit.own', JInbound::COM . ".$name");
 
-		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM) . '_' . strtoupper($this->_name) . '_MANAGER_' . ($checkedOut ? 'VIEW' : ($isNew ? 'ADD' : 'EDIT'))), 'jinbound-'.$name);
+		// set the toolbar title
+		$title = strtoupper(JInbound::COM.'_'.$this->_name.'_MANAGER');
+		$class = 'jinbound-'.strtolower($this->_name);
+		if ('contact' === $this->_name) {
+			$title = strtoupper(JInbound::COM.'_LEAD_MANAGER');
+			$class = 'jinbound-contact';
+		}
+		$title .= '_' . ($checkedOut ? 'VIEW' : ($isNew ? 'ADD' : 'EDIT'));
+		JToolBarHelper::title(JText::_($title), $class);
 
 		if ($isNew) {
 			if ($canCreate) {
@@ -97,7 +105,12 @@ class JInboundItemView extends JInboundView
 		jimport('joomla.filesystem.file');
 		$isNew = ($this->item->id < 1);
 		$document = JFactory::getDocument();
-		$document->setTitle(JText::_(strtoupper(JInbound::COM).'_'.strtoupper($this->_name).'_'.($isNew ? 'CREATING' : 'EDITING')));
+		$title = strtoupper(JInbound::COM.'_'.$this->_name);
+		if ('contact' === $this->_name) {
+			$title = strtoupper(JInbound::COM.'_LEAD');
+		}
+		$title .= '_' . ($isNew ? 'CREATING' : 'EDITING');
+		$document->setTitle(JText::_($title));
 	}
 	
 	public function prepareItem() {
