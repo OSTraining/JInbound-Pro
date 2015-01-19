@@ -46,6 +46,36 @@
 	</media>
 	<administration>
 		<menu img="../media/jinbound/images/component_dropdown_icon.png">COM_JINBOUND</menu>
+		<submenu>
+			<menu link="option=com_jinbound&amp;view=pages" view="pages"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Pages"
+			>COM_JINBOUND_PAGES</menu>
+			<menu link="option=com_jinbound&amp;view=emails" view="emails"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Emails"
+			>COM_JINBOUND_LEAD_NURTURING_MANAGER</menu>
+			<menu link="option=com_jinbound&amp;view=contacts" view="contacts"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Leads"
+			>COM_JINBOUND_LEADS</menu>
+			<menu link="option=com_jinbound&amp;view=reports" view="reports"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Reports"
+			>COM_JINBOUND_REPORTS</menu>
+			<menu link="option=com_jinbound&amp;view=campaigns" view="campaigns"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Campaigns"
+			>COM_JINBOUND_CAMPAIGNS_MANAGER</menu>
+			<menu link="option=com_jinbound&amp;view=statuses" view="statuses"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Statuses"
+			>COM_JINBOUND_STATUSES</menu>
+			<menu link="option=com_jinbound&amp;view=priorities" view="priorities"
+						img="../media/jinbound/images/component_dropdown_icon.png"
+						alt="JInbound/Priorities"
+			>COM_JINBOUND_PRIORITIES</menu>
+		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>
 			<filename>jinbound.php</filename>
