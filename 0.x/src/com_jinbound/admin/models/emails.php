@@ -224,7 +224,7 @@ class JInboundModelEmails extends JInboundListModel
 	}
 	
 	
-	private static function _replaceTags($string, $object, $extra = false) {
+	public static function _replaceTags($string, $object, $extra = false) {
 		$out  = false;//JInbound::config("debug", 0);
 		if ($out) {
 			echo ('<h3>Email Tags</h3>');

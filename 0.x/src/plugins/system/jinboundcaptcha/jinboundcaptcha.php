@@ -35,8 +35,17 @@ class plgSystemJInboundcaptcha extends JPlugin
 		if ('plg_system_jinboundcaptcha' === $option && 'liveupdate' === $view)
 		{
 			require_once JPATH_ROOT . '/plugins/system/jinboundcaptcha/liveupdate/liveupdate.php';
-			LiveUpdate::handleRequest();
+			$updateInfo = LiveUpdate::getUpdateInformation();
+			if ($updateInfo->hasUpdates) {
+				echo JText::sprintf('PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE_HASUPDATES', $updateInfo->version);
+			}
+			jexit();
 		}
+	}
+	
+	public function onJinboundDashboardUpdate()
+	{
+		return 'index.php?option=plg_system_jinboundcaptcha&view=liveupdate';
 	}
 	
 	public function onJinboundFormbuilderDisplay(&$xml)

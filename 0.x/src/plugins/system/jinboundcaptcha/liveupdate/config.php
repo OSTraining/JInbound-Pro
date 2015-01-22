@@ -22,6 +22,7 @@ class LiveUpdateConfig extends LiveUpdateAbstractConfig
 		'extensionName'	=> 'plg_system_jinboundcaptcha',
 		'key'			=> 'liveupdate'
 	);
+	var $_xmlFilename       = 'jinboundcaptcha.xml';
 	
 	public function __construct()
 	{
@@ -32,7 +33,7 @@ class LiveUpdateConfig extends LiveUpdateAbstractConfig
 			->from('#__extensions')
 			->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
 			->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
-			->where($db->quoteName('name') . ' = ' . $db->quote('jinboundcaptcha'))
+			->where($db->quoteName('element') . ' = ' . $db->quote('jinboundcaptcha'))
 		)->loadResult();
 		$params = json_decode($json);
 		if (is_object($params) && property_exists($params, 'downloadid'))

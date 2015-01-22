@@ -15,6 +15,10 @@ class JInboundViewDashboard extends JInboundView
 	function display($tpl = null, $safeparams = false) {
 		$app = JFactory::getApplication();
 		// check for updates
+		if (!class_exists('LiveUpdate'))
+		{
+			require_once JPATH_COMPONENT_ADMINISTRATOR . '/liveupdate/liveupdate.php';
+		}
 		$updateInfo = LiveUpdate::getUpdateInformation();
 		if (!$updateInfo->supported) {
 			$app->enqueueMessage(JText::_('COM_JINBOUND_UPDATE_UNSUPPORTED'), 'error');
@@ -57,6 +61,9 @@ class JInboundViewDashboard extends JInboundView
 		// reset template and layout data
 		$app->input->set('tmpl', $tmpl);
 		$app->input->set('layout', $layout);
+		
+		// apply plugin update info
+		$this->updates = JDispatcher::getInstance()->trigger('onJinboundDashboardUpdate');
 		
 		return parent::display($tpl, $safeparams);
 	}

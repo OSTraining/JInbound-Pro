@@ -26,6 +26,28 @@ Joomla.submitbutton = function(task) {
 		Joomla.submitform(task, document.getElementById('adminForm'));
 	}
 };
+<?php if (!empty($this->updates)) : ?>
+(function($,d){
+	var urls = [<?php
+	$updates = array();
+	foreach ($this->updates as $update)
+	{
+		$updates[] = "'" . JInboundHelperFilter::escape_js($update) . "'";
+	}
+	echo implode(',', $updates);
+	?>];
+	$(d).ready(function(){
+		$.each(urls, function(i, url){
+			$.ajax(url, {success: function(response){
+				if (!response.length) {
+					return;
+				}
+				$('<div class="alert alert-info">' + response + '</div>').insertBefore($('#adminForm'));
+			}});
+		});
+	});
+})(jQuery,document);
+<?php endif; ?>
 </script>
 <form action="<?php echo JInboundHelperUrl::_(); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
 	<input type="hidden" name="task" value="" />

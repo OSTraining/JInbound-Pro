@@ -262,4 +262,14 @@ class JInboundModelContacts extends JInboundListModel
 		;
 		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_CAMPAIGN'));
 	}
+	
+	public function getPagesOptions() {
+		$query = $this->getDbo()->getQuery(true)
+		->select('Page.id AS value, Page.name as text')
+		->from('#__jinbound_pages AS Page')
+		->where('Page.published = 1')
+		->group('Page.id')
+		;
+		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_CAMPAIGN'));
+	}
 }

@@ -30,26 +30,26 @@ class JInboundViewReports extends JInboundCsvView
 				$data  = array();
 				$extra = array();
 				if (!empty($leads)) {
-					foreach ($leads as &$lead) {
+					foreach ($leads as $idx => $lead) {
 						$formdata = new JRegistry();
 						$formdata->loadString($lead->formdata);
-						$lead->formdata = $formdata->toArray();
+						$leads[$idx]->formdata = $formdata->toArray();
 						if (array_key_exists('lead', $lead->formdata) && is_array($lead->formdata['lead'])) {
 							$extra = array_values(array_unique(array_merge($extra, array_keys($lead->formdata['lead']))));
 						}
 					}
-				}
-				if (!empty($extra)) {
-					foreach ($leads as &$lead) {
-						foreach ($extra as $col) {
-							$value = '';
-							if (array_key_exists('lead', $lead->formdata) && is_array($lead->formdata['lead']) && array_key_exists($col, $lead->formdata['lead'])) {
-								$value = $lead->formdata['lead'][$col];
+					if (!empty($extra)) {
+						foreach ($leads as $idx => $lead) {
+							foreach ($extra as $col) {
+								$value = '';
+								if (array_key_exists('lead', $lead->formdata) && is_array($lead->formdata['lead']) && array_key_exists($col, $lead->formdata['lead'])) {
+									$value = $lead->formdata['lead'][$col];
+								}
+								$leads[$idx]->$col = $value;
 							}
-							$lead->$col = $value;
+							unset($leads[$idx]->formdata);
+							$data[] = $lead;
 						}
-						unset($lead->formdata);
-						$data[] = $lead;
 					}
 				}
 				$this->data = $data;

@@ -35,8 +35,17 @@ class plgSystemJInboundanalytics extends JPlugin
 		if ('plg_system_jinboundanalytics' === $option && 'liveupdate' === $view)
 		{
 			require_once JPATH_ROOT . '/plugins/system/jinboundanalytics/liveupdate/liveupdate.php';
-			LiveUpdate::handleRequest();
+			$updateInfo = LiveUpdate::getUpdateInformation();
+			if ($updateInfo->hasUpdates) {
+				echo JText::sprintf('PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE_HASUPDATES', $updateInfo->version);
+			}
+			jexit();
 		}
+	}
+	
+	public function onJinboundDashboardUpdate()
+	{
+		return "index.php?option=plg_system_jinboundanalytics&view=liveupdate";
 	}
 	
 	public function onContentPrepareForm($form)

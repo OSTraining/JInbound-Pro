@@ -222,6 +222,14 @@ class JInboundView extends JInboundBaseView
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub && JInbound::COM == $option);
+			if ('pages' === $sub)
+			{
+				$this->addSubMenuEntry(JText::_('JCATEGORIES'), JInboundHelperUrl::_(array(
+					'option' => 'com_categories'
+				,	'view' => 'categories'
+				,	'extension' => JInbound::COM
+				)), ('categories' == $vName && 'com_categories' == $option));
+			}
 			$this->addSubMenuEntry($label, $href, $active);
 		}
 		

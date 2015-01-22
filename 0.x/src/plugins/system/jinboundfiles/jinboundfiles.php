@@ -44,8 +44,11 @@ class plgSystemJInboundfiles extends JPlugin
 		if ('plg_system_jinboundfiles' === $option && 'liveupdate' === $view)
 		{
 			require_once JPATH_ROOT . '/plugins/system/jinboundfiles/liveupdate/liveupdate.php';
-			LiveUpdate::handleRequest();
-			return;
+			$updateInfo = LiveUpdate::getUpdateInformation();
+			if ($updateInfo->hasUpdates) {
+				echo JText::sprintf('PLG_SYSTEM_JINBOUNDFILES_UPDATE_HASUPDATES', $updateInfo->version);
+			}
+			jexit();
 		}
 		if ('plg_system_jinboundfiles' === $option && 'file' === $view)
 		{
@@ -77,6 +80,11 @@ class plgSystemJInboundfiles extends JPlugin
 			echo file_get_contents($filepath);
 			die;
 		}
+	}
+	
+	public function onJinboundDashboardUpdate()
+	{
+		return "index.php?option=plg_system_jinboundfiles&view=liveupdate";
 	}
 	
 	public function onJinboundFormbuilderView(&$view)
