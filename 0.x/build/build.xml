@@ -119,9 +119,22 @@
 
 		<!-- Init of changelog automatic build up -->
 		<property name="git.title" value="JInbound Changelog" />
+		<property name="git.title.captcha" value="JInbound Captcha Plugin Changelog" />
+		<property name="git.title.files" value="JInbound Files Plugin Changelog" />
+		<property name="git.title.mailchimp" value="JInbound MailChimp Plugin Changelog" />
 		<property name="git.log.dir" value="${cfg.buildpath}changelog" />
-		<property name="git.log.filename" value="changelog.log" />
+		<property name="git.log.filename" value="changelog.src.log" />
 		<property name="git.log.file" value="${git.log.dir}/${git.log.filename}" />
+		<property name="git.log.fileoutname" value="changelog.log" />
+		<property name="git.log.fileout" value="${git.log.dir}/${git.log.fileoutname}" />
+		<property name="git.log.fileoutname.analytics" value="analytics.changelog.log" />
+		<property name="git.log.fileout.analytics" value="${git.log.dir}/${git.log.fileoutname.analytics}" />
+		<property name="git.log.fileoutname.captcha" value="captcha.changelog.log" />
+		<property name="git.log.fileout.captcha" value="${git.log.dir}/${git.log.fileoutname.captcha}" />
+		<property name="git.log.fileoutname.files" value="files.changelog.log" />
+		<property name="git.log.fileout.files" value="${git.log.dir}/${git.log.fileoutname.files}" />
+		<property name="git.log.fileoutname.mailchimp" value="mailchimp.changelog.log" />
+		<property name="git.log.fileout.mailchimp" value="${git.log.dir}/${git.log.fileoutname.mailchimp}" />
 		
 		<property name="git.rootDir" value="/home/jeff/git/jinbound/0.x/src/" />
 		<property name="git.buildDir" value="/home/jeff/git/jinbound/0.x/build/" />
@@ -273,6 +286,7 @@
 	<target name="doChangelog" if="do.changelog">
 		<echo message="Building    | ${git.title}" />
 		<echo message="File        | ${git.log.file}" />
+		<echo message="Output      | ${git.log.fileout}" />
 		<echo message="--------------------------------------------" />
 		
 		<echo>Making changelog ...</echo>
@@ -293,10 +307,22 @@
 		<exec executable="${cfg.php.bin}">
 			<arg line=' changelog/logformat.php --title="${git.title}" --build=${build.number}' />
 		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.captcha}" --build=${build.number} --target="${git.log.fileout.captcha}" --milestone_prefix="captcha "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.files}" --build=${build.number} --target="${git.log.fileout.files}" --milestone_prefix="files "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.mailchimp}" --build=${build.number} --target="${git.log.fileout.mailchimp}" --milestone_prefix="mailchimp "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.analytics}" --build=${build.number} --target="${git.log.fileout.analytics}" --milestone_prefix="analytics "' />
+		</exec>
 		<echo>Raw git log processed</echo>
 		
 		<!-- Copy changelog to extension dir -->
-		<copy file="${git.log.file}" tofile="${ext.targetFile}" />
+		<copy file="${git.log.fileout}" tofile="${ext.targetFile}" />
 		<echo message="Done ---------------------------------------" />
 	</target>
 	
@@ -332,18 +358,35 @@
 		<zip destfile="${str.plg.sys.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/system" excludes="" />
 		</zip>
+		
 		<zip destfile="${str.plg.sys.captcha.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/captcha" excludes="" />
 		</zip>
+		<zip destfile="${str.plg.sys.captcha.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.captcha}" />
+		</zip>
+		
 		<zip destfile="${str.plg.sys.files.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/files" excludes="" />
 		</zip>
+		<zip destfile="${str.plg.sys.files.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.files}" />
+		</zip>
+		
 		<zip destfile="${str.plg.sys.mailchimp.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/mailchimp" excludes="" />
 		</zip>
+		<zip destfile="${str.plg.sys.mailchimp.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mailchimp}" />
+		</zip>
+		
 		<zip destfile="${str.plg.sys.analytics.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/analytics" excludes="" />
 		</zip>
+		<zip destfile="${str.plg.sys.analytics.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.analytics}" />
+		</zip>
+		
 		<zip destfile="${str.plg.user.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/user" excludes="" />
 		</zip>

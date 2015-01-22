@@ -21,7 +21,9 @@ $itemOtherLine = "             %s";
 
 // allowed tags - commits comments with any other tag, or without any tag
 // will not be included in the changelog
-$tags = array ('NEW' => 'CL - feature', 'BUG' => 'CL - bug', 'CHG' => 'CL - change', 'REL' => 'CL - release');
+$tags = array (
+	'NEW' => 'CL - feature', 'BUG' => 'CL - bug', 'CHG' => 'CL - change', 'REL' => 'CL - release'
+);
 
 // prevent timezone not set warnings to appear all over,
 // for PHP 5.3.3+
@@ -35,8 +37,11 @@ $args = arguments($argv);
 //var_dump($args);
 
 // source and target, replace by read from command line
-$source = 'changelog/changelog.log';
+$source = 'changelog/changelog.src.log';
 $target = 'changelog/changelog.log';
+
+// milestone prefix
+$milestone_prefix = '';
 
 // changelog title and build, to read from cli
 if(empty( $args['options'])) {
@@ -147,6 +152,18 @@ foreach($entries as $entry) {
 }
 
 foreach ($versions as $version => $version_data) {
+	if (!empty($milestone_prefix))
+	{
+		if (0 !== strpos($version_data['title'], $milestone_prefix))
+		{
+			continue;
+		}
+		$version_data['title'] = str_replace($milestone_prefix, '', $version_data['title']);
+	}
+	else if (!preg_match('/^[0-9]+\.[0-9]+\.[0-9]+$/', $version_data['title']))
+	{
+		continue;
+	}
 	$out .= $nl . $nl . $sep;
 	$out .= sprintf($relString, $version_data['date'], $version_data['title']);
 	$out .= $nl . $sep . $nl;

@@ -27,4 +27,4 @@ $message2		= $state->get('extmessage');
 </table>
 
 <iframe style="width: 0px; height: 0px; border: none;" frameborder="0" marginheight="0" marginwidth="0" height="0" width="0"
-	src="index.php?option=<?php echo JRequest::getCmd('option','')?>&view=<?php echo JRequest::getCmd('view','')?>&task=cleanup"></iframe>
+	src="<?php echo $this->baseurl; ?>&task=cleanup"></iframe>

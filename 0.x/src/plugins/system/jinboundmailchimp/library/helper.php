@@ -174,7 +174,7 @@ class JinboundMailchimp
 		$email = $contact->email;
 
 		// Get the user's MailChimp lists
-		$currentLists = $this->mcApi->listsForEmail($email);
+		$currentLists = $this->getEmailLists($email);
 
 		// Get the session
 		$session = JFactory::getSession();
@@ -263,7 +263,7 @@ class JinboundMailchimp
 		}
 
 		// Get the user's MailChimp lists
-		$currentLists = $this->mcApi->listsForEmail($email);
+		$currentLists = $this->getEmailLists($email);
 
 		// Remove MC group from existing list subscription
 		if(!empty($removeMCGroups) && is_array($currentLists)) {
@@ -302,6 +302,26 @@ class JinboundMailchimp
 				$this->addMCGroup($email, $listId, $groupingId, $groupName);
 			}
 		}
+	}
+	
+	public function getEmailLists($email)
+	{
+		return $this->mcApi->listsForEmail($email);
+	}
+	
+	public function getEmailListDetails($email)
+	{
+		$lists = $this->mcApi->listsForEmail($email);
+		if (empty($lists))
+		{
+			return array();
+		}
+		$details = array();
+		foreach ($lists as $id)
+		{
+			$details[$id] = $this->mcApi->listMemberInfo($id, $email);
+		}
+		return $details;
 	}
 
 	/**

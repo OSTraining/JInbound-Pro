@@ -43,6 +43,21 @@ class LiveUpdateController extends JoomlaCompatController
 		$this->display();
 	}
 	
+	private function getUrl()
+	{
+		$url = 'index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate');
+		foreach (array('ext', 'type', 'folder') as $var)
+		{
+			$$var = JRequest::getCmd($var,'');
+			if (empty($$var))
+			{
+				continue;
+			}
+			$url .= '&'.$var.'='.$$var;
+		}
+		return $url;
+	}
+	
 	/**
 	 * Starts the update procedure. If the FTP credentials are required, it asks for them.
 	 */
@@ -52,7 +67,7 @@ class LiveUpdateController extends JoomlaCompatController
 		if($updateInfo->stability != 'stable') {
 			$skipNag = JRequest::getBool('skipnag', false);
 			if(!$skipNag) {
-				$this->setRedirect('index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=nagscreen');
+				$this->setRedirect($this->getUrl().'&task=nagscreen');
 				$this->redirect();
 			}
 		}
@@ -63,7 +78,7 @@ class LiveUpdateController extends JoomlaCompatController
 			$this->display();
 		} else {
 			// No FTP credentials required; proceed with the download
-			$this->setRedirect('index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=download');
+			$this->setRedirect($this->getUrl().'&task=download');
 			$this->redirect();
 		}
 	}
@@ -79,10 +94,10 @@ class LiveUpdateController extends JoomlaCompatController
 		if(!$result) {
 			// Download failed
 			$msg = JText::_('LIVEUPDATE_DOWNLOAD_FAILED');
-			$this->setRedirect('index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=overview', $msg, 'error');
+			$this->setRedirect($this->getUrl().'&task=overview', $msg, 'error');
 		} else {
 			// Download successful. Let's extract the package.
-			$url = 'index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=extract';
+			$url = $this->getUrl().'&task=extract';
 			$user = JRequest::getString('username', null, 'GET', JREQUEST_ALLOWRAW);
 			$pass = JRequest::getString('password', null, 'GET', JREQUEST_ALLOWRAW);
 			if($user) {
@@ -101,10 +116,10 @@ class LiveUpdateController extends JoomlaCompatController
 		if(!$result) {
 			// Download failed
 			$msg = JText::_('LIVEUPDATE_EXTRACT_FAILED');
-			$this->setRedirect('index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=overview', $msg, 'error');
+			$this->setRedirect($this->getUrl().'&task=overview', $msg, 'error');
 		} else {
 			// Extract successful. Let's install the package.
-			$url = 'index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=install';
+			$url = $this->getUrl().'&task=install';
 			$user = JRequest::getString('username', null, 'GET', JREQUEST_ALLOWRAW);
 			$pass = JRequest::getString('password', null, 'GET', JREQUEST_ALLOWRAW);
 			if($user) {
@@ -145,7 +160,7 @@ class LiveUpdateController extends JoomlaCompatController
 		if(!$result) {
 			// Installation failed
 			$model->cleanup();
-			$this->setRedirect('index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=overview');
+			$this->setRedirect($this->getUrl().'&task=overview');
 			$this->redirect();
 		} else {
 			// Installation successful. Show the installation message.

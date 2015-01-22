@@ -17,10 +17,12 @@
 	</languages>
 	<files>
 		<filename plugin="jinboundmailchimp">jinboundmailchimp.php</filename>
+		<filename>field/jinboundmailchimpcontactinfo.php</filename>
 		<filename>field/jinboundmailchimpgroups.php</filename>
 		<filename>field/jinboundmailchimplists.php</filename>
 		<filename>field/jinboundmailchimpupdate.php</filename>
 		<filename>form/jinboundmailchimp.xml</filename>
+		<filename>form/jinboundmailchimpcontact.xml</filename>
 		<filename>language/en-GB/en-GB.plg_system_jinboundmailchimp.ini</filename>
 		<filename>language/en-GB/en-GB.plg_system_jinboundmailchimp.sys.ini</filename>
 		<filename>library/MCAPI.class.php</filename>

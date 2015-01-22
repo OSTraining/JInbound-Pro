@@ -22,6 +22,22 @@ if(!class_exists('JoomlaCompatView')) {
  */
 class LiveUpdateView extends JoomlaCompatView
 {
+	
+	private function getUrl()
+	{
+		$url = 'index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate');
+		foreach (array('ext', 'type', 'folder') as $var)
+		{
+			$$var = JRequest::getCmd($var,'');
+			if (empty($$var))
+			{
+				continue;
+			}
+			$url .= '&'.$var.'='.$$var;
+		}
+		return $url;
+	}
+	
 	public function display($tpl = null)
 	{
 		// Load the CSS
@@ -34,7 +50,7 @@ class LiveUpdateView extends JoomlaCompatView
 			$document->addStyleSheet($url, 'text/css');
 		}
 
-		$requeryURL = rtrim(JURI::base(),'/').'/index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&force=1';
+		$requeryURL = rtrim(JURI::base(),'/').'/'.$this->getUrl().'&force=1';
 		$this->assign('requeryURL', $requeryURL);
 
 		$model = $this->getModel();
@@ -57,11 +73,13 @@ ENDCSS;
 			JFactory::getDocument()->addStyleDeclaration($j3css);
 		}
 		
+		$this->assign('baseurl',$this->getUrl());
+		
 		switch(JRequest::getCmd('task','default'))
 		{
 			case 'startupdate':
 				$this->setLayout('startupdate');
-				$this->assign('url','index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=download');
+				$this->assign('url',$this->getUrl().'&task=download');
 				break;
 
 			case 'install':
@@ -87,7 +105,7 @@ ENDCSS;
 			case 'nagscreen':
 				$this->setLayout('nagscreen');
 				$this->assign('updateInfo', LiveUpdate::getUpdateInformation());
-				$this->assign('runUpdateURL','index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=startupdate&skipnag=1');
+				$this->assign('runUpdateURL',$this->getUrl().'&task=startupdate&skipnag=1');
 				break;
 
 			case 'overview':
@@ -96,7 +114,7 @@ ENDCSS;
 
 				$force = JRequest::getInt('force',0);
 				$this->assign('updateInfo', LiveUpdate::getUpdateInformation($force));
-				$this->assign('runUpdateURL','index.php?option='.JRequest::getCmd('option','').'&view='.JRequest::getCmd('view','liveupdate').'&task=startupdate');
+				$this->assign('runUpdateURL',$this->getUrl().'&task=startupdate');
 
 				$needsAuth = !($config->getAuthorization()) && ($config->requiresAuthorization());
 				$this->assign('needsAuth', $needsAuth);

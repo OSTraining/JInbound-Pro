@@ -12,5 +12,9 @@ JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
 
 class JInboundViewEmail extends JInboundItemView
 {
-	
+	public function addToolBar()
+	{
+		parent::addToolBar();
+		JToolbarHelper::custom('email.test', 'mail.png', 'mail_f2.png', 'COM_JINBOUND_EMAIL_TEST', false);
+	}
 }
