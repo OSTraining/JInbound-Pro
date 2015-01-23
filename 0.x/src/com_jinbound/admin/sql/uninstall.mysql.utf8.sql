@@ -24,3 +24,5 @@ DROP TABLE IF EXISTS `#__jinbound_conversions`;
 DROP TABLE IF EXISTS `#__jinbound_landing_pages_hits`;
 DROP TABLE IF EXISTS `#__jinbound_tracks`;
 DROP TABLE IF EXISTS `#__jinbound_users_tracks`;
+
+DROP TABLE IF EXISTS `#__jinbound_reports_emails`;

@@ -135,10 +135,24 @@ class plgSystemJInbound extends JPlugin
 		{
 			return;
 		}
+		// get the final status
+		JInbound::registerHelper('status');
+		$status_id = JInboundHelperStatus::getFinalStatus();
+		// don't process the same data more than once
+		$processed = array();
 		// this visitor is detected as being in one or more campaigns
 		// check if this request is for one of the conversion urls
 		foreach ($campaign_data as $data)
 		{
+			// only process once
+			// TODO just fix query instead
+			$processed_key = $data->contact_id . ':' . $data->campaign_id;
+			if (in_array($processed_key, $processed))
+			{
+				continue;
+			}
+			$processed[] = $processed_key;
+			// params
 			$params = array();
 			$param_string = trim($data->conversion_url);
 			// remove "index.php?"
@@ -151,18 +165,15 @@ class plgSystemJInbound extends JPlugin
 			// this url *might* be in sef :(
 			$matches = false;
 			// if so, just compare to query string
-			if (array_key_exists('REQUEST_URI', $_SERVER) && trim($_SERVER['REQUEST_URI'], '/') == trim($param_string, '/'))
+			$trimmed = trim($param_string, '/');
+			if (!empty($trimmed) && array_key_exists('REQUEST_URI', $_SERVER) && trim($_SERVER['REQUEST_URI'], '/') === $trimmed)
 			{
 				$matches = true;
 			}
-			else
+			else if (false !== strpos($param_string, '='))
 			{
 				// handle non-sef
 				parse_str($param_string, $params);
-				if (empty($params))
-				{
-					continue;
-				}
 				// get just the given params from request and compare the arrays
 				$request = array();
 				foreach (array_keys($params) as $param)
@@ -177,13 +188,13 @@ class plgSystemJInbound extends JPlugin
 						$request[$fix] = preg_replace('/^([1-9][0-9]*?).*$/', '$1', $request[$fix]);
 					}
 				}
-				// get the diff
-				$diff = array_diff_assoc($params, $request);
-				$matches = empty($diff);
+				if (!empty($request))
+				{
+					// get the diff
+					$diff = array_diff_assoc($params, $request);
+					$matches = empty($diff);
+				}
 			}
-			// get the final status
-			JInbound::registerHelper('status');
-			$status_id = JInboundHelperStatus::getFinalStatus();
 			// if the arrays are the same, there's a match - assign if there's a final status
 			if ($matches && $status_id)
 			{

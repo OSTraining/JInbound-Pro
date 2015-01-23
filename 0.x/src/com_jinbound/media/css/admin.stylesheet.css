@@ -107,7 +107,10 @@
 }
 
 /* yuck, legacy fix */
-#jinbound_component fieldset label, #jinbound_component fieldset span.faux-label {
+#jinbound_component fieldset label,
+#jinbound_component fieldset span.faux-label,
+#jinbound_component .reports_search input,
+#jinbound_component .reports_search select {
 	clear: none !important;
 	float: none !important;
 }
