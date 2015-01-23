@@ -62,6 +62,19 @@ abstract class JInboundHelperStatus
 		$dispatcher = JDispatcher::getInstance();
 		$db   = JFactory::getDbo();
 		$date = JFactory::getDate()->toSql();
+		// before we save the status, check if this user has this status already - don't duplicate the last status!
+		$current = $db->setQuery($db->getQuery(true)
+			->select($db->quoteName('status_id'))
+			->from('#__jinbound_contacts_statuses')
+			->where($db->quoteName('campaign_id') . '=' . $db->quote($campaign_id))
+			->where($db->quoteName('contact_id') . '=' . $db->quote($contact_id))
+			->order($db->quoteName('created') . ' DESC')
+		)->loadResult();
+		if ((int) $current === (int) $status_id)
+		{
+			// just pretend lol
+			return true;
+		}
 		// save the status
 		$value = $db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_contacts_statuses')
@@ -80,9 +93,13 @@ abstract class JInboundHelperStatus
 			)
 		)->query();
 		
-		$dispatcher->trigger('onJInboundChangeState', array(
+		$result = $dispatcher->trigger('onJInboundChangeState', array(
 			'com_jinbound.contact.status', $campaign_id, array($contact_id), $status_id)
 		);
+		
+		if (is_array($result) && !empty($result) && in_array(false, $result, true)) {
+			return false;
+		}
 		
 		return $value;
 	}

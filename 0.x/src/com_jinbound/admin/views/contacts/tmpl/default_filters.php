@@ -23,16 +23,20 @@ if ('component' != JFactory::getApplication()->input->get('tmpl', 'default')) :
 <?php endif; ?>
 		
 	</div>
-	<?php echo JHtml::_('calendar', $this->state->get('filter.start'), 'filter_start', 'filter_start', '%Y-%m-%d', array(
+	<?php 
+	$start = $this->state->get('filter.start');
+	$end   = $this->state->get('filter.end');
+	echo JHtml::_('calendar', is_object($start) ? '' : $start, 'filter_start', 'filter_start', '%Y-%m-%d', array(
 		'size'        => 10
 	,	'placeholder' => JText::_('COM_JINBOUND_FROM')
 	,	'onchange'    => 'this.form.submit();'
-	)); ?>
-	<?php echo JHtml::_('calendar', $this->state->get('filter.end'), 'filter_end', 'filter_end', '%Y-%m-%d', array(
+	));
+	echo JHtml::_('calendar', is_object($end) ? '' : $end, 'filter_end', 'filter_end', '%Y-%m-%d', array(
 		'size'        => 10
 	,	'placeholder' => JText::_('COM_JINBOUND_TO')
 	,	'onchange'    => 'this.form.submit();'
-	)); ?>
+	));
+	?>
 <?php if ($floatButtons) : ?>
 	<div class="btn-group pull-left hidden-phone">
 		<button type="submit" class="btn btn-primary tip hasTooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>

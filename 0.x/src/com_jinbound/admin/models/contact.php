@@ -9,6 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerHelper('contact');
+JInbound::registerHelper('status');
 JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
 
 JPluginHelper::importPlugin('content');
@@ -102,40 +103,7 @@ class JInboundModelContact extends JInboundAdminModel
 	 * @return mixed
 	 */
 	public function status($contact_id, $campaign_id, $status_id, $creator = null) {
-		$dispatcher = JDispatcher::getInstance();
-		
-		$db = JFactory::getDbo();
-		
-		// some info for the status and priority
-		$created = JFactory::getDate()->toSql();
-		$creator = JFactory::getUser($creator)->get('id');
-		// save the status
-		$return = $db->setQuery($db->getQuery(true)
-			->insert('#__jinbound_contacts_statuses')
-			->columns(array(
-				'status_id'
-			,	'campaign_id'
-			,	'contact_id'
-			,	'created'
-			,	'created_by'
-			))
-			->values($db->quote($status_id)
-			. ', ' . $db->quote($campaign_id)
-			. ', ' . $db->quote($contact_id)
-			. ', ' . $db->quote($created)
-			. ', ' . $db->quote($creator)
-			)
-		)->query();
-		
-		$result = $dispatcher->trigger('onJInboundChangeState', array(
-			'com_jinbound.contact.status', $campaign_id, array($contact_id), $status_id)
-		);
-		
-		if (is_array($result) && !empty($result) && in_array(false, $result, true)) {
-			return false;
-		}
-		
-		return $return;
+		return JInboundHelperStatus::setContactStatusForCampaign($status_id, $contact_id, $campaign_id, $creator);
 	}
 	
 	/**
