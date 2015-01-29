@@ -30,6 +30,11 @@ class JInboundModelStatus extends JInboundAdminModel
 		if (empty($form)) {
 			return false;
 		}
+		// check published permissions
+		if (!JFactory::getUser()->authorise('core.edit.state', 'com_jinbound.status'))
+		{
+			$form->setFieldAttribute('published', 'readonly', 'true');
+		}
 		return $form;
 	}
 	

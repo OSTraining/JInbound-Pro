@@ -37,4 +37,18 @@ class JInboundViewContacts extends JInboundListView
 		
 		return parent::display($tpl, $safeparams);
 	}
+	
+	public function addToolBar() {
+		$icon = 'export';
+		if (JInbound::version()->isCompatible('3.0.0'))
+		{
+			$icon = 'download';
+		}
+		// export icons
+		if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.report'))
+		{
+			JToolBarHelper::custom('reports.exportleads', "{$icon}.png", "{$icon}_f2.png", 'COM_JINBOUND_EXPORT_LEADS', false);
+		}
+		parent::addToolBar();
+	}
 }

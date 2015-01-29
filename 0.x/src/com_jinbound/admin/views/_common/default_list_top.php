@@ -7,5 +7,4 @@
 
 defined('JPATH_PLATFORM') or die;
 
-?>
-<h2><?php echo JText::_(strtoupper(JInbound::COM.'_'.('contacts' === $this->_name ? 'leads' : $this->_name).'_MANAGER')); ?></h2>
+// empty on purpose

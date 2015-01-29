@@ -34,6 +34,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/files" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/mailchimp" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/analytics" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/acymailing" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/user" />
 		<mkdir dir="${cfg.packages}/temp/staging/template" />
 		
@@ -45,6 +46,12 @@
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<condition property="str.versionfilesforxml" value="${cfg.version.files}.${build.number}${cfg.versionsuffix}" else="${cfg.version.files}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.versionmailchimpforxml" value="${cfg.version.mailchimp}.${build.number}${cfg.versionsuffix}" else="${cfg.version.mailchimp}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.versionacymailingforxml" value="${cfg.version.acymailing}.${build.number}${cfg.versionsuffix}" else="${cfg.version.acymailing}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<tstamp>
@@ -67,6 +74,9 @@
 		<condition property="str.version.mailchimp" value="${cfg.versionprefix}${cfg.version.mailchimp}" else="${cfg.version.mailchimp}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
+		<condition property="str.version.acymailing" value="${cfg.versionprefix}${cfg.version.acymailing}" else="${cfg.version.acymailing}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
@@ -86,8 +96,10 @@
 		<property name="str.plg.sys.files.file" value="${cfg.packages}/current/${str.plg.sys.files.filename}" />
 		<property name="str.plg.sys.mailchimp.filename" value="${cfg.pfx.plg}system_${cfg.name}mailchimp_${str.version.mailchimp}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.mailchimp.file" value="${cfg.packages}/current/${str.plg.sys.mailchimp.filename}" />
-		<property name="str.plg.sys.analytics.filename" value="${cfg.pfx.plg}system_${cfg.name}analytics_${str.version.files}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sys.analytics.filename" value="${cfg.pfx.plg}system_${cfg.name}analytics_${str.version.analytics}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.analytics.file" value="${cfg.packages}/current/${str.plg.sys.analytics.filename}" />
+		<property name="str.plg.sys.acymailing.filename" value="${cfg.pfx.plg}system_${cfg.name}acymailing_${str.version.acymailing}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sys.acymailing.file" value="${cfg.packages}/current/${str.plg.sys.acymailing.filename}" />
 		<property name="str.plg.user.filename" value="${cfg.pfx.plg}user_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
 		<property name="str.mod.bookmark.filename" value="${cfg.pfx.mod}${cfg.name}_social_bookmark_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
@@ -96,8 +108,9 @@
 		<!-- perform filtering -->
 		<filter token="ant_version_number" value="${str.versionforxml}" />
 		<filter token="ant_captcha_version_number" value="${str.versioncaptchaforxml}" />
-		<filter token="ant_files_version_number" value="${str.versioncaptchaforxml}" />
-		<filter token="ant_mailchimp_version_number" value="${str.versioncaptchaforxml}" />
+		<filter token="ant_files_version_number" value="${str.versionfilesforxml}" />
+		<filter token="ant_mailchimp_version_number" value="${str.versionmailchimpforxml}" />
+		<filter token="ant_acymailing_version_number" value="${str.versionacymailingforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
 		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
@@ -247,6 +260,15 @@
 				excludes="**.git"
 			/>
 		</copy>
+		
+		<!-- acymailing plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/acymailing" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/system/${cfg.name}acymailing"
+				includes="${cfg.name}acymailing.xml,${cfg.name}acymailing.php,${cfg.name}acymailing.install.php,field/,form/,helper/,language/,liveupdate/"
+				excludes="**.git"
+			/>
+		</copy>
 
 		<!-- analytics plugin -->
 		<copy todir="${cfg.packages}/temp/staging/plugins/analytics" filtering="true">
@@ -317,6 +339,9 @@
 			<arg line=' changelog/logformat.php --title="${git.title.mailchimp}" --build=${build.number} --target="${git.log.fileout.mailchimp}" --milestone_prefix="mailchimp "' />
 		</exec>
 		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.acymailing}" --build=${build.number} --target="${git.log.fileout.acymailing}" --milestone_prefix="acymailing "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
 			<arg line=' changelog/logformat.php --title="${git.title.analytics}" --build=${build.number} --target="${git.log.fileout.analytics}" --milestone_prefix="analytics "' />
 		</exec>
 		<echo>Raw git log processed</echo>
@@ -378,6 +403,13 @@
 		</zip>
 		<zip destfile="${str.plg.sys.mailchimp.file}.zip" update="true">
 			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mailchimp}" />
+		</zip>
+		
+		<zip destfile="${str.plg.sys.acymailing.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/acymailing" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.sys.acymailing.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.acymailing}" />
 		</zip>
 		
 		<zip destfile="${str.plg.sys.analytics.file}.zip" update="false">

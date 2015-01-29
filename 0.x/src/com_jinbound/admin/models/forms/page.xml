@@ -51,18 +51,18 @@
 		/>
 		
 		<field
-			id="layout" name="layout"
-			type="list"
+			name="layout"
+			type="radio"
 			label="COM_JINBOUND_LAYOUT"
 			description="COM_JINBOUND_PAGE_LAYOUT_DESC"
-			class="input-block-level"
+			class="radio btn-group"
 			default="A"
 		>
-			<option value="A">COM_JINBOUND_TEMPLATE_A</option>
-			<option value="B">COM_JINBOUND_TEMPLATE_B</option>
-			<option value="C">COM_JINBOUND_TEMPLATE_C</option>
-			<option value="D">COM_JINBOUND_TEMPLATE_D</option>
-			<option value="0">COM_JINBOUND_TEMPLATE_CUSTOM</option>
+			<option value="A">COM_JINBOUND_TEMPLATE_A_BTN</option>
+			<option value="B">COM_JINBOUND_TEMPLATE_B_BTN</option>
+			<option value="C">COM_JINBOUND_TEMPLATE_C_BTN</option>
+			<option value="D">COM_JINBOUND_TEMPLATE_D_BTN</option>
+			<option value="0">COM_JINBOUND_TEMPLATE_CUSTOM_BTN</option>
 		</field>
 
 	</fieldset>
@@ -87,6 +87,21 @@
 			description="COM_JINBOUND_SUBHEADING_DESC"
 			class="input-block-level"
 			size="30"
+		/>
+		<field
+			id="image" name="image"
+			type="media"
+			hide_none="1"
+			label="COM_JINBOUND_IMAGE"
+			description="COM_JINBOUND_IMAGE_DESC"
+			class="input-large"
+		/>
+		<field
+			id="imagealttext" name="imagealttext"
+			type="text"
+			label="COM_JINBOUND_ALTTEXT"
+			description="COM_JINBOUND_ALTTEXT_DESC"
+			class="input-block-level"
 		/>
 		<field
 			id="socialmedia" name="socialmedia"
@@ -120,28 +135,6 @@
 			buttons="0"
 		/>
 
-
-	</fieldset>
-
-	<fieldset
-		name="imagetab"
-		label="COM_JINBOUND_PAGE_FIELDSET_IMAGE"
-	>
-		<field
-			id="image" name="image"
-			type="media"
-			hide_none="1"
-			label="COM_JINBOUND_IMAGE"
-			description="COM_JINBOUND_IMAGE_DESC"
-			class="input-large"
-		/>
-		<field
-			id="imagealttext" name="imagealttext"
-			type="text"
-			label="COM_JINBOUND_ALTTEXT"
-			description="COM_JINBOUND_ALTTEXT_DESC"
-			class="input-block-level"
-		/>
 
 	</fieldset>
 

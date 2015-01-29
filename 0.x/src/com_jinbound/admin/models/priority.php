@@ -36,6 +36,11 @@ class JInboundModelPriority extends JInboundAdminModel
 			$form->setFieldAttribute('published', 'default', '1');
 			$form->setValue('published', '1');
 		}
+		// check published permissions
+		else if (!JFactory::getUser()->authorise('core.edit.state', 'com_jinbound.priority'))
+		{
+			$form->setFieldAttribute('published', 'readonly', 'true');
+		}
 		return $form;
 	}
 }

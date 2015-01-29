@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>plg_system_jinboundacymailing</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_mailchimp_version_number@</version>
+	<description>PLG_SYSTEM_JINBOUNDACYMAILING_DESCRIPTION</description>
+	<scriptfile>jinboundacymailing.install.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundacymailing.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinboundacymailing">jinboundacymailing.php</filename>
+		<filename>field/jinboundacymailingcontactinfo.php</filename>
+		<filename>field/jinboundacymailinglists.php</filename>
+		<filename>field/jinboundacymailingupdate.php</filename>
+		<filename>form/jinboundacymailing.xml</filename>
+		<filename>form/jinboundacymailingcontact.xml</filename>
+		<filename>helper/helper.php</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundacymailing.sys.ini</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldpath="/plugins/system/jinboundacymailing/field">
+				<field name="update" type="jinboundacymailingupdate"
+							 label="PLG_SYSTEM_JINBOUNDACYMAILING_UPDATE"
+							 description="PLG_SYSTEM_JINBOUNDACYMAILING_UPDATE_DESC"
+				/>
+				<field name="downloadid" type="text"
+							 label="PLG_SYSTEM_JINBOUNDACYMAILING_DOWNLOADID"
+							 description="PLG_SYSTEM_JINBOUNDACYMAILING_DOWNLOADID_DESC"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

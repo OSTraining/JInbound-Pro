@@ -46,10 +46,15 @@ class JInboundViewPages extends JInboundListView
 	}
 	
 	public function addToolBar() {
+		$icon = 'export';
+		if (JInbound::version()->isCompatible('3.0.0'))
+		{
+			$icon = 'download';
+		}
 		// export icon
 		if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.report'))
 		{
-			JToolBarHelper::custom('reports.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
+			JToolBarHelper::custom('reports.exportpages', "{$icon}.png", "{$icon}_f2.png", 'COM_JINBOUND_EXPORT_PAGES', false);
 		}
 		parent::addToolBar();
 	}

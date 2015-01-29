@@ -49,6 +49,11 @@ class JInboundControllerContact extends JInboundBaseController
 				}
 			}
 		}
+		$plugin_results = JDispatcher::getInstance()
+			->trigger('onJInboundAfterJsonChangeState', array(
+				$how, $id, $campaign, $value, $result
+			))
+		;
 		echo json_encode(array(
 			'success' => $result
 		,	'list'    => $list
@@ -57,6 +62,7 @@ class JInboundControllerContact extends JInboundBaseController
 			,	'campaign_id' => $campaign
 			,	"{$how}_id"   => $value
 			)
+		,	'plugin' => $plugin_results
 		));
 		jexit();
 	}

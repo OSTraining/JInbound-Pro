@@ -30,8 +30,6 @@ Joomla.submitbutton = function(task)
 	
 	<?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab')); ?>
 	<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', 'content_tab', JText::_('COM_JINBOUND_REPORTS', true)); ?>
-		
-	<h2><?php echo JText::_('COM_JINBOUND_REPORTS'); ?></h2>
 	<form action="<?php echo JInboundHelperUrl::view('reports'); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
 	<div class="row-fluid">
 		<div class="span12 text-center">
