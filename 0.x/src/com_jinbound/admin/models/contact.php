@@ -50,6 +50,11 @@ class JInboundModelContact extends JInboundAdminModel
 		}
 		
 		$form->setValue('_campaigns', null, $value);
+		// check published permissions
+		if (!JFactory::getUser()->authorise('core.edit.state', 'com_jinbound.contact'))
+		{
+			$form->setFieldAttribute('published', 'readonly', 'true');
+		}
 		// return the form
 		return $form;
 	}

@@ -9,18 +9,17 @@ defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
+JFormHelper::loadFieldClass('list');
 
-class JFormFieldJinboundPublished extends JFormField
+class JFormFieldJinboundPublished extends JFormFieldList
 {
 	public $type = 'Jinboundpublished';
 
-	protected function getInput() {
-		// get class for this element
-		$class = $this->element['class'] ? ' class="'.(string) $this->element['class'].'"' : '';
+	protected function getOptions() {
 		// list of published types
 		$list = array();
-		$list[] = JHtml::_('select.option', 0, JText::_('COM_JINBOUND_UNPUBLISHED'), '_id', '_name');
-		$list[] = JHtml::_('select.option', 1, JText::_('COM_JINBOUND_PUBLISHED'), '_id', '_name');
-    return JHtml::_('select.genericlist', $list, $this->name, $class . ' size="1"', '_id', '_name', $this->value);
+		$list[] = JHtml::_('select.option', 0, JText::_('COM_JINBOUND_UNPUBLISHED'));
+		$list[] = JHtml::_('select.option', 1, JText::_('COM_JINBOUND_PUBLISHED'));
+		return array_merge(parent::getOptions(), $list);
 	}
 }

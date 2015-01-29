@@ -98,7 +98,6 @@ class JInboundListView extends JInboundView
 				$title = strtoupper(JInbound::COM.'_LEADS_MANAGER');
 				$class = 'jinbound-leads';
 			}
-			JToolBarHelper::title(JText::_($title), $class);
 			if ($canCreate) {
 				JToolBarHelper::addNew($single . '.add', 'JTOOLBAR_NEW');
 			}
@@ -121,6 +120,8 @@ class JInboundListView extends JInboundView
 			}
 			// add parent toolbar
 			parent::addToolBar();
+			
+			JToolBarHelper::title(JText::_($title), $class);
 		}
 		$set = true;
 	}

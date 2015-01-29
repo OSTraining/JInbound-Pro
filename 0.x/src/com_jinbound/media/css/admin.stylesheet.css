@@ -135,3 +135,7 @@
 	content: "\e007";
 	float:right;
 }
+
+#jinbound_default_tabset {
+	margin-top: 8px;
+}

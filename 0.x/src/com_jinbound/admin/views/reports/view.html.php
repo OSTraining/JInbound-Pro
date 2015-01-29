@@ -138,10 +138,15 @@ class JInboundViewReports extends JInboundListView
 		static $set;
 		
 		if (is_null($set)) {
+			$icon = 'export';
+			if (JInbound::version()->isCompatible('3.0.0'))
+			{
+				$icon = 'download';
+			}
 			// export icons
 			if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.report'))
 			{
-				JToolBarHelper::custom($this->_name.'.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS', false);
+				JToolBarHelper::custom($this->_name.'.exportleads', "{$icon}.png", "{$icon}_f2.png", 'COM_JINBOUND_EXPORT_LEADS', false);
 				//JToolBarHelper::custom($this->_name.'.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
 			}
 			// skip parent and go to grandparent so we don't have the normal list view icons like "new" and "save"

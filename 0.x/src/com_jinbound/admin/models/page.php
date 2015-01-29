@@ -43,6 +43,11 @@ class JInboundModelPage extends JInboundAdminModel
 			}
 			$form->setValue('layout', null, $template);
 		}
+		// check published permissions
+		if (!JFactory::getUser()->authorise('core.edit.state', 'com_jinbound.page'))
+		{
+			$form->setFieldAttribute('published', 'readonly', 'true');
+		}
 		
 		return $form;
 	}
