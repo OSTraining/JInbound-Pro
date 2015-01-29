@@ -195,14 +195,14 @@ class JInboundView extends JInboundBaseView
 		
 		$vName = strtolower($vName);
 		// Dashboard
-		$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM)), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
+		$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM) . '_DASHBOARD'), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
 		// the rest
 		$subMenuItems = array(
-			'pages'       => 'PAGES',
+			'campaigns'   => 'CAMPAIGNS_MANAGER',
 			'emails'      => 'LEAD_NURTURING_MANAGER',
+			'pages'       => 'PAGES',
 			'contacts'    => 'LEADS',
 			'reports'     => 'REPORTS',
-			'campaigns'   => 'CAMPAIGNS_MANAGER',
 			'statuses'    => 'STATUSES',
 			'priorities'  => 'PRIORITIES'
 		);
@@ -222,8 +222,12 @@ class JInboundView extends JInboundBaseView
 			$label = JText::_(strtoupper(JInbound::COM . "_$txt"));
 			$href = JInboundHelperUrl::_(array('view' => $sub));
 			$active = ($vName == $sub && JInbound::COM == $option);
-			if ('pages' === $sub)
+			if ('statuses' === $sub)
 			{
+				if (JInbound::version()->isCompatible('3.0.0'))
+				{
+					$this->addSubMenuEntry('<hr style="padding:0;margin:0"/>', 'javascript:', false);
+				}
 				$this->addSubMenuEntry(JText::_('JCATEGORIES'), JInboundHelperUrl::_(array(
 					'option' => 'com_categories'
 				,	'view' => 'categories'
