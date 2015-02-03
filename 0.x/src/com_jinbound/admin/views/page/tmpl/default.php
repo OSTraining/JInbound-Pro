@@ -31,7 +31,7 @@ echo $this->loadTemplate('edit');
 <?php endif; ?>
 	var hideSidebar = function() {
 		var row = $('#jform_sidebartext').closest('.row-fluid'), d = [3], hide = true, tabs, tab;
-		switch($('#jform_layout').val()) {
+		switch($('#jform_layout').find(':checked').val()) {
 			case '0':
 				d = [];
 			case 'A':
@@ -82,8 +82,15 @@ echo $this->loadTemplate('edit');
 				catch (err2) {}
 			}
 		}
+		
+		$('.jinbound_legacy #jform_layout').find('.active').removeClass('active');
+		$('.jinbound_legacy #jform_layout').find('.btn-success').removeClass('btn-success');
+		$('.jinbound_legacy #jform_layout').find(':checked').next().addClass('active').addClass('btn-success')
 	};
+	
 	hideSidebar();
-	$('#jform_layout').change(hideSidebar);
+	$('#jform_layout').find('input').change(hideSidebar);
+	$('.jinbound_bootstrap #jform_layout .btn').click(hideSidebar);
+	
 });})(jQuery);
 </script>
