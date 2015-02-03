@@ -166,7 +166,11 @@ class plgSystemJInbound extends JPlugin
 			$matches = false;
 			// if so, just compare to query string
 			$trimmed = trim($param_string, '/');
-			if (!empty($trimmed) && array_key_exists('REQUEST_URI', $_SERVER) && trim($_SERVER['REQUEST_URI'], '/') === $trimmed)
+			$trim_root = trim(JUri::root(true), '/');
+			if (!empty($trimmed) && array_key_exists('REQUEST_URI', $_SERVER)
+				&& (trim($_SERVER['REQUEST_URI'], '/') === $trimmed
+				 || trim($_SERVER['REQUEST_URI'], '/') === trim($trim_root . '/' . $trimmed, '/')
+				))
 			{
 				$matches = true;
 			}
