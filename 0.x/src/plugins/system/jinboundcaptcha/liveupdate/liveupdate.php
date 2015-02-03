@@ -95,7 +95,7 @@ class LiveUpdate
 		);
 		$c = array_merge($defaultConfig, $config);
 
-		$button['link'] = 'index.php?option=com_jinbound&view='.$c['view'].'&ext=jinboundmailchimp&type=plg&folder=system';
+		$button['link'] = 'index.php?option=com_jinbound&view='.$c['view'].'&ext=jinboundcaptcha&type=plg&folder=system';
 		$button['image'] = $c['mediaurl'];
 
 		$updateInfo = self::getUpdateInformation();
