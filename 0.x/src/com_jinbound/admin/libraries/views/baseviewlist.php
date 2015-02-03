@@ -41,13 +41,17 @@ class JInboundListView extends JInboundView
 		return parent::display($tpl, $safeparams);
 	}
 	
-	public function addFilter($label, $name, $options, $default) {
+	public function addFilter($label, $name, $options, $default, $trim = true) {
 		$filter = new stdClass;
 		$filter->label   = $label;
 		$filter->name    = $name;
 		$filter->options = $options;
 		$filter->default = $default;
-		if (!is_array($this->_filters)) $this->_filters = array();
+		$filter->trim    = $trim;
+		if (!is_array($this->_filters))
+		{
+			$this->_filters = array();
+		}
 		return $this->_filters[] = $filter;
 	}
 	
@@ -60,7 +64,10 @@ class JInboundListView extends JInboundView
 				if (empty($filter->options)) {
 					continue;
 				}
-				array_shift($filter->options);
+				if ($filter->trim)
+				{
+					array_shift($filter->options);
+				}
 				$options = JHtml::_('select.options', $filter->options, 'value', 'text', $filter->default, true);
 				JHtmlSidebar::addFilter($filter->label, $filter->name, $options);
 			}
