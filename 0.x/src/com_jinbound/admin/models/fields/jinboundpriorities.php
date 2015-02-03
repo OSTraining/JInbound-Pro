@@ -15,24 +15,12 @@ class JFormFieldJinboundPriorities extends JFormFieldList
 	
 	protected function getOptions() {
 		
-		$db = JFactory::getDbo();
-		
-		$db->setQuery($db->getQuery(true)
-			->select('id AS value, name AS text')
-			->from('#__jinbound_priorities')
-			->where('published = 1')
-			->order('ordering ASC')
-		);
-		
-		try {
-			$options = $db->loadObjectList();
+		if (!file_exists($file = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/priority.php'))
+		{
+			return array();
 		}
-		catch (Exception $e) {
-			$options = array();
-		}
+		require_once $file;
 		
-		$options = array_merge(parent::getOptions(), $options);
-
-		return $options;
+		return array_merge(parent::getOptions(), JInboundHelperPriority::getSelectOptions());
 	}
 }

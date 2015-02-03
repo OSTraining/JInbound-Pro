@@ -17,30 +17,12 @@ class JFormFieldJinboundStatuses extends JFormFieldList
 		
 		$final = $this->element['final'] ? ('true' === strtolower($this->element['final'])) : false;
 		
-		$db = JFactory::getDbo();
-		
-		$query = $db->getQuery(true)
-		->select('id AS value, name AS text')
-		->from('#__jinbound_lead_statuses')
-		->where('published = 1')
-		->order('ordering ASC')
-		;
-		
-		if ($final) {
-			$query->where('final = 1');
+		if (!file_exists($file = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/status.php'))
+		{
+			return array();
 		}
+		require_once $file;
 		
-		$db->setQuery($query);
-		
-		try {
-			$options = $db->loadObjectList();
-		}
-		catch (Exception $e) {
-			$options = array();
-		}
-		
-		$options = array_merge(parent::getOptions(), $options);
-
-		return $options;
+		return array_merge(parent::getOptions(), JInboundHelperStatus::getSelectOptions($final));
 	}
 }
