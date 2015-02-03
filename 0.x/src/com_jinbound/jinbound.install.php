@@ -506,7 +506,7 @@ class com_JInboundInstallerScript
 		jimport('joomla.database.table');
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
 		
-		$leads   = array('NEW_LEAD', 'NOT_INTERESTED', 'EMAIL', 'VOICEMAIL', 'CONVERTED');
+		$leads   = array('NEW_LEAD', 'NOT_INTERESTED', 'EMAIL', 'VOICEMAIL', 'GOAL_COMPLETED');
 		$default = 0;
 		$final   = count($leads) - 1;
 		
