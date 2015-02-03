@@ -7,7 +7,7 @@
 # @copyright    Copyright (C) 2009 Yannick Gaultier. All rights reserved.
 # @copyright    Copyright (C) 2011 Anything Digital. All rights reserved.
 # @license      GNU/GPL
-############################media#######################################
+###################################################################
 -->
 <project name="jinbound" default="dist" basedir=".">
 	<property file="config.ini" />
@@ -54,6 +54,9 @@
 		<condition property="str.versionacymailingforxml" value="${cfg.version.acymailing}.${build.number}${cfg.versionsuffix}" else="${cfg.version.acymailing}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
+		<condition property="str.versionanalyticsforxml" value="${cfg.version.analytics}.${build.number}${cfg.versionsuffix}" else="${cfg.version.analytics}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
 		<tstamp>
 			<format property="str.datefmt" pattern="${cfg.datefmt}" locale="${cfg.dateloc}" />
 		</tstamp>
@@ -75,6 +78,9 @@
 			<istrue value="${cfg.addversion}" />
 		</condition>
 		<condition property="str.version.acymailing" value="${cfg.versionprefix}${cfg.version.acymailing}" else="${cfg.version.acymailing}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
+		<condition property="str.version.analytics" value="${cfg.versionprefix}${cfg.version.analytics}" else="${cfg.version.analytics}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
@@ -142,6 +148,8 @@
 		<property name="git.log.fileout" value="${git.log.dir}/${git.log.fileoutname}" />
 		<property name="git.log.fileoutname.analytics" value="analytics.changelog.log" />
 		<property name="git.log.fileout.analytics" value="${git.log.dir}/${git.log.fileoutname.analytics}" />
+		<property name="git.log.fileoutname.acymailing" value="acymailing.changelog.log" />
+		<property name="git.log.fileout.acymailing" value="${git.log.dir}/${git.log.fileoutname.acymailing}" />
 		<property name="git.log.fileoutname.captcha" value="captcha.changelog.log" />
 		<property name="git.log.fileout.captcha" value="${git.log.dir}/${git.log.fileoutname.captcha}" />
 		<property name="git.log.fileoutname.files" value="files.changelog.log" />

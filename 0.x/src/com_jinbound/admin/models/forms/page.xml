@@ -58,11 +58,11 @@
 			class="radio btn-group"
 			default="A"
 		>
-			<option value="A">COM_JINBOUND_TEMPLATE_A_BTN</option>
-			<option value="B">COM_JINBOUND_TEMPLATE_B_BTN</option>
-			<option value="C">COM_JINBOUND_TEMPLATE_C_BTN</option>
-			<option value="D">COM_JINBOUND_TEMPLATE_D_BTN</option>
-			<option value="0">COM_JINBOUND_TEMPLATE_CUSTOM_BTN</option>
+			<option value="A" class="btn">COM_JINBOUND_TEMPLATE_A_BTN</option>
+			<option value="B" class="btn">COM_JINBOUND_TEMPLATE_B_BTN</option>
+			<option value="C" class="btn">COM_JINBOUND_TEMPLATE_C_BTN</option>
+			<option value="D" class="btn">COM_JINBOUND_TEMPLATE_D_BTN</option>
+			<option value="0" class="btn">COM_JINBOUND_TEMPLATE_CUSTOM_BTN</option>
 		</field>
 
 	</fieldset>

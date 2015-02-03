@@ -139,3 +139,11 @@
 #jinbound_default_tabset {
 	margin-top: 8px;
 }
+
+.jinbound_legacy #jform_layout input {
+	display: none !important;
+}
+
+.jinbound_legacy #jform_layout label {
+	float: left;
+}

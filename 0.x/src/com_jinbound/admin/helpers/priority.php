@@ -54,4 +54,27 @@ abstract class JInboundHelperPriority
 			)
 		)->query();
 	}
+	
+	static public function getSelectOptions()
+	{
+		$db = JFactory::getDbo();
+		
+		$query = $db->getQuery(true)
+			->select('id AS value, name AS text')
+			->from('#__jinbound_priorities')
+			->where('published = 1')
+			->order('ordering ASC')
+		;
+		
+		$db->setQuery($query);
+		
+		try {
+			$options = $db->loadObjectList();
+		}
+		catch (Exception $e) {
+			$options = array();
+		}
+		
+		return $options;
+	}
 }

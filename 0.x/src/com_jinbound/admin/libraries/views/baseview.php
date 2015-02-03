@@ -97,12 +97,15 @@ class JInboundView extends JInboundBaseView
 		$profiler = JProfiler::getInstance('Application');
 		$profiler->mark('onJInboundViewDisplayStart');
 		
-		$this->viewClass = 'jcl_component';
+		$this->viewClass = 'jinbound_component';
 		if (JInbound::version()->isCompatible('3.0.0')) {
-			$this->viewClass .= ' jcl_bootstrap';
+			$this->viewClass .= ' jinbound_bootstrap';
+		}
+		else {
+			$this->viewClass .= ' jinbound_legacy';
 		}
 		// add the view as a class as well
-		$this->viewClass   .= ' jcl_view_' . JInboundHelperFilter::escape($this->_name);
+		$this->viewClass   .= ' jinbound_view_' . JInboundHelperFilter::escape($this->_name);
 		$this->viewName     = $this->_name;
 		
 		// are we in component view?

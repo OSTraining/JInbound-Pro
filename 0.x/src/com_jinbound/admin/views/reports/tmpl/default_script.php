@@ -20,6 +20,9 @@ JText::script('COM_JINBOUND_ERROR_LOADING_PLOT_DATA');
 JText::script('COM_JINBOUND_VISITS');
 JText::script('COM_JINBOUND_NOT_FOUND');
 
+JText::script('COM_JINBOUND_GOAL_COMPLETIONS');
+JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
+
 ?>
 <script type="text/javascript">
 (function($){
@@ -196,8 +199,8 @@ JText::script('COM_JINBOUND_NOT_FOUND');
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_VISITS')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_SUBMISSIONS')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_LEADS')));
-				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_CONVERSIONS')));
-				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_CONVERSION_RATE')));
+				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_GOAL_COMPLETIONS')));
+				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_GOAL_COMPLETION_RATE')));
 				t.append(h);
 				if (!n) {
 					b.append($('<tr><td colspan="6">' + Joomla.JText._('COM_JINBOUND_NOT_FOUND') + '</td></tr>'));

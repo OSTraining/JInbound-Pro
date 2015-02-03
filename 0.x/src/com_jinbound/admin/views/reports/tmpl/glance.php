@@ -39,7 +39,7 @@ defined('JPATH_PLATFORM') or die;
 	<!-- customers -->
 	<div class="span1 text-center">
 		<h3 id="jinbound-reports-glance-conversion-count"><?php echo $this->getConversionCount(); ?></h3>
-		<span><?php echo JText::_('COM_JINBOUND_CONVERSIONS'); ?></span>
+		<span><?php echo JText::_('COM_JINBOUND_GOAL_COMPLETIONS'); ?></span>
 	</div>
 	<!-- arrow -->
 	<div class="span1 text-center">
@@ -48,6 +48,6 @@ defined('JPATH_PLATFORM') or die;
 	<!-- conversions -->
 	<div class="span2 text-center">
 		<h3 id="jinbound-reports-glance-conversion-rate"><?php echo $this->getConversionRate(); ?> %</h3>
-		<span><?php echo JText::_('COM_JINBOUND_VIEWS_TO_CONVERSIONS'); ?></span>
+		<span><?php echo JText::_('COM_JINBOUND_VIEWS_TO_GOAL_COMPLETIONS'); ?></span>
 	</div>
 </div>

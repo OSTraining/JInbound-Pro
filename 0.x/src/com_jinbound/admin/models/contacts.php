@@ -139,17 +139,13 @@ class JInboundModelContacts extends JInboundListModel
 	
 	protected function getListQuery()
 	{
-		$start    = $this->getState('filter.start');
-		$end      = $this->getState('filter.end');
-		$campaign = $this->getState('filter.campaign');
-		$page     = $this->getState('filter.page');
-		
-		// what the hell?
-		if (is_object($page)) {
-			$page = '';
-		}
-		if (is_object($campaign)) {
-			$campaign = '';
+		foreach (array('start', 'end', 'campaign', 'page', 'priority', 'status') as $filter)
+		{
+			$$filter = $this->getState("filter.$filter");
+			if (is_object($$filter))
+			{
+				$$filter = '';
+			}
 		}
 		
 		$db = $this->getDbo();
@@ -203,6 +199,20 @@ class JInboundModelContacts extends JInboundListModel
 		{
 			$query->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.contact_id = Contact.id AND ContactCampaign.campaign_id = ' . (int) $campaign);
 			$query->where('ContactCampaign.campaign_id IS NOT NULL');
+		}
+		
+		// filter by status
+		if (!empty($status))
+		{
+			$query->leftJoin('#__jinbound_contacts_statuses AS ContactStatus ON ContactStatus.contact_id = Contact.id AND ContactStatus.status_id = ' . (int) $status);
+			$query->where('ContactStatus.status_id IS NOT NULL');
+		}
+		
+		// filter by priority
+		if (!empty($priority))
+		{
+			$query->leftJoin('#__jinbound_contacts_priorities AS ContactPriority ON ContactPriority.contact_id = Contact.id AND ContactPriority.priority_id = ' . (int) $priority);
+			$query->where('ContactPriority.priority_id IS NOT NULL');
 		}
 		
 		// add author to query
