@@ -37,6 +37,7 @@ class JInboundModelEmails extends JInboundListModel
 			$config['filter_fields'] = array(
 				'Campaign.name'
 			,	'Email.name'
+			,	'Email.type'
 			,	'Email.published'
 			,	'Email.sendafter'
 			);
@@ -77,7 +78,15 @@ class JInboundModelEmails extends JInboundListModel
 	 * Method to send all the emails that need to be sent
 	 * 
 	 */
-	public function send() {
+	public function send()
+	{
+		$dispatcher = JDispatcher::getInstance();
+		$this->sendCampaignEmails();
+		$dispatcher->trigger('onJInboundSend');
+	}
+	
+	public function sendCampaignEmails()
+	{
 		JInbound::registerHelper('url');
 		JPluginHelper::importPlugin('content');
 		
@@ -119,6 +128,7 @@ class JInboundModelEmails extends JInboundListModel
 			->leftJoin('#__jinbound_emails_versions AS Version ON Version.email_id = Email.id')
 			->where('Record.id IS NULL')
 			->where('DATE_ADD(Conversion.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
+			->where('Email.type = ' . $db->quote('campaign'))
 			->where('Email.published = 1')
 			->where('Page.published = 1')
 			->where('Campaign.published = 1')

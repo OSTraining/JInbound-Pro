@@ -1,0 +1,33 @@
+/**
+ * @package		JInbound
+ * @subpackage	com_jinbound
+@ant_xml_copyright@
+ */
+
+.jinboundkeyval {
+	float: left;
+	display: block;
+}
+
+.jinboundkeyval input {
+	float: none;
+	float: none !important;
+	margin: 5px 0;
+}
+
+.jinboundkeyval_key, .jinboundkeyval_stage {
+	clear: left;
+}
+
+.jinboundkeyval_labels span {
+	float: left;
+	display: block;
+	text-align: center;
+	font-weight: bold;
+}
+
+.jinboundkeyval_labels span,
+.jinboundkeyval_key,
+.jinboundkeyval_value {
+	width: 28%;
+}

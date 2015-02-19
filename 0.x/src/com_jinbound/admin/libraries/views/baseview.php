@@ -207,7 +207,9 @@ class JInboundView extends JInboundBaseView
 			'contacts'    => 'LEADS',
 			'reports'     => 'REPORTS',
 			'statuses'    => 'STATUSES',
-			'priorities'  => 'PRIORITIES'
+			'priorities'  => 'PRIORITIES',
+			'forms'       => 'FORMS',
+			'fields'      => 'FIELDS'
 		);
 		
 		if (defined('JDEBUG') && JDEBUG)

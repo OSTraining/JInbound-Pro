@@ -21,10 +21,13 @@ $saveOrder = ($listOrder == 'Email.id');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_NAME', 'Email.name', $listDirn, $listOrder); ?>
 	</th>
-	<th width="5%">
+	<th width="5%" class="nowrap hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Email.published', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%">
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_TYPE', 'Email.type', $listDirn, $listOrder); ?>
+	</th>
+	<th width="5%" class="nowrap hidden-phone">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Email.sendafter', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">

@@ -26,6 +26,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging" />
 		<mkdir dir="${cfg.packages}/temp/staging/component" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules" />
+		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/content" />
@@ -55,6 +56,9 @@
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<condition property="str.versionanalyticsforxml" value="${cfg.version.analytics}.${build.number}${cfg.versionsuffix}" else="${cfg.version.analytics}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.version.module.form" value="${cfg.version.module.form}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<tstamp>
@@ -110,6 +114,8 @@
 		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
 		<property name="str.mod.bookmark.filename" value="${cfg.pfx.mod}${cfg.name}_social_bookmark_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.bookmark.file" value="${cfg.packages}/temp/packages/${str.mod.bookmark.filename}" />
+		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.form.file" value="${cfg.packages}/current/${str.mod.form.filename}" />
 		
 		<!-- perform filtering -->
 		<filter token="ant_version_number" value="${str.versionforxml}" />
@@ -220,6 +226,15 @@
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark"
 				includes="icons/"
+				excludes="**.git"
+			/>
+		</copy>
+		
+		<!-- form module -->
+		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_form" filtering="true">
+			<fileset
+				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_form"
+				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -430,8 +445,13 @@
 		<zip destfile="${str.plg.user.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/user" excludes="" />
 		</zip>
+		
 		<zip destfile="${str.mod.bookmark.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" excludes="" />
+		</zip>
+		
+		<zip destfile="${str.mod.form.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form" excludes="" />
 		</zip>
 		
 		<!-- create pkg -->

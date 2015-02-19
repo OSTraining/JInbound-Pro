@@ -32,6 +32,11 @@ class JInboundViewContacts extends JInboundListView
 		if (1 >= count($campaigns)) {
 			$this->app->enqueueMessage(JText::_('COM_JINBOUND_NO_CAMPAIGNS_YET'), 'warning');
 		}
+		if (!JInbound::version()->isCompatible('3.0.0'))
+		{
+			array_unshift($statuses, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_STATUS')));
+			array_unshift($priorities, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PRIORITY')));
+		}
 		
 		$campaign = $this->app->getUserStateFromRequest('com_jinbound.contacts.filter_campaign', 'filter_campaign', '');
 		$this->addFilter(JText::_('COM_JINBOUND_SELECT_CAMPAIGN'), 'filter_campaign', $campaigns, $campaign);

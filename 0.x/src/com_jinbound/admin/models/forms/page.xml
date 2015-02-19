@@ -142,12 +142,14 @@
 		name="forms"
 		label="COM_JINBOUND_PAGE_FIELDSET_FORMS"
 	>
+		<field name="formname" type="hidden" />
+		<field name="formbuilder" type="hidden" />
+		
 		<field
-			id="formname" name="formname"
-			type="text" required="true"
-			label="COM_JINBOUND_PAGE_FORMNAME"
-			description="COM_JINBOUND_PAGE_FORMNAME_DESC"
-			class="input-block-level"
+			name="formid"
+			type="jinboundform"
+			label="COM_JINBOUND_PAGE_FORMID"
+			description="COM_JINBOUND_PAGE_FORMID_DESC"
 		/>
 
 		<field
@@ -155,38 +157,6 @@
 			type="JinboundCampaignlist"
 			label="COM_JINBOUND_PAGE_CAMPAIGN"
 			description="COM_JINBOUND_PAGE_CAMPAIGN_DESC"
-		/>
-<!--
-		<field
-			id="converts_on_another_form" name="converts_on_another_form"
-			type="list"
-			label="COM_JINBOUND_PAGE_CONVERTS_ON_ANOTHER_FORM"
-			description="COM_JINBOUND_PAGE_CONVERTS_ON_ANOTHER_FORM_DESC"
-			default="stop"
-			class="input-block-level"
-		>
-			<option value="stop">COM_JINBOUND_STOP_THIS_LEAD_NURTURING_CAMPAIGN</option>
-			<option value="donotsend">COM_JINBOUND_DO_NOT_SEND_LEAD_NURTURING_CAMPAIGN</option>
-		</field>
-
-		<field
-			id="converts_on_same_campaign" name="converts_on_same_campaign"
-			type="list"
-			label="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CAMPAIGN"
-			description="COM_JINBOUND_PAGE_CONVERTS_ON_SAME_CAMPAIGN_DESC"
-			default="donotsend"
-			class="input-block-level"
-		>
-			<option value="stop">COM_JINBOUND_STOP_THIS_LEAD_NURTURING_CAMPAIGN</option>
-			<option value="donotsend">COM_JINBOUND_DO_NOT_SEND_LEAD_NURTURING_CAMPAIGN</option>
-		</field>
--->
-		<field
-			id="formbuilder" name="formbuilder"
-			type="jinboundformbuilder"
-			label="COM_JINBOUND_PAGE_FORMBUILDER"
-			description="COM_JINBOUND_PAGE_FORMBUILDER_DESC"
-			default=""
 		/>
 		
 		<field

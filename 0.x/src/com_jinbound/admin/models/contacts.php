@@ -280,6 +280,6 @@ class JInboundModelContacts extends JInboundListModel
 		->where('Page.published = 1')
 		->group('Page.id')
 		;
-		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_CAMPAIGN'));
+		return $this->getOptionsFromQuery($query, JText::_('COM_JINBOUND_SELECT_PAGE'));
 	}
 }

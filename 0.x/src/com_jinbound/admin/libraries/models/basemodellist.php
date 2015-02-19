@@ -46,14 +46,14 @@ class JInboundListModel extends JModelList
 		}
 		// alter items, if any, to convert json data to registries
 		if (is_array($items) && !empty($items)) {
-			foreach ($items as &$item) {
+			foreach ($items as $idx => $item) {
 				foreach ($this->_registryColumns as $col) {
 					if (!property_exists($item, $col)) {
 						continue;
 					}
 					$registry = new JRegistry();
-					$registry->loadString($item->$col);
-					$item->$col = $registry;
+					$registry->loadString($items[$idx]->$col);
+					$items[$idx]->$col = $registry;
 				}
 			}
 		}
@@ -324,7 +324,12 @@ class JInboundListModel extends JModelList
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState($this->context, new stdClass);
+		$data = JFactory::getApplication()->getUserState($this->context);
+		
+		if (!is_object($data))
+		{
+			$data = new stdClass();
+		}
 
 		// Pre-fill the list options
 		if (!property_exists($data, 'list'))
@@ -374,5 +379,24 @@ class JInboundListModel extends JModelList
 				throw new Exception($error);
 			}
 		}
+	}
+	
+	public function getActiveFilters()
+	{
+		if (method_exists('JModelList', 'getActiveFilters'))
+		{
+			return parent::getActiveFilters();
+		}
+		return array();
+	}
+	
+	public function getFilterForm($data = array(), $loadData = true)
+	{
+		$formFile = JPATH_ADMINISTRATOR . '/components/com_jinbound/models/forms/filter_' . $this->name . '.xml';
+		if (method_exists('JModelList', 'getFilterForm') && JFile::exists($formFile))
+		{
+			return parent::getFilterForm($data, $loadData);
+		}
+		return null;
 	}
 }

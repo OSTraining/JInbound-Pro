@@ -16,6 +16,8 @@ JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/he
 JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller');
 JInbound::registerLibrary('JInboundBaseView', 'views/baseview');
 JInbound::registerLibrary('JInboundJsonView', 'views/jsonview');
+JInbound::registerHelper('form');
+JInbound::registerHelper('url');
 
 class JInboundControllerInstall extends JInboundBaseController
 {
@@ -104,6 +106,12 @@ class JInboundControllerInstall extends JInboundBaseController
 		$view = new JInboundBaseView();
 		$view->setLayout('install');
 		$view->extensions = $found;
+		$view->messages = array();
+		
+		if (JInboundHelperForm::needsMigration())
+		{
+			$view->messages[] = JInboundHelperForm::getMigrationWarning();
+		}
 		
 		$this->json(array('extensions' => $found, 'html' => $view->loadTemplate()));
 	}

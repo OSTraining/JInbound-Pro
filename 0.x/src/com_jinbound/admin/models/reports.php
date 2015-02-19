@@ -18,6 +18,17 @@ JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
  */
 class JInboundModelReports extends JInboundListModel
 {
+	
+	/**
+	 * Model context string.
+	 *
+	 * @var		string
+	 */
+	protected $context  = 'com_jinbound.reports';
+	
+	protected $frequencies = array(
+		'1 DAY', '1 WEEK', '2 WEEK', '1 MONTH', '2 MONTH', '3 MONTH', '6 MONTH', '1 YEAR'
+	);
 
 	/**
 	 * Method to auto-populate the model state.
@@ -30,7 +41,7 @@ class JInboundModelReports extends JInboundListModel
 		
 		$app    = JFactory::getApplication();
 		
-		foreach (array('page', 'campaign', 'start', 'end') as $var) {
+		foreach (array('page', 'campaign', 'start', 'end', 'status', 'priority') as $var) {
 			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
 		}
 	}
@@ -49,18 +60,15 @@ class JInboundModelReports extends JInboundListModel
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
-		$id	.= ':'.$this->getState('filter.campaign');
-		$id	.= ':'.$this->getState('filter.page');
+		$id	.= ':'.serialize($this->getState('filter.campaign'));
+		$id	.= ':'.serialize($this->getState('filter.page'));
+		$id	.= ':'.serialize($this->getState('filter.start'));
+		$id	.= ':'.serialize($this->getState('filter.end'));
+		$id	.= ':'.serialize($this->getState('filter.status'));
+		$id	.= ':'.serialize($this->getState('filter.priority'));
 
 		return parent::getStoreId($id);
 	}
-	
-	/**
-	 * Model context string.
-	 *
-	 * @var		string
-	 */
-	protected $context  = 'com_jinbound.reports';
 	
 	protected function getListQuery()
 	{
@@ -151,31 +159,6 @@ class JInboundModelReports extends JInboundListModel
 			$count += (int) $conversion[1];
 		}
 		return $count;
-		/*
-		try
-		{
-			$count = $this->getDbo()->setQuery($this->getDbo()->getQuery(true)
-				->select('COUNT(Contact.id)')
-				->from('#__jinbound_contacts AS Contact')
-				->leftJoin('(' . $this->getDbo()->getQuery(true)
-					->select('s1.*')
-					->from('#__jinbound_contacts_statuses AS s1')
-					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
-					->where('s2.contact_id IS NULL')
-				. ') AS ContactStatus ON (ContactStatus.contact_id = Contact.id)')
-				->leftJoin('#__jinbound_lead_statuses AS Status ON ContactStatus.status_id = Status.id')
-				->where('Status.final = 1')
-				->where('Contact.published = 1')
-			)->loadResult();
-		}
-		catch (Exception $e)
-		{
-			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
-			$count = 0;
-		}
-		return (int) $count;
-		 * 
-		 */
 	}
 	
 	/**
@@ -185,13 +168,16 @@ class JInboundModelReports extends JInboundListModel
 	 */
 	public function getRecentContacts()
 	{
-		$app      = JFactory::getApplication();
-		$input    = $app->input;
-		$start    = $input->get('filter_start', '', 'string');
-		$end      = $input->get('filter_end', '', 'string');
-		$campaign = $input->get('filter_campaign', '', 'string');
-		$page     = $input->get('filter_page', '', 'string');
-		$query    = $this->getDbo()->getQuery(true)
+		$app       = JFactory::getApplication();
+		$input     = $app->input;
+		$start     = $input->get('filter_start', '', 'string');
+		$end       = $input->get('filter_end', '', 'string');
+		$campaign  = $input->get('filter_campaign', '', 'string');
+		$page      = $input->get('filter_page', '', 'string');
+		$status    = $input->get('filter_status', '', 'string');
+		$priority  = $input->get('filter_priority', '', 'string');
+		$published = $input->get('filter_published', '', 'string');
+		$query     = $this->getDbo()->getQuery(true)
 			->select('Contact.id AS id')
 			->select('Contact.created AS date')
 			->select('CONCAT_WS(' . $this->getDbo()->quote(' ') . ', Contact.first_name, Contact.last_name) AS name')
@@ -224,6 +210,37 @@ class JInboundModelReports extends JInboundListModel
 		if (!empty($page))
 		{
 			$query->where('Page.id = ' . (int) $page);
+		}
+		
+		if (!empty($status))
+		{
+			// join in only the latest status
+			$query->leftJoin('('
+				. $this->getDbo()->getQuery(true)
+					->select('s1.*')
+					->from('#__jinbound_contacts_statuses AS s1')
+					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+					->where('s2.contact_id IS NULL')
+				. ') AS ContactStatus ON ContactStatus.campaign_id = Page.campaign AND ContactStatus.contact_id = Contact.id'
+			)->where('ContactStatus.status_id = ' . (int) $status);
+		}
+		
+		if (!empty($priority))
+		{
+			// join in only the latest priority
+			$query->leftJoin('('
+				. $this->getDbo()->getQuery(true)
+					->select('p1.*')
+					->from('#__jinbound_contacts_priorities AS p1')
+					->leftJoin('#__jinbound_contacts_priorities AS p2 ON p1.contact_id = p2.contact_id AND p1.campaign_id = p2.campaign_id AND p1.created < p2.created')
+					->where('p2.contact_id IS NULL')
+				. ') AS ContactPriority ON ContactPriority.campaign_id = Page.campaign AND ContactPriority.contact_id = Contact.id'
+			)->where('ContactPriority.priority_id = ' . (int) $priority);
+		}
+		
+		if (is_numeric($published))
+		{
+			$query->where('Contact.published = ' . (int) $published);
 		}
 		
 		if (!empty($start))
@@ -772,158 +789,301 @@ class JInboundModelReports extends JInboundListModel
 	
 	public function send()
 	{
-		$dbg = JInbound::config("debug", 0);
-		if ($dbg) echo "<h3>Sending reports</h3>";
 		// only send if configured to
 		if (!JInbound::config('send_reports', 1))
 		{
-			if ($dbg) echo "<p>Reports not enabled!</p>";
 			return;
 		}
 		// init
-		$db     = JFactory::getDbo();
-		$emails = JInbound::config('report_recipients', '');
-		// only send if there are emails
-		if (empty($emails))
+		$db = JFactory::getDbo();
+		// fetch the existing report emails
+		try
 		{
-			if ($dbg) echo "<p>No emails provided!</p>";
+			$emailrecords = $db->setQuery($db->getQuery(true)
+				->select('*')
+				->from('#__jinbound_emails')
+				->where('published = 1')
+				->where($db->quoteName('type') . ' = ' . $db->quote('report'))
+			)->loadObjectList();
+		}
+		catch (Exception $e)
+		{
 			return;
 		}
-		// convert emails to an array
-		if (false !== strpos($emails, ','))
+		if (empty($emailrecords))
 		{
-			$emails = explode(',', $emails);
+			return;
 		}
-		else
+		foreach ($emailrecords as $idx => $emailrecord)
 		{
-			$emails = array($emails);
-		}
-		if ($dbg) echo "<p>Found emails: " . implode(', ', $emails) . "</p>";
-		// quote emails for use in db query
-		$quoted = array();
-		foreach ($emails as &$email)
-		{
-			$email = trim($email);
-			$quoted[] = $db->quote($email);
-		}
-		unset($email);
-		// get the interval
-		$freq = (int) JInbound::config('report_frequency', 0);
-		switch ($freq)
-		{
-			// no interval, no emails
-			case 0:
-				if ($dbg) echo "<p>No interval!</p>";
-				return;
-			// all others will be in hours
-			default:
-				// get the previous records
+			if (empty($emailrecord->params))
+			{
+				continue;
+			}
+			$params = json_decode($emailrecord->params);
+			$emailrecords[$idx]->params = $params;
+			if (!(
+				is_object($params) && 
+				property_exists($params, 'reports_frequency') && 
+				property_exists($params, 'recipients')
+				))
+			{
+				continue;
+			}
+			$emails = $emailrecord->params->recipients;
+			// only send if there are emails
+			if (empty($emails))
+			{
+				continue;
+			}
+			// convert emails to an array
+			if (false !== strpos($emails, ','))
+			{
+				$emails = explode(',', $emails);
+			}
+			else
+			{
+				$emails = array($emails);
+			}
+			// quote emails for use in db query
+			$quoted = array();
+			foreach ($emails as $idx => $email)
+			{
+				$emails[$idx] = trim($email);
+				$quoted[] = $db->quote($email);
+			}
+			$frequency = $params->reports_frequency;
+			if (!in_array($frequency, $this->frequencies))
+			{
+				continue;
+			}
+			$records = $db->setQuery($db->getQuery(true)
+				->select('email')
+				->from('#__jinbound_reports_emails')
+				->where('email_id = ' . intval($emailrecord->id))
+				->where("created > (NOW() - INTERVAL $frequency)")
+			)->loadColumn();
+			// if there are no records, we can send
+			// otherwise skip
+			$sendto = array();
+			foreach ($emails as $email)
+			{
+				if (in_array($email, $records))
+				{
+					continue;
+				}
+				$sendto[] = $email;
+			}
+			// only send if sendto isn't empty
+			if (empty($sendto))
+			{
+				continue;
+			}
+			
+			$data      = $this->getReportEmailData($emailrecord);
+			$tags      = $this->getReportEmailTags($emailrecord);
+			$subject   = $emailrecord->subject;
+			
+			require_once dirname(__FILE__) . '/emails.php';
+			$htmlbody  = JInboundModelEmails::_replaceTags($emailrecord->htmlbody, $data, $tags);
+			$plainbody = JInboundModelEmails::_replaceTags($emailrecord->plainbody, $data, $tags);
+			
+			// send emails
+			$mailer = JFactory::getMailer();
+			$mailer->ClearAllRecipients();
+			$mailer->addRecipient($sendto);
+			$mailer->setSubject($subject);
+			$mailer->setBody($htmlbody);
+			$mailer->IsHtml(true);
+			$mailer->AltBody = $plainbody;
+			if ($mailer->send())
+			{
+				$query = $db->getQuery(true)
+					->insert('#__jinbound_reports_emails')
+					->columns(array('email', 'email_id', 'created'))
+				;
+				foreach ($sendto as $email)
+				{
+					$query->values($db->quote($email) . ', ' . intval($emailrecord->id) . ', NOW()');
+				}
 				try
 				{
-					$interval = JInbound::config("debug", 0) ? 'MINUTE' : 'HOUR';
-					if ($dbg) echo "<p>Sending at interval $freq $interval</p>";
-					$records = $db->setQuery($db->getQuery(true)
-						->select('email')
-						->from('#__jinbound_reports_emails')
-						->where('email IN(' . implode(',', $quoted) . ')')
-						->where("created > (NOW() - INTERVAL $freq $interval)")
-					)->loadColumn();
+					$db->setQuery($query)->query();
 				}
 				catch (Exception $e)
 				{
-					if ($dbg) echo "<p>" . $e->getMessage() . "</p>";
 					return;
 				}
-				// if there are no records, we can send
-				// otherwise skip
-				$sendto = array();
-				foreach ($emails as $email)
-				{
-					if (in_array($email, $records))
-					{
-						if ($dbg) echo "<p>skipping " . $email . "</p>";
-						continue;
-					}
-					$sendto[] = $email;
-				}
-				// only send if sendto isn't empty
-				if (empty($sendto))
-				{
-					if ($dbg) echo "<p>No emails are being sent</p>";
-					return;
-				}
-				// construct subject and body
-				require_once dirname(__FILE__) . '/pages.php';
-				$config     = new JConfig;
-				$model      = new JInboundModelPages();
-				$pages      = $model->getItems();
-				$subject    = JText::sprintf('COM_JINBOUND_REPORTS_EMAIL_SUBJECT', $config->sitename);
-				$htmltable  = '<table>';
-				$plaintable = "\n\n";
-				// add the headers
-				$headers = array(
-					JText::_('COM_JINBOUND_LANDING_PAGE_NAME')
-				,	JText::_('COM_JINBOUND_VISITS')
-				,	JText::_('COM_JINBOUND_SUBMISSIONS')
-				,	JText::_('COM_JINBOUND_LEADS')
-				,	JText::_('COM_JINBOUND_CONVERSIONS')
-				,	JText::_('COM_JINBOUND_CONVERSION_RATE')
-				);
-				$htmltable  .= sprintf('<thead><tr><th>%s</th></tr></thead><tbody>', implode('</th><th>', $headers));
-				$plaintable .= implode("\t", $headers) . "\n";
-				// add the data
-				foreach ($pages as $page) {
-					$data = array(
-						htmlspecialchars($page->name)
-					,	htmlspecialchars($page->hits)
-					,	htmlspecialchars($page->submissions)
-					,	htmlspecialchars($page->contact_submissions)
-					,	htmlspecialchars($page->conversions)
-					,	htmlspecialchars($page->conversion_rate)
-					);
-					$htmltable  .= sprintf('<tr><td>%s</td></tr>', implode('</td><td>', $data));
-					$plaintable .= implode("\t", $data) . "\n";
-				}
-				$htmltable .= '</tbody></table>';
-				// build the body
-				$htmlbody  = JText::sprintf('COM_JINBOUND_REPORTS_EMAIL_HTMLBODY', $config->sitename, $htmltable);
-				$plainbody = JText::sprintf('COM_JINBOUND_REPORTS_EMAIL_PLAINBODY', $config->sitename, $plaintable);
-				// send emails
-				$mailer = JFactory::getMailer();
-				$mailer->ClearAllRecipients();
-				$mailer->addRecipient($sendto);
-				$mailer->setSubject($subject);
-				$mailer->setBody($htmlbody);
-				$mailer->IsHtml(true);
-				$mailer->AltBody = $plainbody;
-				if ($mailer->send())
-				{
-					$query = $db->getQuery(true)
-						->insert('#__jinbound_reports_emails')
-						->columns(array('email', 'created'))
-					;
-					foreach ($sendto as $email)
-					{
-						$query->values($db->quote($email) . ', NOW()');
-					}
-					try
-					{
-						$db->setQuery($query)->query();
-					}
-					catch (Exception $e)
-					{
-						if ($dbg) echo "<p>" . $e->getMessage() . "</p>";
-						return;
-					}
-					if ($dbg) echo "<p>Mailer succeeded!</p>";
-				}
-				else
-				{
-					if ($dbg) echo "<p>Mailer failed!</p>";
-				}
-				// done
-				return;
+			}
 		}
+	}
+	
+	public function getReportEmailData($email)
+	{
+		// set up the start and end dates
+		$start_date = new DateTime();
+		$end_date   = new DateTime();
+		$start->modify("-{$email->params->interval} {$email->params->frequency}");
+		$start   = $start_date->format('Y-m-d H:i:s');
+		$end     = $end_date->format('Y-m-d H:i:s');
+		$filters = array('filter.start' => $start, 'filter.end' => $end);
+		foreach ($filters as $key => $val)
+		{
+			$this->setState($key, $val);
+		}
+		
+		$dispatcher = JDispatcher::getInstance();
+		$data = array(
+			'goals' => array(
+				'count' => $this->getConversionsCount()
+			,	'percent' => $this->getConversionRate()
+			)
+		,	'leads' => array(
+				'count' => $this->getContactsCount()
+			,	'list' => $this->getEmailLeadsList($filters)
+			,	'percent' => $this->getViewsToLeads()
+			)
+		,	'pages' => array(
+				'hits' => $this->getVisitCount()
+			,	'list' => $this->getEmailPagesList($filters)
+			)
+		);
+		
+		$dispatcher->trigger('onJInboundReportEmailData', array(&$data));
+		// send back data
+		return json_decode(json_encode($data));
+	}
+	
+	public function getEmailPagesList(array $filters = array())
+	{
+		$model = new JInboundModelPages();
+		if (!empty($filters))
+		{
+			foreach ($filters as $filter => $value)
+			{
+				$model->setState($filter, $value);
+			}
+		}
+		$pages = $model->getItems();
+		$table = array();
+		$table[] = '<table>';
+		$table[] = '<thead>';
+		$table[] = '<tr>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_LANDING_PAGE_NAME') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_VISITS') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_SUBMISSIONS') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_LEADS') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_GOAL_COMPLETIONS') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_GOAL_COMPLETION_RATE') . '</th>';
+		$table[] = '</tr>';
+		$table[] = '</thead>';
+		$table[] = '<tbody>';
+		if (empty($pages))
+		{
+			$table[] = '<tr><td colspan="6">' . JText::_('COM_JINBOUND_NOT_FOUND') . '</td></tr>';
+		}
+		else
+		{
+			foreach ($pages as $page)
+			{
+				$table[] = '<tr>';
+				// name
+				$table[] = '<td>';
+				if (!empty($page->name))
+				{
+					$table[] = JInboundHelperFilter::escape($page->name);
+				}
+				$table[] = '</td>';
+				
+				$table[] = '<td>' . $page->hits . '</td>';
+				$table[] = '<td>' . $page->submissions . '</td>';
+				$table[] = '<td>' . $page->contact_submissions . '</td>';
+				$table[] = '<td>' . $page->conversions . '</td>';
+				$table[] = '<td>' . $page->conversion_rate . '</td>';
+				
+				$table[] = '</tr>';
+			}
+		}
+		$table[] = '</tbody>';
+		$table[] = '</table>';
+		return implode("\n", $table);
+	}
+	
+	public function getEmailLeadsList(array $filters = array())
+	{
+		$model = new JInboundModelContacts();
+		if (!empty($filters))
+		{
+			foreach ($filters as $filter => $value)
+			{
+				$model->setState($filter, $value);
+			}
+		}
+		$leads = $model->getItems();
+		$table = array();
+		$table[] = '<table>';
+		$table[] = '<thead>';
+		$table[] = '<tr>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_NAME') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_DATE') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_FORM_CONVERTED_ON') . '</th>';
+		$table[] = '<th>' . JText::_('COM_JINBOUND_LANDING_PAGE_NAME') . '</th>';
+		$table[] = '</tr>';
+		$table[] = '</thead>';
+		$table[] = '<tbody>';
+		if (empty($leads))
+		{
+			$table[] = '<tr><td colspan="4">' . JText::_('COM_JINBOUND_NOT_FOUND') . '</td></tr>';
+		}
+		else
+		{
+			foreach ($leads as $lead)
+			{
+				$table[] = '<tr>';
+				// name
+				$table[] = '<td>';
+				if (!empty($lead->name))
+				{
+					$table[] = JInboundHelperFilter::escape($lead->name);
+				}
+				$table[] = '</td>';
+				
+				$table[] = '<td>';
+				$table[] = $lead->latest ? $lead->latest : $lead->created;
+				$table[] = '</td>';
+				
+				$table[] = '<td>';
+				if (!empty($lead->latest_conversion_page_formname))
+				{
+					$table[] = JInboundHelperFilter::escape($lead->latest_conversion_page_formname);
+				}
+				$table[] = '</td>';
+				
+				$table[] = '<td>';
+				if (!empty($lead->latest_conversion_page_name))
+				{
+					$table[] = JInboundHelperFilter::escape($lead->latest_conversion_page_name);
+				}
+				$table[] = '</td>';
+				
+				$table[] = '</tr>';
+			}
+		}
+		$table[] = '</tbody>';
+		$table[] = '</table>';
+		return implode("\n", $table);
+	}
+	
+	public function getReportEmailTags($email)
+	{
+		$dispatcher = JDispatcher::getInstance();
+		$tags = array(
+			'reports.goals.count', 'reports.goals.percent'
+		,	'reports.leads.count', 'reports.leads.list', 'reports.leads.percent'
+		,	'reports.pages.hits', 'reports.pages.list'
+		);
+		$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags));
+		return $tags;
 	}
 	
 	public function getPermissions()

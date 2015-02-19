@@ -21,6 +21,7 @@ if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 if (!empty($this->items)) :
 	foreach ($this->items as $i => $item) :
 		$this->_itemNum = $i;
+		$orderkey = array_search($item->id, $this->ordering[0]);
 
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.priority') && $canCheckin;
@@ -55,8 +56,8 @@ if (!empty($this->items)) :
 		<td class="order">
 			<?php if ($canChange) : ?>
 				<?php if ($saveOrder) : ?>
-					<span><?php echo $this->pagination->orderUpIcon($i, 0 == $i, 'priorities.orderup', 'JLIB_HTML_MOVE_UP', $item->ordering); ?></span>
-					<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, false, 'priorities.orderdown', 'JLIB_HTML_MOVE_DOWN', $item->ordering); ?></span>
+					<span><?php echo $this->pagination->orderUpIcon($i, isset($this->ordering[0][$orderkey - 1]), 'priorities.orderup', 'JLIB_HTML_MOVE_UP', $item->ordering); ?></span>
+					<span><?php echo $this->pagination->orderDownIcon($i, $this->pagination->total, isset($this->ordering[0][$orderkey + 1]), 'priorities.orderdown', 'JLIB_HTML_MOVE_DOWN', $item->ordering); ?></span>
 				<?php endif; ?>
 				<?php $disabled = $saveOrder ?  '' : 'disabled="disabled"'; ?>
 				<input type="text" name="order[]" size="5" value="<?php echo $item->ordering;?>" <?php echo $disabled ?> class="text-area-order input-mini" />

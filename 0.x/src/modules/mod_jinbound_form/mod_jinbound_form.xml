@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" position="default" client="site" method="upgrade" version="2.5">
+	<name>jInbound Form</name>
+	<author>Anything Digital</author>
+	<creationDate>February 2015</creationDate>
+	<copyright>Copyright (C) 2015</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>anything-digital.com</authorUrl>
+	<version>@ant_module_form_version@</version>
+	<description>MOD_JINBOUND_FORM_DESCRIPTION</description>
+	<files>
+		<filename module="mod_jinbound_form">mod_jinbound_form.php</filename>
+		<filename module="mod_jinbound_form">mod_jinbound_form.xml</filename>
+		<filename module="mod_jinbound_form">tmpl/default.php</filename>
+	</files>
+	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="formid"
+					type="jinboundform"
+					label="MOD_JINBOUND_FORM_FORMID"
+					description="MOD_JINBOUND_FORM_FORMID_DESC"
+				/>
+			</fieldset>
+			<fieldset name="advanced">
+				<field name="moduleclass_sfx" type="textarea" rows="3" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"	description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

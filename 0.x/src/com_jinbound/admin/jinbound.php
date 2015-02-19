@@ -7,7 +7,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$input = JFactory::getApplication()->input;
+$app   = JFactory::getApplication();
+$input = $app->input;
 
 if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound')) {
 	return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
@@ -39,6 +40,15 @@ if ('liveupdate' == $input->get('view', '')) {
 	return;
 }
 
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerHelper('form');
+JInbound::registerHelper('url');
+
+if (JInboundHelperForm::needsMigration() && 'json' !== $input->get('format') && 'forms.migrate' !== $input->get('task'))
+{
+	$app->enqueueMessage(JInboundHelperForm::getMigrationWarning(), 'warning');
+}
+
 if (jimport('joomla.application.component.controller')) {
 	$controller = JController::getInstance('JInbound');
 }
@@ -48,5 +58,5 @@ else {
 }
 
 // exec task
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->execute($input->get('task'));
 $controller->redirect();

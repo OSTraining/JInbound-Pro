@@ -36,6 +36,41 @@ class JInboundTableEmail extends JInboundTable
 		return $asset->id;
 	}
 	
+	public function load($keys = null, $reset = true) {
+		// load
+		$load = parent::load($keys, $reset);
+		// convert params to an object
+		$registry = new JRegistry;
+		if (is_string($this->params)) {
+			$registry->loadString($this->params);
+		}
+		else if (is_array($this->params)) {
+			$registry->loadArray($this->params);
+		}
+		else if (is_object($this->params)) {
+			$registry->loadObject($this->params);
+		}
+		$this->params = $registry;
+		return $load;
+	}
+	
+	public function bind($array, $ignore = '') {
+		if (isset($array['params'])) {
+			$registry = new JRegistry;
+			if (is_array($array['params'])) {
+				$registry->loadArray($array['params']);
+			}
+			else if (is_string($array['params'])) {
+				$registry->loadString($array['params']);
+			}
+			else if (is_object($array['params'])) {
+				
+			}
+			$array['params'] = (string) $registry;
+		}
+		return parent::bind($array, $ignore);
+	}
+	
 	/**
 	 * override to save versions
 	 *

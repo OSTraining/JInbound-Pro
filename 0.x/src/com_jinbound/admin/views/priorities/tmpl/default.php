@@ -7,6 +7,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$this->cols = 6;
-
-echo $this->loadTemplate('list');
+if (JInbound::version()->isCompatible('3.0.0'))
+{
+	echo $this->loadTemplate('list_default');
+}
+else
+{
+	$this->cols = 6;
+	echo $this->loadTemplate('list');
+}

@@ -74,4 +74,9 @@ class plgSystemJInboundcaptcha extends JPlugin
 			'multi' => 0
 		);
 	}
+	
+	public function onJInboundBeforeListFieldTypes(&$types, &$ignored, &$paths, &$files)
+	{
+		$types[] = 'captcha';
+	}
 }

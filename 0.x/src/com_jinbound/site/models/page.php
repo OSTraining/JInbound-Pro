@@ -10,6 +10,7 @@ defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
+JInbound::registerHelper('form');
 
 class JInboundModelPage extends JInboundAdminModel
 {
@@ -25,6 +26,7 @@ class JInboundModelPage extends JInboundAdminModel
 	 * @see JInboundAdminModel::getForm()
 	 */
 	public function getForm($data = array(), $loadData = true) {
+		$app = JFactory::getApplication();
 		$fieldtypes = array(
 			'select' => 'list'
 		);
@@ -33,146 +35,18 @@ class JInboundModelPage extends JInboundAdminModel
 		if (empty($form)) {
 			return false;
 		}
-		// create a new form xml element
-		$xml = new JXMLElement('<form></form>');
-		// store this lead in its own namespace
-		$xmlFields = $xml->addChild('fields');
-		$xmlFields->addAttribute('name', 'lead');
-		// create a fieldset (and we'll name it based on the form)
-		$xmlFieldset = $xmlFields->addChild('fieldset');
-		$xmlFieldset->addAttribute('name', 'lead');
-		$xmlFieldset->addAttribute('label', JText::_('COM_JINBOUND_FIELDSET_LEAD'));
-		// add each field from the page item's formbuilder property
-		$formbuilder = $this->getItem(JFactory::getApplication()->input->get('page_id'))->formbuilder;
-		// get the form data
-		if (!is_a($formbuilder, 'JRegistry')) {
-			$reg = new JRegistry();
-			if (is_string($formbuilder)) {
-				$reg->loadString($formbuilder);
-			}
-			else if (is_array($formbuilder)) {
-				$reg->loadArray($formbuilder);
-			}
-			else if (is_object($formbuilder)) {
-				$reg->loadObject($formbuilder);
-			}
-			$formbuilder = $reg;
+		// get the fields attached to the form associated with this page
+		$formid = intval($this->getItem($app->input->get('page_id', 0, 'int'))->formid);
+		// load our fields with the helper lib
+		$fields = JInboundHelperForm::getFields($formid);
+		// don't bother continuing if we have no fields
+		if (empty($fields))
+		{
+			return $form;
 		}
-		// order fields
-		$unordered = $formbuilder->toArray();
-		$ordered   = array();
-		if (!array_key_exists('__ordering', $unordered)) {
-			$ordered = $unordered;
-		}
-		else {
-			if (empty($unordered['__ordering'])) {
-				$ordered = $unordered;
-			}
-			else {
-				$ordering = explode('|', $unordered['__ordering']);
-				unset($unordered['__ordering']);
-				foreach ($ordering as $orderkey) {
-					if (array_key_exists($orderkey, $unordered)) {
-						$ordered[$orderkey] = $unordered[$orderkey];
-					}
-				}
-				foreach ($unordered as $orderkey => $orderval) {
-					if (!array_key_exists($orderkey, $ordered)) {
-						$ordered[$orderkey] = $orderval;
-					}
-				}
-			}
-		}
-		
-		
-		// count how many fields we've added
-		$allowedFields = 0;
-		// add the fields
-		foreach ($ordered as $name => $field) {
-			// if this field isn't enabled, don't add
-			if (0 == $field['enabled']) {
-				continue;
-			}
-			// enabled - this field will be added
-			$allowedFields++;
-			// get the field type
-			$type = array_key_exists('type', $field) ? $field['type'] : 'text';
-			if (array_key_exists($type, $fieldtypes)) {
-				$type = $fieldtypes[$type];
-			}
-			// get the default class
-			$class = "";
-			switch ($type) {
-				case 'text':
-				case 'list':
-				case 'textarea':
-					$class = "input-block-level";
-					break;
-				case 'checkboxes':
-					$class = "checkbox";
-					break;
-			}
-			// validate all email fields
-			if ('email' == $name || 'email' == $type) {
-				$type = 'email';
-				if (!array_key_exists('attributes', $field)) {
-					$field['attributes'] = array();
-				}
-				if (!array_key_exists('validate', $field['attributes'])) {
-					$field['attributes']['validate'] = 'email';
-				}
-				$class = trim(trim($class) . ' validate-email');
-			}
-			// add the field
-			$xmlField = $xmlFieldset->addChild('field');
-			$xmlField->addAttribute('name', $name);
-			$xmlField->addAttribute('type', $type);
-			$xmlField->addAttribute('label', $field['title']);
-			// add the options
-			if (array_key_exists('options', $field) && is_array($field['options']) && array_key_exists('name', $field['options'])) {
-				foreach ($field['options']['name'] as $k => $v) {
-					if (empty($v)) {
-						continue;
-					}
-					$xmlOpt = $xmlField->addChild('option', $v);
-					$xmlOpt->addAttribute('value', $field['options']['value'][$k]);
-				}
-			}
-			// add the options
-			if (array_key_exists('attributes', $field) && is_array($field['attributes']) && array_key_exists('name', $field['attributes'])) {
-				foreach ($field['attributes']['name'] as $k => $v) {
-					if (empty($v)) {
-						continue;
-					}
-					$xmlField->addAttribute($v, $field['attributes']['value'][$k]);
-				}
-			}
-			// add the class
-			if (!empty($class)) {
-				$xmlField->addAttribute('class', $class);
-			}
-			// required
-			if (array_key_exists('required', $field) && $field['required']) {
-				$xmlField->addAttribute('required', true);
-			}
-		}
-		$dispatcher     = JDispatcher::getInstance();
-		$dispatcher->trigger('onJinboundFormbuilderDisplay', array(&$xml));
-		// if we have allowed fields, add them
-		if (0 < $allowedFields) {
-			// ok, we should have enough now to add to the form
-			$form->load($xml, false);
-		}
-		
-		// rebind data
-		if ($loadData) {
-			// Get the data for the form.
-			$data = $this->loadFormData();
-		}
-
-		// Load the data into the form after the plugins have operated.
-		$form->bind($data);
-		
+		// now that we have the fields, we need to add them to the form
+		$this->addFieldsToForm($fields, $form, JText::_('COM_JINBOUND_FIELDSET_LEAD'));
+		// return the form
 		return $form;
 	}
 	
@@ -194,5 +68,87 @@ class JInboundModelPage extends JInboundAdminModel
 			}
 		}
 		return $this->data;
+	}
+	
+	public function addFieldsToForm(&$fields, &$form, $label) {
+		// our custom fields should not have the following as extras
+		$banned = array('name', 'type', 'default', 'label', 'description', 'class', 'classname');
+		// now that we have the fields, we need to add them to the form
+		// we do this by creating a new JXMLElement and passing it to JForm::load
+		$xml = new JXMLElement('<form></form>');
+		// add a new "fields" element named "lead" to hold them
+		$xmlFields = $xml->addChild('fields');
+		$xmlFields->addAttribute('name', 'lead');
+		// next up, we create a fieldset (and we'll name it based on the form)
+		$xmlFieldset = $xmlFields->addChild('fieldset');
+		$xmlFieldset->addAttribute('name', 'lead');
+		$xmlFieldset->addAttribute('label', $label);
+		// finally, we loop through each of our fields and create elements for them
+		foreach ($fields as $field) {
+			// start our xml field
+			$xmlField = $xmlFieldset->addChild('field');
+			$xmlField->addAttribute('name', $field->name);
+			$xmlField->addAttribute('type', $field->type);
+			$xmlField->addAttribute('default', $field->default);
+			$xmlField->addAttribute('label', $field->title);
+			$xmlField->addAttribute('description', $field->description);
+			$classes = array();
+			// special case for emails
+			if (($isEmail = ('email' === $field->name || 'email' === $field->type)))
+			{
+				$xmlField->addAttribute('validate', 'email');
+				$classes[] = 'validate-email';
+			}
+			// handle class
+			if (array_key_exists('classname', $field->params) && !empty($field->params['classname'])) {
+				$parts = explode(' ', $field->params['classname']);
+				$classes = array_merge($classes, $parts);
+			}
+			if (!empty($classes))
+			{
+				$xmlField->addAttribute('class', implode(' ', $classes));
+			}
+			// required fields
+			if (array_key_exists('required', $field->params) && is_numeric($field->params['required']))
+			{
+				$xmlField->addAttribute('required', $field->params['required']);
+				$banned[] = 'required';
+			}
+			
+			// handle extra attributes
+			if (array_key_exists('attrs', $field->params)
+				&& !empty($field->params['attrs'])
+				&& is_array($field->params['attrs']))
+			{
+				// loop keys
+				foreach ($field->params['attrs'] as $key => $value) {
+					if (empty($key) || in_array($key, $banned)) {
+						continue;
+					}
+					// set attribute
+					$xmlField->addAttribute($key, $value);
+				}
+			}
+			// handle options, if any
+			if (array_key_exists('opts', $field->params)
+				&& !empty($field->params['opts'])
+				&& is_array($field->params['opts']))
+			{
+				// loop keys
+				foreach ($field->params['opts'] as $key => $value) {
+					if (empty($key)) {
+						continue;
+					}
+					// set attribute
+					$xmlOption = $xmlField->addChild('option', $value);
+					$xmlOption->addAttribute('value', $key);
+				}
+			}
+		}
+		// ok, we should have enough now to add to the form
+		$form->load($xml, false);
+		// we have to repopulate the form data now so our custom form fields get populated with data
+		$formData = $this->loadFormData();
+		$form->bind($formData);
 	}
 }

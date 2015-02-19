@@ -4,15 +4,7 @@
 		name="default"
 		label="COM_JINBOUND_CAMPAIGN_FIELDSET_DEFAULT"
 	>
-		<field
-			id="id" name="id"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_ID"
-			default="0"
-			readonly="true"
-		/>
-		
+		<field name="id" type="hidden" default="0" readonly="true" />
 		<field
 			id="name" name="name"
 			type="text"
