@@ -8,6 +8,17 @@
 defined('_JEXEC') or die;
 
 ?>
+<?php
+if (!empty($this->messages)) :
+	$messageclass = JInbound::version()->isCompatible('3.0.0') ? 'alert alert-message' : 'm pre_message';
+	foreach ($this->messages as $message) : ?>
+<div class="<?php echo $messageclass; ?>">
+	<?php echo $message; ?>
+</div>
+<?php
+	endforeach;
+endif;
+?>
 <table class="table table-striped">
 	<thead>
 		<tr>

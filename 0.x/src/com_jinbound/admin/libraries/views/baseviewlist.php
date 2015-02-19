@@ -20,18 +20,35 @@ class JInboundListView extends JInboundView
 			JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
 			return false;
 		}
-		$items       = $this->get('Items');
-		$pagination  = $this->get('Pagination');
-		$state       = $this->get('State');
-		$permissions = $this->get('Permissions');
+		$items         = $this->get('Items');
+		$pagination    = $this->get('Pagination');
+		$state         = $this->get('State');
+		$permissions   = $this->get('Permissions');
+		$filterForm    = $this->get('FilterForm');
+		$activeFilters = $this->get('ActiveFilters');
 		if (count($errors = $this->get('Errors'))) {
 			JError::raiseError(500, implode('<br />', $errors));
 			return false;
 		}
-		$this->items       = $items;
-		$this->pagination  = $pagination;
-		$this->state       = $state;
-		$this->permissions = $permissions;
+		$this->items         = $items;
+		$this->pagination    = $pagination;
+		$this->state         = $state;
+		$this->permissions   = $permissions;
+		$this->filterForm    = $filterForm;
+		$this->activeFilters = $activeFilters;
+		
+		$this->ordering = array(0 => array());
+		if (!empty($items))
+		{
+			foreach ($items as $item)
+			{
+				if (!(property_exists($item, 'ordering') || property_exists($item, 'lft')))
+				{
+					break;
+				}
+				$this->ordering[0][] = $item->id;
+			}
+		}
 		
 		$publishedOptions = $this->get('PublishedStatus');
 		if (!empty($publishedOptions)) {

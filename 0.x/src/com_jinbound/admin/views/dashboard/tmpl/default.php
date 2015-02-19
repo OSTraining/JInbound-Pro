@@ -132,9 +132,9 @@ Joomla.submitbutton = function(task) {
       	</a>
 				<?php
 					$class = 'span3 btn text-center';
-					if ($canManageReport)
+					if ($canManageContact)
 					{
-						$href = JInboundHelperUrl::view('reports');
+						$href = JInboundHelperUrl::view('contacts');
 					}
 					else
 					{

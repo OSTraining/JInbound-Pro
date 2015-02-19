@@ -9,6 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
 JInbound::registerHelper('filter');
+JInbound::registerHelper('form');
 JInbound::registerHelper('url');
 JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
 
@@ -30,6 +31,10 @@ class JInboundViewPage extends JInboundItemView
 		else {
 			$this->item->hit();
 		}
+		// fix for legacy
+		$form = JTable::getInstance('Form', 'JInboundTable');
+		$form->load($this->item->formid);
+		$this->item->formname = $form->title;
 		// set the document title
 		$doc  = JFactory::getDocument();
 		if (method_exists($doc, 'setTitle')) {
@@ -103,6 +108,7 @@ class JInboundViewPage extends JInboundItemView
 		);
 		
 		// BUGFIX names are stored generically for custom fields, fix tags for unique names
+		// TODO test this and maybe fix leads during migration?
 		$tagsToFieldsAlt = array();
 		$formbuilder = $this->item->formbuilder->toArray();
 		foreach ($formbuilder as $formfieldname => $formfield)
@@ -150,32 +156,6 @@ class JInboundViewPage extends JInboundItemView
 			}
 			$text = implode($value, explode('{' . $tag . '}', $text));
 		}
-		
-		
-		/*
-		$tags = array(
-			"heading"     => $this->item->heading
-		,	"subheading"  => $this->item->heading
-		,	"maintext"    => $this->item->heading
-		,	"sidebartext" => $this->item->heading
-		,	"image"       => $this->item->heading
-		,	"form"        => $this->item->heading
-		,	"form:open" => $this->item->heading
-		,	"form:close" => $this->item->heading
-		,	"form:firstname" => $this->item->heading
-		,	"form:lastname" => $this->item->heading
-		,	"form:email" => $this->item->heading
-		,	"form:website" => $this->item->heading
-		,	"form:companyname" => $this->item->heading
-		,	"form:phonenumber" => $this->item->heading
-		,	"form:fulladdress" => $this->item->heading
-		,	"form:address" => $this->item->heading
-		,	"form:suburb" => $this->item->heading
-		,	"form:state" => $this->item->heading
-		,	"form:country" => $this->item->heading
-		,	"form:postcode" => $this->item->postcode
-		);
-		*/
 		
 		return $text;
 	}

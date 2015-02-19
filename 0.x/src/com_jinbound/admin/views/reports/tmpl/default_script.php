@@ -129,6 +129,12 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 		if (arguments.length > 5) {
 			filter += '&filter_page=' + arguments[5];
 		}
+		if (arguments.length > 6) {
+			filter += '&filter_priority=' + arguments[6];
+		}
+		if (arguments.length > 7) {
+			filter += '&filter_status=' + arguments[7];
+		}
 		$.ajax(window.jinbound_leads_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
@@ -189,6 +195,12 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 		if (arguments.length > 5) {
 			filter += '&filter_page=' + arguments[5];
 		}
+		if (arguments.length > 6) {
+			filter += '&filter_priority=' + arguments[6];
+		}
+		if (arguments.length > 7) {
+			filter += '&filter_status=' + arguments[7];
+		}
 		$.ajax(window.jinbound_pages_baseurl + '&limit=' + limit + '&limitstart=' + start + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
@@ -240,6 +252,12 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 		}
 		if (arguments.length > 3) {
 			filter += '&filter_page=' + arguments[3];
+		}
+		if (arguments.length > 4) {
+			filter += '&filter_priority=' + arguments[4];
+		}
+		if (arguments.length > 5) {
+			filter += '&filter_status=' + arguments[5];
 		}
 		$.ajax(window.jinbound_plot_baseurl + filter, {
 			dataType: 'json'
@@ -321,6 +339,12 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 		if (arguments.length > 3) {
 			filter += '&filter_page=' + arguments[3];
 		}
+		if (arguments.length > 4) {
+			filter += '&filter_priority=' + arguments[4];
+		}
+		if (arguments.length > 5) {
+			filter += '&filter_status=' + arguments[5];
+		}
 		$.ajax(window.jinbound_glance_baseurl + filter, {
 			dataType: 'json'
 		,	success: function(data, textStatus, jqXHR) {
@@ -334,19 +358,21 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 			}
 		});
 	};
-	window.fetchReports = function(a,b,c,d,e,f) {
-		window.fetchLeads(a,b,c,d,e,f);
-		window.fetchPages(a,b,c,d,e,f);
+	window.fetchReports = function(a,b,c,d,e,f,g,h) {
+		window.fetchLeads(a,b,c,d,e,f,g,h);
+		window.fetchPages(a,b,c,d,e,f,g,h);
 		if (document.getElementById('jinbound-reports-glance')) {
-			window.fetchGlance(c,d,e,f);
+			window.fetchGlance(c,d,e,f,g,h);
 		}
 		if (document.getElementById('jinbound-reports-graph')) {
-			window.fetchPlots(c,d,e,f);
+			window.fetchPlots(c,d,e,f,g,h);
 		}
 	};
 	var start = $('#filter_start'), end = $('#filter_end'),
 	campaign = $('#filter_campaign'), page = $('#filter_page'),
-	start_date = '', end_date = '', campaign_value = '', page_value = '';
+	priority = $('#filter_priority'), status = $('#filter_status')
+	start_date = '', end_date = '', campaign_value = '', page_value = '',
+	priority_value = '', status_value = '';
 	if (start.length && end.length) {
 		start_date = start.val();
 		end_date = end.val();
@@ -357,6 +383,12 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 	if (page.length) {
 		page_value = page.find(':selected').val();
 	}
-	window.fetchReports(0, 10, start_date, end_date, campaign_value, page_value);
+	if (priority.length) {
+		priority_value = priority.find(':selected').val();
+	}
+	if (status.length) {
+		status_value = status.find(':selected').val();
+	}
+	window.fetchReports(0, 10, start_date, end_date, campaign_value, page_value, priority_value, status_value);
 })(jQuery);
 </script>

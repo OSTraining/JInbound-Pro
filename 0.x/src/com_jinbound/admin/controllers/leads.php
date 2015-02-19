@@ -7,6 +7,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
+$e = new Exception(__FILE__);
+JLog::add('JInboundControllerLeads is deprecated. ' . $e->getTraceAsString(), JLog::WARNING, 'deprecated');
+
 jimport('joomla.application.component.controlleradmin');
 
 class JInboundControllerLeads extends JControllerAdmin

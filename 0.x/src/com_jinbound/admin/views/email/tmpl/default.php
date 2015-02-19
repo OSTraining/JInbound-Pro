@@ -31,6 +31,7 @@ JText::script('JGLOBAL_VALIDATION_FORM_FAILED');
 		,	subject: document.getElementById('jform_subject').value
 		,	htmlbody: document.getElementById('jform_htmlbody').value
 		,	plainbody: document.getElementById('jform_plainbody').value
+		,	type: jQuery('#jform_type').find(':selected').val()
 		};
 		data[token] = 1;
 		var success = function(response)
@@ -75,4 +76,9 @@ JText::script('JGLOBAL_VALIDATION_FORM_FAILED');
 			Joomla.submitform(task, form);
 		}
 	};
+	(function($){
+		$(document).ready(function(){
+			$('#jform_type').trigger('change');
+		});
+	})(jQuery);
 </script>

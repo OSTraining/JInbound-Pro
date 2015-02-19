@@ -128,7 +128,7 @@ class JInboundModelPages extends JInboundListModel
 		}
 		$cols = array('id', 'asset_id', 'layout', 'heading', 'subheading', 'socialmedia', 'maintext',
 		'sidebartext', 'alias', 'name', 'image', 'imagealttext', 'category', 'metatitle',
-		'metadescription', 'formbuilder', 'campaign', 'converts_on_another_form',
+		'metadescription', 'formid', 'formbuilder', 'campaign', 'converts_on_another_form',
 		'converts_on_same_campaign', 'submit_text', 'notify_form_submits',
 		'notification_email', 'after_submit_sendto', 'menu_item', 'send_to_url',
 		'sendto_message', 'template', 'css', 'ga', 'ga_code', 'published', 'created',

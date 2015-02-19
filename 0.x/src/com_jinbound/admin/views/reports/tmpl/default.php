@@ -18,7 +18,7 @@ Joomla.submitbutton = function(task)
 	Joomla.submitform(task, document.getElementById('adminForm'));
 };
 </script>
-<div class="container-fluid" id="jinbound_component">
+<div class="container-fluid <?php echo $this->viewClass; ?>" id="jinbound_component">
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -36,6 +36,8 @@ Joomla.submitbutton = function(task)
 			<div class="reports_search">
 				<?php echo $this->campaign_filter; ?>
 				<?php echo $this->page_filter; ?>
+				<?php echo $this->priority_filter; ?>
+				<?php echo $this->status_filter; ?>
 				<?php echo JHtml::_('calendar', $this->state->get('filter_start'), 'filter_start', 'filter_start', '%Y-%m-%d', array(
 					'size'        => 10
 				,	'placeholder' => JText::_('COM_JINBOUND_FROM')

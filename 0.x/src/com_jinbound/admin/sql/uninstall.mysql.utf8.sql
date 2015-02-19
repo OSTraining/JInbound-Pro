@@ -26,3 +26,7 @@ DROP TABLE IF EXISTS `#__jinbound_tracks`;
 DROP TABLE IF EXISTS `#__jinbound_users_tracks`;
 
 DROP TABLE IF EXISTS `#__jinbound_reports_emails`;
+
+DROP TABLE IF EXISTS `#__jinbound_fields`;
+DROP TABLE IF EXISTS `#__jinbound_form_fields`;
+DROP TABLE IF EXISTS `#__jinbound_forms`;

@@ -70,6 +70,9 @@ if (!empty($this->items)) :
 		<td class="hidden-phone">
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'emails.', $canChange, 'cb'); ?>
 		</td>
+		<td class="nowrap">
+			<?php echo JText::_('COM_JINBOUND_EMAIL_TYPE_' . $this->escape(strtoupper($item->type))); ?>
+		</td>
 		<td class="hidden-phone">
 			<?php echo JText::sprintf('COM_JINBOUND_EMAIL_SCHEDULE', (int) $item->sendafter); ?>
 		</td>

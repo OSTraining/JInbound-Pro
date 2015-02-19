@@ -23,6 +23,8 @@ class JInboundViewReports extends JInboundListView
 		$this->filter_change_code = $this->getReportFormFilterChangeCode();
 		$this->campaign_filter = $this->getCampaignFilter();
 		$this->page_filter = $this->getPageFilter();
+		$this->priority_filter = $this->getPriorityFilter();
+		$this->status_filter = $this->getStatusFilter();
 		$display  = parent::display($tpl, $safeparams);
 		$min      = defined('JDEBUG') && JDEBUG ? '' : '.min';
 		$js       = $min . '.js';
@@ -53,7 +55,9 @@ class JInboundViewReports extends JInboundListView
 			. "jQuery('#filter_start').val(), "
 			. "jQuery('#filter_end').val(), "
 			. "jQuery('#filter_campaign').find(':selected').val(), "
-			. "jQuery('#filter_page').find(':selected').val()"
+			. "jQuery('#filter_page').find(':selected').val(), "
+			. "jQuery('#filter_priority').find(':selected').val(), "
+			. "jQuery('#filter_status').find(':selected').val()"
 			. ");";
 	}
 	
@@ -83,6 +87,30 @@ class JInboundViewReports extends JInboundListView
 		)->loadObjectList();
 		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PAGE')));
 		return JHtml::_('select.genericlist', $options, 'filter_page', array(
+			'list.attr' => array(
+				'onchange' => $this->filter_change_code
+			)
+		));
+	}
+	
+	public function getPriorityFilter()
+	{
+		JInbound::registerHelper('priority');
+		$options = JInboundHelperPriority::getSelectOptions();
+		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PRIORITY')));
+		return JHtml::_('select.genericlist', $options, 'filter_priority', array(
+			'list.attr' => array(
+				'onchange' => $this->filter_change_code
+			)
+		));
+	}
+	
+	public function getStatusFilter()
+	{
+		JInbound::registerHelper('status');
+		$options = JInboundHelperStatus::getSelectOptions();
+		array_unshift($options, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_STATUS')));
+		return JHtml::_('select.genericlist', $options, 'filter_status', array(
 			'list.attr' => array(
 				'onchange' => $this->filter_change_code
 			)

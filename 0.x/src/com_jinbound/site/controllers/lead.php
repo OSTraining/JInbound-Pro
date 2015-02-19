@@ -33,23 +33,23 @@ class JInboundControllerLead extends JInboundBaseController
 		// TODO move these methods to a helper?
 		if (!(class_exists('plgSystemJInbound') && method_exists('plgSystemJInbound', 'getCookieUser')))
 		{
-			throw new RuntimeException('Class not found.');
+			throw new RuntimeException('Class not found.', 404);
 		}
 		// go ahead and quickly validate that the core required data came in
 		if (!(array_key_exists('lead', $raw_data) && is_array($raw_data['lead'])))
 		{
-			throw new RuntimeException('Raw lead data not found');
+			throw new RuntimeException('Raw lead data not found', 404);
 		}
 		foreach (array('email', 'first_name', 'last_name') as $var)
 		{
 			if (!array_key_exists($var, $raw_data['lead']))
 			{
-				throw new RuntimeException("Variable $var not set");
+				throw new RuntimeException("Variable $var not set", 500);
 			}
 			$$var = $raw_data['lead'][$var];
 			if (empty($$var))
 			{
-				throw new RuntimeException("Variable $var empty");
+				throw new RuntimeException("Variable $var empty", 500);
 			}
 		}
 		
@@ -78,36 +78,15 @@ class JInboundControllerLead extends JInboundBaseController
 			JError::raiseError(404, JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
 			jexit();
 		}
-		// get the form data
-		if (!method_exists($page->formbuilder, 'toArray'))
-		{
-			$reg = new JRegistry();
-			if (is_string($page->formbuilder))
-			{
-				$reg->loadString($reg->formbuilder);
-			}
-			else if (is_array($page->formbuilder))
-			{
-				$reg->loadArray($reg->formbuilder);
-			}
-			else if (is_object($page->formbuilder))
-			{
-				$reg->loadObject($reg->formbuilder);
-			}
-			$page->formbuilder = $reg;
-		}
-		
-		$formbuilder = $page->formbuilder->toArray();
+		// fetch the fields for this form
+		JInbound::registerHelper('form');
+		$formfields = JInboundHelperForm::getFields($page->formid);
 		// build data from formbuilder
-		foreach ($formbuilder as $name => $element)
+		foreach ($formfields as $formfield)
 		{
-			if (1 !== (int) $element['enabled'])
+			if (array_key_exists($formfield->name, $raw_data['lead']))
 			{
-				continue;
-			}
-			if (array_key_exists($name, $raw_data['lead']))
-			{
-				$conversion_data[$name] = $raw_data['lead'][$name];
+				$conversion_data[$formfield->name] = $raw_data['lead'][$formfield->name];
 			}
 		}
 		// before saving the data for this contact/conversion

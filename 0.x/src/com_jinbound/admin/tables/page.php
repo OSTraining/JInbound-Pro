@@ -42,17 +42,12 @@ class JInboundTablePage extends JInboundTable
 			return false;
 		}
 		
-		if (trim($this->formname) == '') {
-			$this->setError(JText::_('COM_JINBOUND_WARNING_PROVIDE_VALID_FORMNAME'));
-			return false;
-		}
-		
 		// prevent duplicates of the name
 		try {
 			$dupes = $this->_db->setQuery($this->_db->getQuery(true)
 				->select('id')
 				->from($this->_tbl)
-				->where('(' . $this->_db->quoteName('name') . ' = ' . $this->_db->quote($this->name) . ' OR ' . $this->_db->quoteName('formname') . ' = ' . $this->_db->quote($this->formname) . ')')
+				->where($this->_db->quoteName('name') . ' = ' . $this->_db->quote($this->name))
 				->where($this->_db->quoteName('id') . ' <> ' . intval($this->id))
 			)->loadColumn();
 		}
@@ -75,38 +70,6 @@ class JInboundTablePage extends JInboundTable
 		}
 		
 		return parent::check();
-	}
-	
-	public function load($keys = null, $reset = true) {
-		$load = parent::load($keys, $reset);
-		if (is_string($this->formbuilder)) {
-			$registry = new JRegistry;
-			$registry->loadString($this->formbuilder);
-			$this->formbuilder = $registry;
-		}
-		return $load;
-	}
-	
-	/**
-	 * overload bind
-	 */
-	public function bind($array, $ignore = '') {
-		// parameters
-		if (isset($array['formbuilder'])) {
-			$registry = new JRegistry;
-			if (is_array($array['formbuilder'])) {
-				$registry->loadArray($array['formbuilder']);
-			}
-			else if (is_string($array['formbuilder'])) {
-				$registry->loadString($array['formbuilder']);
-			}
-			else if (is_object($array['formbuilder'])) {
-	
-			}
-			$array['formbuilder'] = (string) $registry;
-		}
-	
-		return parent::bind($array, $ignore);
 	}
 	
 	public function store($updateNulls = false) {

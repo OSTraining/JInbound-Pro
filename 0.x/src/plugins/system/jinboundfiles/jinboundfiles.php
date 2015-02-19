@@ -89,7 +89,7 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	public function onJinboundFormbuilderView(&$view)
 	{
-		// add template path for captcha
+		// add template path
 		$view->addTemplatePath(dirname(__FILE__) . '/tmpl');
 	}
 	
@@ -165,25 +165,23 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	protected function getFileInputs($page_id)
 	{
-		// get the page being checked by id
-		$page = JTable::getInstance('Page', 'JInboundTable');
-		$page->load($page_id);
-		$formbuilder = (array) json_decode($page->formbuilder);
-		$fileinputs = array();
-		foreach ($formbuilder as $key => $value)
+		$db = JFactory::getDbo();
+		$rows = $db->setQuery($db->getQuery(true)
+			->select('Field.title')
+			->select('Field.name')
+			->from('#__jinbound_fields AS Field')
+			->leftJoin('#__jinbound_form_fields AS FormFields ON FormFields.field_id = Field.id')
+			->leftJoin('#__jinbound_pages AS Page ON FormFields.form_id = Page.formid AND Page.id = ' . (int) $page_id)
+			->where('Field.published = 1')
+			->where('Field.type = ' . $db->quote('file'))
+			->group('Field.id')
+		)->loadRowList();
+		$result = array();
+		foreach ($rows as $row)
 		{
-			if ('__' === substr($key, 0, 2))
-			{
-				continue;
-			}
-			$value = (array) $value;
-			if (array_key_exists('type', $value) && 'file' == $value['type']
-				&& array_key_exists('enabled', $value) && $value['enabled'])
-			{
-				$fileinputs[$key] = $value['title'];
-			}
+			$result[$row['name']] = $row;
 		}
-		return $fileinputs;
+		return $result;
 	}
 	
 	public function onJinboundFormbuilderRenderValue(&$output, $page_id, $field, $value)
@@ -232,5 +230,10 @@ class plgSystemJInboundfiles extends JPlugin
 		}
 		$html = $result;
 		$this->session->clear('jinboundfiles.files');
+	}
+	
+	public function onJInboundBeforeListFieldTypes(&$types, &$ignored, &$paths, &$files)
+	{
+		$ignored = array_values(array_diff($ignored, array('file')));
 	}
 }
