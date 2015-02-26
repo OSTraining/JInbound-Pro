@@ -7,7 +7,14 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jcalpro/helpers/jcalpro.php');
+jimport('joomla.form.form');
+
+JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerHelper('path');
+JInbound::registerHelper('url');
+
+JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
+JInboundBaseModel::addIncludePath(JInboundHelperPath::admin('models'));
 
 abstract class JInboundHelperForm
 {
@@ -15,7 +22,6 @@ abstract class JInboundHelperForm
 		// only load once
 		static $loaded;
 		if (is_null($loaded)) {
-			jimport('joomla.form.form');
 			JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/forms');
 			$loaded = true;
 		}
@@ -60,19 +66,23 @@ abstract class JInboundHelperForm
 		}
 		// go ahead and just load from the db
 		$db = JFactory::getDbo();
-		$fields = $db->setQuery($db->getQuery(true)
+		$query = $db->getQuery(true)
 			->select('Field.*')
 			->from('#__jinbound_fields AS Field')
 			->where('Field.published = 1')
 			->group('Field.id')
 			// join over Xref
 			->leftJoin('#__jinbound_form_fields AS Xref ON Xref.field_id = Field.id')
-			->where('Xref.form_id = ' . (int) $id)
 			->order('Xref.ordering ASC')
 			// join over form just to ensure it's published
 			->leftJoin('#__jinbound_forms AS Form ON Xref.form_id = Form.id')
 			->where('Form.published = 1')
-		)->loadObjectList();
+		;
+		if ($id)
+		{
+			$query->where('Xref.form_id = ' . (int) $id);
+		}
+		$fields = $db->setQuery($query)->loadObjectList();
 		// adjust values
 		if (!empty($fields))
 		{
@@ -112,7 +122,141 @@ abstract class JInboundHelperForm
 	
 	static public function getMigrationWarning()
 	{
-		JInbound::registerHelper('url');
 		return JText::sprintf('COM_JINBOUND_NEEDS_FORM_MIGRATION', JInboundHelperUrl::task('forms.migrate', false));
+	}
+	
+	static public function getDefaultFields()
+	{
+		// access db
+		$db = JFactory::getDbo();
+		// must have these 3
+		return $db->setQuery($db->getQuery(true)
+			->select('*')
+			->from('#__jinbound_fields')
+			->where('(name = "first_name" OR name = "last_name" OR name = "email")')
+			->where('published = 1')
+		)->loadObjectList();
+	}
+	
+	static public function getAllFields()
+	{
+		// access db
+		$db = JFactory::getDbo();
+		// must have these 3
+		return $db->setQuery($db->getQuery(true)
+			->select('*')
+			->from('#__jinbound_fields')
+		)->loadObjectList();
+	}
+	
+	static public function needsDefaultFields()
+	{
+		$fields = JInboundHelperForm::getDefaultFields();
+		// if there's a result, an upgrade is needed
+		return count($fields) < 3;
+	}
+	
+	static public function installDefaultForms()
+	{
+		$db       = JFactory::getDbo();
+		$existing = JInboundBaseModel::getInstance('Forms', 'JInboundModel')->getItems();
+		if (!empty($existing))
+		{
+			return;
+		}
+		$fields = $db->setQuery($db->getQuery(true)
+			->select('*')->from('#__jinbound_fields')->where('published = 1')
+		)->loadObjectList();
+		foreach (array('simple', 'detailed') as $form)
+		{
+			$data = array(
+				'title'      => JText::_('COM_JINBOUND_DEFAULT_FORM_' . strtoupper($form))
+			,	'published'  => '1'
+			,	'formfields' => array()
+			);
+			foreach ($fields as $field)
+			{
+				if ('simple' == $form && !in_array($field->name, array('first_name', 'last_name', 'email')))
+				{
+					continue;
+				}
+				$data['formfields'][] = $field->id;
+			}
+			JInboundBaseModel::getInstance('Form', 'JInboundModel')->save($data);
+		}
+	}
+	
+	static public function installDefaultFields()
+	{
+		$db = JFactory::getDbo();
+		// load any existing fields by name
+		$existing = JInboundHelperForm::getAllFields();
+		$defaults = array(
+			'first_name'   => array()
+		,	'last_name'    => array()
+		,	'email'        => array('type' => 'email')
+		,	'website'      => array('type' => 'url')
+		,	'company_name' => array()
+		,	'phone_number' => array('type' => 'tel')
+		,	'address'      => array('type' => 'textarea')
+		,	'suburb'       => array()
+		,	'state'        => array()
+		,	'country'      => array()
+		,	'postcode'     => array()
+		);
+		$required = array('first_name', 'last_name', 'email');
+		// create the 3 defaults
+		foreach ($defaults as $fieldname => $extra)
+		{
+			$exists  = false;
+			foreach ($existing as $field)
+			{
+				if ($field->name === $fieldname)
+				{
+					$exists = true;
+					if (!$field->published)
+					{
+						$db->setQuery($db->getQuery(true)
+							->update('#__jinbound_fields')
+							->set('published = 1')
+							->where('id = ' . intval($field->id))
+						)->query();
+					}
+					break;
+				}
+			}
+			if ($exists)
+			{
+				continue;
+			}
+			$data = array_merge($extra, array(
+				'title'        => JText::_('COM_JINBOUND_PAGE_FIELD_' . strtoupper($fieldname))
+			,	'name'         => $fieldname
+			,	'type'         => 'text'
+			,	'description'  => ''
+			,	'published'    => 1
+			,	'params'       => array(
+					'attributes' => array(
+						'name'  => array()
+					,	'value' => array()
+					)
+				,	'options'    => array(
+						'name'  => array()
+					,	'value' => array()
+					)
+				)
+			));
+			if (in_array($fieldname, $required))
+			{
+				$data['params']['attributes']['name'][]  = 'required';
+				$data['params']['attributes']['value'][] = 'true';
+			}
+			if ('email' == $fieldname)
+			{
+				$data['params']['attributes']['name'][]  = 'validate';
+				$data['params']['attributes']['value'][] = 'email';
+			}
+			JInboundBaseModel::getInstance('Field', 'JInboundModel')->save($data);
+		}
 	}
 }

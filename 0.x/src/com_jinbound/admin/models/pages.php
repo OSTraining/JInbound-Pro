@@ -61,14 +61,23 @@ class JInboundModelPages extends JInboundListModel
 		
 		$app    = JFactory::getApplication();
 		$format = $app->input->get('format', '', 'cmd');
+		// load the filter values
+		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		$this->setState('filter', $filters);
 		
 		foreach (array('category', 'campaign') as $var) {
-			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string');
+			$value = array_key_exists($var, $filters)
+				? $filters[$var]
+				: $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string')
+			;
 			$this->setState('filter.' . $var, $value);
 		}
 		
 		foreach (array('start', 'end', 'page') as $var) {
-			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string');
+			$value = array_key_exists($var, $filters)
+				? $filters[$var]
+				: $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string')
+			;
 			if ('json' != $format) {
 				$value = '';
 			}

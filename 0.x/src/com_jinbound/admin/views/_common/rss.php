@@ -9,6 +9,10 @@ defined('JPATH_PLATFORM') or die;
 
 if (!($this instanceof JInboundRSSView)) die;
 
+if (class_exists('JFeedFactory')) :
+	echo $this->loadTemplate('new', 'rss');
+else :
+
 if ($this->feed) : ?>
 <div class="row-fluid">
 	<div class="span12">
@@ -106,3 +110,4 @@ if ($this->feed) : ?>
 </div>
 <?php endif;
 
+endif;

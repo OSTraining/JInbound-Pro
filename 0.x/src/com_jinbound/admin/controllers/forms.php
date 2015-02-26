@@ -31,7 +31,9 @@ class JInboundControllerForms extends JControllerAdmin
 		{
 			throw new Exception(JText::_('COM_JINBOUND_NO_FORM_MIGRATION_NEEDED'));
 		}
+		$app = JFactory::getApplication();
 		$db = JFactory::getDbo();
+		$filter = JFilterInput::getInstance();
 		$forms = $db->setQuery($db->getQuery(true)
 			->select('id, formid, formname, formbuilder')
 			->from('#__jinbound_pages')
@@ -46,6 +48,7 @@ class JInboundControllerForms extends JControllerAdmin
 		foreach ($forms as $oldform)
 		{
 			$fieldids = array();
+			$fieldnames = array();
 			// decode the form
 			$structure = json_decode($oldform->formbuilder);
 			// we can't always bank on the __ordering being there (for older installs)
@@ -89,15 +92,24 @@ class JInboundControllerForms extends JControllerAdmin
 					->from('#__jinbound_fields')
 					->where('name = ' . $db->quote($data['name']))
 					->where('title = ' . $db->quote($data['title']))
-					->where('type = ' . $db->quote($data['type']))
 				)->loadResult();
-				
+				// this field has already been created
 				if ($oldfieldid)
 				{
-					$fieldids[] = $oldfieldid;
+					// if the field is enabled, go ahead and add to the list
+					if ($structure->$oldfield->enabled)
+					{
+						// ensure the field is published at all costs
+						$db->setQuery($db->getQuery(true)
+							->update('#__jinbound_fields')
+							->set('published = 1')
+							->where('id = ' . $oldfieldid)
+						)->query();
+						$fieldids[] = $oldfieldid;
+					}
+					// regardless, we don't need to create this one
 					continue;
 				}
-				
 				// set attributes
 				$attr = property_exists($structure->$oldfield, 'attributes') ? $structure->$oldfield->attributes : new stdClass;
 				$opts = property_exists($structure->$oldfield, 'options') ? $structure->$oldfield->options : new stdClass;					
@@ -118,22 +130,14 @@ class JInboundControllerForms extends JControllerAdmin
 				$data['params']['attributes'] = (array) $attr;
 				$data['params']['options']    = (array) $opts;
 				// save the field
-				if (!JInboundBaseModel::getInstance('Field', 'JInboundModel')->save($data))
+				$field_model = JInboundBaseModel::getInstance('Field', 'JInboundModel');
+				if (!$field_model->save($data))
 				{
-					// TODO something else
 					continue;
 				}
-				
-				// fetch the newly saved field's id
-				$newfieldid = $db->setQuery($db->getQuery(true)
-					->select('id')
-					->from('#__jinbound_fields')
-					->where('name = ' . $db->quote($data['name']))
-					->where('title = ' . $db->quote($data['title']))
-					->where('type = ' . $db->quote($data['type']))
-				)->loadResult();
-				
-				if ($newfieldid)
+				$newfieldid = (int) $field_model->getState($field_model->getName() . '.id');
+				// only push existing, enabled fields
+				if ($newfieldid && $structure->$oldfield->enabled)
 				{
 					$fieldids[] = $newfieldid;
 				}
@@ -145,28 +149,21 @@ class JInboundControllerForms extends JControllerAdmin
 			,	'formfields' => implode('|', $fieldids)
 			);
 			// save the form
-			if (!JInboundBaseModel::getInstance('Form', 'JInboundModel')->save($newform))
+			$form_model = JInboundBaseModel::getInstance('Form', 'JInboundModel');
+			if (!$form_model->save($newform))
 			{
-				// TODO something else
 				continue;
 			}
-			// find the form just saved
-			$newformid = $db->setQuery($db->getQuery(true)
-				->select('id')
-				->from('#__jinbound_forms')
-				->where('title = ' . $db->quote($newform['title']))
-			)->loadResult();
-			
+			$newformid = (int) $form_model->getState($form_model->getName() . '.id');
 			// update the page
 			$db->setQuery($db->getQuery(true)
 				->update('#__jinbound_pages')
-				->set('formid = ' . (int) $formid)
+				->set('formid = ' . (int) $newformid)
 				->set('formname = ' . $db->quote(''))
 				->set('formbuilder = ' . $db->quote(''))
 			)->query();
-			
 		}
-		$app = JFactory::getApplication();
+		// all done
 		$app->enqueueMessage(JText::_('COM_JINBOUND_FORM_MIGRATION_COMPLETE'));
 		$app->redirect(JInboundHelperUrl::_(array(), false));
 	}

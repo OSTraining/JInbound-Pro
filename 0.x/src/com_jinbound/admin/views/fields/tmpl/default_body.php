@@ -13,19 +13,21 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 $saveOrder = ($listOrder == 'Field.id');
 $trashed   = (-2 == $this->state->get('filter.published'));
+$core      = array('first_name', 'last_name', 'email');
 
 if (JInbound::version()->isCompatible('3.0')) JHtml::_('dropdown.init');
 
 if (!empty($this->items)) :
 	foreach($this->items as $i => $item):
+		$isCore     = in_array($item->name, $core);
 		$canEdit    = $user->authorise('core.edit', 'com_jinbound.field.'.$item->id);
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 		$canEditOwn = $user->authorise('core.edit.own', 'com_jinbound.field.'.$item->id) && $item->created_by == $userId;
-		$canChange  = $user->authorise('core.edit.state', 'com_jinbound.field.'.$item->id) && $canCheckin;
+		$canChange  = $user->authorise('core.edit.state', 'com_jinbound.field.'.$item->id) && $canCheckin && !$isCore;
 	?>
 	<tr class="row<?php echo $i % 2; ?>">
 		<td class="hidden-phone">
-			<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+			<?php echo $isCore ? '&nbsp;' : JHtml::_('grid.id', $i, $item->id); ?>
 		</td>
 		<td class="center hidden-phone">
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'fields.', $canChange, 'cb'); ?>
@@ -47,12 +49,18 @@ if (!empty($this->items)) :
 			<div class="pull-left"><?php
 			
 				JHtml::_('dropdown.edit', $item->id, 'field.');
-				JHtml::_('dropdown.divider');
-				JHtml::_('dropdown.' . ($item->published ? 'un' : '') . 'publish', 'cb' . $i, 'fields.');
-				if ($item->checked_out) :
-					JHtml::_('dropdown.checkin', 'cb' . $i, 'fields.');
+				if ($canChange || $item->checked_out) :
+					JHtml::_('dropdown.divider');
+					if ($canChange) :
+						JHtml::_('dropdown.' . ($item->published ? 'un' : '') . 'publish', 'cb' . $i, 'fields.');
+					endif;
+					if ($item->checked_out) :
+						JHtml::_('dropdown.checkin', 'cb' . $i, 'fields.');
+					endif;
+					if ($canChange) :
+						JHtml::_('dropdown.' . ($trashed ? 'un' : '') . 'trash', 'cb' . $i, 'fields.');
+					endif;
 				endif;
-				JHtml::_('dropdown.' . ($trashed ? 'un' : '') . 'trash', 'cb' . $i, 'fields.');
 				
 				echo JHtml::_('dropdown.render');
 				

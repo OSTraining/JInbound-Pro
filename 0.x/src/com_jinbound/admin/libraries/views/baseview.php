@@ -56,14 +56,14 @@ class JInboundBaseView extends JInboundBaseCompatView
 		$root = $this->app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
 		$layout_override = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/com_jinbound/' . $this->getName();
 		$common_override = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/com_jinbound/_common';
+		$this->addTemplatePath($root . '/views/_common');
+		$this->addTemplatePath($root . '/views/' . $this->getName() . '/tmpl');
 		if (JFolder::exists($layout_override)) {
 			$this->addTemplatePath($layout_override);
 		}
 		if (JFolder::exists($common_override)) {
 			$this->addTemplatePath($common_override);
 		}
-		$this->addTemplatePath($root . '/views/_common');
-		$this->addTemplatePath($root . '/views/' . $this->getName() . '/tmpl');
 	}
 	
 	/**
@@ -244,7 +244,6 @@ class JInboundView extends JInboundBaseView
 		
 		$this->sidebar = false;
 		if (class_exists('JHtmlSidebar')) {
-			$this->renderFilters();
 			$this->sidebar = JHtmlSidebar::render();
 		}
 	}

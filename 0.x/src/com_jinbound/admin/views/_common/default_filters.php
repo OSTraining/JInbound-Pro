@@ -37,7 +37,7 @@ if ('component' != JFactory::getApplication()->input->get('tmpl', 'default')) :
 	<?php endif; ?>
 <?php endif; ?>
 
-	<?php if (!$floatButtons) {echo $this->renderFilters();} ?>
+<?php echo $this->renderFilters(); ?>
 </fieldset>
 <div class="clr"> </div>
 

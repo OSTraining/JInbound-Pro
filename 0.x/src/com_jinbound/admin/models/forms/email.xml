@@ -37,7 +37,6 @@
 			description="COM_JINBOUND_EMAIL_TYPE_DESC"
 			class="input-block-level"
 			default="campaign"
-			onchange="(function($,t){var v=$(t).find(':selected').val(),s=$('#jform_sendafter'),t1=$('.reports_tab'),t2=$('#jinbound_default_tabsTabs li a[href=\'#reports_tab\']'),c=$('#jform_campaign_id');if('campaign'==v){s.removeAttr('disabled');c.removeAttr('disabled');t1.hide();t2.hide();}else if('report'==v){s.attr('disabled','disabled');c.attr('disabled','disabled');t1.show();t2.show();}})(jQuery,this);"
 		>
 			<option value="campaign">COM_JINBOUND_EMAIL_TYPE_CAMPAIGN</option>
 			<option value="report">COM_JINBOUND_EMAIL_TYPE_REPORT</option>

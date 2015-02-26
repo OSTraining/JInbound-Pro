@@ -12,7 +12,7 @@
 			name="published"
 			type="status"
 			label="COM_JINBOUND_FILTER_PUBLISHED"
-			statuses="*,0,1,-2"
+			filter="0,1,-2"
 			description="COM_JINBOUND_FILTER_PUBLISHED_DESC"
 			onchange="this.form.submit();"
 			>
@@ -24,7 +24,6 @@
 			name="fullordering"
 			type="list"
 			label="JGLOBAL_SORT_BY"
-			statuses="*,0,1,-2"
 			description="JGLOBAL_SORT_BY"
 			onchange="this.form.submit();"
 			default="Priority.ordering ASC"

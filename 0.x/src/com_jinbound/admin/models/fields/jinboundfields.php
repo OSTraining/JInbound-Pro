@@ -12,6 +12,7 @@ jimport('joomla.form.formfield');
 jimport('joomla.form.helper');
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerHelper('form');
 JInbound::registerHelper('url');
 JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 JInbound::registerLibrary('JInboundFieldView', 'views/fieldview');
@@ -67,6 +68,30 @@ class JFormFieldJInboundFields extends JFormField
 			if (!in_array($field->id, $this->value)) {
 				$ordered[] = $field;
 			}
+		}
+		
+		$cores = array('first_name', 'last_name', 'email');
+		
+		foreach ($ordered as $idx => $field)
+		{
+			$extra   = '';
+			$checked = in_array($field->id, $this->value);
+			$which   = array_search($field->name, $cores);
+			$core    = in_array($field->name, $cores);
+			if (is_numeric($which) && array_key_exists($which, $cores))
+			{
+				unset($cores[$which]);
+			}
+			if ($checked || $core)
+			{
+				$extra .= ' checked="checked"';
+			}
+			if ($core)
+			{
+				$extra .= ' readonly="true" style="display: none !important"';
+			}
+			$ordered[$idx]->core  = $core;
+			$ordered[$idx]->extra = $extra;
 		}
 		// load scripts
 		JText::script('COM_JINBOUND_JCALFORMFIELD_ERROR');

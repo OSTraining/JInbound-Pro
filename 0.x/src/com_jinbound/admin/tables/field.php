@@ -99,7 +99,7 @@ class JInboundTableField extends JInboundTable
 	}
 	
 	/**
-	 * Overload the store method for the JCalPro Fields table.
+	 * Overload the store method for the Fields table.
 	 * 
 	 * @param       boolean Toggle whether null values should be updated.
 	 * @return      boolean True on success, false on failure.

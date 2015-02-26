@@ -18,6 +18,10 @@ JText::script('JGLOBAL_VALIDATION_FORM_FAILED');
 
 ?>
 <script type="text/javascript">
+	window.jinboundemailtags = {
+		campaign: '<?php echo JInboundHelperFilter::escape_js($this->emailtags->campaign); ?>',
+		report: '<?php echo JInboundHelperFilter::escape_js($this->emailtags->report); ?>'
+	};
 	Joomla.emailtest = function(form)
 	{
 		<?php echo $this->form->getField('htmlbody')->save(); ?>
@@ -78,6 +82,29 @@ JText::script('JGLOBAL_VALIDATION_FORM_FAILED');
 	};
 	(function($){
 		$(document).ready(function(){
+			$('#jform_type').change(function(){
+				var t = $(this),
+				v = t.find(':selected').val(),
+				s = $('#jform_sendafter'),
+				t1 = $('.reports_tab'),
+				t2 = $('#jinbound_default_tabsTabs li a[href=\'#reports_tab\']'),
+				c = $('#jform_campaign_id'),
+				l = $('#jform_email_tips');
+				if ('campaign' === v) {
+					s.removeAttr('disabled');
+					c.removeAttr('disabled');
+					t1.hide();
+					t2.hide();
+					l.empty().html(window.jinboundemailtags.campaign);
+				}
+				else if ('report' === v) {
+					s.attr('disabled','disabled');
+					c.attr('disabled','disabled');
+					t1.show();
+					t2.show();
+					l.empty().html(window.jinboundemailtags.report);
+				}
+			});
 			$('#jform_type').trigger('change');
 		});
 	})(jQuery);

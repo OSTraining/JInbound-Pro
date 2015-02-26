@@ -7,7 +7,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$this->cols = 9;
+$this->cols = 12;
 
 echo $this->loadTemplate('list');
 
