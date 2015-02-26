@@ -102,6 +102,7 @@ class com_JInboundInstallerScript
 				// fix component config
 				$this->_saveDefaults($parent);
 			case 'update':
+				$this->_checkDefaultReportEmails();
 				$this->_saveDefaultAssets($parent);
 				$this->_forceReportEmailOption($parent);
 				// move data from the older 1.0 schema
@@ -116,6 +117,52 @@ class com_JInboundInstallerScript
 				$this->_checkEmailVersions();
 				$this->_fixMissingLanguageDefaults();
 				break;
+		}
+	}
+	
+	private function _checkDefaultReportEmails()
+	{
+		$app = JFactory::getApplication();
+		$db = JFactory::getDbo();
+		$emails = $db->setQuery($db->getQuery(true)
+			->select('id')->from('#__jinbound_emails')
+			->where($db->quoteName('type') . ' = ' . $db->quote('report'))
+		)->loadColumn();
+		if (!empty($emails))
+		{
+			return;
+		}
+		$cfg = new JConfig;
+		$data = array(
+			'name'        => JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_NAME')
+		,	'published'   => '1'
+		,	'type'        => 'report'
+		,	'campaign_id' => ''
+		,	'fromname'    => $cfg->fromname
+		,	'fromemail'   => $cfg->mailfrom
+		,	'sendafter'   => ''
+		,	'subject'     => JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_SUBJECT')
+		,	'htmlbody'    => JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_HTMLBODY')
+		,	'plainbody'   => implode("\n", explode('<br>', JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_PLAINBODY')))
+		,	'params'      => array(
+				'reports_frequency' => '1 WEEK'
+			,	'recipients'        => $cfg->mailfrom
+			,	'campaigns'         => array()
+			)
+		);
+		$admin = JPATH_ADMINISTRATOR . '/components/com_jinbound';
+		if (!class_exists('JInboundBaseModel'))
+		{
+			if (JFile::exists($modelfile = "$admin/libraries/models/basemodel.php"))
+			{
+				require_once $modelfile;
+			}
+			JTable::addIncludePath("$admin/tables");
+		}
+		if (class_exists('JInboundBaseModel'))
+		{
+			JInboundBaseModel::addIncludePath("$admin/models", 'JInboundModel');
+			JInboundBaseModel::getInstance('Email', 'JInboundModel')->save($data);
 		}
 	}
 	

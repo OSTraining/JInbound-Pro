@@ -48,6 +48,11 @@ if (JInboundHelperForm::needsMigration() && 'json' !== $input->get('format') && 
 {
 	$app->enqueueMessage(JInboundHelperForm::getMigrationWarning(), 'warning');
 }
+else if (JInboundHelperForm::needsDefaultFields())
+{
+	JInboundHelperForm::installDefaultFields();
+	JInboundHelperForm::installDefaultForms();
+}
 
 if (jimport('joomla.application.component.controller')) {
 	$controller = JController::getInstance('JInbound');

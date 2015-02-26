@@ -51,22 +51,21 @@ class JInboundModelConversions extends JInboundListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		parent::populateState($ordering, $direction);
+		// load the filter values
+		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		$this->setState('filter', $filters);
 		
 		$app    = JFactory::getApplication();
 		$format = $app->input->get('format', '', 'cmd');
 		$end    = ('json' == $format ? '.json' : '');
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start'.$end, 'filter_start', '', 'string');
-		$this->setState('filter.start', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end'.$end, 'filter_end', '', 'string');
-		$this->setState('filter.end', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.priority'.$end, 'filter_priority', '', 'int');
-		$this->setState('filter.priority', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.status'.$end, 'filter_status', '', 'int');
-		$this->setState('filter.status', $value);
+		foreach (array('start', 'end', 'priority', 'status') as $var) {
+			$value = array_key_exists($var, $filters)
+				? $filters[$var]
+				: $this->getUserStateFromRequest($this->context.'.filter.'.$var.$end, 'filter_'.$var, '', 'string')
+			;
+			$this->setState('filter.'.$var, $value);
+		}
 	}
 
 	/**

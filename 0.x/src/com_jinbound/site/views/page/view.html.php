@@ -90,8 +90,13 @@ class JInboundViewPage extends JInboundItemView
 			$tags[$basetag] = $this->item->$basetag;
 		}
 		
-		if (!empty($this->item->image)) {
+		if (!empty($this->item->image))
+		{
 			$tags['image'] = $this->loadTemplate('image', 'default');
+		}
+		else
+		{
+			$tags['image'] = '';
 		}
 		
 		// load these from templates
@@ -99,30 +104,6 @@ class JInboundViewPage extends JInboundItemView
 		$tags['form:close'] = $this->loadTemplate('form_close', 'default');
 		$tags['submit']     = $this->loadTemplate('form_submit', 'default');
 		$tags['form']       = $this->loadTemplate('form', 'default');
-		
-		$tagsToFields = array(
-			'first_name'   => 'firstname'
-		,	'last_name'    => 'lastname'
-		,	'company_name' => 'companyname'
-		,	'phone_number' => 'phonenumber'
-		);
-		
-		// BUGFIX names are stored generically for custom fields, fix tags for unique names
-		// TODO test this and maybe fix leads during migration?
-		$tagsToFieldsAlt = array();
-		$formbuilder = $this->item->formbuilder->toArray();
-		foreach ($formbuilder as $formfieldname => $formfield)
-		{
-			if (!is_array($formfield))
-			{
-				continue;
-			}
-			if (!$formfield['enabled'] || !array_key_exists('name', $formfield))
-			{
-				continue;
-			}
-			$tagsToFieldsAlt[$formfieldname] = $formfield['name'];
-		}
 		
 		$fullAddress = array(
 			'address'  => ''
@@ -134,12 +115,6 @@ class JInboundViewPage extends JInboundItemView
 		
 		foreach ($this->form->getFieldset('lead') as $key => $field) {
 			$tagKey = str_replace('jform_lead_', '', $key);
-			if (array_key_exists($tagKey, $tagsToFields)) {
-				$tagKey = $tagsToFields[$tagKey];
-			}
-			else if (array_key_exists($tagKey, $tagsToFieldsAlt)) {
-				$tagKey = $tagsToFieldsAlt[$tagKey];
-			}
 			$this->_currentField = $field;
 			$tags['form:' . $tagKey] = $this->loadTemplate('form_field');
 			

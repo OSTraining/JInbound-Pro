@@ -59,19 +59,6 @@ class JInboundModelForms extends JInboundListModel
 	}
 
 	/**
-	 * Method to auto-populate the model state.
-	 *
-	 * Note. Calling getState in this method will result in recursion.
-	 */
-	protected function populateState($ordering = null, $direction = null)
-	{
-		parent::populateState($ordering, $direction);
-		
-		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search', '', 'string');
-		$this->setState('filter.search', $search);
-	}
-
-	/**
 	 * Method to get a store id based on model configuration state.
 	 *
 	 * This is necessary because the model is used by the component and

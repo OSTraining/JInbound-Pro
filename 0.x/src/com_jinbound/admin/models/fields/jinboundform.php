@@ -1,7 +1,7 @@
 <?php
 /**
- * @package		JCalPro
- * @subpackage	com_jcalpro
+ * @package		JInbound
+ * @subpackage	com_jinbound
 @ant_copyright_header@
  */
 

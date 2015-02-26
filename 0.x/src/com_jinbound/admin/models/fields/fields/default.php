@@ -19,7 +19,13 @@ defined('_JEXEC') or die;
 	<tbody>
 		<?php foreach ($this->fields as $field) : ?>
 		<tr>
-			<td><input id="<?php echo $this->escape($this->input_id . $field->id); ?>" name="<?php echo $this->escape($this->input_name); ?>[]" type="checkbox" value="<?php echo $this->escape($field->id); ?>" <?php if (in_array($field->id, $this->value)) {echo 'checked="checked"';} ?>/></td>
+			<td>
+				<?php if ($field->core) : ?>
+				<i class="icon-lock"></i><input name="<?php echo $this->escape($this->input_name); ?>[]" type="hidden" value="<?php echo $this->escape($field->id); ?>" />
+				<?php else : ?>
+				<input id="<?php echo $this->escape($this->input_id . $field->id); ?>" name="<?php echo $this->escape($this->input_name); ?>[]" type="checkbox" value="<?php echo $this->escape($field->id); ?>"<?php echo $field->extra; ?>/>
+				<?php endif; ?>
+			</td>
 			<td><?php echo $this->escape($field->title); ?></td>
 			<td class="nowrap">
 				<div class="jinboundfields_ordering btn-group">

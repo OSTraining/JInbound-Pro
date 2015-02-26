@@ -46,6 +46,14 @@
 			required="true"
 		/>
 		<field
+			id="type" name="type"
+			type="jinboundfieldtype"
+			label="COM_JINBOUND_FIELD_TYPE_LABEL"
+			description="COM_JINBOUND_FIELD_TYPE_DESC"
+			class="inputbox"
+			ignoredfields="accesslevel,cachehandler,calendar,category,combo,componentlayout,contentlanguage,databaseconnection,editor,editors,file,filelist,folderlist,imagelist,groupedlist,helpsite,language,menu,menuitem,modulelayout,note,password,plugins,predefinedlist,repeatable,rules,sessionhandler,spacer,sql,templatestyle,timezone,user,usergroup"
+		/>
+		<field
 			id="description" name="description"
 			type="textarea"
 			label="COM_JINBOUND_FIELD_DESCRIPTION_LABEL"
@@ -58,14 +66,6 @@
 			label="COM_JINBOUND_FIELD_DEFAULT_LABEL"
 			description="COM_JINBOUND_FIELD_DEFAULT_DESC"
 			class="inputbox"
-		/>
-		<field
-			id="type" name="type"
-			type="jinboundfieldtype"
-			label="COM_JINBOUND_FIELD_TYPE_LABEL"
-			description="COM_JINBOUND_FIELD_TYPE_DESC"
-			class="inputbox"
-			ignoredfields="accesslevel,cachehandler,calendar,category,combo,componentlayout,contentlanguage,databaseconnection,editor,editors,file,filelist,folderlist,imagelist,groupedlist,helpsite,language,menu,menuitem,modulelayout,note,password,plugins,predefinedlist,repeatable,rules,sessionhandler,spacer,sql,templatestyle,timezone,user,usergroup"
 		/>
 	</fieldset>
 	<!--

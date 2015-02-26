@@ -56,16 +56,21 @@ class JInboundModelTracks extends JInboundListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		parent::populateState($ordering, $direction);
+		// load the filter values
+		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		$this->setState('filter', $filters);
 		
 		$app    = JFactory::getApplication();
 		$format = $app->input->get('format', '', 'cmd');
 		$end    = ('json' == $format ? '.json' : '');
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start'.$end, 'filter_start', '', 'string');
-		$this->setState('filter.start', $value);
-		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end'.$end, 'filter_end', '', 'string');
-		$this->setState('filter.end', $value);
+		foreach (array('start', 'end') as $var) {
+			$value = array_key_exists($var, $filters)
+				? $filters[$var]
+				: $this->getUserStateFromRequest($this->context.'.filter.'.$var.$end, 'filter_'.$var, '', 'string')
+			;
+			$this->setState('filter.'.$var, $value);
+		}
 	}
 
 	/**

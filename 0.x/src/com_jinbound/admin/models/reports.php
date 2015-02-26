@@ -10,6 +10,16 @@ defined('JPATH_PLATFORM') or die;
 JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
 
+JInbound::registerHelper('filter');
+JInbound::registerHelper('path');
+JInbound::registerHelper('url');
+
+jimport('joomla.form.form');
+
+require_once dirname(__FILE__) . '/contacts.php';
+require_once dirname(__FILE__) . '/emails.php';
+require_once dirname(__FILE__) . '/pages.php';
+
 /**
  * This models supports retrieving reports
  *
@@ -884,7 +894,6 @@ class JInboundModelReports extends JInboundListModel
 			$tags      = $this->getReportEmailTags($emailrecord);
 			$subject   = $emailrecord->subject;
 			
-			require_once dirname(__FILE__) . '/emails.php';
 			$htmlbody  = JInboundModelEmails::_replaceTags($emailrecord->htmlbody, $data, $tags);
 			$plainbody = JInboundModelEmails::_replaceTags($emailrecord->plainbody, $data, $tags);
 			
@@ -923,7 +932,7 @@ class JInboundModelReports extends JInboundListModel
 		// set up the start and end dates
 		$start_date = new DateTime();
 		$end_date   = new DateTime();
-		$start->modify("-{$email->params->interval} {$email->params->frequency}");
+		$start_date->modify("-{$email->params->interval} {$email->params->frequency}");
 		$start   = $start_date->format('Y-m-d H:i:s');
 		$end     = $end_date->format('Y-m-d H:i:s');
 		$filters = array('filter.start' => $start, 'filter.end' => $end);
@@ -933,6 +942,24 @@ class JInboundModelReports extends JInboundListModel
 		}
 		
 		$dispatcher = JDispatcher::getInstance();
+		$pages = $this->getTopPages();
+		$top = array(
+			'name' => ''
+		,	'url' => ''
+		);
+		if (!empty($pages))
+		{
+			$toppage     = array_unshift($pages);
+			$top['name'] = $toppage->name;
+			$top['url']  = JInboundHelperUrl::view('page', true, array('id' => $toppage->id));
+		}
+		$lowest = array_merge(array(), $top);
+		if (!empty($pages))
+		{
+			$lowestpage     = array_pop($pages);
+			$lowest['name'] = $lowestpage->name;
+			$lowest['url']  = JInboundHelperUrl::view('page', true, array('id' => $lowestpage->id));
+		}
 		$data = array(
 			'goals' => array(
 				'count' => $this->getConversionsCount()
@@ -946,6 +973,8 @@ class JInboundModelReports extends JInboundListModel
 		,	'pages' => array(
 				'hits' => $this->getVisitCount()
 			,	'list' => $this->getEmailPagesList($filters)
+			,	'top' => $top
+			,	'lowest' => $lowest
 			)
 		);
 		
@@ -1074,15 +1103,17 @@ class JInboundModelReports extends JInboundListModel
 		return implode("\n", $table);
 	}
 	
-	public function getReportEmailTags($email)
+	public function getReportEmailTags($email = null)
 	{
 		$dispatcher = JDispatcher::getInstance();
 		$tags = array(
 			'reports.goals.count', 'reports.goals.percent'
 		,	'reports.leads.count', 'reports.leads.list', 'reports.leads.percent'
 		,	'reports.pages.hits', 'reports.pages.list'
+		,	'reports.pages.top.name', 'reports.pages.top.url'
+		,	'reports.pages.lowest.name', 'reports.pages.lowest.url'
 		);
-		$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags));
+		$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags, $email));
 		return $tags;
 	}
 	
@@ -1092,8 +1123,6 @@ class JInboundModelReports extends JInboundListModel
 		$id = $db->setQuery($db->getQuery(true)
 			->select('id')->from('#__assets')->where('name = ' . $db->quote(JInbound::COM . '.report'))
 		)->loadResult();
-		JInbound::registerHelper('path');
-		jimport('joomla.form.form');
 		$modelpath = JInboundHelperPath::admin('models');
 		$formname  = 'report_rules';
 		if (!file_exists("$modelpath/forms/$formname.xml"))

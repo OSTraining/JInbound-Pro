@@ -61,13 +61,19 @@ class JInboundModelContacts extends JInboundListModel
 	protected function populateState($ordering = null, $direction = null)
 	{
 		parent::populateState($ordering, $direction);
+		// load the filter values
+		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		$this->setState('filter', $filters);
 		
 		$app    = JFactory::getApplication();
 		$format = $app->input->get('format', '', 'cmd');
 		$end    = ('json' == $format ? '.json' : '');
 		
 		foreach (array('start', 'end', 'campaign', 'page', 'priority', 'status') as $var) {
-			$value = $this->getUserStateFromRequest($this->context.'.filter.'.$var.$end, 'filter_'.$var, '', 'string');
+			$value = array_key_exists($var, $filters)
+				? $filters[$var]
+				: $this->getUserStateFromRequest($this->context.'.filter.'.$var.$end, 'filter_'.$var, '', 'string')
+			;
 			$this->setState('filter.'.$var, $value);
 		}
 	}

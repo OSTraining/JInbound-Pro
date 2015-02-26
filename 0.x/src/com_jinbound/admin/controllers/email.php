@@ -44,8 +44,11 @@ class JInboundControllerEmail extends JInboundFormController
 				$tags = array(
 					'reports.goals.count', 'reports.goals.percent',
 					'reports.leads.count', 'reports.leads.percent', 'reports.leads.list',
-					'reports.pages.hits', 'reports.pages.list'
+					'reports.pages.hits', 'reports.pages.list',
+					'reports.pages.top.name', 'reports.pages.top.url',
+					'reports.pages.lowest.name', 'reports.pages.lowest.url'
 				);
+				$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags));
 				$result->goals = (object) array('count' => 201, 'percent' => 11.0);
 				$result->leads = (object) array('count' => 302, 'percent' => 0.0, 'list' => '<table>'
 					. '<thead><tr>'
@@ -97,6 +100,8 @@ class JInboundControllerEmail extends JInboundFormController
 					. '</tr>'
 					. '</tbody>'
 					. '</table>');
+				$result->pages->top    = (object) array('name' => 'Example Page', 'url' => 'http://example.com');
+				$result->pages->bottom = (object) array('name' => 'Example Page', 'url' => 'http://example.com');
 				break;
 			case 'campaign':
 			default:
@@ -128,12 +133,12 @@ class JInboundControllerEmail extends JInboundFormController
 		$mail->setBody($htmlbody);
 		$mail->IsHTML(true);
 		$mail->AltBody = $plainbody;
-		$result = $mail->Send();
-		if ($result instanceof Exception)
+		$sent = $mail->Send();
+		if ($sent instanceof Exception)
 		{
-			throw $result;
+			throw $sent;
 		}
-		if (empty($result))
+		if (empty($sent))
 		{
 			throw new Exception('Cannot send email');
 		}

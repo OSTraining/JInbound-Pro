@@ -40,16 +40,24 @@ class JInboundRSSView extends JInboundBaseView
 			$options['cache_time'] = $cacheTime;
 		}
 		
-		// getXMLParser is deprecated
-		if (method_exists('JFactory', 'getXMLParser')) {
+		jimport('joomla.feed.factory');
+		if (class_exists('JFeedFactory'))
+		{
+			$feed   = new JFeedFactory;
+			$rssDoc = $feed->getFeed($options['rssUrl']);
+		}
+		else if (method_exists('JFactory', 'getXMLParser'))
+		{
 			$rssDoc = JFactory::getXMLParser('RSS', $options);
 		}
-		else {
+		else
+		{
 			$ct = array_key_exists('cache_time', $options) ? $options['cache_time'] : $cacheTime;
 			$rssDoc = JFactory::getFeedParser($options['rssUrl'], $ct);
 		}
 		
 		$this->feed = $rssDoc;
+		$this->feed_url = $options['rssUrl'];
 		
 		return $this->feed;
 	}

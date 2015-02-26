@@ -71,9 +71,6 @@ class JInboundModelFields extends JInboundListModel
 			$this->setState('filter.published',	1);
 		}
 		
-		$search = $this->getUserStateFromRequest($this->context.'.filter.search', 'filter_search', '', 'string');
-		$this->setState('filter.search', $search);
-		
 		$this->setState('filter.access', true);
 	}
 

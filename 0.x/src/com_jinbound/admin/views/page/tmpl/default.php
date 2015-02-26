@@ -11,6 +11,10 @@ echo $this->loadTemplate('edit');
 
 ?>
 <script type="text/javascript">
+window.jinboundlayouttags = {};
+<?php foreach ($this->layouttags as $tag => $value) : ?>
+window.jinboundlayouttags.form_<?php echo $tag; ?> = '<?php echo JInboundHelperFilter::escape_js($value); ?>';
+<?php endforeach; ?>
 (function($){$(document).ready(function(){
 <?php if ($this->item->id) : ?>
 	$.ajax('../index.php?option=com_jinbound&task=landingpageurl&id=<?php echo (int) $this->item->id; ?>', {
@@ -91,6 +95,15 @@ echo $this->loadTemplate('edit');
 	hideSidebar();
 	$('#jform_layout').find('input').change(hideSidebar);
 	$('.jinbound_bootstrap #jform_layout .btn').click(hideSidebar);
+	
+	$('#jform_formid').change(function(){
+		var v = $(this).find(':selected').val(), k = 'form_' + v, h = '';
+		if ('undefined' !== typeof window.jinboundlayouttags[k]) {
+			h += window.jinboundlayouttags[k];
+		}
+		$('#jform_template_tags').empty().html(h);
+	});
+	$('#jform_formid').trigger('change');
 	
 });})(jQuery);
 </script>
