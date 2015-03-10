@@ -63,18 +63,18 @@ class JInboundModelLeads extends JInboundListModel
 		
 		$app    = JFactory::getApplication();
 		$format = $app->input->get('format', '', 'cmd');
-		$end    = ('json' == $format ? '.json' : '');
+		$root   = ('json' == $format ? '.json.' : '.filter.');
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.start'.$end, 'filter_start', '', 'string');
+		$value = $this->getUserStateFromRequest($this->context.$root.'start', 'filter_start', '', 'string');
 		$this->setState('filter.start', $value);
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.end'.$end, 'filter_end', '', 'string');
+		$value = $this->getUserStateFromRequest($this->context.$root.'end', 'filter_end', '', 'string');
 		$this->setState('filter.end', $value);
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.priority'.$end, 'filter_priority', '', 'int');
+		$value = $this->getUserStateFromRequest($this->context.$root.'priority', 'filter_priority', '', 'int');
 		$this->setState('filter.priority', $value);
 		
-		$value = $this->getUserStateFromRequest($this->context.'.filter.status'.$end, 'filter_status', '', 'int');
+		$value = $this->getUserStateFromRequest($this->context.$root.'status', 'filter_status', '', 'int');
 		$this->setState('filter.status', $value);
 	}
 

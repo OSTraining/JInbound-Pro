@@ -47,18 +47,18 @@ $assoc		= JLanguageAssociations::isEnabled();
 		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
-	<?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab')); ?>
-	<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', 'content_tab', JText::_('JTOOLBAR_EDIT', true)); ?>
-<?php // Set up the filter bar. ?>
-<form action="<?php echo JRoute::_('index.php?option=com_jinbound&view=priorities');?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
-	<div id="j-sidebar-container" class="span2">
-		<?php echo $this->sidebar; ?>
-	</div>
-	<div id="j-main-container" class="span10">
+<div id="j-sidebar-container" class="span2">
+	<?php echo $this->sidebar; ?>
+</div>
+<div id="j-main-container" class="span10">
 <?php else : ?>
-	<div id="j-main-container">
+<div id="j-main-container">
 <?php endif;?>
+<?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab')); ?>
+<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', 'content_tab', JText::_('JTOOLBAR_EDIT', true)); ?>
+<div class="row-fluid">
+	<form action="<?php echo JRoute::_('index.php?option=com_jinbound&view=priorities');?>" method="post" name="adminForm" id="adminForm">
 		<?php
 		// Search tools bar
 		echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this), null, array('debug' => false));
@@ -161,12 +161,11 @@ $assoc		= JLanguageAssociations::isEnabled();
 		<input type="hidden" name="boxchecked" value="0" />
 		<input type="hidden" name="original_order_values" value="<?php echo implode($originalOrders, ','); ?>" />
 		<?php echo JHtml::_('form.token'); ?>
-	</div>
-</form>
-
-	<?php echo JHtml::_('jinbound.endTab'); ?>
-	<?php if ($this->permissions && JFactory::getUser()->authorise('core.admin', JInbound::COM)) : ?>
-		<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', 'permissions_tab', JText::_('JCONFIG_PERMISSIONS_LABEL', true)); ?>
+	</form>
+</div>
+<?php echo JHtml::_('jinbound.endTab'); ?>
+<?php if ($this->permissions && JFactory::getUser()->authorise('core.admin', JInbound::COM)) : ?>
+	<?php echo JHtml::_('jinbound.addTab', 'jinbound_default_tabs', 'permissions_tab', JText::_('JCONFIG_PERMISSIONS_LABEL', true)); ?>
 	<div class="row-fluid">
 		<form action="<?php echo JRoute::_('index.php?option=com_jinbound&task=' . $this->viewName . '.permissions'); ?>" method="post">
 			<?php foreach ($this->permissions->getFieldsets() as $fieldset) : ?>
@@ -182,6 +181,6 @@ $assoc		= JLanguageAssociations::isEnabled();
 			<button type="submit" class="btn btn-primary"><i class="icon-save"></i> <?php echo JText::_('JTOOLBAR_APPLY'); ?> </button>
 		</form>
 	</div>
-		<?php echo JHtml::_('jinbound.endTab'); ?>
-	<?php endif; ?>
-	<?php echo JHtml::_('jinbound.endTabSet'); ?>
+	<?php echo JHtml::_('jinbound.endTab'); ?>
+<?php endif; ?>
+<?php echo JHtml::_('jinbound.endTabSet'); ?>

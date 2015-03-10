@@ -9,6 +9,8 @@ defined('JPATH_PLATFORM') or die;
 
 $floatButtons = JInbound::version()->isCompatible('3.0');
 
+$clearScript = "document.getElementById('filter_search').value='';jQuery('#filter-bar').find('select,input').val('');this.form.submit();";
+
 if ('component' != JFactory::getApplication()->input->get('tmpl', 'default')) :
 
 ?>
@@ -19,7 +21,7 @@ if ('component' != JFactory::getApplication()->input->get('tmpl', 'default')) :
 		
 <?php if (!$floatButtons) : ?>
 		<button type="submit" class="btn btn-primary"><?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?></button>
-		<button type="button" class="btn" onclick="document.id('filter_search').value='';this.form.submit();"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
+		<button type="button" class="btn" onclick="<?php echo $clearScript; ?>"><?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?></button>
 <?php endif; ?>
 		
 	</div>
@@ -27,7 +29,7 @@ if ('component' != JFactory::getApplication()->input->get('tmpl', 'default')) :
 <?php if ($floatButtons) : ?>
 	<div class="btn-group pull-left hidden-phone">
 		<button type="submit" class="btn btn-primary tip hasTooltip" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>"><i class="icon-search"></i></button>
-		<button type="button" class="btn tip hasTooltip" onclick="document.id('filter_search').value='';this.form.submit();" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
+		<button type="button" class="btn tip hasTooltip" onclick="<?php echo $clearScript; ?>" title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>"><i class="icon-remove"></i></button>
 	</div>
 	<?php if (property_exists($this, 'pagination') && is_object($this->pagination)) : ?>
 	<div class="btn-group pull-right hidden-phone">

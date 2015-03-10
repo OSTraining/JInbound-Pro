@@ -52,7 +52,7 @@ class JInboundListView extends JInboundView
 		
 		$publishedOptions = $this->get('PublishedStatus');
 		if (!empty($publishedOptions)) {
-			$this->addFilter(JText::_('COM_JINBOUND_SELECT_PUBLISHED'), 'filter_published', $publishedOptions, $state->get('filter.published'));
+			$this->addFilter(JText::_('COM_JINBOUND_SELECT_PUBLISHED'), 'filter[published]', $publishedOptions, $state->get('filter.published'));
 		}
 		
 		return parent::display($tpl, $safeparams);

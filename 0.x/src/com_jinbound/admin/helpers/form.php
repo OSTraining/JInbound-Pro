@@ -116,8 +116,15 @@ abstract class JInboundHelperForm
 			->where('formid = 0')
 			->where('formbuilder <> ' . $db->quote(''))
 		)->loadColumn();
-		// if there's a result, an upgrade is needed
-		return !empty($old);
+		$new = $db->setQuery($db->getQuery(true)
+			->select('id')
+			->from('#__jinbound_forms')
+			. ' UNION ' . $db->getQuery(true)
+			->select('id')
+			->from('#__jinbound_fields')
+		)->loadColumn();
+		// if there's old pages and no new forms/fields, migration can be run
+		return !empty($old) && empty($new);
 	}
 	
 	static public function getMigrationWarning()
@@ -236,25 +243,21 @@ abstract class JInboundHelperForm
 			,	'description'  => ''
 			,	'published'    => 1
 			,	'params'       => array(
-					'attributes' => array(
-						'name'  => array()
+					'attrs' => array(
+						'key'   => array()
 					,	'value' => array()
 					)
-				,	'options'    => array(
-						'name'  => array()
+				,	'opts'    => array(
+						'key'   => array()
 					,	'value' => array()
 					)
+				,	'required' => (int) in_array($fieldname, $required)
 				)
 			));
-			if (in_array($fieldname, $required))
-			{
-				$data['params']['attributes']['name'][]  = 'required';
-				$data['params']['attributes']['value'][] = 'true';
-			}
 			if ('email' == $fieldname)
 			{
-				$data['params']['attributes']['name'][]  = 'validate';
-				$data['params']['attributes']['value'][] = 'email';
+				$data['params']['attrs']['key'][]  = 'validate';
+				$data['params']['attrs']['value'][] = 'email';
 			}
 			JInboundBaseModel::getInstance('Field', 'JInboundModel')->save($data);
 		}

@@ -81,17 +81,7 @@ class plgSystemJInbound extends JPlugin
 	public function onAfterDispatchAdmin($option) {
 		switch ($option) {
 			case 'com_categories':
-				// we want to add some extras to com_categories
-				if (class_exists('JInbound') && JInbound::COM == $this->app->input->get('extension', '', 'cmd')) {
-					// joomla 3 handles this via helper
-					if (JInbound::version()->isCompatible('3.0')) {
-						return;
-					}
-					// add submenu to categories
-					JInbound::registerLibrary('JInboundView', 'views/baseview');
-					$comView = new JInboundView();
-					$comView->addMenuBar();
-				}
+				$this->onAfterDispatchAdminCategories();
 				break;
 			case 'com_menus':
 				JInbound::registerHelper('url');
@@ -101,6 +91,30 @@ class plgSystemJInbound extends JPlugin
 				}
 				break;
 			default: break;
+		}
+	}
+	
+	private function onAfterDispatchAdminCategories()
+	{
+		// we want to add some extras to com_categories
+		if (class_exists('JInbound') && JInbound::COM == $this->app->input->get('extension', '', 'cmd'))
+		{
+			// add css
+			$doc = JFactory::getDocument();
+			if (method_exists($doc, 'addStyleSheet'))
+			{
+				JInbound::registerHelper('url');
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/css/admin.categories.css');
+			}
+			// joomla 3 handles this via helper
+			if (JInbound::version()->isCompatible('3.0.0'))
+			{
+				return;
+			}
+			// add submenu to categories
+			JInbound::registerLibrary('JInboundView', 'views/baseview');
+			$comView = new JInboundView();
+			$comView->addMenuBar();
 		}
 	}
 	

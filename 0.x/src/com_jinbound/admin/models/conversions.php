@@ -52,7 +52,7 @@ class JInboundModelConversions extends JInboundListModel
 	{
 		parent::populateState($ordering, $direction);
 		// load the filter values
-		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		$filters = (array) $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
 		$this->setState('filter', $filters);
 		
 		$app    = JFactory::getApplication();

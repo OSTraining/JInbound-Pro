@@ -116,6 +116,7 @@ class com_JInboundInstallerScript
 				$this->_checkDefaultStatuses();
 				$this->_checkEmailVersions();
 				$this->_fixMissingLanguageDefaults();
+				$this->_cleanupMissingRecords();
 				break;
 		}
 	}
@@ -868,5 +869,60 @@ class com_JInboundInstallerScript
 			$app->enqueueMessage($e->getMessage(), 'error');
 		}
 		
+	}
+	
+	private function _cleanupMissingRecords()
+	{
+		$app = JFactory::getApplication();
+		$db  = JFactory::getDbo();
+		
+		try
+		{
+			$ids = $db->setQuery($db->getQuery(true)
+				->select('id')->from('#__jinbound_contacts')
+			)->loadColumn();
+		}
+		catch (Exception $e)
+		{
+			return;
+		}
+		if (empty($ids))
+		{
+			return;
+		}
+		
+		$tables = array(
+			// contacts have campaigns
+			'#__jinbound_contacts_campaigns' => 'contact_id'
+			// contacts have conversions
+		,	'#__jinbound_conversions' => 'contact_id'
+			// contacts have statuses
+		,	'#__jinbound_contacts_statuses' => 'contact_id'
+			// contacts have priorities
+		,	'#__jinbound_contacts_priorities' => 'contact_id'
+			// contacts have email records
+		,	'#__jinbound_emails_records' => 'lead_id'
+			// contacts have notes
+		,	'#__jinbound_notes' => 'lead_id'
+			// contacts have subscriptions
+		,	'#__jinbound_subscriptions' => 'contact_id'
+		);
+		
+		foreach ($tables as $table => $key)
+		{
+			$query = $db->getQuery(true)->delete($table);
+			foreach ($ids as $id)
+			{
+				$query->where($db->quoteName($key) . ' <> ' . (int) $id);
+			}
+			try
+			{
+				$db->setQuery($query)->query();
+			}
+			catch (Exception $e)
+			{
+				continue;
+			}
+		}
 	}
 }

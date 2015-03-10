@@ -7,7 +7,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.database.table');
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
+if (JInbound::version()->isCompatible('3.0.0'))
+{
+	jimport('joomla.table.table');
+}
+else
+{
+	jimport('joomla.database.table');
+}
 
 class JInboundTable extends JTable
 {

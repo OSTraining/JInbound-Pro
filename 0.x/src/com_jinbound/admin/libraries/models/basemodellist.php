@@ -75,7 +75,7 @@ class JInboundListModel extends JModelList
 		// set the params in the state
 		$this->setState('params', JInbound::config());
 		// load the filter values
-		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		$filters = (array) $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
 		$this->setState('filter', $filters);
 		// set the published status based on permissions and filters
 		$published = array_key_exists('published', $filters)

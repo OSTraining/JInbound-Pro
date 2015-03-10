@@ -28,6 +28,10 @@ class JInboundControllerEmail extends JInboundFormController
 		$htmlbody   = $input->get('htmlbody', '', 'raw');
 		$plainbody  = $input->get('plainbody', '', 'string');
 		$type       = $input->get('type', '', 'string');
+		if (!JInbound::version()->isCompatible('3.0.0'))
+		{
+			$htmlbody = JRequest::getVar('htmlbody', '', '', 'string', JREQUEST_ALLOWRAW);
+		}
 		// check
 		foreach (array('to', 'fromname', 'fromemail', 'subject', 'type') as $var)
 		{

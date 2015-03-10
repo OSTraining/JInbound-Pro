@@ -33,7 +33,6 @@ class JInboundControllerForms extends JControllerAdmin
 		}
 		$app = JFactory::getApplication();
 		$db = JFactory::getDbo();
-		$filter = JFilterInput::getInstance();
 		$forms = $db->setQuery($db->getQuery(true)
 			->select('id, formid, formname, formbuilder')
 			->from('#__jinbound_pages')
@@ -48,7 +47,6 @@ class JInboundControllerForms extends JControllerAdmin
 		foreach ($forms as $oldform)
 		{
 			$fieldids = array();
-			$fieldnames = array();
 			// decode the form
 			$structure = json_decode($oldform->formbuilder);
 			// we can't always bank on the __ordering being there (for older installs)
@@ -113,22 +111,35 @@ class JInboundControllerForms extends JControllerAdmin
 				// set attributes
 				$attr = property_exists($structure->$oldfield, 'attributes') ? $structure->$oldfield->attributes : new stdClass;
 				$opts = property_exists($structure->$oldfield, 'options') ? $structure->$oldfield->options : new stdClass;					
-				// fix attributes
-				if (!property_exists($attr, 'name'))
+				// fix options
+				if (!property_exists($opts, 'key'))
 				{
-					$attr->name = array();
+					$opts->key = array();
+				}
+				if (property_exists($opts, 'name'))
+				{
+					$opts->key = $opts->name;
+				}
+				if (!property_exists($opts, 'value'))
+				{
+					$opts->value = array();
+				}
+				// fix attributes
+				if (!property_exists($attr, 'key'))
+				{
+					$attr->key = array();
+				}
+				if (property_exists($attr, 'name'))
+				{
+					$attr->key = $attr->name;
 				}
 				if (!property_exists($attr, 'value'))
 				{
 					$attr->value = array();
 				}
-				if (property_exists($structure->$oldfield, 'required') && $structure->$oldfield->required)
-				{
-					$attr->name[] = 'required';
-					$attr->value[] = 'true';
-				}
-				$data['params']['attributes'] = (array) $attr;
-				$data['params']['options']    = (array) $opts;
+				$data['params']['required'] = property_exists($structure->$oldfield, 'required') && $structure->$oldfield->required;
+				$data['params']['attrs'] = (array) $attr;
+				$data['params']['opts']  = (array) $opts;
 				// save the field
 				$field_model = JInboundBaseModel::getInstance('Field', 'JInboundModel');
 				if (!$field_model->save($data))
@@ -161,6 +172,7 @@ class JInboundControllerForms extends JControllerAdmin
 				->set('formid = ' . (int) $newformid)
 				->set('formname = ' . $db->quote(''))
 				->set('formbuilder = ' . $db->quote(''))
+				->where('id = ' . $oldform->id)
 			)->query();
 		}
 		// all done

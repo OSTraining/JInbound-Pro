@@ -63,6 +63,16 @@ class JInboundModelPages extends JInboundListModel
 		$format = $app->input->get('format', '', 'cmd');
 		// load the filter values
 		$filters = $this->getUserStateFromRequest($this->context.'.filter', 'filter', array(), 'array');
+		// don't let your filters grow up to be objects?
+		if (is_object($filters))
+		{
+			$filters = (array) $filters;
+		}
+		// still not an array? forget it
+		if (!is_array($filters))
+		{
+			$filters = array();
+		}
 		$this->setState('filter', $filters);
 		
 		foreach (array('category', 'campaign') as $var) {

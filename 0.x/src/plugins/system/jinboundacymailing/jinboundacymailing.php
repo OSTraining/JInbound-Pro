@@ -10,6 +10,18 @@ defined('JPATH_PLATFORM') or die;
 jimport('joomla.filesystem.file');
 jimport('joomla.plugin.plugin');
 
+$db = JFactory::getDbo();
+$plugins = $db->setQuery($db->getQuery(true)
+	->select('extension_id')->from('#__extensions')
+	->where('('
+		.	$db->qn('element') . ' = ' . $db->q('com_acymailing')
+		. ' OR '
+		.	$db->qn('element') . ' = ' . $db->q('com_jinbound')
+		. ')')
+	->where($db->qn('enabled') . ' = 1')
+)->loadColumn();
+defined('PLG_SYSTEM_JINBOUNDACYMAILING') or define('PLG_SYSTEM_JINBOUNDACYMAILING', 2 === count($plugins));
+
 class plgSystemJInboundacymailing extends JPlugin
 {
 	/**
@@ -26,7 +38,7 @@ class plgSystemJInboundacymailing extends JPlugin
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite())
+		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDACYMAILING)
 		{
 			return;
 		}
@@ -50,6 +62,10 @@ class plgSystemJInboundacymailing extends JPlugin
 	
 	public function onContentPrepareForm($form)
 	{
+		if (!PLG_SYSTEM_JINBOUNDACYMAILING)
+		{
+			return true;
+		}
 		if (!($form instanceof JForm)) {
 			$this->_subject->setError('JERROR_NOT_A_FORM');
 			return false;
@@ -76,7 +92,7 @@ class plgSystemJInboundacymailing extends JPlugin
 	
 	public function onJInboundChangeState($context, $campaign_id, $contacts, $status_id)
 	{
-		if ('com_jinbound.contact.status' !== $context)
+		if ('com_jinbound.contact.status' !== $context || !PLG_SYSTEM_JINBOUNDACYMAILING)
 		{
 			return;
 		}
@@ -90,7 +106,7 @@ class plgSystemJInboundacymailing extends JPlugin
 	
 	public function onJInboundAfterJsonChangeState($how, $contact_id, $campaign_id, $value, $result)
 	{
-		if (!$result || 'status' !== $how)
+		if (!$result || 'status' !== $how || !PLG_SYSTEM_JINBOUNDACYMAILING)
 		{
 			return;
 		}

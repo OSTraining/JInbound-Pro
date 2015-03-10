@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>plg_system_jinboundsalesforce</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_salesforce_version_number@</version>
+	<description>PLG_SYSTEM_JINBOUNDSALESFORCE_DESCRIPTION</description>
+	<scriptfile>jinboundsalesforce.install.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundsalesforce.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinboundsalesforce">jinboundsalesforce.php</filename>
+		<filename>field/jinboundsalesforcefields.php</filename>
+		<filename>field/jinboundsalesforceupdate.php</filename>
+		<filename>field/jinboundsalesforcewsdl.php</filename>
+		<filename>field/wsdl/close.php</filename>
+		<filename>field/wsdl/default.php</filename>
+		<filename>form/jinboundsalesforce.xml</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundsalesforce.sys.ini</filename>
+		<filename>library/force/ProxySettings.php</filename>
+		<filename>library/force/SforceBaseClient.php</filename>
+		<filename>library/force/SforceEmail.php</filename>
+		<filename>library/force/SforceEnterpriseClient.php</filename>
+		<filename>library/force/SforceFieldTypes.php</filename>
+		<filename>library/force/SforceHeaderOptions.php</filename>
+		<filename>library/force/SforceMetaObject.php</filename>
+		<filename>library/force/SforceMetadataClient.php</filename>
+		<filename>library/force/SforcePartnerClient.php</filename>
+		<filename>library/force/SforceProcessRequest.php</filename>
+		<filename>library/force/metadata.wsdl.xml</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
+		<filename>wsdl/index.html</filename>
+	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic" addfieldpath="/plugins/system/jinboundsalesforce/field">
+				<field name="update" type="jinboundsalesforceupdate"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE_DESC"
+				/>
+				<field name="downloadid" type="text"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID_DESC"
+				/>
+				<field name="wsdl" type="jinboundsalesforcewsdl"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL_DESC"
+				/>
+				<field name="username" type="text"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_USERNAME"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_USERNAME_DESC"
+				/>
+				<field name="password" type="password"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_PASSWORD"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_PASSWORD_DESC"
+				/>
+				<field name="security_token" type="text"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_SECURITY_TOKEN"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_SECURITY_TOKEN_DESC"
+				/>
+				<field name="use_token" type="radio" class="radio btn-group btn-group-yesno"
+							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_USE_TOKEN"
+							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_USE_TOKEN_DESC"
+							 default="1"
+				>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

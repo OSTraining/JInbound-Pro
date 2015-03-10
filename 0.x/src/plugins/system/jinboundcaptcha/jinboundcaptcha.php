@@ -10,6 +10,14 @@ defined('JPATH_PLATFORM') or die;
 jimport('joomla.filesystem.file');
 jimport('joomla.plugin.plugin');
 
+$db = JFactory::getDbo();
+$plugins = $db->setQuery($db->getQuery(true)
+	->select('extension_id')->from('#__extensions')
+	->where($db->qn('element') . ' = ' . $db->q('com_jinbound'))
+	->where($db->qn('enabled') . ' = 1')
+)->loadColumn();
+defined('PLG_SYSTEM_JINBOUNDCAPTCHA') or define('PLG_SYSTEM_JINBOUNDCAPTCHA', 1 === count($plugins));
+
 class plgSystemJInboundcaptcha extends JPlugin
 {
 	/**
@@ -26,7 +34,7 @@ class plgSystemJInboundcaptcha extends JPlugin
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite())
+		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDCAPTCHA)
 		{
 			return;
 		}
@@ -50,6 +58,10 @@ class plgSystemJInboundcaptcha extends JPlugin
 	
 	public function onJinboundFormbuilderDisplay(&$xml)
 	{
+		if (!PLG_SYSTEM_JINBOUNDCAPTCHA)
+		{
+			return;
+		}
 		// add validate attribute to captcha
 		$nodes = $xml->xpath("//field[@name='captcha']");
 		foreach ($nodes as &$node)
@@ -60,12 +72,20 @@ class plgSystemJInboundcaptcha extends JPlugin
 	
 	public function onJinboundFormbuilderView(&$view)
 	{
+		if (!PLG_SYSTEM_JINBOUNDCAPTCHA)
+		{
+			return;
+		}
 		// add template path for captcha
 		$view->addTemplatePath(dirname(__FILE__) . '/tmpl');
 	}
 	
 	public function onJinboundFormbuilderFields(&$fields)
 	{
+		if (!PLG_SYSTEM_JINBOUNDCAPTCHA)
+		{
+			return;
+		}
 		// add captcha fields to list
 		$fields[] = (object) array(
 			'name'  => JText::_('PLG_SYSTEM_JINBOUNDCAPTCHA_CAPTCHA'),
@@ -77,6 +97,10 @@ class plgSystemJInboundcaptcha extends JPlugin
 	
 	public function onJInboundBeforeListFieldTypes(&$types, &$ignored, &$paths, &$files)
 	{
+		if (!PLG_SYSTEM_JINBOUNDCAPTCHA)
+		{
+			return;
+		}
 		$types[] = 'captcha';
 	}
 }
