@@ -109,7 +109,7 @@ class JInboundModelPage extends JInboundAdminModel
 				$xmlField->addAttribute('class', implode(' ', $classes));
 			}
 			// required fields
-			if (array_key_exists('required', $field->params) && is_numeric($field->params['required']))
+			if (array_key_exists('required', $field->params) && is_numeric(trim($field->params['required'])))
 			{
 				$xmlField->addAttribute('required', $field->params['required']);
 				$banned[] = 'required';

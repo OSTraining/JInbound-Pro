@@ -50,7 +50,7 @@ abstract class JInboundHelperPriority
 			. ', ' . $db->quote($campaign_id)
 			. ', ' . $db->quote($contact_id)
 			. ', ' . $db->quote($date)
-			. ', ' . $db->quote(JFactory::getUser($user_id)->get(id))
+			. ', ' . $db->quote(JFactory::getUser($user_id)->get('id'))
 			)
 		)->query();
 	}

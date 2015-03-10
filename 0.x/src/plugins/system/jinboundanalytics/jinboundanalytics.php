@@ -10,6 +10,14 @@ defined('JPATH_PLATFORM') or die;
 jimport('joomla.filesystem.file');
 jimport('joomla.plugin.plugin');
 
+$db = JFactory::getDbo();
+$plugins = $db->setQuery($db->getQuery(true)
+	->select('extension_id')->from('#__extensions')
+	->where($db->qn('element') . ' = ' . $db->q('com_jinbound'))
+	->where($db->qn('enabled') . ' = 1')
+)->loadColumn();
+defined('PLG_SYSTEM_JINBOUNDANALYTICS') or define('PLG_SYSTEM_JINBOUNDANALYTICS', 1 === count($plugins));
+
 class plgSystemJInboundanalytics extends JPlugin
 {
 	/**
@@ -26,7 +34,7 @@ class plgSystemJInboundanalytics extends JPlugin
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite())
+		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDANALYTICS)
 		{
 			return;
 		}
@@ -50,6 +58,10 @@ class plgSystemJInboundanalytics extends JPlugin
 	
 	public function onContentPrepareForm($form)
 	{
+		if (!PLG_SYSTEM_JINBOUNDANALYTICS)
+		{
+			return true;
+		}
 		if (!($form instanceof JForm)) {
 			$this->_subject->setError('JERROR_NOT_A_FORM');
 			return false;

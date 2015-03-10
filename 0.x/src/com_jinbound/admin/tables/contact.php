@@ -35,4 +35,38 @@ class JInboundTableContact extends JInboundTable
 		$asset->loadByName('com_jinbound.contact');
 		return $asset->id;
 	}
+	
+	public function delete($pk = null)
+	{
+		// run delete
+		$result = parent::delete($pk);
+		// no deletion? just return
+		if (!$result)
+		{
+			return $result;
+		}
+		$tables = array(
+			// contacts have campaigns
+			'#__jinbound_contacts_campaigns' => 'contact_id'
+			// contacts have conversions
+		,	'#__jinbound_conversions' => 'contact_id'
+			// contacts have statuses
+		,	'#__jinbound_contacts_statuses' => 'contact_id'
+			// contacts have priorities
+		,	'#__jinbound_contacts_priorities' => 'contact_id'
+			// contacts have email records
+		,	'#__jinbound_emails_records' => 'lead_id'
+			// contacts have notes
+		,	'#__jinbound_notes' => 'lead_id'
+			// contacts have subscriptions
+		,	'#__jinbound_subscriptions' => 'contact_id'
+		);
+		foreach ($tables as $table => $key)
+		{
+			$this->_db->setQuery($this->_db->getQuery(true)
+				->delete($table)
+				->where($this->_db->quoteName($key) . ' = ' . $this->id)
+			)->query();
+		}
+	}
 }

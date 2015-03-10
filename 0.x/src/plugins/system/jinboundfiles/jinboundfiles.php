@@ -11,6 +11,14 @@ jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 jimport('joomla.plugin.plugin');
 
+$db = JFactory::getDbo();
+$plugins = $db->setQuery($db->getQuery(true)
+	->select('extension_id')->from('#__extensions')
+	->where($db->qn('element') . ' = ' . $db->q('com_jinbound'))
+	->where($db->qn('enabled') . ' = 1')
+)->loadColumn();
+defined('PLG_SYSTEM_JINBOUNDFILES') or define('PLG_SYSTEM_JINBOUNDFILES', 1 === count($plugins));
+
 class plgSystemJInboundfiles extends JPlugin
 {
 	protected $session;
@@ -30,11 +38,7 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite())
-		{
-			return;
-		}
-		if (JFactory::getUser()->guest)
+		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDFILES || JFactory::getUser()->guest)
 		{
 			return;
 		}
@@ -89,12 +93,20 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	public function onJinboundFormbuilderView(&$view)
 	{
+		if (!PLG_SYSTEM_JINBOUNDFILES)
+		{
+			return;
+		}
 		// add template path
 		$view->addTemplatePath(dirname(__FILE__) . '/tmpl');
 	}
 	
 	public function onJinboundFormbuilderFields(&$fields)
 	{
+		if (!PLG_SYSTEM_JINBOUNDFILES)
+		{
+			return;
+		}
 		$fields[] = (object) array(
 			'name'  => JText::_('PLG_SYSTEM_JINBOUNDFILES_FILE'),
 			'id'    => 'file',
@@ -107,7 +119,7 @@ class plgSystemJInboundfiles extends JPlugin
 	{
 		$app = JFactory::getApplication();
 		// only operate on jinbound conversion contexts
-		if ('com_jinbound.conversion' !== $context)
+		if ('com_jinbound.conversion' !== $context || !PLG_SYSTEM_JINBOUNDFILES)
 		{
 			return;
 		}
@@ -175,17 +187,21 @@ class plgSystemJInboundfiles extends JPlugin
 			->where('Field.published = 1')
 			->where('Field.type = ' . $db->quote('file'))
 			->group('Field.id')
-		)->loadRowList();
+		)->loadObjectList();
 		$result = array();
 		foreach ($rows as $row)
 		{
-			$result[$row['name']] = $row;
+			$result[$row->name] = (array) $row;
 		}
 		return $result;
 	}
 	
 	public function onJinboundFormbuilderRenderValue(&$output, $page_id, $field, $value)
 	{
+		if (!PLG_SYSTEM_JINBOUNDFILES)
+		{
+			return;
+		}
 		$fileinputs = $this->getFileInputs($page_id);
 		if (!in_array($field, array_keys($fileinputs)))
 		{
@@ -196,6 +212,10 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	public function onJinboundBeforeNotificationEmail(&$emails, &$subject, &$html, $contact, $conversion)
 	{
+		if (!PLG_SYSTEM_JINBOUNDFILES)
+		{
+			return;
+		}
 		$fileinputs = $this->getFileInputs($conversion->page_id);
 		$data = $this->session->get('jinboundfiles.files');
 		$files = json_decode($data);
@@ -234,6 +254,10 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	public function onJInboundBeforeListFieldTypes(&$types, &$ignored, &$paths, &$files)
 	{
+		if (!PLG_SYSTEM_JINBOUNDFILES)
+		{
+			return;
+		}
 		$ignored = array_values(array_diff($ignored, array('file')));
 	}
 }

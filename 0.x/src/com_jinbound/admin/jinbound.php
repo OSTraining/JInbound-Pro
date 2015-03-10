@@ -44,9 +44,12 @@ JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/he
 JInbound::registerHelper('form');
 JInbound::registerHelper('url');
 
-if (JInboundHelperForm::needsMigration() && 'json' !== $input->get('format') && 'forms.migrate' !== $input->get('task'))
+if (JInboundHelperForm::needsMigration())
 {
-	$app->enqueueMessage(JInboundHelperForm::getMigrationWarning(), 'warning');
+	if ('json' !== $input->get('format') && 'forms.migrate' !== $input->get('task'))
+	{
+		$app->enqueueMessage(JInboundHelperForm::getMigrationWarning(), 'warning');
+	}
 }
 else if (JInboundHelperForm::needsDefaultFields())
 {

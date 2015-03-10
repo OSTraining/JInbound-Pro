@@ -14,6 +14,7 @@ JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 class JInboundViewPages extends JInboundListView
 {
 	function display($tpl = null, $safeparams = false) {
+		$filter = (array) $this->app->getUserStateFromRequest($this->get('State')->get('context') . '.filter', 'filter', array(), 'array');
 		foreach (array('categories', 'campaigns') as $var) {
 			$single = JInboundInflector::singularize($var);
 			$$var = $this->get(ucwords($var) . 'Options');
@@ -23,7 +24,7 @@ class JInboundViewPages extends JInboundListView
 				JFactory::getApplication()->enqueueMessage(JText::_('COM_JINBOUND_NO_' . strtoupper($var) . '_YET'), 'warning');
 			}
 			// add category filter
-			$this->addFilter(JText::_('COM_JINBOUND_SELECT_' . strtoupper($single)), 'filter_' . $single, $$var, $this->get('State')->get('filter.' . $single));
+			$this->addFilter(JText::_('COM_JINBOUND_SELECT_' . strtoupper($single)), 'filter[' . $single . ']', $$var, array_key_exists($single, $filter) ? $filter[$single] : '');
 		}
 		
 		return parent::display($tpl, $safeparams);

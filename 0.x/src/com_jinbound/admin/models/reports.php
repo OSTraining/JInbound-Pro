@@ -949,7 +949,7 @@ class JInboundModelReports extends JInboundListModel
 		);
 		if (!empty($pages))
 		{
-			$toppage     = array_unshift($pages);
+			$toppage     = array_shift($pages);
 			$top['name'] = $toppage->name;
 			$top['url']  = JInboundHelperUrl::view('page', true, array('id' => $toppage->id));
 		}

@@ -38,17 +38,12 @@ class JInboundViewContacts extends JInboundListView
 			array_unshift($priorities, (object) array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PRIORITY')));
 		}
 		
-		$campaign = $this->app->getUserStateFromRequest('com_jinbound.contacts.filter_campaign', 'filter_campaign', '');
-		$this->addFilter(JText::_('COM_JINBOUND_SELECT_CAMPAIGN'), 'filter_campaign', $campaigns, $campaign);
+		$filter = (array) $this->app->getUserStateFromRequest('com_jinbound.contacts.filter', 'filter', array(), 'array');
 		
-		$page = $this->app->getUserStateFromRequest('com_jinbound.contacts.filter_page', 'filter_page', '');
-		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PAGE'), 'filter_page', $pages, $page);
-		
-		$status = $this->app->getUserStateFromRequest('com_jinbound.contacts.filter_status', 'filter_status', '');
-		$this->addFilter(JText::_('COM_JINBOUND_SELECT_STATUS'), 'filter_status', $statuses, $status, false);
-		
-		$priority = $this->app->getUserStateFromRequest('com_jinbound.contacts.filter_priority', 'filter_priority', '');
-		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PRIORITY'), 'filter_priority', $priorities, $priority, false);
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_CAMPAIGN'), 'filter[campaign]', $campaigns, array_key_exists('campaign', $filter) ? $filter['campaign'] : '');
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PAGE'), 'filter[page]', $pages, array_key_exists('page', $filter) ? $filter['page'] : '');
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_STATUS'), 'filter[status]', $statuses, array_key_exists('status', $filter) ? $filter['status'] : '', false);
+		$this->addFilter(JText::_('COM_JINBOUND_SELECT_PRIORITY'), 'filter[priority]', $priorities, array_key_exists('priority', $filter) ? $filter['priority'] : '', false);
 		
 		return parent::display($tpl, $safeparams);
 	}

@@ -31,10 +31,6 @@ class JInboundViewPage extends JInboundItemView
 		else {
 			$this->item->hit();
 		}
-		// fix for legacy
-		$form = JTable::getInstance('Form', 'JInboundTable');
-		$form->load($this->item->formid);
-		$this->item->formname = $form->title;
 		// set the document title
 		$doc  = JFactory::getDocument();
 		if (method_exists($doc, 'setTitle')) {
@@ -54,6 +50,10 @@ class JInboundViewPage extends JInboundItemView
 	
 	public function prepareItem()
 	{
+		// fix for legacy
+		$form = JTable::getInstance('Form', 'JInboundTable');
+		$form->load($this->item->formid);
+		$this->item->formname = $form->title;
 		// trigger content events
 		JPluginHelper::importPlugin('content');
 		// "fix" for content plugins
@@ -72,6 +72,7 @@ class JInboundViewPage extends JInboundItemView
 		parent::setDocument();
 		// add behaviors
 		JHtml::_('behavior.tooltip');
+		JHtml::_('behavior.formvalidation');
 		// add script
 		$document = JFactory::getDocument();
 		$document->addScript(JInboundHelperUrl::media() . '/js/jinbound.js');
