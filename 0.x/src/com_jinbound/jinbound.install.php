@@ -112,6 +112,7 @@ class com_JInboundInstallerScript
 				$this->_checkInboundCategory();
 				$this->_checkCampaigns($root);
 				$this->_checkContactSubscriptions();
+				$this->_checkUndatedContactSubscriptions();
 				$this->_checkDefaultPriorities();
 				$this->_checkDefaultStatuses();
 				$this->_checkEmailVersions();
@@ -123,16 +124,34 @@ class com_JInboundInstallerScript
 	
 	private function _checkDefaultReportEmails()
 	{
-		$app = JFactory::getApplication();
-		$db = JFactory::getDbo();
+		$app    = JFactory::getApplication();
+		$db     = JFactory::getDbo();
+		$id     = 0;
 		$emails = $db->setQuery($db->getQuery(true)
-			->select('id')->from('#__jinbound_emails')
+			->select('id, subject, htmlbody, plainbody')->from('#__jinbound_emails')
 			->where($db->quoteName('type') . ' = ' . $db->quote('report'))
-		)->loadColumn();
+		)->loadObjectList();
 		if (!empty($emails))
 		{
-			return;
+			$app->enqueueMessage('Checking existing report emails');
+			foreach ($emails as $email)
+			{
+				$html  = preg_replace('/\s/', '', JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_HTMLBODY_LEGACY'));
+				$plain = preg_replace('/\s/', '', implode("\n", explode('<br>', JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_PLAINBODY_LEGACY'))));
+				if (preg_replace('/\s/', '', $email->htmlbody) == $html && preg_replace('/\s/', '', $email->plainbody) == $plain)
+				{
+					$app->enqueueMessage('Found older report email - updating');
+					$id = $email->id;
+					break;
+				}
+			}
+			if (empty($id))
+			{
+				$app->enqueueMessage('Non-default report emails found - not updating');
+				return;
+			}
 		}
+		
 		$cfg = new JConfig;
 		$data = array(
 			'name'        => JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_NAME')
@@ -151,6 +170,10 @@ class com_JInboundInstallerScript
 			,	'campaigns'         => array()
 			)
 		);
+		if ($id)
+		{
+			$data['id'] = $id;
+		}
 		$admin = JPATH_ADMINISTRATOR . '/components/com_jinbound';
 		if (!class_exists('JInboundBaseModel'))
 		{
@@ -163,8 +186,11 @@ class com_JInboundInstallerScript
 		if (class_exists('JInboundBaseModel'))
 		{
 			JInboundBaseModel::addIncludePath("$admin/models", 'JInboundModel');
-			JInboundBaseModel::getInstance('Email', 'JInboundModel')->save($data);
+			$save = JInboundBaseModel::getInstance('Email', 'JInboundModel')->save($data);
+			$app->enqueueMessage('Save ' . ($save ? '' : 'not ') . 'successful', $save ? 'message' : 'error');
+			return;
 		}
+		$app->enqueueMessage('Could not save default emails', 'error');
 	}
 	
 	private function _forceReportEmailOption($parent)
@@ -617,6 +643,14 @@ class com_JInboundInstallerScript
 			$app->enqueueMessage($e->getMessage());
 			return;
 		}
+	}
+	
+	private function _checkUndatedContactSubscriptions()
+	{
+		$db = JFactory::getDbo();
+		$query = '';
+		
+		//$db->setQuery($query)->query();
 	}
 	
 	/**

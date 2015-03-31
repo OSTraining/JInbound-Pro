@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" position="default" client="site" method="upgrade" version="3.2">
+	<name>jInbound CTA</name>
+	<author>Anything Digital</author>
+	<creationDate>March 2015</creationDate>
+	<copyright>Copyright (C) 2015</copyright>
+	<license>GNU General Public License version 2 or later</license>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>anything-digital.com</authorUrl>
+	<version>@ant_module_cta_version@</version>
+	<description>MOD_JINBOUND_CTA_DESCRIPTION</description>
+	<files>
+		<filename module="mod_jinbound_cta">mod_jinbound_cta.php</filename>
+		<filename module="mod_jinbound_cta">mod_jinbound_cta.xml</filename>
+		<filename>adapter.php</filename>
+		<filename>helper.php</filename>
+		<filename>adapters/module.php</filename>
+		<filename>adapters/modules.php</filename>
+		<filename>fields/modjinboundctamode.php</filename>
+		<filename>fields/modjinboundctamodule.php</filename>
+		<filename>tmpl/default.php</filename>
+		<folder>language</folder>
+	</files>
+	<media destination="mod_jinbound_cta" folder="media">
+		<folder>js</folder>
+	</media>
+	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
+		<fields name="params" addfieldpath="/modules/mod_jinbound_cta/fields">
+			<fieldset name="basic">
+				<field
+					name="cta_mode"
+					type="modjinboundctamode"
+					label="MOD_JINBOUND_CTA_MODE"
+					description="MOD_JINBOUND_CTA_MODE_DESC"
+					default="modules"
+				>
+					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
+					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
+					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
+				</field>
+				<field
+					name="cta_mode_modules"
+					type="moduleposition"
+					label="MOD_JINBOUND_CTA_MODULES"
+					description="MOD_JINBOUND_CTA_MODULES_DESC"
+					default="jinbound-cta"
+				/>
+				<field
+					name="cta_mode_module"
+					type="modjinboundctamodule"
+					label="MOD_JINBOUND_CTA_MODULE"
+					description="MOD_JINBOUND_CTA_MODULE_DESC"
+					default="jinbound-cta"
+				>
+					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
+				</field>
+				<field
+					name="cta_mode_editor"
+					type="editor"
+					label="MOD_JINBOUND_CTA_EDITOR"
+					description="MOD_JINBOUND_CTA_EDITOR_DESC"
+					cols="60" rows="8"
+					buttons="0"
+					filter="JComponentHelper::filterText"
+				/>
+				<field
+					name="cta_condition"
+					type="radio"
+					label="MOD_JINBOUND_CTA_CONDITION"
+					description="MOD_JINBOUND_CTA_CONDITION_DESC"
+					default="-1"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
+					<option value="1">JALL</option>
+					<option value="0">JNONE</option>
+				</field>
+				<field
+					name="cta_new_user"
+					type="radio"
+					label="MOD_JINBOUND_CTA_NEW_USER"
+					description="MOD_JINBOUND_CTA_NEW_USER_DESC"
+					default="-1"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+					name="cta_in_campaigns"
+					type="jinboundcampaignlist"
+					label="MOD_JINBOUND_CTA_IN_CAMPAIGNS"
+					description="MOD_JINBOUND_CTA_IN_CAMPAIGNS_DESC"
+					multiple="multiple"
+					size="6"
+				/>
+				<field
+					name="cta_not_in_campaigns"
+					type="jinboundcampaignlist"
+					label="MOD_JINBOUND_CTA_NOT_IN_CAMPAIGNS"
+					description="MOD_JINBOUND_CTA_NOT_IN_CAMPAIGNS_DESC"
+					multiple="multiple"
+					size="6"
+				/>
+				<field
+					name="cta_alt_mode"
+					type="modjinboundctamode"
+					label="MOD_JINBOUND_CTA_ALT_MODE"
+					description="MOD_JINBOUND_CTA_ALT_MODE_DESC"
+					default="modules"
+				>
+					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
+					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
+					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
+				</field>
+				<field
+					name="cta_alt_mode_modules"
+					type="moduleposition"
+					label="MOD_JINBOUND_CTA_ALT_MODULES"
+					description="MOD_JINBOUND_CTA_ALT_MODULES_DESC"
+					default="jinbound-cta-alt"
+				/>
+				<field
+					name="cta_alt_mode_module"
+					type="modjinboundctamodule"
+					label="MOD_JINBOUND_CTA_ALT_MODULE"
+					description="MOD_JINBOUND_CTA_ALT_MODULE_DESC"
+					default="jinbound-cta-alt"
+				>
+					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
+				</field>
+				<field
+					name="cta_alt_mode_editor"
+					type="editor"
+					label="MOD_JINBOUND_CTA_ALT_EDITOR"
+					description="MOD_JINBOUND_CTA_ALT_EDITOR_DESC"
+					cols="60" rows="8"
+					buttons="0"
+					filter="JComponentHelper::filterText"
+				/>
+			</fieldset>
+			<fieldset name="advanced">
+				<field name="moduleclass_sfx" type="textarea" rows="3" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"	description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

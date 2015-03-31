@@ -197,6 +197,7 @@ Joomla.submitbutton = function(task) {
 				<h3><?php echo JHtml::link(JInboundHelperUrl::view('reports'), '<img alt="' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '" src="' . JInboundHelperUrl::media() . '/images/view_reports.png" /> <span>' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '</span>'); ?></h3>
 				<?php endif; ?>
 			</div>
+			<div class="well"><?php echo $this->news; ?></div>
 			<div class="well"><?php echo $this->feed; ?></div>
 		</div>
 

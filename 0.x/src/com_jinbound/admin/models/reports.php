@@ -799,9 +799,14 @@ class JInboundModelReports extends JInboundListModel
 	
 	public function send()
 	{
+		$out = JInbound::config("debug", 0);
 		// only send if configured to
 		if (!JInbound::config('send_reports', 1))
 		{
+			if ($out)
+			{
+				echo "<p>Not sending reports - disabled in config</p>";
+			}
 			return;
 		}
 		// init
@@ -818,16 +823,28 @@ class JInboundModelReports extends JInboundListModel
 		}
 		catch (Exception $e)
 		{
+			if ($out)
+			{
+				echo "<p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+			}
 			return;
 		}
 		if (empty($emailrecords))
 		{
+			if ($out)
+			{
+				echo "<p>No report emails found</p>";
+			}
 			return;
 		}
 		foreach ($emailrecords as $idx => $emailrecord)
 		{
 			if (empty($emailrecord->params))
 			{
+				if ($out)
+				{
+					echo "<p>Email has no params...</p>";
+				}
 				continue;
 			}
 			$params = json_decode($emailrecord->params);
@@ -838,12 +855,20 @@ class JInboundModelReports extends JInboundListModel
 				property_exists($params, 'recipients')
 				))
 			{
+				if ($out)
+				{
+					echo "<p>Email is missing params...</p>";
+				}
 				continue;
 			}
 			$emails = $emailrecord->params->recipients;
 			// only send if there are emails
 			if (empty($emails))
 			{
+				if ($out)
+				{
+					echo "<p>Email has no recipients...</p>";
+				}
 				continue;
 			}
 			// convert emails to an array
@@ -865,6 +890,10 @@ class JInboundModelReports extends JInboundListModel
 			$frequency = $params->reports_frequency;
 			if (!in_array($frequency, $this->frequencies))
 			{
+				if ($out)
+				{
+					echo "<p>Invalid frequency...</p>";
+				}
 				continue;
 			}
 			$records = $db->setQuery($db->getQuery(true)
@@ -887,6 +916,10 @@ class JInboundModelReports extends JInboundListModel
 			// only send if sendto isn't empty
 			if (empty($sendto))
 			{
+				if ($out)
+				{
+					echo "<p>Cannot send to any recipients yet...</p>";
+				}
 				continue;
 			}
 			
@@ -905,7 +938,16 @@ class JInboundModelReports extends JInboundListModel
 			$mailer->setBody($htmlbody);
 			$mailer->IsHtml(true);
 			$mailer->AltBody = $plainbody;
-			if ($mailer->send())
+			
+			if ($out)
+			{
+				echo "<p>Attempting to send the following email:</p>\n";
+				echo "<h4>$subject</h4>";
+				echo $htmlbody;
+			}
+			
+			$send_response = $mailer->send();
+			if (false !== $send_response && !($send_response instanceof JError) && !($send_response instanceof Exception))
 			{
 				$query = $db->getQuery(true)
 					->insert('#__jinbound_reports_emails')
@@ -921,61 +963,131 @@ class JInboundModelReports extends JInboundListModel
 				}
 				catch (Exception $e)
 				{
+					if ($out)
+					{
+						echo "<p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+					}
 					return;
 				}
+			}
+			else if (false === $send_response && $out)
+			{
+				echo "<p>Unspecified error sending mail!</p>";
+			}
+			else if ($send_response instanceof Exception && $out)
+			{
+				echo "<p>" . $e->getMessage() . "</p>";
 			}
 		}
 	}
 	
 	public function getReportEmailData($email)
 	{
-		// set up the start and end dates
+		$out        = JInbound::config("debug", 0);
+		$dispatcher = JDispatcher::getInstance();
 		$start_date = new DateTime();
 		$end_date   = new DateTime();
-		$start_date->modify("-{$email->params->interval} {$email->params->frequency}");
-		$start   = $start_date->format('Y-m-d H:i:s');
-		$end     = $end_date->format('Y-m-d H:i:s');
-		$filters = array('filter.start' => $start, 'filter.end' => $end);
-		foreach ($filters as $key => $val)
+		$start_date->modify("-{$email->params->reports_frequency}");
+		$start      = $start_date->format('Y-m-d H:i:s');
+		$end        = $end_date->format('Y-m-d H:i:s');
+		$campaigns  = $email->params->campaigns;
+		if (!is_array($campaigns))
 		{
-			$this->setState($key, $val);
+			$campaigns = explode(',', $campaigns);
 		}
+		if ($out)
+		{
+			echo "<p>Reporting on data from '$start' to '$end'...</p>";
+		}
+		$lead_filters = array(
+			'filter'          => array('start' => $start, 'end' => $end, 'campaign' => $campaigns)
+		,	'filter.start'    => $start
+		,	'filter.end'      => $end
+		,	'filter.campaign' => $campaigns
+		,	'list'            => array('limit' => 10, 'ordering' => 'Contact.created', 'direction' => 'DESC')
+		,	'list.limit'      => 10
+		,	'list.ordering'   => 'Contact.created'
+		,	'list.direction'  => 'DESC'
+		);
+		$page_filters = array_merge($lead_filters, array());
+		$page_filters['list.ordering'] = $page_filters['list']['ordering'] = 'hits';
 		
-		$dispatcher = JDispatcher::getInstance();
-		$pages = $this->getTopPages();
+		$page_list_data = $this->getPagesArrayForEmail($page_filters);
+		$lead_list_data = $this->getLeadsArrayForEmail($lead_filters);
+		
+		$top_pages_data = array_merge(array(), $page_list_data);
 		$top = array(
 			'name' => ''
 		,	'url' => ''
 		);
-		if (!empty($pages))
+		if (!empty($top_pages_data))
 		{
-			$toppage     = array_shift($pages);
+			$toppage     = array_shift($top_pages_data);
 			$top['name'] = $toppage->name;
-			$top['url']  = JInboundHelperUrl::view('page', true, array('id' => $toppage->id));
+			$top['url']  = JInboundHelperUrl::toFull(JInboundHelperUrl::view('page', true, array('id' => $toppage->id)));
 		}
 		$lowest = array_merge(array(), $top);
-		if (!empty($pages))
+		if (!empty($top_pages_data))
 		{
-			$lowestpage     = array_pop($pages);
+			$lowestpage     = array_pop($top_pages_data);
 			$lowest['name'] = $lowestpage->name;
-			$lowest['url']  = JInboundHelperUrl::view('page', true, array('id' => $lowestpage->id));
+			$lowest['url']  = JInboundHelperUrl::toFull(JInboundHelperUrl::view('page', true, array('id' => $lowestpage->id)));
+		}
+		
+		$hits_data = $this->getLandingPageHits($start, $end);
+		$lead_data = $this->getLeadsByCreationDate($start, $end);
+		$conv_data = $this->getConversionsByDate($start, $end);
+		$views = 0;
+		$leads = 0;
+		$conversions     = 0;
+		$views_to_leads  = 0;
+		$conversion_rate = 0;
+		// add values
+		foreach ($hits_data as $hit)
+		{
+			$views += (int) $hit[1];
+		}
+		foreach ($lead_data as $lead)
+		{
+			$leads += (int) $lead[1];
+		}
+		foreach ($conv_data as $conversion)
+		{
+			$conversions += (int) $conversion[1];
+		}
+		// calc percents
+		if (0 < $views) {
+			$views_to_leads  = ($leads / $views) * 100;
+			$conversion_rate = ($conversions / $views) * 100;
+		}
+		$views_to_leads  = number_format($views_to_leads, 2) . '%';
+		$conversion_rate = number_format($conversion_rate, 2) . '%';
+		$debug = array('filters' => '', 'pagestate' => 'null', 'leadstate' => 'null');
+		if (property_exists($this, '_pageModelState'))
+		{
+			$debug['pagestate'] = json_encode($this->_pageModelState);
+		}
+		if (property_exists($this, '_contactModelState'))
+		{
+			$debug['leadstate'] = json_encode($this->_contactModelState);
 		}
 		$data = array(
 			'goals' => array(
-				'count' => $this->getConversionsCount()
-			,	'percent' => $this->getConversionRate()
+				'count' => $conversions
+			,	'percent' => $conversion_rate
 			)
 		,	'leads' => array(
-				'count' => $this->getContactsCount()
-			,	'list' => $this->getEmailLeadsList($filters)
-			,	'percent' => $this->getViewsToLeads()
+				'count' => $leads
+			,	'list' => $this->getEmailLeadsList(is_array($lead_list_data) ? $lead_list_data : array())
+			,	'percent' => $views_to_leads
 			)
 		,	'pages' => array(
-				'hits' => $this->getVisitCount()
-			,	'list' => $this->getEmailPagesList($filters)
+				'hits' => $views
+			,	'list' => $this->getEmailPagesList(is_array($page_list_data) ? $page_list_data : array())
 			,	'top' => $top
 			,	'lowest' => $lowest
 			)
+		,	'debug' => $debug
 		);
 		
 		$dispatcher->trigger('onJInboundReportEmailData', array(&$data));
@@ -983,17 +1095,40 @@ class JInboundModelReports extends JInboundListModel
 		return json_decode(json_encode($data));
 	}
 	
-	public function getEmailPagesList(array $filters = array())
+	public function getPagesArrayForEmail(array $filters = array())
 	{
 		$model = new JInboundModelPages();
+		$model->getState();
 		if (!empty($filters))
 		{
 			foreach ($filters as $filter => $value)
 			{
+				$model->getState($filter, $value);
 				$model->setState($filter, $value);
 			}
 		}
-		$pages = $model->getItems();
+		$this->_pageModelState = $model->getState();
+		return $model->getItems();
+	}
+	
+	public function getLeadsArrayForEmail(array $filters = array())
+	{
+		$model = new JInboundModelContacts();
+		$model->getState();
+		if (!empty($filters))
+		{
+			foreach ($filters as $filter => $value)
+			{
+				$model->getState($filter, $value);
+				$model->setState($filter, $value);
+			}
+		}
+		$this->_contactModelState = $model->getState();
+		return $model->getItems();
+	}
+	
+	public function getEmailPagesList(array $pages = array())
+	{
 		$table = array();
 		$table[] = '<table>';
 		$table[] = '<thead>';
@@ -1038,17 +1173,8 @@ class JInboundModelReports extends JInboundListModel
 		return implode("\n", $table);
 	}
 	
-	public function getEmailLeadsList(array $filters = array())
+	public function getEmailLeadsList(array $leads = array())
 	{
-		$model = new JInboundModelContacts();
-		if (!empty($filters))
-		{
-			foreach ($filters as $filter => $value)
-			{
-				$model->setState($filter, $value);
-			}
-		}
-		$leads = $model->getItems();
 		$table = array();
 		$table[] = '<table>';
 		$table[] = '<thead>';
@@ -1071,10 +1197,7 @@ class JInboundModelReports extends JInboundListModel
 				$table[] = '<tr>';
 				// name
 				$table[] = '<td>';
-				if (!empty($lead->name))
-				{
-					$table[] = JInboundHelperFilter::escape($lead->name);
-				}
+				$table[] = JInboundHelperFilter::escape($lead->first_name . ' ' . $lead->last_name);
 				$table[] = '</td>';
 				
 				$table[] = '<td>';
@@ -1112,6 +1235,7 @@ class JInboundModelReports extends JInboundListModel
 		,	'reports.pages.hits', 'reports.pages.list'
 		,	'reports.pages.top.name', 'reports.pages.top.url'
 		,	'reports.pages.lowest.name', 'reports.pages.lowest.url'
+		,	'reports.debug.filters', 'reports.debug.leadstate', 'reports.debug.pagestate'
 		);
 		$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags, $email));
 		return $tags;

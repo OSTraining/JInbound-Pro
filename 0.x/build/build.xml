@@ -26,6 +26,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging" />
 		<mkdir dir="${cfg.packages}/temp/staging/component" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules" />
+		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_cta" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
@@ -60,6 +61,9 @@
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<condition property="str.versionsalesforceforxml" value="${cfg.version.salesforce}.${build.number}${cfg.versionsuffix}" else="${cfg.version.salesforce}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.version.module.cta" value="${cfg.version.module.cta}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.cta}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<condition property="str.version.module.form" value="${cfg.version.module.form}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form}${cfg.versionsuffix}">
@@ -123,6 +127,8 @@
 		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
 		<property name="str.mod.bookmark.filename" value="${cfg.pfx.mod}${cfg.name}_social_bookmark_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.bookmark.file" value="${cfg.packages}/temp/packages/${str.mod.bookmark.filename}" />
+		<property name="str.mod.cta.filename" value="${cfg.pfx.mod}${cfg.name}_cta_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.cta.file" value="${cfg.packages}/current/${str.mod.cta.filename}" />
 		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.form.file" value="${cfg.packages}/current/${str.mod.form.filename}" />
 		
@@ -133,6 +139,7 @@
 		<filter token="ant_mailchimp_version_number" value="${str.versionmailchimpforxml}" />
 		<filter token="ant_acymailing_version_number" value="${str.versionacymailingforxml}" />
 		<filter token="ant_salesforce_version_number" value="${str.versionsalesforceforxml}" />
+		<filter token="ant_module_cta_version_number" value="${str.version.module.cta}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
 		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
@@ -241,6 +248,15 @@
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_social_bookmark"
 				includes="icons/"
+				excludes="**.git"
+			/>
+		</copy>
+		
+		<!-- cta module -->
+		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_cta" filtering="true">
+			<fileset
+				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_cta"
+				includes="${cfg.pfx.mod}${cfg.name}_cta.php,${cfg.pfx.mod}${cfg.name}_cta.xml,adapter.php,helper.php,adapters/,fields/,language/,media/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -482,6 +498,10 @@
 		
 		<zip destfile="${str.mod.bookmark.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" excludes="" />
+		</zip>
+		
+		<zip destfile="${str.mod.cta.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_cta" excludes="" />
 		</zip>
 		
 		<zip destfile="${str.mod.form.file}.zip" update="false">

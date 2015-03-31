@@ -139,6 +139,7 @@
 				label="COM_JINBOUND_EMAIL_FREQUENCY"
 				description="COM_JINBOUND_EMAIL_FREQUENCY_DESC"
 				class="input-block-level"
+				default="1 WEEK"
 			>
 				<option value="1 DAY">COM_JINBOUND_EMAIL_FREQUENCY_1_DAY</option>
 				<option value="1 WEEK">COM_JINBOUND_EMAIL_FREQUENCY_1_WEEK</option>

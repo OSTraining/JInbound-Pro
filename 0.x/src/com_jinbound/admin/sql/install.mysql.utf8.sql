@@ -747,6 +747,9 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_campaigns` (
 	`enabled` tinyint(1) NOT NULL DEFAULT 1
 	COMMENT 'enabled status, 1 = enabled, 0 = disabled'
 	
+	`added` datetime NOT NULL default '0000-00-00 00:00:00'
+	COMMENT 'when contact was added to campaign, in UTC',	
+	
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
