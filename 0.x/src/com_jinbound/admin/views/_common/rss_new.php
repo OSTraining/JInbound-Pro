@@ -44,7 +44,9 @@ else
 		<?php endif; ?>
 
 		<!-- Feed description -->
+		<?php if ($this->showDescription) : ?>
 			<?php echo $this->feed->description; ?>
+		<?php endif; ?>
 
 		<!--  Feed image  -->
 		<?php if ($iUrl) : ?>
@@ -73,7 +75,7 @@ else
 						<h5 class="feed-link"><?php  echo $this->feed[$i]->title; ?></h5>
 					<?php  endif; ?>
 
-					<?php if (!empty($text)) : ?>
+					<?php if ($this->showDetails && !empty($text)) : ?>
 						<div class="feed-item-description">
 						<?php
 							// Strip the images.

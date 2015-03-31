@@ -153,6 +153,10 @@ class JInboundModelContacts extends JInboundListModel
 				$$filter = '';
 			}
 		}
+		if (is_array($campaign))
+		{
+			JArrayHelper::toInteger($campaign);
+		}
 		
 		$db = $this->getDbo();
 		$join = $db->getQuery(true);
@@ -167,7 +171,14 @@ class JInboundModelContacts extends JInboundListModel
 		}
 		if (!empty($campaign))
 		{
-			$on[] = 'c2.page_id IN ((SELECT id FROM #__jinbound_pages WHERE campaign = ' . ((int) $campaign) . '))';
+			if (is_array($campaign))
+			{
+				$on[] = 'c2.page_id IN ((SELECT id FROM #__jinbound_pages WHERE campaign IN(' . implode(',', $campaign) . ')))';
+			}
+			else
+			{
+				$on[] = 'c2.page_id IN ((SELECT id FROM #__jinbound_pages WHERE campaign = ' . ((int) $campaign) . '))';
+			}
 		}
 		// create the join for latest
 		$join
@@ -187,9 +198,10 @@ class JInboundModelContacts extends JInboundListModel
 			->select('Latest.id AS latest_conversion_id')
 			->select('Latest.page_id AS latest_conversion_page_id')
 			->select('LatestPage.name AS latest_conversion_page_name')
-			->select('LatestPage.formname AS latest_conversion_page_formname')
+			->select('LatestForm.title AS latest_conversion_page_formname')
 			->leftJoin('(' . $join . ') AS Latest ON (Latest.contact_id = Contact.id)')
 			->leftJoin('#__jinbound_pages AS LatestPage ON LatestPage.id = Latest.page_id')
+			->leftJoin('#__jinbound_forms AS LatestForm ON LatestPage.formid = LatestForm.id')
 			//->where('LatestPage.id IS NOT NULL') // causes leads made in admin to disappear
 			->group('Contact.id')
 		;
@@ -203,7 +215,14 @@ class JInboundModelContacts extends JInboundListModel
 		// filter campaigns
 		if (!empty($campaign))
 		{
-			$query->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.contact_id = Contact.id AND ContactCampaign.campaign_id = ' . (int) $campaign);
+			if (is_array($campaign))
+			{
+				$query->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.contact_id = Contact.id AND ContactCampaign.campaign_id IN(' . implode(',', $campaign) . ')');
+			}
+			else
+			{
+				$query->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.contact_id = Contact.id AND ContactCampaign.campaign_id = ' . (int) $campaign);
+			}
 			$query->where('ContactCampaign.campaign_id IS NOT NULL');
 		}
 		

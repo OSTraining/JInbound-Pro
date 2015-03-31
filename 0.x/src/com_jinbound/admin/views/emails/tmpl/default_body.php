@@ -24,6 +24,12 @@ if (!empty($this->items)) :
 	$lastColor    = current($colors);
 	foreach ($this->items as $i => $item) :
 		$this->_itemNum = $i;
+		$params = $item->params;
+		if (!$params instanceof JRegistry) {
+			$reg = new JRegistry();
+			$reg->loadString($params);
+			$params = $reg;
+		}
 
 		$canCheckin = $user->authorise('core.manage', 'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 		$canEdit    = $user->authorise('core.edit', JInbound::COM.'.email') && $canCheckin;
@@ -74,7 +80,14 @@ if (!empty($this->items)) :
 			<?php echo JText::_('COM_JINBOUND_EMAIL_TYPE_' . $this->escape(strtoupper($item->type))); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo JText::sprintf('COM_JINBOUND_EMAIL_SCHEDULE', (int) $item->sendafter); ?>
+		<?php 
+			if ('report' === $item->type) {
+				echo $this->escape(ucwords(strtolower($params->get('reports_frequency', '1 WEEK'))));
+			}
+			else {
+				echo JText::sprintf('COM_JINBOUND_EMAIL_SCHEDULE', (int) $item->sendafter);
+			}
+		?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo $item->id;  ?>

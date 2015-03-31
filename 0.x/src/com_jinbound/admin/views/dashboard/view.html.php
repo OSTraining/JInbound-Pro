@@ -12,6 +12,11 @@ JInbound::registerLibrary('JInboundView', 'views/baseview');
 
 class JInboundViewDashboard extends JInboundView
 {
+	protected $feeds = array(
+		'feed' => array('url' => 'https://jinbound.com/blog/feed/rss.html')
+	,	'news' => array('url' => 'https://jinbound.com/news/?format=feed',  'showDescription' => false)
+	);
+	
 	function display($tpl = null, $safeparams = false) {
 		$app = JFactory::getApplication();
 		// check for updates
@@ -49,14 +54,26 @@ class JInboundViewDashboard extends JInboundView
 		$this->reports->top_pages    = $reportView->loadTemplate('pages', 'top');
 		$this->reports->recent_leads = $reportView->loadTemplate('leads', 'recent');
 		
-		// get RSS view and display its contents
+		
 		JInbound::registerLibrary('JInboundRSSView', 'views/rssview');
 		$app->input->set('layout', 'rss');
-		$url = 'http://feeds.feedburner.com/jinbound';
-		$rss = new JInboundRSSView();
-		$rss->url = $url;
-		$rss->getFeed($url);
-		$this->feed = $rss->loadTemplate(null, 'rss');
+		foreach ($this->feeds as $var => $feed)
+		{
+			// get RSS view and display its contents
+			try
+			{
+				$rss = new JInboundRSSView();
+				$rss->showDetails = array_key_exists('showDetails', $feed) ? $feed['showDetails'] : false;
+				$rss->showDescription = array_key_exists('showDescription', $feed) ? $feed['showDescription'] : true;
+				$rss->url = $feed['url'];
+				$rss->getFeed($feed['url']);
+				$this->$var = $rss->loadTemplate(null, 'rss');
+			}
+			catch (Exception $e)
+			{
+				$this->$var = $e->getMessage();
+			}
+		}
 		
 		// reset template and layout data
 		$app->input->set('tmpl', $tmpl);

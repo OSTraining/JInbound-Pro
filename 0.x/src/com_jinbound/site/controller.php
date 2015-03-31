@@ -25,11 +25,20 @@ class JInboundController extends JInboundBaseController
 	 * TODO
 	 */
 	function cron() {
+		$out = JInbound::config("debug", 0);
 		// send reports emails
+		if ($out)
+		{
+			echo "<h2>Sending reports</h2>\n";
+		}
 		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/reports.php';
 		$model = $this->getModel('Reports', 'JInboundModel');
 		$model->send();
 		// handle sending campaign emails
+		if ($out)
+		{
+			echo "<h2>Sending campaigns</h2>\n";
+		}
 		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/models/emails.php';
 		$model = $this->getModel('Emails', 'JInboundModel');
 		$model->send();

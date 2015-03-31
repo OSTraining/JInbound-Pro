@@ -33,6 +33,7 @@ class plgSystemJInboundfiles extends JPlugin
 	{
 		parent::__construct($subject, $config);
 		$this->loadLanguage('plg_system_jinboundfiles.sys', JPATH_ADMINISTRATOR);
+		$this->loadLanguage('lib_joomla', JPATH_ADMINISTRATOR);
 		$this->session = JFactory::getSession();
 	}
 	
@@ -133,24 +134,71 @@ class plgSystemJInboundfiles extends JPlugin
 		// store the files
 		$contact_path = $this->getStoragePath($conversion->contact_id);
 		$formdata = json_decode($conversion->formdata);
-		$files = $app->input->files->get('jform');
+		$files = $app->input->files->get('jform', null, 'raw');
 		$tosave = array();
-		while (list($key, $file) = each($files['lead']))
+		if (is_array($files))
 		{
-			if (!in_array($key, array_keys($fileinputs)))
+			while (list($key, $file) = each($files['lead']))
 			{
-				continue;
+				if (!in_array($key, array_keys($fileinputs)))
+				{
+					continue;
+				}
+				if (!in_array(JFile::getExt($file['name']), $extensions))
+				{
+					continue;
+				}
+				$pfx  = date('YmdHis') . '-';
+				$base = basename($file['name']);
+				$filename = $pfx . $base . '.file'; // force non-executing extension
+				$filepath = "$contact_path/$filename";
+				if (method_exists('JFilterInput', 'isSafeFile'))
+				{
+					$descriptor = array(
+						'tmp_name' => $file['tmp_name'],
+						'name'     => $filename,
+						'type'     => '',
+						'error'    => '',
+						'size'     => '',
+					);
+					$isSafeOptions = array('php_ext_content_extensions' => array());
+					foreach (array('zip', 'rar', 'tar', 'gz', 'tgz', 'bz2', 'tbz', 'jpa') as $blockMe)
+					{
+						if (in_array($blockMe, $extensions))
+						{
+							continue;
+						}
+						$isSafeOptions['php_ext_content_extensions'][] = $blockMe;
+					}
+					$isSafe = JFilterInput::isSafeFile($descriptor, $isSafeOptions);
+					if (!$isSafe)
+					{
+						$app->enqueueMessage(JText::sprintf('JLIB_FILESYSTEM_ERROR_WARNFS_ERR03', $filename), 'error');
+						continue;
+					}
+				}
+				try
+				{
+					JFile::upload($file['tmp_name'], $filepath, false, true);
+				}
+				catch (Exception $e)
+				{
+					$error = JText::_($e->getMessage());
+					if (false !== strpos($error, '%s'))
+					{
+						$error = sprintf($error, JFilterInput::clean($base, 'string'));
+					}
+					if (false !== strpos($error, $contact_path))
+					{
+						$error = str_replace($contact_path, '', $error);
+					}
+					$app->enqueueMessage($error, 'error');
+					continue;
+				}
+				$url = JUri::root(false) . 'administrator/' . sprintf('index.php?option=plg_system_jinboundfiles&view=file&file=%1$s&contact=%2$d', htmlspecialchars($pfx . $base, ENT_QUOTES, 'UTF-8'), $conversion->contact_id);
+				$formdata->lead->$key = sprintf('<a href="%1$s">%1$s</a>', $url);
+				$tosave[] = array('field' => $key, 'value' => $formdata->lead->$key);
 			}
-			if (!in_array(JFile::getExt($file['name']), $extensions))
-			{
-				continue;
-			}
-			$filename = basename($file['name']) . '.file'; // force non-executing extension
-			$filepath = "$contact_path/$filename";
-			move_uploaded_file($file['tmp_name'], $filepath);
-			$url = JUri::root(false) . 'administrator/' . sprintf('index.php?option=plg_system_jinboundfiles&view=file&file=%1$s&contact=%2$d', htmlspecialchars(basename($file['name']), ENT_QUOTES, 'UTF-8'), $conversion->contact_id);
-			$formdata->lead->$key = sprintf('<a href="%1$s">%1$s</a>', $url);
-			$tosave[] = array('field' => $key, 'value' => $formdata->lead->$key);
 		}
 		$this->session->set('jinboundfiles.files', json_encode($tosave));
 		$conversion->formdata = json_encode($formdata);

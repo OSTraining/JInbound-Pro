@@ -15,9 +15,12 @@ abstract class JInboundHelperContact
 		try
 		{
 			$emails = $db->setQuery($db->getQuery(true)
-				->select('Email.*')
-				->from('#__jinbound_emails_records AS Email')
-				->where('Email.lead_id = ' . $db->quote($contact_id))
+				->select('Record.*, Version.subject, Version.htmlbody, Version.plainbody, Email.campaign_id')
+				->from('#__jinbound_emails_records AS Record')
+				->where('Record.lead_id = ' . $db->quote($contact_id))
+				->leftJoin('#__jinbound_emails_versions AS Version ON Version.id = Record.version_id')
+				->leftJoin('#__jinbound_emails AS Email ON Record.email_id = Email.id')
+				->group('Record.id')
 			)->loadObjectList();
 		}
 		catch (Exception $e)

@@ -49,6 +49,10 @@ $canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
 						<?php endforeach; ?>
 					</div>
 				</div>
+				<?php
+					$this->_currentCampaignId = $campaign->id;
+					echo $this->loadTemplate('edit_tabs_page_campaigns_emails');
+				?>
 					<?php endforeach; ?>
 				<?php endif; ?>
 
@@ -77,6 +81,10 @@ $canChange  = $user->authorise('core.edit.state', $context) && $canCheckin;
 					<div class="span2"><?php echo $this->escape($status->created_by); ?></div>
 				</div>
 					<?php endforeach; ?>
+				<?php
+					$this->_currentCampaignId = $campaign->id;
+					echo $this->loadTemplate('edit_tabs_page_campaigns_emails');
+				?>
 				<?php endforeach; ?>
 			</div>
 			<?php endif; ?>

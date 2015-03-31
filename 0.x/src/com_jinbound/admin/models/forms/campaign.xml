@@ -50,4 +50,21 @@
 		</field>
 
 	</fieldset>
+	<fields name="params">
+		<fieldset
+			name="notes"
+			label="COM_JINBOUND_CAMPAIGN_FIELDSET_NOTES"
+		>
+			<field
+				name="notes"
+				type="editor"
+				filter="JComponentHelper::filterText"
+				label="COM_JINBOUND_CAMPAIGN_NOTES"
+				description="COM_JINBOUND_CAMPAIGN_NOTES_DESC"
+				class="input-block-level"
+				cols="60" rows="12"
+				buttons="0"
+			/>
+		</fieldset>
+	</fields>
 </form>

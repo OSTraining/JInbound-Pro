@@ -189,12 +189,23 @@ class JInboundModelPages extends JInboundListModel
 		$this->appendAuthorToQuery($query, 'Page');
 		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Page', 'id', array('name', 'Category.title'));
 		$this->filterPublished($query, $this->getState('filter.published'), 'Page');
-		// other filters
-		foreach (array('category', 'campaign') as $column) {
-			$filter = $this->getState('filter.' . $column);
-			if (!empty($filter)) {
-				$query->where('Page.' . $column . ' = ' . (int) $filter);
+		// campaign filter
+		$filter = $this->getState('filter.campaign');
+		if (!empty($filter)) {
+			if (is_array($filter))
+			{
+				JArrayHelper::toInteger($filter);
+				$query->where('Page.campaign IN(' . implode(',', $filter) . ')');
 			}
+			else
+			{
+				$query->where('Page.campaign = ' . (int) $filter);
+			}
+		}
+		// category filter
+		$filter = $this->getState('filter.category');
+		if (!empty($filter)) {
+			$query->where('Page.category = ' . (int) $filter);
 		}
 		$filter = $this->getState('filter.page');
 		if (!empty($filter)) {

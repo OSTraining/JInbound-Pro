@@ -264,18 +264,21 @@ class plgSystemJInboundsalesforce extends JPlugin
 			return;
 		}
 		$client = $this->getClient();
-		// create a new SObject
-		$object = new SObject();
-		$object->type = 'Contact';
-		$object->fields = $objectfields;
-		// check response
-		try
+		if ($client)
 		{
-			$response = $client->create(array($object));
-		}
-		catch (Exception $e)
-		{
-			// TODO
+			// create a new SObject
+			$object = new SObject();
+			$object->type = 'Contact';
+			$object->fields = $objectfields;
+			// check response
+			try
+			{
+				$response = $client->create(array($object));
+			}
+			catch (Exception $e)
+			{
+				// TODO
+			}
 		}
 		// TODO save response ids?
 	}
@@ -301,12 +304,21 @@ class plgSystemJInboundsalesforce extends JPlugin
 	
 	public function onJInboundSalesforceFields(&$options)
 	{
+		// check that this plugin can be run
 		if (!PLG_SYSTEM_JINBOUNDSALESFORCE)
 		{
 			return;
 		}
+		// get the client
 		$client  = $this->getClient();
+		// ensure there is a client
+		if (!(is_object($client) && method_exists($client, 'describeSObject')))
+		{
+			return;
+		}
+		// get the contact
 		$contact = $client->describeSObject('Contact');
+		// check the contact object
 		if (!(is_object($contact) && property_exists($contact, 'fields')
 			&& is_array($contact->fields) && !empty($contact->fields)))
 		{

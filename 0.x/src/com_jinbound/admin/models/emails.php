@@ -127,6 +127,7 @@ class JInboundModelEmails extends JInboundListModel
 			->leftJoin('#__jinbound_subscriptions AS Sub ON Contact.id = Sub.contact_id')
 			->leftJoin('#__jinbound_emails_versions AS Version ON Version.email_id = Email.id')
 			->where('Record.id IS NULL')
+			// TODO add date column to contacts_campaigns to prevent contacts from slipping their email dates
 			->where('DATE_ADD(Conversion.created, INTERVAL Email.sendafter ' . $interval . ') < UTC_TIMESTAMP()')
 			->where('Email.type = ' . $db->quote('campaign'))
 			->where('Email.published = 1')
