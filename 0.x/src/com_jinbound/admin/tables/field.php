@@ -8,9 +8,9 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundTable', 'table');
+JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
 
-class JInboundTableField extends JInboundTable
+class JInboundTableField extends JInboundAssetTable
 {
 	function __construct(&$db) {
 		parent::__construct('#__jinbound_fields', 'id', $db);
@@ -21,7 +21,7 @@ class JInboundTableField extends JInboundTable
 		return 'com_jinbound.field.'.(int) $this->$k;
 	}
 
-	protected function _getAssetTitle() {
+	protected function _compat_getAssetTitle() {
 		return $this->title;
 	}
 	

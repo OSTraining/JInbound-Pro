@@ -161,6 +161,25 @@ abstract class JInbound
 
 		return $result;
 	}
+	
+	public static function userDate($utc_date)
+	{
+		static $offset;
+		static $timezone;
+		if (is_null($offset))
+		{
+			$config = JFactory::getConfig();
+			$offset = $config->get('offset');
+		}
+		if (is_null($timezone))
+		{
+			$user = JFactory::getUser();
+			$timezone = $user->getParam('timezone', $offset);
+		}
+		$date = JFactory::getDate($utc_date, 'UTC');
+		$date->setTimezone(new DateTimeZone($timezone));
+		return $date->format('Y-m-d H:i:s', true, false);
+	}
 }
 
 if (class_exists('JHelperContent')) {

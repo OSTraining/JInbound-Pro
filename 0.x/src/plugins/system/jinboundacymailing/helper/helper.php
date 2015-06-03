@@ -159,11 +159,13 @@ class JinboundAcymailing
 		$values  = array(intval($list), intval($sub), intval($status));
 		if ($subdate)
 		{
+			$method    = 'subscribe';
 			$columns[] = 'subdate';
 			$values[]  = $this->db->quote($subdate);
 		}
 		if ($unsubdate)
 		{
+			$method    = 'unsubscribe';
 			$columns[] = 'unsubdate';
 			$values[]  = $this->db->quote($unsubdate);
 		}
@@ -172,6 +174,11 @@ class JinboundAcymailing
 			->columns($columns)
 			->values(implode(',', $values))
 		)->query();
+		$helper = $this->getAcyListHelper();
+		if (false !== $helper)
+		{
+			$helper->$method($sub, array($list));
+		}
 	}
 	
 	private function getListSub($list, $sub)
@@ -182,6 +189,46 @@ class JinboundAcymailing
 			->where('subid = ' . $sub)
 			->where('listid = ' . (int) $list)
 		)->loadObject();
+	}
+	
+	private function getAcyListHelper()
+	{
+		if (!class_exists('acylistHelper'))
+		{
+			if (!$this->loadAcyHelperFile('list'))
+			{
+				return false;
+			}
+		}
+		if (!class_exists('acylistHelper'))
+		{
+			return false;
+		}
+		if (!function_exists('acymailing_level'))
+		{
+			if (!$this->loadAcyHelperFile('helper'))
+			{
+				return false;
+			}
+		}
+		if (!function_exists('acymailing_level'))
+		{
+			return false;
+		}
+		return new acylistHelper();
+	}
+	
+	private function loadAcyHelperFile($file)
+	{
+		if (file_exists(($file = JPATH_ADMINISTRATOR . '/components/com_acymailing/helpers/' . $file . '.php')))
+		{
+			require_once $file;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public function getEmailListDetails($email)

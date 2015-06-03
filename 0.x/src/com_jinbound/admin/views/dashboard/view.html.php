@@ -13,8 +13,8 @@ JInbound::registerLibrary('JInboundView', 'views/baseview');
 class JInboundViewDashboard extends JInboundView
 {
 	protected $feeds = array(
-		'feed' => array('url' => 'https://jinbound.com/blog/feed/rss.html')
-	,	'news' => array('url' => 'https://jinbound.com/news/?format=feed',  'showDescription' => false)
+		'feed' => array('url' => 'https://jinbound.com/blog/feed/rss.html', 'showDescription' => false)
+	,	'news' => array('url' => 'https://jinbound.com/news/?format=feed', 'showDescription' => false)
 	);
 	
 	function display($tpl = null, $safeparams = false) {

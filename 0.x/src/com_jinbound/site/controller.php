@@ -16,7 +16,25 @@ class JInboundController extends JInboundBaseController
 		$app  = JFactory::getApplication();
 		$view = $app->input->get('view', 'page', 'cmd');
 		$app->input->set('view', $view);
-		parent::display($cachable);
+		if ('page' !== $view)
+		{
+			return parent::display($cachable);
+		}
+		$pop = $app->input->get('pop', array(), 'raw');
+		if (is_array($pop) && !empty($pop))
+		{
+			$state = $app->getUserState('com_jinbound.page.data');
+			if (is_object($state))
+			{
+				$state->lead = $pop;
+			}
+			else if (is_array($state))
+			{
+				$state['lead'] = $pop;
+			}
+			$app->setUserState('com_jinbound.page.data', $state);
+		}
+		return parent::display($cachable);
 	}
 	
 	/**

@@ -8,6 +8,8 @@
 defined('_JEXEC') or die;
 
 $root = JUri::root();
+$version = new JVersion();
+$legacy = !$version->isCompatible('3.0.0');
 
 ?>
 <!DOCTYPE html>
@@ -17,6 +19,7 @@ $root = JUri::root();
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title><?php echo JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_UPLOAD_WSDL'); ?></title>
+		<?php if (!$legacy) : ?>
 		<link rel="stylesheet" href="<?php echo $root; ?>/media/jui/css/chosen.css" type="text/css" />
 		<link rel="stylesheet" href="<?php echo $root; ?>/media/system/css/modal.css" type="text/css" />
 		<script src="<?php echo $root; ?>/media/jui/js/jquery.min.js" type="text/javascript"></script>
@@ -28,6 +31,7 @@ $root = JUri::root();
 		<script src="<?php echo $root; ?>/media/jui/js/chosen.jquery.min.js" type="text/javascript"></script>
 		<script src="<?php echo $root; ?>/media/jui/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="<?php echo $root; ?>/media/system/js/html5fallback.js" type="text/javascript"></script>
+		<?php endif; ?>
 	</head>
 	<body>
 		<div class="container-fluid">

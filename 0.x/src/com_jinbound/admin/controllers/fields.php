@@ -19,7 +19,8 @@ class JInboundControllerFields extends JControllerAdmin
 		return parent::getModel($name, $prefix, array('ignore_request' => true));
 	}
 	
-	public function saverules() {
-		JInboundHelperAccess::saveRulesWithRedirect('fields');
+	public function permissions() {
+		JInbound::registerHelper('access');
+		JInboundHelperAccess::saveRulesWithRedirect('field');
 	}
 }

@@ -56,7 +56,7 @@ class JInboundModelPage extends JInboundAdminModel
 		{
 			$this->data = null;
 		}
-		if (is_null($this->data))
+		if (empty($this->data))
 		{
 			$this->data = new stdClass;
 			$app = JFactory::getApplication();
@@ -85,6 +85,7 @@ class JInboundModelPage extends JInboundAdminModel
 		$xmlFieldset->addAttribute('label', $label);
 		// finally, we loop through each of our fields and create elements for them
 		foreach ($fields as $field) {
+			$thisbanned = array_merge(array(), $banned);
 			// start our xml field
 			$xmlField = $xmlFieldset->addChild('field');
 			$xmlField->addAttribute('name', $field->name);
@@ -98,6 +99,7 @@ class JInboundModelPage extends JInboundAdminModel
 			{
 				$xmlField->addAttribute('validate', 'email');
 				$classes[] = 'validate-email';
+				$thisbanned[] = 'validate';
 			}
 			// handle class
 			if (array_key_exists('classname', $field->params) && !empty($field->params['classname'])) {
@@ -112,7 +114,7 @@ class JInboundModelPage extends JInboundAdminModel
 			if (array_key_exists('required', $field->params) && is_numeric(trim($field->params['required'])))
 			{
 				$xmlField->addAttribute('required', $field->params['required']);
-				$banned[] = 'required';
+				$thisbanned[] = 'required';
 			}
 			
 			// handle extra attributes
@@ -122,11 +124,12 @@ class JInboundModelPage extends JInboundAdminModel
 			{
 				// loop keys
 				foreach ($field->params['attrs'] as $key => $value) {
-					if (empty($key) || in_array($key, $banned)) {
+					if (empty($key) || in_array($key, $thisbanned)) {
 						continue;
 					}
 					// set attribute
 					$xmlField->addAttribute($key, $value);
+					$thisbanned[] = $key;
 				}
 			}
 			// handle options, if any

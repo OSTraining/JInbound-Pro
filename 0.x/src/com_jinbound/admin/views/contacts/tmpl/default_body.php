@@ -6,7 +6,7 @@
  */
 
 defined('JPATH_PLATFORM') or die;
-
+$config    = JFactory::getConfig();
 $user      = JFactory::getUser();
 $userId    = $user->get('id');
 $listOrder = $this->state->get('list.ordering');
@@ -80,7 +80,7 @@ if (!empty($this->items)) :
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'contacts.', $canChange, 'cb'); ?>
 		</td>
 		<td class="hidden-phone hidden-tablet"<?php echo $rowSpan; ?>>
-			<?php echo $this->escape($item->created); ?>
+			<?php echo JInbound::userDate($item->created); ?>
 		</td>
 		<td class="hidden-phone">
 			<?php echo empty($firstRow['priority'][0]) ? '' : JHtml::_('jinbound.priority', $item->id, $firstRow['priority'][0]->priority_id, $firstRow['campaign']->id, 'contacts.', $canChange); ?>

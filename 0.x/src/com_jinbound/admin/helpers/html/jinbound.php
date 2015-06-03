@@ -19,7 +19,7 @@ JInbound::registerHelper('url');
  */
 abstract class JHtmlJInbound
 {
-	private function _stateSelect($state, $id, $campaign_id, $value, $options, $canChange)
+	static private function _stateSelect($state, $id, $campaign_id, $value, $options, $canChange)
 	{
 		$attr = 'class="change_' . $state . ' input-small" data-id="' . intval($id) . '" data-campaign="' . intval($campaign_id) . '"';
 		if (!$canChange) {
@@ -29,7 +29,7 @@ abstract class JHtmlJInbound
 		return JHtml::_('select.genericlist', $options, 'change_' . $state . '[' . $id . ']', $attr, 'id', 'name', $value);
 	}
 	
-	public function priority($id, $priority_id, $campaign_id, $prefix, $canChange) {
+	static public function priority($id, $priority_id, $campaign_id, $prefix, $canChange) {
 		static $options;
 		
 		if (is_null($options)) {
@@ -57,7 +57,7 @@ abstract class JHtmlJInbound
 		echo JHtmlJInbound::_stateSelect('priority', $id, $campaign_id, $priority_id, $options, $canChange);
 	}
 	
-	public function status($id, $status_id, $campaign_id, $prefix, $canChange) {
+	static public function status($id, $status_id, $campaign_id, $prefix, $canChange) {
 		static $options;
 		
 		if (is_null($options)) {
@@ -85,7 +85,7 @@ abstract class JHtmlJInbound
 		echo JHtmlJInbound::_stateSelect('status', $id, $campaign_id, $status_id, $options, $canChange);
 	}
 	
-	public function leadupdate() {
+	static public function leadupdate() {
 		static $loaded;
 		
 		if (is_null($loaded)) {
@@ -95,7 +95,7 @@ abstract class JHtmlJInbound
 		}
 	}
 	
-	public function formdata($id, $formname, $formdata, $script = true) {
+	static public function formdata($id, $formname, $formdata, $script = true) {
 		if (!is_a($formdata, 'JRegistry')) {
 			$registry = new JRegistry();
 			if (is_object($formdata)) {
@@ -182,7 +182,7 @@ EOF
 		$doc->addScriptDeclaration($source);
 	}
 	
-	public function leadnotes($id) {
+	static public function leadnotes($id) {
 		static $notes;
 		
 		if (is_null($notes)) {
@@ -249,7 +249,7 @@ EOF
 		
 	}
 	
-	public static function startSlider($selector = 'myAccordian', $params = array()) {
+	static public function startSlider($selector = 'myAccordian', $params = array()) {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			JHtml::_('bootstrap.framework');
 			return JHtml::_('bootstrap.startAccordion', $selector, $params);
@@ -259,7 +259,7 @@ EOF
 		}
 	}
 	
-	public static function endSlider() {
+	static public function endSlider() {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			return JHtml::_('bootstrap.endTabSet');
 		}
@@ -268,7 +268,7 @@ EOF
 		}
 	}
 	
-	public static function addSlide($selector, $text, $id, $class = '') {
+	static public function addSlide($selector, $text, $id, $class = '') {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			return JHtml::_('bootstrap.addSlide', $selector, $text, $id, $class);
 		}
@@ -277,7 +277,7 @@ EOF
 		}
 	}
 	
-	public static function endSlide() {
+	static public function endSlide() {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			return JHtml::_('bootstrap.endSlide');
 		}
@@ -286,7 +286,7 @@ EOF
 		}
 	}
 	
-	public static function startTabSet($tabSetName, $options = array()) {
+	static public function startTabSet($tabSetName, $options = array()) {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			JHtml::_('bootstrap.framework');
 			return JHtml::_('bootstrap.startTabSet', $tabSetName, $options);
@@ -296,7 +296,7 @@ EOF
 		}
 	}
 	
-	public static function addTab($tabSetName, $tabName, $tabLabel) {
+	static public function addTab($tabSetName, $tabName, $tabLabel) {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			return JHtml::_('bootstrap.addTab', $tabSetName, $tabName, $tabLabel);
 		}
@@ -305,7 +305,7 @@ EOF
 		}
 	}
 	
-	public static function endTab() {
+	static public function endTab() {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			return JHtml::_('bootstrap.endTab');
 		}
@@ -314,7 +314,7 @@ EOF
 		}
 	}
 	
-	public static function endTabSet() {
+	static public function endTabSet() {
 		if (JInbound::version()->isCompatible('3.1.0')) {
 			return JHtml::_('bootstrap.endTabSet');
 		}
@@ -323,7 +323,7 @@ EOF
 		}
 	}
 	
-	public static function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
+	static public function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
 				1       => array('unsetFinal',        'COM_JINBOUND_FINAL', 'COM_JINBOUND_HTML_UNSETFINAL_ITEM',      'COM_JINBOUND_FINAL',     false,  'default',              'default'),
 				0       => array('setFinal',          '',                     'COM_JINBOUND_HTML_SETFINAL_ITEM',    '',                     false,  'notdefault',   'notdefault'),
@@ -331,7 +331,7 @@ EOF
 		return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
 	
-	public static function isactive($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
+	static public function isactive($value, $i, $prefix = '', $enabled = true, $checkbox='cb') {
 		$states = array(
 				1       => array('unsetActive',        'COM_JINBOUND_ACTIVE', 'COM_JINBOUND_HTML_UNSETACTIVE_ITEM',      'COM_JINBOUND_ACTIVE',     false,  'default',              'default'),
 				0       => array('setActive',          '',                     'COM_JINBOUND_HTML_SETACTIVE_ITEM',    '',                     false,  'notdefault',   'notdefault'),
