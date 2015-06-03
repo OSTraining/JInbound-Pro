@@ -8,9 +8,9 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundTable', 'table');
+JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
 
-class JInboundTableForm extends JInboundTable
+class JInboundTableForm extends JInboundAssetTable
 {	
 	private $_formfields = null;
 
@@ -18,7 +18,7 @@ class JInboundTableForm extends JInboundTable
 		parent::__construct('#__jinbound_forms', 'id', $db);
 	}
 
-	protected function _getAssetName() {
+	protected function _compat_getAssetName() {
 		$k = $this->_tbl_key;
 		return 'com_jinbound.form.'.(int) $this->$k;
 	}

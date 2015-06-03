@@ -14,7 +14,7 @@
 			validate="rules"
 			filter="rules"
 			component="com_jinbound"
-			section="forms"
+			section="form"
 		/>
 	</fieldset>
 </form>

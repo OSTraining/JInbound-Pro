@@ -160,6 +160,8 @@ class JInboundModelContacts extends JInboundListModel
 		
 		$db = $this->getDbo();
 		$join = $db->getQuery(true);
+		$listOrdering = $this->getState('list.ordering', 'Contact.created');
+		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
 		
 		// start preparing a subquery that will be joined to the main query
 		// that determines the latest conversion by a contact
@@ -225,6 +227,11 @@ class JInboundModelContacts extends JInboundListModel
 			}
 			$query->where('ContactCampaign.campaign_id IS NOT NULL');
 		}
+		else if ('Campaign.name' === $listOrdering)
+		{
+			$query->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.contact_id = Contact.id');
+			$query->leftJoin('#__jinbound_campaigns AS Campaign ON ContactCampaign.campaign_id = Campaign.id');
+		}
 		
 		// filter by status
 		if (!empty($status))
@@ -281,8 +288,6 @@ class JInboundModelContacts extends JInboundListModel
 		}
 		
 		// Add the list ordering clause.
-		$listOrdering = $this->getState('list.ordering', 'Contact.created');
-		$listDirn     = $db->escape($this->getState('list.direction', 'ASC'));
 		$query->order($db->escape($listOrdering) . ' ' . $listDirn);
 
 		return $query;

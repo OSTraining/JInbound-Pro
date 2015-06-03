@@ -17,6 +17,7 @@ class JInboundViewPages extends JInboundJsonListView
 		if (!empty($this->items)) {
 			foreach ($this->items as &$item) {
 				$item->url = JInboundHelperUrl::edit('page', $item->id);
+				$item->created = JInbound::userDate($item->created);
 			}
 		}
 		parent::display($tpl, $safeparams);

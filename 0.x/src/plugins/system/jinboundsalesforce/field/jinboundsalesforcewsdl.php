@@ -13,6 +13,8 @@ class JFormFieldJinboundsalesforcewsdl extends JFormField
 	
 	protected function getInput()
 	{
+		$version = new JVersion();
+		$legacy = !$version->isCompatible('3.0.0');
 		$html = array();
 		$link = 'index.php?option=plg_system_jinboundsalesforce&amp;view=form&amp;field=' . $this->id;
 		
@@ -37,7 +39,14 @@ class JFormFieldJinboundsalesforcewsdl extends JFormField
 		$script[] = '		document.getElementById("' . $this->id . '").className = document.getElementById("' . $this->id . '").className.replace(" invalid" , "");';
 		$script[] = '		' . $this->onchange;
 		$script[] = '	}';
-		$script[] = '	jModalClose();';
+		if ($legacy)
+		{
+			$script[] = '	SqueezeBox.close();';
+		}
+		else
+		{
+			$script[] = '	jModalClose();';
+		}
 		$script[] = '}';
 		
 		// Add the script to the document head.
@@ -47,16 +56,25 @@ class JFormFieldJinboundsalesforcewsdl extends JFormField
 		$attr .= $this->required ? ' required' : '';
 		
 		// Create a dummy text field with the file name.
-		$html[] = '<div class="input-append">';
-		$html[] = '     <input type="text" id="' . $this->id . '" value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"'
+		$html[] = '<div class="input-append ' . ($legacy ? ' fltlft' : '') . '">';
+		$html[] = '  <input type="text" id="' . $this->id . '" value="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"'
 						. ' readonly' . $attr . ' />';
 		
 		// Create the file select button.
-		if ($this->readonly === false)
+		if (!property_exists($this, 'readonly') || $this->readonly === false)
 		{
-			$html[] = '             <a class="btn btn-primary modal_' . $this->id . '" title="' . JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_SELECT_WSDL') . '" href="' . $link . '"'
+			$html[] = '    <a class="btn btn-primary modal_' . $this->id . '" title="' . JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_SELECT_WSDL') . '" href="' . $link . '"'
 							. ' rel="{handler: \'iframe\', size: {x: 400, y: 200}}">';
-			$html[] = '<i class="icon-file-check"></i></a>';
+			
+			if (!$legacy)
+			{
+				$html[] = '<i class="icon-file-check"></i>';
+			}
+			else
+			{
+				$html[] = 'Choose File';
+			}
+			$html[] = '</a>';
 		}
 
 		$html[] = '</div>';

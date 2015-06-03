@@ -8,9 +8,9 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundTable', 'table');
+JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
 
-class JInboundTableStatus extends JInboundTable
+class JInboundTableStatus extends JInboundAssetTable
 {
 
 	function __construct(&$db) {

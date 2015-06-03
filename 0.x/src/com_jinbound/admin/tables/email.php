@@ -8,9 +8,9 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundTable', 'table');
+JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
 
-class JInboundTableEmail extends JInboundTable
+class JInboundTableEmail extends JInboundAssetTable
 {
 
 	function __construct(&$db) {
@@ -20,7 +20,7 @@ class JInboundTableEmail extends JInboundTable
 	/**
 	 * Redefined asset name, as we support action control
 	 */
-	protected function _getAssetName() {
+	protected function _compat_getAssetName() {
 		$k = $this->_tbl_key;
 		return 'com_jinbound.email.'.(int) $this->$k;
 	}

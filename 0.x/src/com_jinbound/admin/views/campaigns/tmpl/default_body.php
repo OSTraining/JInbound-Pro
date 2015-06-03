@@ -54,7 +54,7 @@ if (!empty($this->items)) :
 			<?php echo JHtml::_('jgrid.published', $item->published, $i, 'campaigns.', $canChange, 'cb'); ?>
 		</td>
 		<td class="hidden-phone">
-			<?php echo $item->created; ?>
+			<?php echo JInbound::userDate($item->created); ?>
 		</td>
 	</tr>
 	<?php endforeach;
