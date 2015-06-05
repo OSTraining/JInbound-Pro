@@ -30,7 +30,7 @@ class JInboundControllerNote extends JInboundFormController
 		jexit();
 	}
 	
-	public function save() {
+	public function save($key = NULL, $urlVar = NULL) {
 		$save = parent::save();
 		$data = JFactory::getApplication()->input->get('jform', array(), 'array');
 		$lead = 0;
