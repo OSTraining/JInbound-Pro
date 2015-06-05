@@ -18,64 +18,32 @@ class JinboundAcymailing
 		$this->db = JFactory::getDbo();
 	}
 	
+	protected function getComponentItem($type, $id)
+	{
+		$class = 'JInboundTable' . ucwords($type);
+		require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/tables/' . $type . '.php';
+		$obj = new $class($this->db);
+		$obj->load($id);
+		if (property_exists($obj, 'params') && !is_a($obj->params, 'JRegistry'))
+		{
+			$reg = new JRegistry();
+			$reg->loadString($obj->params);
+			$obj->params = $reg;
+		}
+		return $obj;
+	}
+	
 	public function onJinboundSetStatus($status_id, $campaign_id, $contact_id)
 	{
-		// load campaign, status, contact
-		foreach (array('campaign', 'status', 'contact') as $var)
-		{
-			$class = 'JInboundTable' . ucwords($var);
-			require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/tables/' . $var . '.php';
-			$$var = new $class($this->db);
-			$$var->load(${$var . '_id'});
-			if (property_exists($$var, 'params') && !is_a($$var->params, 'JRegistry'))
-			{
-				$reg = new JRegistry();
-				$reg->loadString($$var->params);
-				$$var->params = $reg;
-			}
-		}
-		
-		if ($status->final)
-		{
-			$addLists    = array();
-			$removeLists = array_filter($campaign->params->get('acymailing_removelists', array()));
-		}
-		else
-		{
-			$addLists    = array_filter($campaign->params->get('acymailing_addlists', array()));
-			$removeLists = array();
-		}
-		
-		// add users to acymailing subscriber table
-		// #__acymailing_subscriber
-		/*
-		 * mysql> describe jos_acymailing_subscriber;
-+----------------+------------------+------+-----+---------+----------------+
-| Field          | Type             | Null | Key | Default | Extra          |
-+----------------+------------------+------+-----+---------+----------------+
-| subid          | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
-| email          | varchar(200)     | NO   | UNI | NULL    |                |
-| userid         | int(10) unsigned | NO   | MUL | 0       |                |
-| name           | varchar(250)     | NO   |     |         |                |
-| created        | int(10) unsigned | YES  |     | NULL    |                |
-| confirmed      | tinyint(4)       | NO   |     | 0       |                |
-| enabled        | tinyint(4)       | NO   | MUL | 1       |                |
-| accept         | tinyint(4)       | NO   |     | 1       |                |
-| ip             | varchar(100)     | YES  |     | NULL    |                |
-| html           | tinyint(4)       | NO   |     | 1       |                |
-| key            | varchar(250)     | YES  |     | NULL    |                |
-| confirmed_date | int(10) unsigned | NO   |     | 0       |                |
-| confirmed_ip   | varchar(100)     | YES  |     | NULL    |                |
-| lastopen_date  | int(10) unsigned | NO   |     | 0       |                |
-| lastopen_ip    | varchar(100)     | YES  |     | NULL    |                |
-| lastclick_date | int(10) unsigned | NO   |     | 0       |                |
-| lastsent_date  | int(10) unsigned | NO   |     | 0       |                |
-| source         | varchar(50)      | NO   |     |         |                |
-+----------------+------------------+------+-----+---------+----------------+
-
-		 */
-		$now = time();
-		$subtable = '#__acymailing_subscriber';
+		// init
+		$this->getAcyListHelper();
+		$campaign    = $this->getComponentItem('campaign', $campaign_id);
+		$status      = $this->getComponentItem('status',   $status_id);
+		$contact     = $this->getComponentItem('contact',  $contact_id);
+		$addLists    = $status->final ? array() : array_filter($campaign->params->get('acymailing_addlists', array()));
+		$removeLists = $status->final ? array_filter($campaign->params->get('acymailing_addlists', array())) : array();
+		$subClass    = acymailing_get('class.subscriber');
+		$subtable    = '#__acymailing_subscriber';
 		$subid = $this->db->setQuery($this->db->getQuery(true)
 			->select('subid')
 			->from($subtable)
@@ -83,54 +51,33 @@ class JinboundAcymailing
 		)->loadResult();
 		if (!$subid)
 		{
-			$values = array(
-				$this->db->quote($contact->email)
-			,	$this->db->quote($contact->user_id)
-			,	$this->db->quote(trim($contact->first_name . ' ' . $contact->last_name))
-			,	$this->db->quote($now)
-			,	$this->db->quote('jInbound')
+			// https://www.acyba.com/acymailing/64-acymailing-developer-documentation.html#highlight-7
+			$user = (object) array(
+				'email'  => $contact->email
+			,	'userid' => $contact->user_id
+			,	'name'   => trim($contact->first_name . ' ' . $contact->last_name)
+			,	'source' => 'jInbound'
 			);
-			// insert record
-			$this->db->setQuery($this->db->getQuery(true)
-				->insert($subtable)
-				->columns(array('email', 'userid', 'name', 'created', 'source'))
-				->values(implode(',', $values))
-			)->query();
-			$subid = $this->db->insertid();
+			$subid = $subClass->save($user);
 		}
-		// subscribe them to lists
-		// #__acymailing_listsub
-		/*
-		 * mysql> describe jos_acymailing_listsub;
-+-----------+----------------------+------+-----+---------+-------+
-| Field     | Type                 | Null | Key | Default | Extra |
-+-----------+----------------------+------+-----+---------+-------+
-| listid    | smallint(5) unsigned | NO   | PRI | NULL    |       |
-| subid     | int(10) unsigned     | NO   | PRI | NULL    |       |
-| subdate   | int(10) unsigned     | YES  |     | NULL    |       |
-| unsubdate | int(10) unsigned     | YES  |     | NULL    |       |
-| status    | tinyint(4)           | NO   |     | NULL    |       |
-+-----------+----------------------+------+-----+---------+-------+
-		 */
-		foreach ($addLists as $list)
+		$subArray = array();
+		if (!empty($addLists))
 		{
-			$record = $this->getListSub($list, $subid);
-			if (empty($record))
+			foreach ($addLists as $list)
 			{
-				$this->addListSub($list, $subid, $now, false, 1);
-			}
-			else
-			{
-				$this->updateListSub($list, $subid, $now, false, 1);
+				$subArray[$list] = array('status' => 1);
 			}
 		}
-		foreach ($removeLists as $list)
+		if (!empty($removeLists))
 		{
-			$record = $this->getListSub($list, $subid);
-			if (!empty($record))
+			foreach ($removeLists as $list)
 			{
-				$this->updateListSub($list, $subid, false, $now, -1);
+				$subArray[$list] = array('status' => 0);
 			}
+		}
+		if (!empty($subArray))
+		{
+			$subClass->saveSubscription($subid, $subArray);
 		}
 	}
 	
