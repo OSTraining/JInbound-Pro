@@ -8,31 +8,12 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JInboundTable', 'table');
 
-class JInboundTableConversion extends JInboundAssetTable
+class JInboundTableConversion extends JInboundTable
 {
 	function __construct(&$db) {
 		parent::__construct('#__jinbound_conversions', 'id', $db);
-	}
-	
-	/**
-	 * Redefined asset name, as we support action control
-	 */
-	protected function _getAssetName() {
-		$k = $this->_tbl_key;
-		return 'com_jinbound.conversion.'.(int) $this->$k;
-	}
-	
-	/**
-	 * We provide our global ACL as parent
-	 * @see JTable::_getAssetParentId()
-	 */
-	protected function _compat_getAssetParentId($table = null, $id = null)
-	{
-		$asset = JTable::getInstance('Asset');
-		$asset->loadByName('com_jinbound.conversion');
-		return $asset->id;
 	}
 	
 	/**

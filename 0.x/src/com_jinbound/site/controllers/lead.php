@@ -8,6 +8,7 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+JInbound::registerHelper('form');
 JInbound::registerHelper('path');
 JInbound::registerHelper('priority');
 JInbound::registerHelper('status');
@@ -24,6 +25,7 @@ class JInboundControllerLead extends JInboundBaseController
 		$db              = JFactory::getDbo();
 		$dispatcher      = JDispatcher::getInstance();
 		$page_id         = $app->input->post->get('page_id', 0, 'int');
+		$token           = $app->input->get('token', '', 'cmd');
 		$raw_data        = $app->input->post->get('jform', array(), 'array');
 		$contact_data    = array();
 		$conversion_data = array('page_id' => $page_id);
@@ -53,34 +55,65 @@ class JInboundControllerLead extends JInboundBaseController
 			}
 		}
 		
-		// get a page model so we can pull the formbuilder variable from it
-		$model      = $this->getModel('Page', 'JInboundModel');
-		$page       = $model->getItem($page_id);
-		$form       = $model->getForm();
-		if (false === $model->validate($form, $raw_data))
+		// check for a token - this means a non-page form is being processed
+		if (!empty($token))
 		{
-			$errors = $model->getErrors();
-			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
-				if ($errors[$i] instanceof Exception) {
-					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
-				}
-				else {
-					$app->enqueueMessage($errors[$i], 'warning');
-				}
+			$session_data = JFactory::getSession()->get($token, false);
+			// uh, no data for this token - bail
+			if (!is_object($session_data))
+			{
+				throw new RuntimeException("No data found for token", 404);
 			}
-			$app->setUserState('com_jinbound.page.data', $raw_data);
-			$app->redirect(JRoute::_('index.php?option=com_jinbound&view=page&id='.$page_id.'&Itemid='.(int)$app->input->get('Itemid',0), false));
-			return false;
+			// assign variables
+			$campaign_id         = $session_data->campaign_id;
+			$form_id             = $session_data->form_id;
+			$page_name           = $session_data->page_name;
+			$notification_email  = $session_data->notification_email;
+			$after_submit_sendto = $session_data->after_submit_sendto;
+			$menu_item           = $session_data->menu_item;
+			$send_to_url         = $session_data->send_to_url;
+			$sendto_message      = $session_data->sendto_message;
+			// fetch the fields for this form
+			$formfields = JInboundHelperForm::getFields($form_id);
 		}
-		$redirect   = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
-		if (!$page || empty($page->id))
+		else
 		{
-			JError::raiseError(404, JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
-			jexit();
+			// get a page model so we can pull the formbuilder variable from it
+			$model               = $this->getModel('Page', 'JInboundModel');
+			$page                = $model->getItem($page_id);
+			$form                = $model->getForm();
+			$form_id             = $form->id;
+			$campaign_id         = $page->campaign;
+			$page_name           = $page->formname;
+			$notification_email  = $page->notification_email;
+			$after_submit_sendto = $page->after_submit_sendto;
+			$menu_item           = $page->menu_item;
+			$send_to_url         = $page->send_to_url;
+			$sendto_message      = $page->sendto_message;
+			if (false === $model->validate($form, $raw_data))
+			{
+				$errors = $model->getErrors();
+				for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+					if ($errors[$i] instanceof Exception) {
+						$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+					}
+					else {
+						$app->enqueueMessage($errors[$i], 'warning');
+					}
+				}
+				$app->setUserState('com_jinbound.page.data', $raw_data);
+				$app->redirect(JRoute::_('index.php?option=com_jinbound&view=page&id='.$page_id.'&Itemid='.(int)$app->input->get('Itemid',0), false));
+				return false;
+			}
+			$redirect   = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
+			if (!$page || empty($page->id))
+			{
+				JError::raiseError(404, JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
+				jexit();
+			}
+			// fetch the fields for this form
+			$formfields = JInboundHelperForm::getFields($page->formid);
 		}
-		// fetch the fields for this form
-		JInbound::registerHelper('form');
-		$formfields = JInboundHelperForm::getFields($page->formid);
 		// build data from formbuilder
 		foreach ($formfields as $formfield)
 		{
@@ -277,21 +310,21 @@ class JInboundControllerLead extends JInboundBaseController
 		$db->setQuery($db->getQuery(true)
 			->delete('#__jinbound_contacts_campaigns')
 			->where('contact_id = ' . $db->quote($contact->id))
-			->where('campaign_id = ' . $db->quote($page->campaign))
+			->where('campaign_id = ' . $db->quote($campaign_id))
 		)->query();
 		
 		// attach the contact to this campaign
 		$db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_contacts_campaigns')
 			->columns(array('contact_id', 'campaign_id'))
-			->values($db->quote($contact->id) . ', ' . $db->quote($page->campaign))
+			->values($db->quote($contact->id) . ', ' . $db->quote($campaign_id))
 		)->query();
 		
 		// save the status
-		JInboundHelperStatus::setContactStatusForCampaign($status_id, $contact->id, $page->campaign, $user_id);
+		JInboundHelperStatus::setContactStatusForCampaign($status_id, $contact->id, $campaign_id, $user_id);
 		
 		// save the priority
-		JInboundHelperPriority::setContactPriorityForCampaign($priority_id, $contact->id, $page->campaign, $user_id);
+		JInboundHelperPriority::setContactPriorityForCampaign($priority_id, $contact->id, $campaign_id, $user_id);
 		
 		
 		// no matter what, always save a NEW conversion record
@@ -348,12 +381,11 @@ class JInboundControllerLead extends JInboundBaseController
 		}
 		
 		// alert if necessary
-		$emails = $page->notification_email;
-		if (!empty($emails))
+		if (!empty($notification_email))
 		{
 			$campaign_name = $db->setQuery($db->getQuery(true)
 				->select('name')->from('#__jinbound_campaigns')
-				->where('id = ' . (int) $page->campaign)
+				->where('id = ' . (int) $campaign_id)
 			)->loadResult();
 			$html   = array();
 			$html[] = '<table>';
@@ -369,15 +401,15 @@ class JInboundControllerLead extends JInboundBaseController
 				$html[] = '	</tr>';
 			}
 			$html[]  = '</table>';
-			$emails  = explode(',', $emails);
+			$notification_email  = explode(',', $notification_email);
 			$subject = JText::_('COM_JINBOUND_NOTIFICATION_EMAIL_SUBJECT');
-			$dispatcher->trigger('onJinboundBeforeNotificationEmail', array(&$emails, &$subject, &$html, $contact, $conversion));
-			$body    = JText::sprintf('COM_JINBOUND_NOTIFICATION_EMAIL_BODY', $campaign_name, $page->formname, implode("\n", $html));
+			$dispatcher->trigger('onJinboundBeforeNotificationEmail', array(&$notification_email, &$subject, &$html, $contact, $conversion));
+			$body    = JText::sprintf('COM_JINBOUND_NOTIFICATION_EMAIL_BODY', $campaign_name, $page_name, implode("\n", $html));
 			$mailer  = JFactory::getMailer();
 			$mailer->IsHTML(true);
 			$mailer->setSubject($subject);
 			$mailer->setBody($body);
-			foreach ($emails as $email)
+			foreach ($notification_email as $email)
 			{
 				$mailer->addRecipient($email);
 			}
@@ -386,24 +418,24 @@ class JInboundControllerLead extends JInboundBaseController
 		
 		// build the redirect
 		$message = '';
-		switch ($page->after_submit_sendto)
+		switch ($after_submit_sendto)
 		{
 			case 'menuitem':
-				if (!empty($page->menu_item))
+				if (!empty($menu_item))
 				{
-					$redirect = JRoute::_('index.php?Itemid=' . $page->menu_item);
+					$redirect = JRoute::_('index.php?Itemid=' . $menu_item);
 				}
 				break;
 			case 'url':
-				if (!empty($page->send_to_url))
+				if (!empty($send_to_url))
 				{
-					$redirect = JRoute::_($page->send_to_url);
+					$redirect = JRoute::_($send_to_url);
 				}
 				break;
 			case 'message':
-				if (!empty($page->sendto_message))
+				if (!empty($sendto_message))
 				{
-					$message = $page->sendto_message;
+					$message = $sendto_message;
 				}
 			default:
 				$redirect = JURI::root();
