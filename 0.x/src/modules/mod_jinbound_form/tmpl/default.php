@@ -8,7 +8,7 @@
 defined('_JEXEC') or die;
 
 ?>
-<form action="<?php echo JInboundHelperUrl::task('lead.save', true, array('form_id' => $form_id)); ?>" method="post" enctype="multipart/form-data">
+<form action="<?php echo $form_url; ?>" method="post" enctype="multipart/form-data">
 	<?php foreach ($form->getFieldsets() as $fieldset) : ?>
 	<fieldset class="control-list">
 		<?php foreach ($form->getFieldset($fieldset->name) as $field) : ?>

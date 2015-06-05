@@ -13,6 +13,7 @@
 		<filename module="mod_jinbound_form">mod_jinbound_form.php</filename>
 		<filename module="mod_jinbound_form">mod_jinbound_form.xml</filename>
 		<filename module="mod_jinbound_form">tmpl/default.php</filename>
+		<filename>language/en-GB/en-GB.mod_jinbound_form.ini</filename>
 	</files>
 	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
 		<fields name="params">
@@ -23,6 +24,56 @@
 					label="MOD_JINBOUND_FORM_FORMID"
 					description="MOD_JINBOUND_FORM_FORMID_DESC"
 				/>
+				<field
+					name="campaignid"
+					type="jinboundcampaignlist"
+					label="MOD_JINBOUND_FORM_CAMPAIGNID"
+					description="MOD_JINBOUND_FORM_CAMPAIGNID_DESC"
+				/>
+		<field
+			id="notification_email" name="notification_email"
+			type="text"
+			label="MOD_JINBOUND_FORM_NOTIFICATION_EMAIL"
+			description="MOD_JINBOUND_FORM_NOTIFICATION_EMAIL_DESC"
+			class="input-block-level"
+		/>
+
+		<field
+			id="after_submit_sendto" name="after_submit_sendto"
+			type="list"
+			label="MOD_JINBOUND_FORM_AFTER_SUBMIT_SENDTO"
+			description="MOD_JINBOUND_FORM_AFTER_SUBMIT_SENDTO_DESC"
+			default="message"
+			class="input-large"
+		>
+			<option value="menuitem">MOD_JINBOUND_FORM_MENU_ITEM</option>
+			<option value="url">MOD_JINBOUND_FORM_REDIRECT_TO_URL</option>
+			<option value="message">MOD_JINBOUND_FORM_MESSAGE</option>
+		</field>
+
+		<field
+			id="menu_item" name="menu_item"
+			type="menuitem"
+			label="MOD_JINBOUND_FORM_MENU_ITEM"
+			description="MOD_JINBOUND_FORM_MENU_ITEM_DESC"
+			class="input-large"
+		/>
+
+		<field
+			id="send_to_url" name="send_to_url"
+			type="text"
+			label="MOD_JINBOUND_FORM_SEND_TO_URL"
+			description="MOD_JINBOUND_FORM_SEND_TO_URL_DESC"
+			class="input-block-level"
+		/>
+
+		<field
+			id="sendto_message" name="sendto_message"
+			type="textarea"
+			label="MOD_JINBOUND_FORM_SENDTO_MESSAGE"
+			description="MOD_JINBOUND_FORM_SENDTO_MESSAGE_DESC"
+			class="input-block-level"
+		/>
 			</fieldset>
 			<fieldset name="advanced">
 				<field name="moduleclass_sfx" type="textarea" rows="3" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"	description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
