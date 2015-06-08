@@ -112,21 +112,21 @@ abstract class ModJInboundCTAHelper
 		{
 			// if the condition is "any", we check all the conditions
 			case ModJInboundCTAHelper::CONDITION_ANY:
-				if (DEBUG)
+				if (JDEBUG)
 				{
 					$app->enqueueMessage('Condition: ANY');
 				}
 				return $skip_new ? ($in_campaigns || $not_in_campaigns) : ($is_new || $in_campaigns || $not_in_campaigns);
 			// "all" requires all of these to be true
 			case ModJInboundCTAHelper::CONDITION_ALL:
-				if (DEBUG)
+				if (JDEBUG)
 				{
 					$app->enqueueMessage('Condition: ALL');
 				}
 				return $skip_new ? ($in_campaigns && $not_in_campaigns) : ($is_new && $in_campaigns && $not_in_campaigns);
 			// "none" requires none of these to be true
 			case ModJInboundCTAHelper::CONDITION_NONE:
-				if (DEBUG)
+				if (JDEBUG)
 				{
 					$app->enqueueMessage('Condition: NONE');
 				}
