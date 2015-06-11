@@ -8,7 +8,7 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-<div id="jinbound_component" class="<?php echo $this->viewClass; ?>">
+<div id="jinbound_component" class="row-fluid <?php echo $this->viewClass; ?>">
 	<form action="<?php echo JInboundHelperUrl::_(); ?>" method="post" id="adminForm" name="adminForm" class="form-validate" enctype="multipart/form-data">
 		<fieldset>
 			<?php echo $this->loadTemplate('edit_default'); ?>
@@ -26,6 +26,8 @@ defined('JPATH_PLATFORM') or die;
 </div>
 <?php echo $this->loadTemplate('footer'); ?>
 <?php if (JInbound::config("debug", 0)) : ?>
-<h3>Item:</h3>
-<pre><?php htmlspecialchars(print_r($this->item)); ?></pre>
+<div class="row-fluid">
+	<h3>Item:</h3>
+	<pre><?php htmlspecialchars(print_r($this->item)); ?></pre>
+</div>
 <?php endif; ?>

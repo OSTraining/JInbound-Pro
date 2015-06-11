@@ -181,9 +181,10 @@ class plgSystemJInbound extends JPlugin
 			// if so, just compare to query string
 			$trimmed = trim($param_string, '/');
 			$trim_root = trim(JUri::root(true), '/');
-			if (!empty($trimmed) && array_key_exists('REQUEST_URI', $_SERVER)
-				&& (trim($_SERVER['REQUEST_URI'], '/') === $trimmed
-				 || trim($_SERVER['REQUEST_URI'], '/') === trim($trim_root . '/' . $trimmed, '/')
+			$uri = static::getURI(false);
+			if (!empty($trimmed)
+				&& (trim($uri, '/') === $trimmed
+				 || trim($uri, '/') === trim($trim_root . '/' . $trimmed, '/')
 				))
 			{
 				$matches = true;
@@ -302,7 +303,7 @@ class plgSystemJInbound extends JPlugin
 		,	'ip'               => $db->quote($ip)
 		,	'session_id'       => $db->quote($session)
 		,	'type'             => $db->quote(strtoupper(filter_input(INPUT_SERVER, 'REQUEST_METHOD')))
-		,	'url'              => $db->quote(filter_input(INPUT_SERVER, 'REQUEST_URI'))
+		,	'url'              => $db->quote(static::getURI())
 		);
 		$db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_tracks')
@@ -327,6 +328,61 @@ class plgSystemJInbound extends JPlugin
 			}
 			catch (Exception $e) {}
 		}
+	}
+	
+	/**
+	 * Copied from sh404sef (which copied from Joomla)
+	 * Modified a wee bit
+	 * @return string
+	 */
+	static public function getURI($full = true)
+	{
+		if ($full)
+		{
+			// copied from Joomla, as JURI keeps the original URI
+			// as a protected var, we can't access it
+			// Determine if the request was over SSL (HTTPS).
+			if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) != 'off'))
+			{
+				$https = 's://';
+			}
+			else
+			{
+				$https = '://';
+			}
+			$theURI = 'http' . $https . $_SERVER['HTTP_HOST'];
+		}
+		else
+		{
+			$theURI = '';
+		}
+		
+		// Since we are assigning the URI from the server variables, we first need
+		// to determine if we are running on apache or IIS.  If PHP_SELF and REQUEST_URI
+		// are present, we will assume we are running on apache.
+		
+		if (!empty($_SERVER['PHP_SELF']) && !empty($_SERVER['REQUEST_URI']))
+		{
+			// To build the entire URI we need to prepend the protocol, and the http host
+			// to the URI string.
+			$theURI .= $_SERVER['REQUEST_URI'];
+		}
+		else
+		{
+			// Since we do not have REQUEST_URI to work with, we will assume we are
+			// running on IIS and will therefore need to work some magic with the SCRIPT_NAME and
+			// QUERY_STRING environment variables.
+			
+			// IIS uses the SCRIPT_NAME variable instead of a REQUEST_URI variable... thanks, MS
+			$theURI .= $_SERVER['SCRIPT_NAME'];
+			
+			// If the query string exists append it to the URI string
+			if (isset($_SERVER['QUERY_STRING']) && !empty($_SERVER['QUERY_STRING']))
+			{
+				$theURI .= '?' . $_SERVER['QUERY_STRING'];
+			}
+		}
+		return $theURI;
 	}
 	
 	/**

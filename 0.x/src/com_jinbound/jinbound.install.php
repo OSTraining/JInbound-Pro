@@ -102,6 +102,7 @@ class com_JInboundInstallerScript
 				// fix component config
 				$this->_saveDefaults($parent);
 			case 'update':
+				$this->_fixGenericFormFields();
 				$this->_checkDefaultReportEmails();
 				$this->_saveDefaultAssets($parent);
 				$this->_forceReportEmailOption($parent);
@@ -120,6 +121,27 @@ class com_JInboundInstallerScript
 				$this->_cleanupMissingRecords();
 				break;
 		}
+	}
+	
+	private function _fixGenericFormFields()
+	{
+		$db = JFactory::getDbo();
+		$base = $db->getQuery(true)->update('#__jinbound_fields');
+		// email
+		$db->setQuery($base->clear('set')->clear('where')
+			->set($db->qn('type') . ' = ' . $db->q('email'))
+			->where($db->qn('name') . ' = ' . $db->q('email'))
+		)->query();
+		// url
+		$db->setQuery($base->clear('set')->clear('where')
+			->set($db->qn('type') . ' = ' . $db->q('url'))
+			->where($db->qn('name') . ' = ' . $db->q('website'))
+		)->query();
+		// telephone
+		$db->setQuery($base->clear('set')->clear('where')
+			->set($db->qn('type') . ' = ' . $db->q('tel'))
+			->where($db->qn('name') . ' = ' . $db->q('phone_number'))
+		)->query();
 	}
 	
 	private function _checkDefaultReportEmails()

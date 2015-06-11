@@ -11,7 +11,7 @@ JHtml::_('behavior.tooltip');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 ?>
-<div id="jinbound_component" class="<?php echo $this->viewClass; ?>">
+<div id="jinbound_component" class="row-fluid <?php echo $this->viewClass; ?>">
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -76,8 +76,10 @@ $listDirn  = $this->state->get('list.direction');
 	</div>
 </div>
 <?php if (JInbound::config("debug", 0)) : ?>
-<h3>State</h3>
-<pre><?php echo $this->escape(print_r($this->state, 1)); ?></pre>
-<h3>Items</h3>
-<pre><?php echo $this->escape(print_r($this->items, 1)); ?></pre>
+<div class="row-fluid">
+	<h3>State</h3>
+	<pre><?php echo $this->escape(print_r($this->state, 1)); ?></pre>
+	<h3>Items</h3>
+	<pre><?php echo $this->escape(print_r($this->items, 1)); ?></pre>
+</div>
 <?php endif; ?>
