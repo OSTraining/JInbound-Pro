@@ -18,7 +18,7 @@ class JInboundTableForm extends JInboundAssetTable
 		parent::__construct('#__jinbound_forms', 'id', $db);
 	}
 
-	protected function _compat_getAssetName() {
+	protected function _getAssetName() {
 		$k = $this->_tbl_key;
 		return 'com_jinbound.form.'.(int) $this->$k;
 	}

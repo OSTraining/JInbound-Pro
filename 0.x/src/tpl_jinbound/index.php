@@ -25,6 +25,7 @@ require_once $helper;
 
 JInbound::registerHelper('url');
 $document = JFactory::getDocument();
+$document->addStyleSheet(JUri::root() . '/media/system/css/system.css');
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
 

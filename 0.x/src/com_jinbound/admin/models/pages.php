@@ -126,9 +126,11 @@ class JInboundModelPages extends JInboundListModel
 		// Create a new query object.
 		$db = $this->getDbo();
 		// filters
-		$start = $this->getState('filter.start');
-		$end = $this->getState('filter.end');
-		if (!empty($start)) {
+		$start     = $this->getState('filter.start');
+		$end       = $this->getState('filter.end');
+		$startdate = false;
+		$enddate   = false;
+		if (!empty($start) && is_string($start)) {
 			try {
 				$startdate = new DateTime($start);
 			}
@@ -137,7 +139,7 @@ class JInboundModelPages extends JInboundListModel
 			}
 		}
 		
-		if (!empty($end)) {
+		if (!empty($end) && is_string($end)) {
 			try {
 				$enddate = new DateTime($end);
 			}
@@ -145,6 +147,7 @@ class JInboundModelPages extends JInboundListModel
 				$enddate = false;
 			}
 		}
+		
 		$cols = array('id', 'asset_id', 'layout', 'heading', 'subheading', 'socialmedia', 'maintext',
 		'sidebartext', 'alias', 'name', 'image', 'imagealttext', 'category', 'metatitle',
 		'metadescription', 'formid', 'formbuilder', 'campaign', 'converts_on_another_form',

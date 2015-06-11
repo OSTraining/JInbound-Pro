@@ -148,6 +148,8 @@ class JInboundModelPage extends JInboundAdminModel
 				}
 			}
 		}
+		// BUGFIX we removed the necessary plugin trigger for allowing alterations
+		JDispatcher::getInstance()->trigger('onJinboundFormbuilderDisplay', array(&$xml));
 		// ok, we should have enough now to add to the form
 		$form->load($xml, false);
 		// we have to repopulate the form data now so our custom form fields get populated with data

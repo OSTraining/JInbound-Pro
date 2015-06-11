@@ -142,6 +142,7 @@ class plgContentJInbound extends JPlugin
 		// handle known contexts
 		switch ($context) {
 			case 'com_jinbound.email':
+				// full url fixes
 				$matches = array();
 				// handle html attributes
 				preg_match_all('#(?P<attr>src|href)\=(?P<qte>\"|\\\')(?P<url>.*?)(?P=qte)#Di', $table->htmlbody, $matches, PREG_SET_ORDER);

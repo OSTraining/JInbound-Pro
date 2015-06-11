@@ -13,13 +13,11 @@ JText::script('COM_JINBOUND_FORM_CONVERTED_ON');
 JText::script('COM_JINBOUND_LANDING_PAGE_NAME');
 JText::script('COM_JINBOUND_LEADS');
 JText::script('COM_JINBOUND_SUBMISSIONS');
-JText::script('COM_JINBOUND_VISITS');
+JText::script('COM_JINBOUND_VIEWS');
 JText::script('COM_JINBOUND_CONVERSIONS');
 JText::script('COM_JINBOUND_CONVERSION_RATE');
 JText::script('COM_JINBOUND_ERROR_LOADING_PLOT_DATA');
-JText::script('COM_JINBOUND_VISITS');
 JText::script('COM_JINBOUND_NOT_FOUND');
-
 JText::script('COM_JINBOUND_GOAL_COMPLETIONS');
 JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 
@@ -208,7 +206,7 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 				var i = 0, n = data.items.length, t = $('<table class="table table-striped"></table>'), h = $('<thead></thead>'), hr = $('<tr></tr>'), b = $('<tbody></tbody>');
 				h.append(hr);
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_LANDING_PAGE_NAME')));
-				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_VISITS')));
+				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_VIEWS')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_SUBMISSIONS')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_LEADS')));
 				hr.append($('<td></td>').text(Joomla.JText._('COM_JINBOUND_GOAL_COMPLETIONS')));
@@ -286,7 +284,7 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 				};
 				x = {
 					renderer: $.jqplot.DateAxisRenderer
-				,	tickInterval: '1 day'
+				,	tickInterval: data.tick ? data.tick : '1 day'
 				,	tickOptions: {
 						angle: -30
 					}
@@ -296,7 +294,7 @@ JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 				,	animateReplot: true
 				,	series: [
 						{
-							label: Joomla.JText._('COM_JINBOUND_VISITS')
+							label: Joomla.JText._('COM_JINBOUND_VIEWS')
 						}
 					,	{
 							label: Joomla.JText._('COM_JINBOUND_LEADS')

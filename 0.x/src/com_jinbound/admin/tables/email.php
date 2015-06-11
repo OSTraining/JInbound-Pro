@@ -20,7 +20,7 @@ class JInboundTableEmail extends JInboundAssetTable
 	/**
 	 * Redefined asset name, as we support action control
 	 */
-	protected function _compat_getAssetName() {
+	protected function _getAssetName() {
 		$k = $this->_tbl_key;
 		return 'com_jinbound.email.'.(int) $this->$k;
 	}
@@ -29,7 +29,7 @@ class JInboundTableEmail extends JInboundAssetTable
 	 * We provide our global ACL as parent
 	 * @see JTable::_getAssetParentId()
 	 */
-	protected function _getAssetParentId($table = null, $id = null)
+	protected function _compat_getAssetParentId($table = null, $id = null)
 	{
 		$asset = JTable::getInstance('Asset');
 		$asset->loadByName('com_jinbound.email');

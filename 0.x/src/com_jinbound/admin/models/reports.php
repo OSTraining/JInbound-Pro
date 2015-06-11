@@ -1087,6 +1087,10 @@ class JInboundModelReports extends JInboundListModel
 			,	'top' => $top
 			,	'lowest' => $lowest
 			)
+		,	'date' => array(
+				'start' => $start
+			,	'end'   => $end
+			)
 		,	'debug' => $debug
 		);
 		
@@ -1235,6 +1239,7 @@ class JInboundModelReports extends JInboundListModel
 		,	'reports.pages.hits', 'reports.pages.list'
 		,	'reports.pages.top.name', 'reports.pages.top.url'
 		,	'reports.pages.lowest.name', 'reports.pages.lowest.url'
+		,	'reports.date.start', 'reports.date.end'
 		,	'reports.debug.filters', 'reports.debug.leadstate', 'reports.debug.pagestate'
 		);
 		$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags, $email));
@@ -1262,5 +1267,44 @@ class JInboundModelReports extends JInboundListModel
 		}
 		$form->bind(array('asset_id' => $id));
 		return $form;
+	}
+	
+	public function getTickString($start = null, $end = null)
+	{
+		$dates = $this->_getDateRanges($start, $end);
+		if (empty($dates))
+		{
+			return '1 day';
+		}
+		try
+		{
+			$start_date = new DateTime(reset($dates));
+			$end_date   = new DateTime(end($dates));
+		}
+		catch (Exception $ex)
+		{
+			return '1 day';
+		}
+		$diff = abs(intval($start_date->format('U')) - intval($end_date->format('U')));
+		$day  = 60 * 60 * 24;
+		$year = $day * 365;
+		// 2 weeks or less - 1 day
+		if ($day * 14 >= $diff) {return '1 day';}
+		// 2 weeks to a month - 2 day
+		if ($day * 31 >= $diff) {return '2 day';}
+		// month to 3 months - 1 week
+		if ($day * 90 >= $diff) {return '1 week';}
+		// 3 months to 6 months - 2 weeks
+		if ($day * 180 >= $diff) {return '2 week';}
+		// 3 months to 2 years - 1 month
+		if ($year * 2 >= $diff) {return '1 month';}
+		// 2 years to 4 years - 2 months
+		if ($year * 4 >= $diff) {return '2 month';}
+		// 4 years to 6 years - 3 months
+		if ($year * 6 >= $diff) {return '3 month';}
+		// 6+ years - 1 year
+		if ($year * 6 < $diff) {return '1 year';}
+		// no idea - use old default - this should never ever happen :)
+		return '1 day';
 	}
 }

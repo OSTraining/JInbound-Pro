@@ -20,6 +20,8 @@ defined('PLG_SYSTEM_JINBOUNDCAPTCHA') or define('PLG_SYSTEM_JINBOUNDCAPTCHA', 1 
 
 class plgSystemJInboundcaptcha extends JPlugin
 {
+	protected $app;
+	
 	/**
 	 * Constructor
 	 * 
@@ -30,11 +32,12 @@ class plgSystemJInboundcaptcha extends JPlugin
 	{
 		parent::__construct($subject, $config);
 		$this->loadLanguage('plg_system_jinboundcaptcha.sys', JPATH_ADMINISTRATOR);
+		$this->app = JFactory::getApplication();
 	}
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDCAPTCHA)
+		if ($this->app->isSite() || !PLG_SYSTEM_JINBOUNDCAPTCHA)
 		{
 			return;
 		}
@@ -63,7 +66,7 @@ class plgSystemJInboundcaptcha extends JPlugin
 			return;
 		}
 		// add validate attribute to captcha
-		$nodes = $xml->xpath("//field[@name='captcha']");
+		$nodes = $xml->xpath("//field[@type='captcha']");
 		foreach ($nodes as &$node)
 		{
 			$node['validate'] = 'captcha';

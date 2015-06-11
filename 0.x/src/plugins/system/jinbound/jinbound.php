@@ -282,7 +282,7 @@ class plgSystemJInbound extends JPlugin
 	private function recordUserTrack()
 	{
 		$db           = JFactory::getDbo();
-		$ip           = $_SERVER['REMOTE_ADDR'];
+		$ip           = filter_input(INPUT_SERVER, 'REMOTE_ADDR');
 		$session      = session_id();
 		$id           = microtime() . $ip . md5($session);
 		$detecteduser = self::getCookieUser();
@@ -297,12 +297,12 @@ class plgSystemJInbound extends JPlugin
 		,	'cookie'           => $db->quote(self::getCookieValue())
 		,	'detected_user_id' => $db->quote($detecteduser) // TODO
 		,	'current_user_id'  => $db->quote(JFactory::getUser()->get('id'))
-		,	'user_agent'       => $db->quote($_SERVER['HTTP_USER_AGENT'])
+		,	'user_agent'       => $db->quote(filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'))
 		,	'created'          => $db->quote(JFactory::getDate()->toSql())
 		,	'ip'               => $db->quote($ip)
 		,	'session_id'       => $db->quote($session)
-		,	'type'             => $db->quote(strtoupper($_SERVER['REQUEST_METHOD']))
-		,	'url'              => $db->quote($_SERVER['REQUEST_URI'])
+		,	'type'             => $db->quote(strtoupper(filter_input(INPUT_SERVER, 'REQUEST_METHOD')))
+		,	'url'              => $db->quote(filter_input(INPUT_SERVER, 'REQUEST_URI'))
 		);
 		$db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_tracks')
@@ -371,15 +371,16 @@ class plgSystemJInbound extends JPlugin
 	 */
 	static public function getCookieValue()
 	{
-		if (isset($_COOKIE['__jib__']))
+		$c = filter_input(INPUT_COOKIE, '__jib__');
+		if (!empty($c))
 		{
-			return $_COOKIE['__jib__'];
+			return $c;
 		}
 		static $cookie;
 		if (is_null($cookie))
 		{
-			$ua     = $_SERVER['HTTP_USER_AGENT'];
-			$ip     = $_SERVER['REMOTE_ADDR'];
+			$ua     = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
+			$ip     = filter_input(INPUT_SERVER, 'REMOTE_ADDR');
 			$salt   = strrev(md5(JFactory::getConfig()->get('secret')));
 			$cookie = sha1("$ua.$salt.$ip", false);
 		}

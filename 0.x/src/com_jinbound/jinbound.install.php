@@ -136,12 +136,21 @@ class com_JInboundInstallerScript
 			$app->enqueueMessage('Checking existing report emails');
 			foreach ($emails as $email)
 			{
-				$html  = preg_replace('/\s/', '', JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_HTMLBODY_LEGACY'));
-				$plain = preg_replace('/\s/', '', implode("\n", explode('<br>', JText::_('COM_JINBOUND_DEFAULT_REPORT_EMAIL_PLAINBODY_LEGACY'))));
-				if (preg_replace('/\s/', '', $email->htmlbody) == $html && preg_replace('/\s/', '', $email->plainbody) == $plain)
+				$found = false;
+				foreach (array('', '_2') as $sfx)
 				{
-					$app->enqueueMessage('Found older report email - updating');
-					$id = $email->id;
+					$html  = preg_replace('/\s/', '', JText::_("COM_JINBOUND_DEFAULT_REPORT_EMAIL_HTMLBODY_LEGACY$sfx"));
+					$plain = preg_replace('/\s/', '', implode("\n", explode('<br>', JText::_("COM_JINBOUND_DEFAULT_REPORT_EMAIL_PLAINBODY_LEGACY$sfx"))));
+					if (preg_replace('/\s/', '', $email->htmlbody) == $html && preg_replace('/\s/', '', $email->plainbody) == $plain)
+					{
+						$app->enqueueMessage('Found older report email - updating');
+						$id = $email->id;
+						$found = true;
+						break;
+					}
+				}
+				if ($found)
+				{
 					break;
 				}
 			}

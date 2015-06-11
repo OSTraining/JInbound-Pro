@@ -21,6 +21,8 @@ defined('PLG_SYSTEM_JINBOUNDFILES') or define('PLG_SYSTEM_JINBOUNDFILES', 1 === 
 
 class plgSystemJInboundfiles extends JPlugin
 {
+	protected $app;
+	
 	protected $session;
 	
 	/**
@@ -34,12 +36,13 @@ class plgSystemJInboundfiles extends JPlugin
 		parent::__construct($subject, $config);
 		$this->loadLanguage('plg_system_jinboundfiles.sys', JPATH_ADMINISTRATOR);
 		$this->loadLanguage('lib_joomla', JPATH_ADMINISTRATOR);
+		$this->app = JFactory::getApplication();
 		$this->session = JFactory::getSession();
 	}
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDFILES || JFactory::getUser()->guest)
+		if ($this->app->isSite() || !PLG_SYSTEM_JINBOUNDFILES || JFactory::getUser()->guest)
 		{
 			return;
 		}
@@ -118,15 +121,22 @@ class plgSystemJInboundfiles extends JPlugin
 	
 	public function onContentBeforeSave($context, $conversion, $isNew)
 	{
-		$app = JFactory::getApplication();
 		// only operate on jinbound conversion contexts
 		if ('com_jinbound.conversion' !== $context || !PLG_SYSTEM_JINBOUNDFILES)
 		{
 			return;
 		}
+		if (JDEBUG)
+		{
+			$this->app->enqueueMessage(__METHOD__);
+		}
 		$fileinputs = $this->getFileInputs($conversion->page_id);
 		if (empty($fileinputs))
 		{
+			if (JDEBUG)
+			{
+				$this->app->enqueueMessage('No file input in this form');
+			}
 			return;
 		}
 		// get extensions
@@ -134,9 +144,16 @@ class plgSystemJInboundfiles extends JPlugin
 		// store the files
 		$contact_path = $this->getStoragePath($conversion->contact_id);
 		$formdata = json_decode($conversion->formdata);
-		$files = $app->input->files->get('jform', null, 'raw');
+		$files = $this->app->input->files->get('jform', null, 'raw');
 		$tosave = array();
-		if (is_array($files))
+		if (!is_array($files))
+		{
+			if (JDEBUG)
+			{
+				$this->app->enqueueMessage('No files uploaded');
+			}
+		}
+		else
 		{
 			while (list($key, $file) = each($files['lead']))
 			{
@@ -173,7 +190,7 @@ class plgSystemJInboundfiles extends JPlugin
 					$isSafe = JFilterInput::isSafeFile($descriptor, $isSafeOptions);
 					if (!$isSafe)
 					{
-						$app->enqueueMessage(JText::sprintf('JLIB_FILESYSTEM_ERROR_WARNFS_ERR03', $filename), 'error');
+						$this->app->enqueueMessage(JText::sprintf('JLIB_FILESYSTEM_ERROR_WARNFS_ERR03', $filename), 'error');
 						continue;
 					}
 				}
@@ -192,7 +209,7 @@ class plgSystemJInboundfiles extends JPlugin
 					{
 						$error = str_replace($contact_path, '', $error);
 					}
-					$app->enqueueMessage($error, 'error');
+					$this->app->enqueueMessage($error, 'error');
 					continue;
 				}
 				$url = JUri::root(false) . 'administrator/' . sprintf('index.php?option=plg_system_jinboundfiles&view=file&file=%1$s&contact=%2$d', htmlspecialchars($pfx . $base, ENT_QUOTES, 'UTF-8'), $conversion->contact_id);

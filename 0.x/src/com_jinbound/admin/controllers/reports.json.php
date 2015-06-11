@@ -20,6 +20,7 @@ class JInboundControllerReports extends JInboundBaseController
 			$state = $model->getState();
 			$start = $state->get('filter.start', null);
 			$end   = $state->get('filter.end', null);
+			$data['tick']        = $model->getTickString($start, $end);
 			$data['hits']        = $model->getLandingPageHits($start, $end);
 			$data['leads']       = $model->getLeadsByCreationDate($start, $end);
 			$data['conversions'] = $model->getConversionsByDate($start, $end);

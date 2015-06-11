@@ -21,7 +21,7 @@ class JInboundTableField extends JInboundAssetTable
 		return 'com_jinbound.field.'.(int) $this->$k;
 	}
 
-	protected function _compat_getAssetTitle() {
+	protected function _getAssetTitle() {
 		return $this->title;
 	}
 	

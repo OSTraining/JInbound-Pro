@@ -82,7 +82,7 @@ class JInboundControllerLead extends JInboundBaseController
 			$model               = $this->getModel('Page', 'JInboundModel');
 			$page                = $model->getItem($page_id);
 			$form                = $model->getForm();
-			$form_id             = $form->id;
+			$form_id             = $page->formid;
 			$campaign_id         = $page->campaign;
 			$page_name           = $page->formname;
 			$notification_email  = $page->notification_email;

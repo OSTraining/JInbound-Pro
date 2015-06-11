@@ -50,9 +50,11 @@ class JInboundControllerEmail extends JInboundFormController
 					'reports.leads.count', 'reports.leads.percent', 'reports.leads.list',
 					'reports.pages.hits', 'reports.pages.list',
 					'reports.pages.top.name', 'reports.pages.top.url',
-					'reports.pages.lowest.name', 'reports.pages.lowest.url'
+					'reports.pages.lowest.name', 'reports.pages.lowest.url',
+					'reports.date.start', 'reports.date.end'
 				);
 				$dispatcher->trigger('onJInboundReportEmailTags', array(&$tags));
+				$result->date  = (object) array('start' => '2015-01-01 00:00:00', 'end' => '2015-01-07 23:59:59');
 				$result->goals = (object) array('count' => 201, 'percent' => 11.0);
 				$result->leads = (object) array('count' => 302, 'percent' => 0.0, 'list' => '<table>'
 					. '<thead><tr>'
