@@ -21,6 +21,9 @@ $saveOrder = ($listOrder == 'Field.id');
 	<th>
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_TITLE', 'Field.title', $listDirn, $listOrder); ?>
 	</th>
+	<th>
+		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_FIELD_NAME', 'Field.name', $listDirn, $listOrder); ?>
+	</th>
 	<th width="10%" class="nowrap">
 		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_FIELD_TYPE_LABEL', 'Field.type', $listDirn, $listOrder); ?>
 	</th>

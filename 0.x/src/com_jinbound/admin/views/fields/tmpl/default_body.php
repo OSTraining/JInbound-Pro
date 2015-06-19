@@ -68,6 +68,9 @@ if (!empty($this->items)) :
 			<?php endif; ?>
 		</td>
 		<td>
+			<?php echo JInboundHelperFilter::escape($item->name); ?>
+		</td>
+		<td>
 			<?php echo JInboundHelperFilter::escape($item->type); ?>
 		</td>
 		<td class="nowrap hidden-phone hidden-tablet">

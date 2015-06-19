@@ -37,11 +37,11 @@ class plgSystemJInbound extends JPlugin
 			self::$_run = true;
 		}
 		else {
-			$this->loadLanguage();
 			$this->app->enqueueMessage(JText::_('PLG_SYSTEM_JINBOUND_COMPONENT_NOT_INSTALLED'));
 			self::$_run = false;
 		}
 		parent::__construct($subject, $config);
+		$this->loadLanguage();
 	}
 	
 	public function loadLanguage($extension = 'plg_system_jinbound.sys', $basePath = JPATH_ADMINISTRATOR) {
@@ -120,6 +120,10 @@ class plgSystemJInbound extends JPlugin
 	
 	public function onAfterRoute()
 	{
+		if (!self::$_run)
+		{
+			return;
+		}
 		// read from the database any campaign params given the cookie value
 		$db     = JFactory::getDbo();
 		$cookie = $this->getCookieValue();
@@ -256,6 +260,26 @@ class plgSystemJInbound extends JPlugin
 			JResponse::setBody($body);
 		}
 		$this->recordUserTrack();
+	}
+	
+	public function onInstallerBeforePackageDownload(&$url, &$headers)
+	{
+		if (!self::$_run || false === strpos($url, 'jinbound.com'))
+		{
+			return;
+		}
+		JLoader::import('joomla.application.component.helper');
+		$component = JComponentHelper::getComponent('com_jinbound');
+		$dlid = $component->params->get('downloadid', '');
+		if (empty($dlid))
+		{
+			if ($this->app->isAdmin())
+			{
+				$this->app->enqueueMessage(JText::_('PLG_SYSTEM_JINBOUND_EMPTY_DLID'));
+			}
+			return;
+		}
+		$url .= (false === strpos($url, '?') ? '?' : '&') . 'dlid=' . $dlid;
 	}
 	
 	/**

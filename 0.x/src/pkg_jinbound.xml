@@ -10,6 +10,9 @@
 	<creationDate>@ant_current_date@</creationDate>
 	<description>PKG_JINBOUND_DESCRIPTION</description>
 	<scriptfile>jinbound.install.php</scriptfile>
+	<updateservers>
+		<server type="collection" priority="1" name="JInbound 2.x">https://jinbound.com/index.php?option=com_ars&amp;view=update&amp;task=category&amp;id=packages&amp;format=xml&amp;dummy=extension.xml</server>
+	</updateservers>
 	<files folder="packages">
 		<file type="component" id="@ant_component_id@">@ant_component_package@</file>
 		<file type="template" id="@ant_template_id@" client="site">@ant_template_package@</file>

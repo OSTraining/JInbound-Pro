@@ -404,8 +404,8 @@
 		<input message="GitHub password for user ${cfg.git.username}" addproperty="git.password">
 		</input>
 
-		<exec executable="${cfg.curl.bin}">
-			<arg line="-o ${git.log.file} -s 'https://api.github.com/repos/${git.user}/${git.repo}/issues?filter=all&amp;state=closed&amp;labels=CL' -u ${cfg.git.username}:${git.password}" />
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logfetch.php --user="${git.user}" --repo="${git.repo}" --username="${cfg.git.username}" --password="${git.password}"' />
 		</exec>
 		<echo>Raw data fetched from repository</echo>
 		

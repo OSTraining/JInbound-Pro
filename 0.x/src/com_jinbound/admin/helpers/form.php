@@ -236,7 +236,7 @@ abstract class JInboundHelperForm
 			{
 				continue;
 			}
-			$data = array_merge($extra, array(
+			$data = array_merge(array(
 				'title'        => JText::_('COM_JINBOUND_PAGE_FIELD_' . strtoupper($fieldname))
 			,	'name'         => $fieldname
 			,	'type'         => 'text'
@@ -253,7 +253,7 @@ abstract class JInboundHelperForm
 					)
 				,	'required' => (int) in_array($fieldname, $required)
 				)
-			));
+			), $extra);
 			if ('email' == $fieldname)
 			{
 				$data['params']['attrs']['key'][]  = 'validate';

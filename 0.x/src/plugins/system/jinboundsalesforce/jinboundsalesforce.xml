@@ -11,6 +11,10 @@
 	<version>@ant_salesforce_version_number@</version>
 	<description>PLG_SYSTEM_JINBOUNDSALESFORCE_DESCRIPTION</description>
 	<scriptfile>jinboundsalesforce.install.php</scriptfile>
+	<updateservers>
+		<server type="collection" name="plg_system_jinboundsalesforce">https://jinbound.com/index.php?option=com_ars&amp;view=update&amp;task=category&amp;id=plugins&amp;format=xml&amp;dummy=extension.xml</server>
+		<server type="extension" name="plg_system_jinboundsalesforce">https://jinbound.com/index.php?option=com_ars&amp;view=update&amp;task=stream&amp;id=8&amp;format=xml&amp;dummy=extension.xml</server>
+	</updateservers>
 	<languages folder="language">
 		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundsalesforce.sys.ini</language>
 	</languages>

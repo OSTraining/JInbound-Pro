@@ -102,6 +102,8 @@ if (!is_array($entries)) {
 	exit();
 }
 
+echo "Processing: " . count($entries) . " issues ...\n";
+
 // NOTE: using milestones as versions, cannot rely on them being in order!
 $versions = array();
 
@@ -151,7 +153,12 @@ foreach($entries as $entry) {
 	}
 }
 
-foreach ($versions as $version => $version_data) {
+$sorted_versions = array_keys($versions);
+usort($sorted_versions, 'version_compare');
+rsort($sorted_versions);
+
+foreach ($sorted_versions as $version) {
+	$version_data = $versions[$version];
 	if (!empty($milestone_prefix))
 	{
 		if (0 !== strpos($version_data['title'], $milestone_prefix))
