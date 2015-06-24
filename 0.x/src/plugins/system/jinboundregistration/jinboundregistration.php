@@ -159,9 +159,15 @@ class plgSystemJInboundregistration extends JPlugin
 		$data    = $model->validate($form, $request);
 		if (false === $data)
 		{
-			if (JDEBUG)
-			{
-				$this->app->enqueueMessage('Invalid data');
+			// Get the validation messages.
+			$errors = $model->getErrors();
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++) {
+				if ($errors[$i] instanceof Exception) {
+					$this->app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				} else {
+					$this->app->enqueueMessage($errors[$i], 'warning');
+				}
 			}
 			return false;
 		}
