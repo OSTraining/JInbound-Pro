@@ -119,5 +119,12 @@ defined('JPATH_PLATFORM') or die;
 
 	<h4>url</h4>
 	<h5>see also <span class="label">text</span></h5>
+	
+	<h3>jInbound-specific Attributes</h3>
+	<p>Some special attributes are recognized by jInbound on certain field types.</p>
+	<ul class="unstyled">
+		<li><span class="label">transpose</span> boolean to switch the key and value placement on list options.</li>
+		<li><span class="label">blank</span> adds an option with an empty value and the text supplied to the beginning of list type inputs.</li>
+	</ul>
 </div>
 <?php endif; ?>

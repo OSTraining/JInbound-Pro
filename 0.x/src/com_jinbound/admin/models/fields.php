@@ -119,16 +119,7 @@ class JInboundModelFields extends JInboundListModel
 		}
 
 		// Filter by search.
-		$search = $this->getState('filter.search');
-		if (!empty($search)) {
-			if (stripos($search, 'id:') === 0) {
-				$query->where('Field.id = '.(int) substr($search, 3));
-			}
-			else {
-				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
-				$query->where('Field.title LIKE '.$search);
-			}
-		}
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Field', 'id', array('title', 'name'));
 		
 		$type = $this->getState('filter.formtype');
 		if (is_numeric($type)) {

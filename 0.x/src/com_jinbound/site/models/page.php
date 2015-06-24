@@ -117,6 +117,11 @@ class JInboundModelPage extends JInboundAdminModel
 				$thisbanned[] = 'required';
 			}
 			
+			// some jinbound-specific attributes
+			$transpose = false;
+			$mirror    = true;
+			$blank     = false;
+			
 			// handle extra attributes
 			if (array_key_exists('attrs', $field->params)
 				&& !empty($field->params['attrs'])
@@ -126,6 +131,16 @@ class JInboundModelPage extends JInboundAdminModel
 				foreach ($field->params['attrs'] as $key => $value) {
 					if (empty($key) || in_array($key, $thisbanned)) {
 						continue;
+					}
+					switch ($key)
+					{
+						case 'transpose':
+						case 'mirror':
+							$$key = ('true' == strtolower($value) || '1' == "$value" || 'yes' == strtolower($value));
+							break;
+						case 'blank':
+							$blank = $value;
+							break;
 					}
 					// set attribute
 					$xmlField->addAttribute($key, $value);
@@ -137,14 +152,19 @@ class JInboundModelPage extends JInboundAdminModel
 				&& !empty($field->params['opts'])
 				&& is_array($field->params['opts']))
 			{
+				if ($blank)
+				{
+					$xmlOption = $xmlField->addChild('option', JText::_($blank));
+					$xmlOption->addAttribute('value', '');
+				}
 				// loop keys
 				foreach ($field->params['opts'] as $key => $value) {
 					if (empty($key)) {
 						continue;
 					}
 					// set attribute
-					$xmlOption = $xmlField->addChild('option', $value);
-					$xmlOption->addAttribute('value', $key);
+					$xmlOption = $xmlField->addChild('option', ($transpose ? $key : $value));
+					$xmlOption->addAttribute('value', ($transpose ? $value : $key));
 				}
 			}
 		}

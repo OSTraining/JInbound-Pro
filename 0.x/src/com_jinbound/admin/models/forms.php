@@ -127,16 +127,7 @@ class JInboundModelForms extends JInboundListModel
 		}
 
 		// Filter by search.
-		$search = $this->getState('filter.search');
-		if (!empty($search)) {
-			if (stripos($search, 'id:') === 0) {
-				$query->where('Form.id = '.(int) substr($search, 3));
-			}
-			else {
-				$search = $db->Quote('%'.$db->getEscaped($search, true).'%');
-				$query->where('Form.title LIKE '.$search);
-			}
-		}
+		$this->filterSearchQuery($query, $this->getState('filter.search'), 'Form', 'id', array('title'));
 		
 		// Add the list ordering clause.
 		$listOrdering = $this->getState('list.ordering', 'Form.title');

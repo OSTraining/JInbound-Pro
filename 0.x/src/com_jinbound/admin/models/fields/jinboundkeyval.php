@@ -35,6 +35,23 @@ class JFormFieldJInboundKeyVal extends JFormField
 				$this->value = array();
 			}
 		}
+		// yikes, sometimes the value get mangled (like a bad save/recovery)
+		if (is_array($this->value) && 2 == count($this->value)
+			&& array_key_exists('key', $this->value) && is_array($this->value['key'])
+			&& array_key_exists('value', $this->value) && is_array($this->value['value']))
+		{
+			$values = array();
+			foreach ($this->value['key'] as $i => $key)
+			{
+				if (empty($key))
+				{
+					continue;
+				}
+				$values[$key] = $this->value['value'][$i];
+			}
+			$this->value = $values;
+		}
+		
 		$filter = JFilterInput::getInstance();
 		// get class for this element
 		$class = $this->element['class'] ? ' '.$filter->clean((string) $this->element['class']) : '';
