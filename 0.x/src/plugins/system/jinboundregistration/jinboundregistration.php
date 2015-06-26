@@ -154,6 +154,8 @@ class plgSystemJInboundregistration extends JPlugin
 			}
 			return false;
 		}
+		// ack, captcha seems to screw this up - remove captcha from form before validate
+		$form->removeField('captcha');
 		// build request
 		$request = $this->buildRegistrationRequestFromContact($contact);
 		$data    = $model->validate($form, $request);

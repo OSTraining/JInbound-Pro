@@ -124,20 +124,9 @@ class JInboundModelContacts extends JInboundListModel
 						$item->forms[$conversion->page_id] = $conversion->page_name;
 					}
 				}
-				// add tracks
-				try
-				{
-					$item->tracks = $db->setQuery($db->getQuery(true)
-						->select('Track.*')
-						->from('#__jinbound_tracks AS Track')
-						->where('Track.cookie = ' . $db->quote($item->cookie))
-						->order('Track.created DESC')
-					)->loadObjectList();
-				}
-				catch (Exception $e)
-				{
-					$item->tracks = array();
-				}
+				
+				// tracks can be very... heavy
+				$item->tracks = array();
 			}
 		}
 		return $items;
@@ -239,12 +228,22 @@ class JInboundModelContacts extends JInboundListModel
 			$query->leftJoin('#__jinbound_contacts_statuses AS ContactStatus ON ContactStatus.contact_id = Contact.id AND ContactStatus.status_id = ' . (int) $status);
 			$query->where('ContactStatus.status_id IS NOT NULL');
 		}
+		else if ('Status.name' === $listOrdering)
+		{
+			$query->leftJoin('( SELECT s1.* FROM #__jinbound_contacts_statuses AS s1 LEFT JOIN #__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.created < s2.created WHERE s2.contact_id IS NULL) AS ContactStatus ON ContactStatus.contact_id = Contact.id');
+			$query->leftJoin('#__jinbound_lead_statuses AS Status ON ContactStatus.status_id = Status.id');
+		}
 		
 		// filter by priority
 		if (!empty($priority))
 		{
 			$query->leftJoin('#__jinbound_contacts_priorities AS ContactPriority ON ContactPriority.contact_id = Contact.id AND ContactPriority.priority_id = ' . (int) $priority);
 			$query->where('ContactPriority.priority_id IS NOT NULL');
+		}
+		else if ('Priority.name' === $listOrdering)
+		{
+			$query->leftJoin('( SELECT p1.* FROM #__jinbound_contacts_priorities AS p1 LEFT JOIN #__jinbound_contacts_priorities AS p2 ON p1.contact_id = p2.contact_id AND p1.created < p2.created WHERE p2.contact_id IS NULL) AS ContactPriority ON ContactPriority.contact_id = Contact.id');
+			$query->leftJoin('#__jinbound_priorities AS Priority ON ContactPriority.priority_id = Priority.id');
 		}
 		
 		// add author to query
