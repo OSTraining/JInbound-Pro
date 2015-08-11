@@ -130,7 +130,7 @@
 		<property name="str.plg.sys.acymailing.file" value="${cfg.packages}/current/${str.plg.sys.acymailing.filename}" />
 		<property name="str.plg.sys.salesforce.filename" value="${cfg.pfx.plg}system_${cfg.name}salesforce_${str.version.salesforce}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.salesforce.file" value="${cfg.packages}/current/${str.plg.sys.salesforce.filename}" />
-		<property name="str.plg.sys.registration.filename" value="${cfg.pfx.plg}system_${cfg.name}registration_${str.version.registratiom}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sys.registration.filename" value="${cfg.pfx.plg}system_${cfg.name}registration_${str.version.registration}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.registration.file" value="${cfg.packages}/current/${str.plg.sys.registration.filename}" />
 		<property name="str.plg.user.filename" value="${cfg.pfx.plg}user_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
