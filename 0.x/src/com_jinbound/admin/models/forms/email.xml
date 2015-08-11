@@ -116,7 +116,7 @@
 			description="COM_JINBOUND_EMAIL_HTMLBODY_DESC"
 			class="input-block-level"
 			cols="60" rows="12"
-			buttons="0"
+			hide="pagebreak,readmore"
 			filter="JComponentHelper::filterText"
 		/>
 

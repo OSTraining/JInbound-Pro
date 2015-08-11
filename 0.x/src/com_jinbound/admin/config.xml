@@ -45,6 +45,24 @@
 			<option value="1">COM_JINBOUND_CRON_TYPE_REAL</option>
 		</field>
 		<field
+			name="cron_max_reports"
+			type="text"
+			label="COM_JINBOUND_CRON_MAX_REPORTS"
+			description="COM_JINBOUND_CRON_MAX_REPORTS_DESC"
+			default="0"
+			filter="int"
+			menu="hide"
+		/>
+		<field
+			name="cron_max_campaign_mails"
+			type="text"
+			label="COM_JINBOUND_CRON_MAX_CAMPAIGN_MAILS"
+			description="COM_JINBOUND_CRON_MAX_CAMPAIGN_MAILS_DESC"
+			default="0"
+			filter="int"
+			menu="hide"
+		/>
+		<field
 			name="cron_url"
 			type="jinboundcronurl"
 			label="COM_JINBOUND_CRON_URL"

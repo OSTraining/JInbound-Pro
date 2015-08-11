@@ -96,8 +96,8 @@ class JInboundModelEmails extends JInboundListModel
 		$now        = JFactory::getDate();
 		$params     = new JRegistry;
 		$dispatcher = JDispatcher::getInstance();
-		
-		$db->setQuery($db->getQuery(true)
+		$limit      = (int) JInbound::config("cron_max_campaign_mails", 0);
+		$query      = $db->getQuery(true)
 			->select('Contact.first_name AS first_name')
 			->select('Contact.last_name AS last_name')
 			->select('Contact.created AS created')
@@ -139,14 +139,18 @@ class JInboundModelEmails extends JInboundListModel
 			// otherwise we don't get the correct data!!!!!!
 			->group('Email.id')
 			->group('Contact.id')
-		);
+		;
+		
+		if ($limit) {
+			$query->setLimit($limit);
+		}
 		
 		if ($out) {
-			echo '<h3>Query</h3><pre>' . print_r((string) $db->getQuery(false), 1) . '</pre>';
+			echo '<h3>Query</h3><pre>' . print_r((string) $query, 1) . '</pre>';
 		}
 		
 		try {
-			$results = $db->loadObjectList();
+			$results = $db->setQuery($query)->loadObjectList();
 			if (empty($results)) {
 				throw new Exception('No records found');
 			}

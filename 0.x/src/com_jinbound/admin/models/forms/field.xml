@@ -81,7 +81,7 @@
 			<field
 				name="classname"
 				type="text"
-				default="inputbox"
+				default="input-block-level"
 				label="COM_JINBOUND_FIELD_PARAMS_CLASSNAME_LABEL"
 				description="COM_JINBOUND_FIELD_PARAMS_CLASSNAME_DESC"
 			/>
@@ -91,6 +91,17 @@
 				default="0"
 				label="COM_JINBOUND_FIELD_REQUIRED"
 				description="COM_JINBOUND_FIELD_REQUIRED_DESC"
+				class="radio btn-group btn-group-yesno"
+			>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field
+				name="show_label"
+				type="radio"
+				default="1"
+				label="COM_JINBOUND_FIELD_SHOW_LABEL"
+				description="COM_JINBOUND_FIELD_SHOW_LABEL_DESC"
 				class="radio btn-group btn-group-yesno"
 			>
 				<option value="1">JYES</option>

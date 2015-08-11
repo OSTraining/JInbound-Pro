@@ -51,7 +51,7 @@ class JInboundModelReports extends JInboundListModel
 		
 		$app    = JFactory::getApplication();
 		
-		foreach (array('page', 'campaign', 'start', 'end', 'status', 'priority') as $var) {
+		foreach (array('page', 'campaign', 'start', 'end', 'status', 'priority', 'chart') as $var) {
 			$this->setState('filter.' . $var, $this->getUserStateFromRequest($this->context.'.filter.'.$var, 'filter_'.$var, '', 'string'));
 		}
 	}
@@ -76,6 +76,7 @@ class JInboundModelReports extends JInboundListModel
 		$id	.= ':'.serialize($this->getState('filter.end'));
 		$id	.= ':'.serialize($this->getState('filter.status'));
 		$id	.= ':'.serialize($this->getState('filter.priority'));
+		$id	.= ':'.serialize($this->getState('filter.chart'));
 
 		return parent::getStoreId($id);
 	}
@@ -896,12 +897,18 @@ class JInboundModelReports extends JInboundListModel
 				}
 				continue;
 			}
-			$records = $db->setQuery($db->getQuery(true)
+			$limit = (int) JInbound::config('cron_max_reports', 0);
+			$query = $db->getQuery(true)
 				->select('email')
 				->from('#__jinbound_reports_emails')
 				->where('email_id = ' . intval($emailrecord->id))
 				->where("created > (NOW() - INTERVAL $frequency)")
-			)->loadColumn();
+			;
+			if ($limit)
+			{
+				$query->setLimit($limit);
+			}
+			$records = $db->setQuery($query)->loadColumn();
 			// if there are no records, we can send
 			// otherwise skip
 			$sendto = array();

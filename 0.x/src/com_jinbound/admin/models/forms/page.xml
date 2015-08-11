@@ -89,21 +89,6 @@
 			size="30"
 		/>
 		<field
-			id="image" name="image"
-			type="media"
-			hide_none="1"
-			label="COM_JINBOUND_IMAGE"
-			description="COM_JINBOUND_IMAGE_DESC"
-			class="input-large"
-		/>
-		<field
-			id="imagealttext" name="imagealttext"
-			type="text"
-			label="COM_JINBOUND_ALTTEXT"
-			description="COM_JINBOUND_ALTTEXT_DESC"
-			class="input-block-level"
-		/>
-		<field
 			id="socialmedia" name="socialmedia"
 			type="list"
 			label="COM_JINBOUND_SOCIALMEDIA"
@@ -122,7 +107,7 @@
 			description="COM_JINBOUND_MAINTEXT_DESC"
 			class="input-block-level"
 			cols="60" rows="12"
-			buttons="0"
+			hide="pagebreak,readmore"
 		/>
 		<field
 			id="sidebartext" name="sidebartext"
@@ -132,10 +117,74 @@
 			description="COM_JINBOUND_SIDEBARTEXT_DESC"
 			cols="60" rows="12"
 			class="input-block-level"
-			buttons="0"
+			hide="pagebreak,readmore"
 		/>
 
 
+	</fieldset>
+	
+	<fieldset
+		name="imagetab"
+		label="COM_JINBOUND_IMAGE"
+	>
+		
+		<field
+			id="image" name="image"
+			type="media"
+			hide_none="1"
+			label="COM_JINBOUND_IMAGE"
+			description="COM_JINBOUND_IMAGE_DESC"
+			class="input-large"
+		/>
+		<field
+			id="imagealttext" name="imagealttext"
+			type="text"
+			label="COM_JINBOUND_ALTTEXT"
+			description="COM_JINBOUND_ALTTEXT_DESC"
+			class="input-block-level"
+		/>
+		<field
+			name="image_size_large_width"
+			type="text"
+			label="COM_JINBOUND_IMAGE_SIZE_LARGE_WIDTH"
+			description="COM_JINBOUND_IMAGE_SIZE_LARGE_WIDTH_DESC"
+			class="input-small"
+		/>
+		<field
+			name="image_size_large_height"
+			type="text"
+			label="COM_JINBOUND_IMAGE_SIZE_LARGE_HEIGHT"
+			description="COM_JINBOUND_IMAGE_SIZE_LARGE_HEIGHT_DESC"
+			class="input-small"
+		/>
+		<field
+			name="image_size_medium_width"
+			type="text"
+			label="COM_JINBOUND_IMAGE_SIZE_MEDIUM_WIDTH"
+			description="COM_JINBOUND_IMAGE_SIZE_MEDIUM_WIDTH_DESC"
+			class="input-small"
+		/>
+		<field
+			name="image_size_medium_height"
+			type="text"
+			label="COM_JINBOUND_IMAGE_SIZE_MEDIUM_HEIGHT"
+			description="COM_JINBOUND_IMAGE_SIZE_MEDIUM_HEIGHT_DESC"
+			class="input-small"
+		/>
+		<field
+			name="image_size_small_width"
+			type="text"
+			label="COM_JINBOUND_IMAGE_SIZE_SMALL_WIDTH"
+			description="COM_JINBOUND_IMAGE_SIZE_SMALL_WIDTH_DESC"
+			class="input-small"
+		/>
+		<field
+			name="image_size_small_height"
+			type="text"
+			label="COM_JINBOUND_IMAGE_SIZE_SMALL_HEIGHT"
+			description="COM_JINBOUND_IMAGE_SIZE_SMALL_HEIGHT_DESC"
+			class="input-small"
+		/>
 	</fieldset>
 
 	<fieldset
@@ -261,6 +310,7 @@
 			description="COM_JINBOUND_PAGE_TEMPLATE_DESC"
 			class="input-block-level"
 			filter="JComponentHelper::filterText"
+			hide="pagebreak,readmore"
 		>
 			<tag value="heading" />
 			<tag value="subheading" />
@@ -299,7 +349,7 @@
 			name="css"
 			type="editor"
 			editor="none"
-			buttons="no"
+			buttons="0"
 			label="COM_JINBOUND_PAGE_CSS"
 			description="COM_JINBOUND_PAGE_CSS_DESC"
 			height="300px"

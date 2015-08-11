@@ -39,6 +39,7 @@ class JInboundViewReports extends JInboundListView
 			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasAxisTickRenderer' . $js);
 			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.categoryAxisRenderer' . $js);
 			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.barRenderer' . $js);
+			$document->addScript('../media/jinbound/jqplot/plugins/jqplot.highlighter' . $js);
 		}
 		if (method_exists($document, 'addStyleSheet'))
 		{
@@ -74,6 +75,7 @@ class JInboundViewReports extends JInboundListView
 			'list.attr' => array(
 				'onchange' => $this->filter_change_code
 			)
+		,	'list.select' => $this->state->get('filter.campaign')
 		));
 	}
 	
@@ -90,6 +92,7 @@ class JInboundViewReports extends JInboundListView
 			'list.attr' => array(
 				'onchange' => $this->filter_change_code
 			)
+		,	'list.select' => $this->state->get('filter.page')
 		));
 	}
 	
@@ -102,6 +105,7 @@ class JInboundViewReports extends JInboundListView
 			'list.attr' => array(
 				'onchange' => $this->filter_change_code
 			)
+		,	'list.select' => $this->state->get('filter.priority')
 		));
 	}
 	
@@ -114,6 +118,7 @@ class JInboundViewReports extends JInboundListView
 			'list.attr' => array(
 				'onchange' => $this->filter_change_code
 			)
+		,	'list.select' => $this->state->get('filter.status')
 		));
 	}
 	
@@ -160,12 +165,15 @@ class JInboundViewReports extends JInboundListView
 	}
 	
 	public function addToolBar() {
+		$app = JFactory::getApplication();
 		// only fire in administrator, and only once
-		if (!JFactory::getApplication()->isAdmin()) return;
+		if (!$app->isAdmin()) return;
+		
+		$layout = $app->input->get('layout');
 		
 		static $set;
 		
-		if (is_null($set)) {
+		if (is_null($set) && 'chart' != $layout) {
 			$icon = 'export';
 			if (JInbound::version()->isCompatible('3.0.0'))
 			{
@@ -175,14 +183,13 @@ class JInboundViewReports extends JInboundListView
 			if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.report'))
 			{
 				JToolBarHelper::custom($this->_name.'.exportleads', "{$icon}.png", "{$icon}_f2.png", 'COM_JINBOUND_EXPORT_LEADS', false);
-				//JToolBarHelper::custom($this->_name.'.exportpages', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_PAGES', false);
 			}
 			// skip parent and go to grandparent so we don't have the normal list view icons like "new" and "save"
 			$gpview = new JInboundView(array());
 			$gpview->addToolbar();
-			// set the title (because we're skipping the list view's addToolBar later)
-			JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_REPORTS')), 'jinbound-'.strtolower($this->_name));
 		}
 		$set = true;
+		// set the title (because we're skipping the list view's addToolBar later)
+		JToolBarHelper::title(JText::_(strtoupper(JInbound::COM.'_REPORTS')), 'jinbound-'.strtolower($this->_name));
 	}
 }

@@ -49,6 +49,23 @@ abstract class JInboundHelperForm
 		return $form;
 	}
 	
+	public static function getField($name, $formid)
+	{
+		$fields = static::getFields($formid);
+		if (empty($fields))
+		{
+			return false;
+		}
+		$realname = preg_replace('/^jform\[lead\]\[(.*?)\]$/', '$1', $name);
+		foreach ($fields as $field)
+		{
+			if ($field->name == $realname)
+			{
+				return $field;
+			}
+		}
+		return false;
+	}
 	
 	public static function getFields($id) {
 		static $collection;
@@ -243,15 +260,16 @@ abstract class JInboundHelperForm
 			,	'description'  => ''
 			,	'published'    => 1
 			,	'params'       => array(
-					'attrs' => array(
-						'key'   => array()
-					,	'value' => array()
+					'attrs'      => array(
+						'key'      => array()
+					,	'value'    => array()
 					)
-				,	'opts'    => array(
-						'key'   => array()
-					,	'value' => array()
+				,	'opts'       => array(
+						'key'      => array()
+					,	'value'    => array()
 					)
-				,	'required' => (int) in_array($fieldname, $required)
+				,	'required'   => (int) in_array($fieldname, $required)
+				,	'classname'  => 'input-block-level'
 				)
 			), $extra);
 			if ('email' == $fieldname)

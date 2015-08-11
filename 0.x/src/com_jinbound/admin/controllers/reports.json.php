@@ -14,6 +14,7 @@ class JInboundControllerReports extends JInboundBaseController
 {
 	public function plot()
 	{
+		$data  = array();
 		$model = $this->getModel('Reports');
 		try
 		{

@@ -308,6 +308,14 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 	`name` varchar(255) NOT NULL,
 	`image` varchar(255) NOT NULL,
 	`imagealttext` varchar(255) NOT NULL,
+
+  `image_size_large_width` varchar(50) NOT NULL DEFAULT '',
+  `image_size_large_height` varchar(50) NOT NULL DEFAULT '',
+  `image_size_medium_width` varchar(50) NOT NULL DEFAULT '',
+  `image_size_medium_height` varchar(50) NOT NULL DEFAULT '',
+  `image_size_small_width` varchar(50) NOT NULL DEFAULT '',
+  `image_size_small_height` varchar(50) NOT NULL DEFAULT '',
+
 	`category` varchar(255) NOT NULL,
 	`metatitle` varchar(55) NOT NULL,
 	`metadescription` varchar(155) NOT NULL,

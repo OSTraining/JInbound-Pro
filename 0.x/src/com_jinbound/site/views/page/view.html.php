@@ -39,13 +39,44 @@ class JInboundViewPage extends JInboundItemView
 		if (method_exists($doc, 'setDescription')) {
 			$doc->setDescription($this->item->metadescription);
 		}
-		// add custom css
-		if (!empty($this->item->css))
+		if (method_exists($doc, 'addStyleDeclaration'))
 		{
-			$doc->addStyleDeclaration($this->item->css);
+			// add image constraints
+			$this->addImageConstraint('large');
+			$this->addImageConstraint('medium', 800);
+			$this->addImageConstraint('small', 320);
+			// add custom css
+			if (!empty($this->item->css))
+			{
+				$doc->addStyleDeclaration($this->item->css);
+			}
 		}
 		
 		return $display;
+	}
+	
+	protected function addImageConstraint($size, $screen = 0, $selector = '#jinbound_component .jinbound_image')
+	{
+		$tmpl = "{$selector} {\n%s\n}";
+		if ($screen)
+		{
+			$tmpl = "@media (max-width: {$screen}px) {\n{$tmpl}\n}";
+		}
+		$styles = array();
+		foreach (array('width', 'height') as $var)
+		{
+			$prop = 'image_size_' . $size . '_' . $var;
+			$value = intval(property_exists($this->item, $prop) ? $this->item->$prop : 0);
+			if ($value)
+			{
+				$styles[] = "max-{$var}: {$value}px;";
+			}
+		}
+		if (!empty($styles))
+		{
+			$declaration = sprintf($tmpl, implode("\n", $styles));
+			JFactory::getDocument()->addStyleDeclaration($declaration);
+		}
 	}
 	
 	public function prepareItem()

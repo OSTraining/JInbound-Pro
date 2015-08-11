@@ -7,6 +7,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+JText::script('COM_JINBOUND_EMPTY_CUSTOM_TEMPLATE');
+
 echo $this->loadTemplate('edit');
 
 ?>
@@ -34,7 +36,7 @@ window.jinboundlayouttags.form_<?php echo $tag; ?> = '<?php echo JInboundHelperF
 	});
 <?php endif; ?>
 	var hideSidebar = function() {
-		var row = $('#jform_sidebartext').closest('.row-fluid'), d = [3], hide = true, tabs, tab;
+		var row = $('#jform_sidebartext').closest('.row-fluid'), d = [4], hide = true, tabs, tab;
 		switch($('#jform_layout').find(':checked').val()) {
 			case '0':
 				d = [];
@@ -106,4 +108,27 @@ window.jinboundlayouttags.form_<?php echo $tag; ?> = '<?php echo JInboundHelperF
 	$('#jform_formid').trigger('change');
 	
 });})(jQuery);
+
+Joomla.submitbutton = function(task)
+{
+	<?php echo $this->form->getField('template')->save(); ?>;
+	if ('undefined' != typeof tinyMCE) {
+		try {
+			tinyMCE.execCommand('mceToggleEditor', false, 'jform_template');
+		}
+		catch (err) {
+			console.log(err);
+			return;
+		}
+	}
+	var template = document.getElementById('jform_template');
+	var radio = document.getElementById('jform_layout4');
+	if (template && radio && radio.checked && !template.value.match(/\{form.*?}/g))
+	{
+		alert(Joomla.JText._('COM_JINBOUND_EMPTY_CUSTOM_TEMPLATE'));
+		return false;
+	}
+	Joomla.submitform(task, document.getElementById('adminForm'));
+};
+
 </script>
