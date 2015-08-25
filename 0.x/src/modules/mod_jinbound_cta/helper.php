@@ -18,7 +18,7 @@ abstract class ModJInboundCTAHelper
 	const USER_EXISTING = 0;
 	
 	/**
-	 * Flag so module cannot be placedinto an infinite loop
+	 * Flag so module cannot be placed into an infinite loop
 	 * @var bool
 	 */
 	static public $running = false;
@@ -71,6 +71,10 @@ abstract class ModJInboundCTAHelper
 		$app = JFactory::getApplication();
 		// first check if this is a new user
 		$is_new = self::isNewUser();
+		$in     = $params->get('cta_in_campaigns', array());
+		$not_in = $params->get('cta_not_in_campaigns', array());
+		$check_in     = !empty($in);
+		$check_not_in = !empty($not_in);
 		// new users won't be in any campaigns
 		if ($is_new)
 		{
@@ -80,8 +84,6 @@ abstract class ModJInboundCTAHelper
 		// existing users might be in campaigns
 		else
 		{
-			$in     = $params->get('cta_in_campaigns', array());
-			$not_in = $params->get('cta_not_in_campaigns', array());
 			if (!is_array($in))
 			{
 				$in = explode(',', $in);
@@ -108,6 +110,7 @@ abstract class ModJInboundCTAHelper
 		}
 		
 		// base decisions on condition
+		$final = $skip_new ? false : $is_new;
 		switch ($condition)
 		{
 			// if the condition is "any", we check all the conditions
@@ -116,21 +119,44 @@ abstract class ModJInboundCTAHelper
 				{
 					$app->enqueueMessage('Condition: ANY');
 				}
-				return $skip_new ? ($in_campaigns || $not_in_campaigns) : ($is_new || $in_campaigns || $not_in_campaigns);
+				if (($check_in && $in_campaigns) || ($check_not_in && $not_in_campaigns))
+				{
+					$final = true;
+				}
+				return $final;
+				//return $skip_new ? ($in_campaigns || $not_in_campaigns) : ($is_new || $in_campaigns || $not_in_campaigns);
 			// "all" requires all of these to be true
 			case ModJInboundCTAHelper::CONDITION_ALL:
 				if (JDEBUG)
 				{
 					$app->enqueueMessage('Condition: ALL');
 				}
-				return $skip_new ? ($in_campaigns && $not_in_campaigns) : ($is_new && $in_campaigns && $not_in_campaigns);
+				if ($check_in)
+				{
+					$final = $final && $in_campaigns;
+				}
+				if ($check_not_in)
+				{
+					$final = $final && $not_in_campaigns;
+				}
+				return $final;
+				//return $skip_new ? ($in_campaigns && $not_in_campaigns) : ($is_new && $in_campaigns && $not_in_campaigns);
 			// "none" requires none of these to be true
 			case ModJInboundCTAHelper::CONDITION_NONE:
 				if (JDEBUG)
 				{
 					$app->enqueueMessage('Condition: NONE');
 				}
-				return !($skip_new ? ($in_campaigns && $not_in_campaigns) : ($is_new && $in_campaigns && $not_in_campaigns));
+				if ($check_in)
+				{
+					$final = $final && $in_campaigns;
+				}
+				if ($check_not_in)
+				{
+					$final = $final && $not_in_campaigns;
+				}
+				return !$final;
+				//return !($skip_new ? ($in_campaigns && $not_in_campaigns) : ($is_new && $in_campaigns && $not_in_campaigns));
 			default:
 				throw new RuntimeException('Unknown condition', 404);
 		}
@@ -147,7 +173,7 @@ abstract class ModJInboundCTAHelper
 		$result     = empty($contact_id);
 		if (JDEBUG)
 		{
-			JFactory::getApplication()->enqueueMessage($result ? 'Not a contact' : 'Found contact id ' . $contact_id);
+			JFactory::getApplication()->enqueueMessage(($result ? 'Not a contact' : 'Found contact id ' . $contact_id) . ' (' . htmlspecialchars($cookie, ENT_QUOTES, 'UTF-8') . ')');
 		}
 		return $result;
 	}
@@ -156,6 +182,7 @@ abstract class ModJInboundCTAHelper
 	{
 		$cookie  = plgSystemJInbound::getCookieValue();
 		$db      = JFactory::getDbo();
+		$app     = JFactory::getApplication();
 		$records = $db->setQuery($db->getQuery(true)
 			->select('c.campaign_id')
 			->from('#__jinbound_contacts_campaigns AS c')
@@ -166,14 +193,22 @@ abstract class ModJInboundCTAHelper
 		$records = is_array($records) ? array_unique($records) : array();
 		if (JDEBUG)
 		{
-			JFactory::getApplication()->enqueueMessage('User is in the following campaigns: ' . implode(', ', $records));
+			$app->enqueueMessage('User is in the following campaigns: ' . implode(', ', $records));
 		}
 		foreach ($campaigns as $campaign)
 		{
 			if (in_array($campaign, $records))
 			{
+				if (JDEBUG)
+				{
+					$app->enqueueMessage('User is in campaign ' . (int) $campaign);
+				}
 				return true;
 			}
+		}
+		if (JDEBUG)
+		{
+			$app->enqueueMessage('User is NOT in the selected campaign');
 		}
 		return false;
 	}
