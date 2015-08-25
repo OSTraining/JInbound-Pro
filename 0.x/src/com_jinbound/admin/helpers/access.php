@@ -15,7 +15,7 @@ abstract class JInboundHelperAccess
 	);
 	
 	/**
-	 * Gets an object containing id & level of parent asset for JCal Pro 
+	 * Gets an object containing id & level of parent asset 
 	 * 
 	 * @param string $name Name of section, blank for none
 	 * @return object

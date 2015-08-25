@@ -40,6 +40,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/salesforce" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/registration" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/user" />
+		<mkdir dir="${cfg.packages}/temp/staging/plugins/sh404sef" />
 		<mkdir dir="${cfg.packages}/temp/staging/template" />
 		
 		<!-- calculate version strings -->
@@ -67,10 +68,13 @@
 		<condition property="str.versionregistrationforxml" value="${cfg.version.registration}.${build.number}${cfg.versionsuffix}" else="${cfg.version.registration}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
-		<condition property="str.version.module.cta" value="${cfg.version.module.cta}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.cta}${cfg.versionsuffix}">
+		<condition property="str.versionsh404sefforxml" value="${cfg.version.sh404sef}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.cta}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
-		<condition property="str.version.module.form" value="${cfg.version.module.form}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form}${cfg.versionsuffix}">
+		<condition property="str.versionmodulectaforxml" value="${cfg.version.module.cta}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.cta}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
+		<condition property="str.versionmoduleformforxml" value="${cfg.version.module.form}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
 		<tstamp>
@@ -105,6 +109,15 @@
 		<condition property="str.version.registration" value="${cfg.versionprefix}${cfg.version.registration}" else="${cfg.version.registration}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
+		<condition property="str.version.sh404sef" value="${cfg.versionprefix}${cfg.version.sh404sef}" else="${cfg.version.sh404sef}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
+		<condition property="str.version.module.cta" value="${cfg.versionprefix}${cfg.version.module.cta}" else="${cfg.version.module.cta}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
+		<condition property="str.version.module.form" value="${cfg.versionprefix}${cfg.version.module.form}" else="${cfg.version.module.form}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
@@ -116,6 +129,8 @@
 		<property name="str.tpl.file" value="${cfg.packages}/temp/packages/${str.tpl.filename}" />
 		<property name="str.plg.content.filename" value="${cfg.pfx.plg}content_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.content.file" value="${cfg.packages}/temp/packages/${str.plg.content.filename}" />
+		<property name="str.plg.sh404sef.filename" value="${cfg.pfx.plg}sh404sefextplugins_sh404sefextplugincom_${cfg.name}_${str.version.sh404sef}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.plg.sh404sef.file" value="${cfg.packages}/current/${str.plg.sh404sef.filename}" />
 		<property name="str.plg.sys.filename" value="${cfg.pfx.plg}system_${cfg.name}_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.plg.sys.file" value="${cfg.packages}/temp/packages/${str.plg.sys.filename}" />
 		<property name="str.plg.sys.captcha.filename" value="${cfg.pfx.plg}system_${cfg.name}captcha_${str.version.captcha}.${str.build}${cfg.versionsuffix}${str.date}" />
@@ -136,9 +151,9 @@
 		<property name="str.plg.user.file" value="${cfg.packages}/temp/packages/${str.plg.user.filename}" />
 		<property name="str.mod.bookmark.filename" value="${cfg.pfx.mod}${cfg.name}_social_bookmark_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.bookmark.file" value="${cfg.packages}/temp/packages/${str.mod.bookmark.filename}" />
-		<property name="str.mod.cta.filename" value="${cfg.pfx.mod}${cfg.name}_cta_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.cta.filename" value="${cfg.pfx.mod}${cfg.name}_cta_${str.version.module.cta}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.cta.file" value="${cfg.packages}/current/${str.mod.cta.filename}" />
-		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version.module.cta}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.form.file" value="${cfg.packages}/current/${str.mod.form.filename}" />
 		
 		<!-- perform filtering -->
@@ -149,7 +164,9 @@
 		<filter token="ant_acymailing_version_number" value="${str.versionacymailingforxml}" />
 		<filter token="ant_salesforce_version_number" value="${str.versionsalesforceforxml}" />
 		<filter token="ant_registration_version_number" value="${str.versionregistrationforxml}" />
-		<filter token="ant_module_cta_version_number" value="${str.version.module.cta}" />
+		<filter token="ant_sh404sef_version_number" value="${str.versionsh404sefforxml}" />
+		<filter token="ant_module_cta_version_number" value="${str.versionmodulectaforxml}" />
+		<filter token="ant_module_form_version_number" value="${str.versionmoduleformforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
 		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
@@ -178,6 +195,9 @@
 		<property name="git.title.mailchimp" value="JInbound MailChimp Plugin Changelog" />
 		<property name="git.title.salesforce" value="JInbound Salesforce Plugin Changelog" />
 		<property name="git.title.registration" value="JInbound Registration Plugin Changelog" />
+		<property name="git.title.sh404sef" value="JInbound sh404SEF Plugin Changelog" />
+		<property name="git.title.mod_jinbound_cta" value="JInbound Call-To-Action Module Changelog" />
+		<property name="git.title.mod_jinbound_form" value="JInbound Form Module Changelog" />
 		<property name="git.log.dir" value="${cfg.buildpath}changelog" />
 		<property name="git.log.filename" value="changelog.src.log" />
 		<property name="git.log.file" value="${git.log.dir}/${git.log.filename}" />
@@ -197,6 +217,12 @@
 		<property name="git.log.fileout.salesforce" value="${git.log.dir}/${git.log.fileoutname.salesforce}" />
 		<property name="git.log.fileoutname.registration" value="registration.changelog.log" />
 		<property name="git.log.fileout.registration" value="${git.log.dir}/${git.log.fileoutname.registration}" />
+		<property name="git.log.fileoutname.sh404sef" value="sh404sef.changelog.log" />
+		<property name="git.log.fileout.sh404sef" value="${git.log.dir}/${git.log.fileoutname.sh404sef}" />
+		<property name="git.log.fileoutname.mod_jinbound_cta" value="mod_jinbound_cta.changelog.log" />
+		<property name="git.log.fileout.mod_jinbound_cta" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_cta}" />
+		<property name="git.log.fileoutname.mod_jinbound_form" value="mod_jinbound_form.changelog.log" />
+		<property name="git.log.fileout.mod_jinbound_form" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_form}" />
 		
 		<property name="git.rootDir" value="/home/jeff/git/jinbound/0.x/src/" />
 		<property name="git.buildDir" value="/home/jeff/git/jinbound/0.x/build/" />
@@ -278,7 +304,7 @@
 		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_form" filtering="true">
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_form"
-				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,language/,tmpl/"
+				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,helper.php,language/,media/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -297,6 +323,15 @@
 			<fileset
 				dir="${cfg.dir}/plugins/system/${cfg.name}"
 				includes="${cfg.name}.xml,${cfg.name}.php,index.html,language/"
+				excludes="**.git"
+			/>
+		</copy>
+
+		<!-- sh404sef plugin -->
+		<copy todir="${cfg.packages}/temp/staging/plugins/sh404sef" filtering="true">
+			<fileset
+				dir="${cfg.dir}/plugins/sh404sefextplugins/${cfg.name}"
+				includes="sh404sefextplugincom_${cfg.name}.xml,sh404sefextplugincom_${cfg.name}.php,language/,meta_ext/,sef_ext/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -435,6 +470,15 @@
 		<exec executable="${cfg.php.bin}">
 			<arg line=' changelog/logformat.php --title="${git.title.analytics}" --build=${build.number} --target="${git.log.fileout.analytics}" --milestone_prefix="analytics "' />
 		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.sh404sef}" --build=${build.number} --target="${git.log.fileout.sh404sef}" --milestone_prefix="sh404sef "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_cta}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_cta}" --milestone_prefix="mod_jinbound_cta "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_form}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_form}" --milestone_prefix="mod_jinbound_form "' />
+		</exec>
 		<echo>Raw git log processed</echo>
 		
 		<!-- Copy changelog to extension dir -->
@@ -473,6 +517,13 @@
 		</zip>
 		<zip destfile="${str.plg.sys.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/plugins/system" excludes="" />
+		</zip>
+		
+		<zip destfile="${str.plg.sh404sef.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/plugins/sh404sef" excludes="" />
+		</zip>
+		<zip destfile="${str.plg.sh404sef.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.sh404sef}" />
 		</zip>
 		
 		<zip destfile="${str.plg.sys.captcha.file}.zip" update="false">
@@ -535,9 +586,15 @@
 		<zip destfile="${str.mod.cta.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_cta" excludes="" />
 		</zip>
+		<zip destfile="${str.mod.cta.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mod_jinbound_cta}" />
+		</zip>
 		
 		<zip destfile="${str.mod.form.file}.zip" update="false">
 			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form" excludes="" />
+		</zip>
+		<zip destfile="${str.mod.form.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mod_jinbound_form}" />
 		</zip>
 		
 		<!-- create pkg -->

@@ -7,14 +7,18 @@
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>admin@anything-digital.com</authorEmail>
 	<authorUrl>anything-digital.com</authorUrl>
-	<version>@ant_module_form_version@</version>
+	<version>@ant_module_form_version_number@</version>
 	<description>MOD_JINBOUND_FORM_DESCRIPTION</description>
 	<files>
 		<filename module="mod_jinbound_form">mod_jinbound_form.php</filename>
+		<filename module="mod_jinbound_form">helper.php</filename>
 		<filename module="mod_jinbound_form">mod_jinbound_form.xml</filename>
 		<filename module="mod_jinbound_form">tmpl/default.php</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_form.ini</filename>
 	</files>
+	<media destination="mod_jinbound_form" folder="media">
+		<folder>js</folder>
+	</media>
 	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
 		<fields name="params">
 			<fieldset name="basic">

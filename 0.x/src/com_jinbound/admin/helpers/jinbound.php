@@ -180,6 +180,34 @@ abstract class JInbound
 		$date->setTimezone(new DateTimeZone($timezone));
 		return $date->format('Y-m-d H:i:s', true, false);
 	}
+	
+	public static function registry($data = null)
+	{
+		$registry = null;
+		// in 3.x we need to "use" Registry and cannot do so on 2.5
+		if (static::version()->isCompatible('3.0.0'))
+		{
+			require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/compat/registry.php';
+		}
+		else
+		{
+			jimport('joomla.registry.registry');
+			$registry = new JRegistry();
+		}
+		if (is_string($data))
+		{
+			$registry->loadString($data);
+		}
+		else if (is_array($data))
+		{
+			$registry->loadArray($data);
+		}
+		else if (is_object($data))
+		{
+			$registry->loadObject($data);
+		}
+		return $registry;
+	}
 }
 
 if (class_exists('JHelperContent')) {

@@ -59,7 +59,31 @@ class JInboundControllerLead extends JInboundBaseController
 		if (!empty($token))
 		{
 			$session_data = JFactory::getSession()->get($token, false);
-			// uh, no data for this token - bail
+			// no data for this token - try to load it
+			if (!is_object($session_data))
+			{
+				// parse the token
+				$token_base = 'mod_jinbound_form.form.';
+				if (substr($token, 0, strlen($token_base)) === $token_base)
+				{
+					$module_id = intval(substr($token, strrpos($token, '.') + 1));
+					if (file_exists($helper = JPATH_ROOT . '/modules/mod_jinbound_form/helper.php'))
+					{
+						require_once $helper;
+						try
+						{
+							$module = modJinboundFormHelper::getModuleObject($module_id);
+							$params = new JRegistry();
+							$params->loadString($module->params);
+							$session_data = modJinboundFormHelper::getFormData($module, $params);
+						}
+						catch (Exception $e)
+						{
+							$app->enqueueMessage($e->getMessage(), 'error');
+						}
+					}
+				}
+			}
 			if (!is_object($session_data))
 			{
 				throw new RuntimeException("No data found for token", 404);

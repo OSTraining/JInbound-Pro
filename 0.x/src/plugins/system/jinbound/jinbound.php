@@ -459,8 +459,26 @@ class plgSystemJInbound extends JPlugin
 		static $cookie;
 		if (is_null($cookie))
 		{
-			$ua     = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
-			$ip     = filter_input(INPUT_SERVER, 'REMOTE_ADDR');
+			// get UA
+			if (filter_has_var(INPUT_SERVER, 'HTTP_USER_AGENT'))
+			{
+				$ua = filter_input(INPUT_SERVER, 'HTTP_USER_AGENT');
+			}
+			else
+			{
+				$ua = (isset($_SERVER['HTTP_USER_AGENT']) ? filter_var($_SERVER['HTTP_USER_AGENT'],
+FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
+			}
+			// get IP
+			if (filter_has_var(INPUT_SERVER, 'REMOTE_ADDR'))
+			{
+				$ip = filter_input(INPUT_SERVER, 'REMOTE_ADDR');
+			}
+			else
+			{
+				$ip = (isset($_SERVER['REMOTE_ADDR']) ? filter_var($_SERVER['REMOTE_ADDR'],
+FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
+			}
 			$salt   = strrev(md5(JFactory::getConfig()->get('secret')));
 			$cookie = sha1("$ua.$salt.$ip", false);
 		}

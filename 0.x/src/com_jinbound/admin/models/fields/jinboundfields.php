@@ -94,8 +94,8 @@ class JFormFieldJInboundFields extends JFormField
 			$ordered[$idx]->extra = $extra;
 		}
 		// load scripts
-		JText::script('COM_JINBOUND_JCALFORMFIELD_ERROR');
-		JText::script('COM_JINBOUND_JCALFORMFIELD_NOSORTABLE');
+		JText::script('COM_JINBOUND_JINBOUNDFORMFIELD_ERROR');
+		JText::script('COM_JINBOUND_JINBOUNDFORMFIELD_NOSORTABLE');
 		$doc = JFactory::getDocument();
 		$doc->addScript(JUri::root() . '/media/jinbound/js/field.js');
 		// load the stylesheet that controls the display of this field
