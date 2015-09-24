@@ -1,7 +1,7 @@
 <?php
 /**
- * @package		jInbound
- * @subpackage	com_jinbound
+ * @package		JInbound
+ * @subpackage	mod_jinbound_cta
 @ant_copyright_header@
  */
 
@@ -25,11 +25,11 @@ class JFormFieldModJInboundCTAMode extends JFormFieldList
 	
 	protected function insertScript()
 	{
-		static $isset;
-		if (is_null($isset))
+		global $mod_jinbound_cta_script_loaded;
+		if (is_null($mod_jinbound_cta_script_loaded))
 		{
 			JFactory::getDocument()->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
-			$isset = true;
+			$mod_jinbound_cta_script_loaded = true;
 		}
 	}
 }

@@ -17,61 +17,21 @@
 		<filename>adapters/editor.php</filename>
 		<filename>adapters/module.php</filename>
 		<filename>adapters/modules.php</filename>
+		<filename>fields/modjinboundctacondition.php</filename>
 		<filename>fields/modjinboundctamode.php</filename>
 		<filename>fields/modjinboundctamodule.php</filename>
 		<filename>tmpl/default.php</filename>
 		<folder>language</folder>
 	</files>
 	<media destination="mod_jinbound_cta" folder="media">
+		<folder>css</folder>
 		<folder>js</folder>
 	</media>
 	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
 		<fields name="params" addfieldpath="/modules/mod_jinbound_cta/fields">
 			<fieldset name="basic">
 				<field
-					name="cta_condition"
-					type="radio"
-					label="MOD_JINBOUND_CTA_CONDITION"
-					description="MOD_JINBOUND_CTA_CONDITION_DESC"
-					default="-1"
-					class="btn-group btn-group-yesno"
-				>
-					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
-					<option value="1">JALL</option>
-					<option value="0">JNONE</option>
-				</field>
-				<field
-					name="cta_new_user"
-					type="radio"
-					label="MOD_JINBOUND_CTA_NEW_USER"
-					description="MOD_JINBOUND_CTA_NEW_USER_DESC"
-					default="-1"
-					class="btn-group btn-group-yesno"
-				>
-					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
-					<option value="1">JYES</option>
-					<option value="0">JNO</option>
-				</field>
-				<field
-					name="cta_in_campaigns"
-					type="jinboundcampaignlist"
-					label="MOD_JINBOUND_CTA_IN_CAMPAIGNS"
-					description="MOD_JINBOUND_CTA_IN_CAMPAIGNS_DESC"
-					multiple="multiple"
-					size="6"
-				/>
-				<field
-					name="cta_not_in_campaigns"
-					type="jinboundcampaignlist"
-					label="MOD_JINBOUND_CTA_NOT_IN_CAMPAIGNS"
-					description="MOD_JINBOUND_CTA_NOT_IN_CAMPAIGNS_DESC"
-					multiple="multiple"
-					size="6"
-				/>
-			</fieldset>
-			<fieldset name="cta" label="MOD_JINBOUND_CTA_FIELDSET_CTA">
-				<field
-					name="cta_mode"
+					name="mode"
 					type="modjinboundctamode"
 					label="MOD_JINBOUND_CTA_MODE"
 					description="MOD_JINBOUND_CTA_MODE_DESC"
@@ -82,23 +42,22 @@
 					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
 				</field>
 				<field
-					name="cta_mode_modules"
+					name="mode_modules"
 					type="moduleposition"
 					label="MOD_JINBOUND_CTA_MODULES"
 					description="MOD_JINBOUND_CTA_MODULES_DESC"
-					default="jinbound-cta"
+					default="jinbound-cta-default"
 				/>
 				<field
-					name="cta_mode_module"
+					name="mode_module"
 					type="modjinboundctamodule"
 					label="MOD_JINBOUND_CTA_MODULE"
 					description="MOD_JINBOUND_CTA_MODULE_DESC"
-					default="jinbound-cta"
 				>
 					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
 				</field>
 				<field
-					name="cta_mode_editor"
+					name="mode_editor"
 					type="editor"
 					label="MOD_JINBOUND_CTA_EDITOR"
 					description="MOD_JINBOUND_CTA_EDITOR_DESC"
@@ -107,12 +66,41 @@
 					filter="JComponentHelper::filterText"
 				/>
 			</fieldset>
-			<fieldset name="alt" label="MOD_JINBOUND_CTA_FIELDSET_ALT">
+			<fieldset name="c1" label="MOD_JINBOUND_CTA_FIELDSET_C1" description="MOD_JINBOUND_CTA_FIELDSET_C1_DESC">
 				<field
-					name="cta_alt_mode"
+					name="c1_enabled"
+					type="radio"
+					label="MOD_JINBOUND_CTA_ENABLED"
+					description="MOD_JINBOUND_CTA_ENABLED_DESC"
+					default="0"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+					name="c1_match"
+					type="radio"
+					label="MOD_JINBOUND_CTA_MATCH"
+					description="MOD_JINBOUND_CTA_MATCH_DESC"
+					default="-1"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
+					<option value="1">JALL</option>
+					<option value="0">JNONE</option>
+				</field>
+				<field
+					name="c1_conditions"
+					type="modjinboundctacondition"
+					label="MOD_JINBOUND_CTA_CONDITIONS"
+					description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
+				/>
+				<field
+					name="c1_mode"
 					type="modjinboundctamode"
-					label="MOD_JINBOUND_CTA_ALT_MODE"
-					description="MOD_JINBOUND_CTA_ALT_MODE_DESC"
+					label="MOD_JINBOUND_CTA_MODE"
+					description="MOD_JINBOUND_CTA_MODE_DESC"
 					default="modules"
 				>
 					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
@@ -120,26 +108,157 @@
 					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
 				</field>
 				<field
-					name="cta_alt_mode_modules"
+					name="c1_mode_modules"
 					type="moduleposition"
-					label="MOD_JINBOUND_CTA_ALT_MODULES"
-					description="MOD_JINBOUND_CTA_ALT_MODULES_DESC"
-					default="jinbound-cta-alt"
+					label="MOD_JINBOUND_CTA_MODULES"
+					description="MOD_JINBOUND_CTA_MODULES_DESC"
+					default="jinbound-cta-c1"
 				/>
 				<field
-					name="cta_alt_mode_module"
+					name="c1_mode_module"
 					type="modjinboundctamodule"
-					label="MOD_JINBOUND_CTA_ALT_MODULE"
-					description="MOD_JINBOUND_CTA_ALT_MODULE_DESC"
-					default="jinbound-cta-alt"
+					label="MOD_JINBOUND_CTA_MODULE"
+					description="MOD_JINBOUND_CTA_MODULE_DESC"
 				>
 					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
 				</field>
 				<field
-					name="cta_alt_mode_editor"
+					name="c1_mode_editor"
 					type="editor"
-					label="MOD_JINBOUND_CTA_ALT_EDITOR"
-					description="MOD_JINBOUND_CTA_ALT_EDITOR_DESC"
+					label="MOD_JINBOUND_CTA_EDITOR"
+					description="MOD_JINBOUND_CTA_EDITOR_DESC"
+					cols="60" rows="8"
+					buttons="0"
+					filter="JComponentHelper::filterText"
+				/>
+			</fieldset>
+			<fieldset name="c2" label="MOD_JINBOUND_CTA_FIELDSET_C2" description="MOD_JINBOUND_CTA_FIELDSET_C2_DESC">
+				<field
+					name="c2_enabled"
+					type="radio"
+					label="MOD_JINBOUND_CTA_ENABLED"
+					description="MOD_JINBOUND_CTA_ENABLED_DESC"
+					default="0"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+					name="c2_match"
+					type="radio"
+					label="MOD_JINBOUND_CTA_MATCH"
+					description="MOD_JINBOUND_CTA_MATCH_DESC"
+					default="-1"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
+					<option value="1">JALL</option>
+					<option value="0">JNONE</option>
+				</field>
+				<field
+					name="c2_conditions"
+					type="modjinboundctacondition"
+					label="MOD_JINBOUND_CTA_CONDITIONS"
+					description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
+				/>
+				<field
+					name="c2_mode"
+					type="modjinboundctamode"
+					label="MOD_JINBOUND_CTA_MODE"
+					description="MOD_JINBOUND_CTA_MODE_DESC"
+					default="modules"
+				>
+					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
+					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
+					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
+				</field>
+				<field
+					name="c2_mode_modules"
+					type="moduleposition"
+					label="MOD_JINBOUND_CTA_MODULES"
+					description="MOD_JINBOUND_CTA_MODULES_DESC"
+					default="jinbound-cta-c2"
+				/>
+				<field
+					name="c2_mode_module"
+					type="modjinboundctamodule"
+					label="MOD_JINBOUND_CTA_MODULE"
+					description="MOD_JINBOUND_CTA_MODULE_DESC"
+				>
+					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
+				</field>
+				<field
+					name="c2_mode_editor"
+					type="editor"
+					label="MOD_JINBOUND_CTA_EDITOR"
+					description="MOD_JINBOUND_CTA_EDITOR_DESC"
+					cols="60" rows="8"
+					buttons="0"
+					filter="JComponentHelper::filterText"
+				/>
+			</fieldset>
+			<fieldset name="c3" label="MOD_JINBOUND_CTA_FIELDSET_C3" description="MOD_JINBOUND_CTA_FIELDSET_C3_DESC">
+				<field
+					name="c3_enabled"
+					type="radio"
+					label="MOD_JINBOUND_CTA_ENABLED"
+					description="MOD_JINBOUND_CTA_ENABLED_DESC"
+					default="0"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+				<field
+					name="c3_match"
+					type="radio"
+					label="MOD_JINBOUND_CTA_MATCH"
+					description="MOD_JINBOUND_CTA_MATCH_DESC"
+					default="-1"
+					class="btn-group btn-group-yesno"
+				>
+					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
+					<option value="1">JALL</option>
+					<option value="0">JNONE</option>
+				</field>
+				<field
+					name="c3_conditions"
+					type="modjinboundctacondition"
+					label="MOD_JINBOUND_CTA_CONDITIONS"
+					description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
+				/>
+				<field
+					name="c3_mode"
+					type="modjinboundctamode"
+					label="MOD_JINBOUND_CTA_MODE"
+					description="MOD_JINBOUND_CTA_MODE_DESC"
+					default="modules"
+				>
+					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
+					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
+					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
+				</field>
+				<field
+					name="c3_mode_modules"
+					type="moduleposition"
+					label="MOD_JINBOUND_CTA_MODULES"
+					description="MOD_JINBOUND_CTA_MODULES_DESC"
+					default="jinbound-cta-c3"
+				/>
+				<field
+					name="c3_mode_module"
+					type="modjinboundctamodule"
+					label="MOD_JINBOUND_CTA_MODULE"
+					description="MOD_JINBOUND_CTA_MODULE_DESC"
+				>
+					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
+				</field>
+				<field
+					name="c3_mode_editor"
+					type="editor"
+					label="MOD_JINBOUND_CTA_EDITOR"
+					description="MOD_JINBOUND_CTA_EDITOR_DESC"
 					cols="60" rows="8"
 					buttons="0"
 					filter="JComponentHelper::filterText"

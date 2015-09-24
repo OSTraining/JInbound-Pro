@@ -1,7 +1,7 @@
 <?php
 /**
- * @package		jInbound
- * @subpackage	com_jinbound
+ * @package		JInbound
+ * @subpackage	mod_jinbound_cta
 @ant_copyright_header@
  */
 

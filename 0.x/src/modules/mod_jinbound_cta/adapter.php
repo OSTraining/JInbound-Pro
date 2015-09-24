@@ -1,8 +1,8 @@
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @package		JInbound
+ * @subpackage	mod_jinbound_cta
+@ant_copyright_header@
  */
 
 defined('_JEXEC') or die;
@@ -16,10 +16,10 @@ abstract class ModJInboundCTAAdapter
 	protected $params;
 	
 	/**
-	 * Flag to denote if alternate content should be rendered or not
-	 * @var bool
+	 * Parameter prefix, one of '', 'c1_', 'c2_', 'c3_'
+	 * @var string
 	 */
-	public $is_alt;
+	public $pfx = '';
 	
 	/**
 	 * Constructor

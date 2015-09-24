@@ -1,8 +1,8 @@
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @package		JInbound
+ * @subpackage	mod_jinbound_cta
+@ant_copyright_header@
  */
 
 defined('_JEXEC') or die;
@@ -15,14 +15,7 @@ class ModJInboundCTAModulesAdapter extends ModJInboundCTAAdapter
 	 */
 	public function render()
 	{
-		if ($this->is_alt)
-		{
-			$position = $this->params->get('cta_alt_mode_modules');
-		}
-		else
-		{
-			$position = $this->params->get('cta_mode_modules');
-		}
+		$position = $this->params->get($this->pfx . 'mode_modules');
 		$renderer = JFactory::getDocument()->loadRenderer('module');
 		$modules  = JModuleHelper::getModules($position);
 		$params   = array('style' => 'none');
