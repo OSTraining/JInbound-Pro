@@ -13,6 +13,10 @@ jimport('joomla.form.helper');
 
 JFormHelper::loadFieldClass('list');
 
+// load required classes
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/jinbound.php');
+JInbound::registerHelper('url');
+
 class JFormFieldModJInboundCTAMode extends JFormFieldList
 {
 	public $type = 'ModJInboundCTAMode';
@@ -28,7 +32,13 @@ class JFormFieldModJInboundCTAMode extends JFormFieldList
 		global $mod_jinbound_cta_script_loaded;
 		if (is_null($mod_jinbound_cta_script_loaded))
 		{
-			JFactory::getDocument()->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
+			$document = JFactory::getDocument();
+			if (!JInbound::version()->isCompatible('3.0.0'))
+			{
+				// force jQuery
+				$document->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
+			}
+			$document->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
 			$mod_jinbound_cta_script_loaded = true;
 		}
 	}

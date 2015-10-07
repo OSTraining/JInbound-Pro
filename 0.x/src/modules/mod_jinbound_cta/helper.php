@@ -302,22 +302,24 @@ abstract class ModJInboundCTAHelper
 		$app  = JFactory::getApplication();
 		$pfxs = array('c1_', 'c2_', 'c3_');
 		$data = static::loadContactData();
+		$type = '';
 		if (JDEBUG)
 		{
-			$app->enqueueMessage("Found data for contact '{$data->id}'<pre>" . print_r($data, 1) . "</pre>");
+			$app->enqueueMessage("Checking against this user data:<pre>" . htmlspecialchars(print_r($data, 1)) . "</pre>");
 		}
 		foreach ($pfxs as $pfx)
 		{
 			if (static::checkData($data, $params, $pfx))
 			{
-				if (JDEBUG)
-				{
-					$app->enqueueMessage("Found adapter type '$pfx' ...");
-				}
-				return $pfx;
+				$type = $pfx;
+				break;
 			}
 		}
-		return '';
+		if (JDEBUG)
+		{
+			$app->enqueueMessage("Found adapter type '$type' ...");
+		}
+		return $type;
 	}
 	
 	static protected function checkData($data, JRegistry $params, $pfx)
@@ -333,12 +335,32 @@ abstract class ModJInboundCTAHelper
 			}
 			return false;
 		}
+		else if (JDEBUG)
+		{
+			$app->enqueueMessage("Conditions for prefix '$pfx' enabled...");
+		}
 		$match      = (int) $params->get($pfx . 'match', ModJInboundCTAHelper::CONDITION_ANY);
 		$conditions = $params->get($pfx . 'conditions');
 		$matches    = array();
 		// conditions MUST be an object to continue
 		if (is_object($conditions))
 		{
+			// fix conditions
+			foreach (array('campaign', 'campaign_yesno', 'priority', 'priority_campaign', 'status', 'status_campaign') as $property)
+			{
+				if (!property_exists($conditions, $property))
+				{
+					continue;
+				}
+				if (!is_array($conditions->$property))
+				{
+					$conditions->$property = array_values((array) $conditions->$property);
+				}
+			}
+			if (JDEBUG)
+			{
+				$app->enqueueMessage(serialize($conditions));
+			}
 			// there should be 3*2 variables:
 			// campaign && campaign_yesno
 			if (property_exists($conditions, 'campaign') && property_exists($conditions, 'campaign_yesno'))
@@ -358,20 +380,15 @@ abstract class ModJInboundCTAHelper
 					}
 					if (JDEBUG)
 					{
-						$app->enqueueMessage("User is " . ($in ? '' : 'NOT ') . "in campaign '$value' ...");
+						$app->enqueueMessage("User is " . ($in ? '' : 'NOT ') . "in campaign '$value' ($key) ...");
 					}
-					// if the yes/no is "yes" then $in will be accurate
-					// otherwise it must be reversed
-					if (empty($conditions->campaign_yesno[$key]))
+					// check yes/no
+					$yn = $conditions->campaign_yesno[$key];
+					if (JDEBUG)
 					{
-						$in = !$in;
-						if (JDEBUG)
-						{
-							$app->enqueueMessage("User is " . ($in ? '' : 'NOT ') . "a match for campaign '$value' ...");
-						}
+						$app->enqueueMessage("User should " . ($yn ? '' : 'NOT ') . "be in campaign '$value' ($key, $yn) ...");
 					}
-					// push match to the stack
-					$matches[] = (bool) $in;
+					$matches[] = (bool) ($in ? $yn : !$yn);
 				}
 			}
 			// status && status_campaign
@@ -392,7 +409,7 @@ abstract class ModJInboundCTAHelper
 							$matches[] = false;
 							if (JDEBUG)
 							{
-								$app->enqueueMessage("User has no status for campaign '$status_campaign' ...");
+								$app->enqueueMessage("User has no status for campaign '$status_campaign' ($key) ...");
 							}
 						}
 						// key must exist, so check the first entry (shouldn't be empty?)
@@ -402,7 +419,7 @@ abstract class ModJInboundCTAHelper
 							$matches[] = (bool) $in;
 							if (JDEBUG)
 							{
-								$app->enqueueMessage("User has " . ($in ? '' : 'in') . "correct status for campaign '$status_campaign' ...");
+								$app->enqueueMessage("User has " . ($in ? '' : 'in') . "correct status for campaign '$status_campaign' ($key) ...");
 							}
 						}
 					}
@@ -421,7 +438,7 @@ abstract class ModJInboundCTAHelper
 						}
 						if (JDEBUG)
 						{
-							$app->enqueueMessage("User " . ($set ? 'has' : 'does not have') . " status '$value' ...");
+							$app->enqueueMessage("User " . ($set ? 'has' : 'does not have') . " status '$value' ($key) ...");
 						}
 						$matches[] = (bool) $set;
 					}
@@ -445,7 +462,7 @@ abstract class ModJInboundCTAHelper
 							$matches[] = false;
 							if (JDEBUG)
 							{
-								$app->enqueueMessage("User has no priority for campaign '$priority_campaign' ...");
+								$app->enqueueMessage("User has no priority for campaign '$priority_campaign' ($key) ...");
 							}
 						}
 						// key must exist, so check the first entry (shouldn't be empty?)
@@ -455,7 +472,7 @@ abstract class ModJInboundCTAHelper
 							$matches[] = (bool) $in;
 							if (JDEBUG)
 							{
-								$app->enqueueMessage("User has " . ($in ? '' : 'in') . "correct priority for campaign '$priority_campaign' ...");
+								$app->enqueueMessage("User has " . ($in ? '' : 'in') . "correct priority for campaign '$priority_campaign' ($key) ...");
 							}
 						}
 					}
@@ -474,7 +491,7 @@ abstract class ModJInboundCTAHelper
 						}
 						if (JDEBUG)
 						{
-							$app->enqueueMessage("User " . ($set ? 'has' : 'does not have') . " priority '$value' ...");
+							$app->enqueueMessage("User " . ($set ? 'has' : 'does not have') . " priority '$value' ($key) ...");
 						}
 						$matches[] = (bool) $set;
 					}

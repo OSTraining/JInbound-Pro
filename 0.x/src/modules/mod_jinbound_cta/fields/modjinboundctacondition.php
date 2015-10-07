@@ -19,6 +19,10 @@ if (!class_exists('ModJInboundCTAHelper'))
 	require_once $helper;
 }
 
+// load required classes
+JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/jinbound.php');
+JInbound::registerHelper('url');
+
 class JFormFieldModJInboundCTACondition extends JFormField
 {
 	public $type = 'ModJInboundCTACondition';
@@ -40,7 +44,7 @@ class JFormFieldModJInboundCTACondition extends JFormField
 		}
 		$html[] = '</div>';
 		// start rendered inputs
-		$html[] = '<div id="' . $this->id . '_controls">';
+		$html[] = '<div id="' . $this->id . '_controls" class="condition_controls">';
 		$html[] = '</div>';
 		// close main element
 		$html[] = '</div>';
@@ -54,7 +58,7 @@ class JFormFieldModJInboundCTACondition extends JFormField
 		{
 			$attributes[] = 'data-' . $key . '="' . $value . '"';
 		}
-		$button = '<button class="btn" type="button" %s> <i class="icon-save-new"></i> %s </button>';
+		$button = '<button class="btn jgrid" type="button" %s> <span class="icon-save-new state icon-16-newarticle"></span> %s </button>';
 		return sprintf($button, implode(' ', $attributes), JText::_($text));
 	}
 	
@@ -75,6 +79,11 @@ class JFormFieldModJInboundCTACondition extends JFormField
 		// only add main script once
 		if (is_null($mod_jinbound_cta_script_loaded))
 		{
+			if (!JInbound::version()->isCompatible('3.0.0'))
+			{
+				// force jQuery
+				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
+			}
 			$doc->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
 			$mod_jinbound_cta_script_loaded = true;
 		}

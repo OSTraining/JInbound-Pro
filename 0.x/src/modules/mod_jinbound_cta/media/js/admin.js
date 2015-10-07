@@ -71,6 +71,9 @@
 			return html;
 		};
 		block.css('position', 'relative');
+		if ('LI' == block.parent().prop("tagName")) {
+			block.css('float', 'left');
+		}
 		$('<div id="' + id + '_loading"></div>')
 			.css("background", "rgba(255, 255, 255, .8) url('../media/jui/img/ajax-loader.gif') 50% 15% no-repeat")
 			.css("top", 0)
@@ -116,7 +119,7 @@
 							var div = function(cls){return $('<div class="'+cls+'"></div>');},
 									cg = div('control-group'), cl = div('control-label'), cc = div('controls'), c = div('input-append input-prepend'),
 									i = $(renderElem(data.data.field.field)), l = $(renderElem(data.data.field.label)),
-									del = $('<button type="button" class="btn mod_jinbound_cta_conditions_del"> <i class="icon-minus"> </i> </button>'),
+									del = $('<button type="button" class="btn mod_jinbound_cta_conditions_del jgrid"> <span class="icon-minus state trash"> </span> </button>'),
 									cmp = ('jinboundcampaignlist' === field), r = false, n = i.attr('name'),
 									rcached = false,
 									u;
@@ -158,7 +161,7 @@
 							}
 							if (!n.match(/\[\]$/))
 							{
-								i.attr('name', n + '[]');
+								i.attr('name', n + '[' + window.ModJInboundCTAConditionInputs + ']');
 							}
 							cg.appendTo(controls);
 							cl.appendTo(cg);
@@ -178,7 +181,7 @@
 										var rname = input.attr('name');
 										if (!rname.match(/\[\]$/))
 										{
-											input.attr('name', rname + '[]');
+											input.attr('name', rname + '[' + window.ModJInboundCTAConditionInputs + ']');
 										}
 									});
 									cc.find(".btn-group label:not(.active)").click(function()
@@ -221,7 +224,7 @@
 								else {
 									var rname = r.attr('name');
 									if (!rname.match(/\[\]$/)) {
-										r.attr('name', rname + '[]');
+										r.attr('name', rname + '[' + window.ModJInboundCTAConditionInputs + ']');
 									}
 									if (is(yesno)) {
 										r.val(yesno);

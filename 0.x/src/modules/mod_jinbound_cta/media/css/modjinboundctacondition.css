@@ -4,3 +4,28 @@
 {
 	padding-bottom: 15px;
 }
+
+/*
+ * legacy styles
+ */
+
+ul.adminformlist li #jform_params_c1_conditions_controls,
+ul.adminformlist li #jform_params_c2_conditions_controls,
+ul.adminformlist li #jform_params_c3_conditions_controls
+{
+	clear: left;
+}
+
+ul.adminformlist li #jform_params_mode_editor_parent,
+ul.adminformlist li #jform_params_c1_mode_editor_parent,
+ul.adminformlist li #jform_params_c2_mode_editor_parent,
+ul.adminformlist li #jform_params_c3_mode_editor_parent
+{
+	float: left;
+}
+
+ul.adminformlist li .condition_controls .control-group .controls
+{
+	clear: left;
+	display: block;
+}
