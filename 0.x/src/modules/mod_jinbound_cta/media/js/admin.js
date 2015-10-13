@@ -35,6 +35,9 @@
 							}, 5000);
 						}
 						elem.removeAttr('disabled').trigger('liszt:updated');
+						$.each(elem.parent().find('.toggle-editor'), function(tidx, tel){
+							$(tel).show();
+						});
 						return;
 					}
 					try {
@@ -51,6 +54,9 @@
 						}, 4000);
 					}
 					elem.attr('disabled', 'disabled').trigger('change').trigger('liszt:updated');
+					$.each(elem.parent().find('.toggle-editor'), function(tidx, tel){
+						$(tel).hide();
+					});
 				});
 			}).trigger('change').trigger('liszt:updated');
 		});
