@@ -44,6 +44,8 @@ else {
 
 class JInboundBaseView extends JInboundBaseCompatView
 {
+	public $sortFunction;
+	
 	function __construct($config = array()) {
 		parent::__construct($config);
 		
@@ -54,8 +56,8 @@ class JInboundBaseView extends JInboundBaseCompatView
 		
 		// set the layout paths, in order of importance
 		$root = $this->app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
-		$layout_override = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/com_jinbound/' . $this->getName();
-		$common_override = JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/com_jinbound/_common';
+		$layout_override = JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/com_jinbound/' . $this->getName();
+		$common_override = JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/com_jinbound/_common';
 		$this->addTemplatePath($root . '/views/_common');
 		$this->addTemplatePath($root . '/views/' . $this->getName() . '/tmpl');
 		if (JFolder::exists($layout_override)) {
@@ -64,6 +66,7 @@ class JInboundBaseView extends JInboundBaseCompatView
 		if (JFolder::exists($common_override)) {
 			$this->addTemplatePath($common_override);
 		}
+		$this->sortFunction = JInbound::version()->isCompatible('3.0.0') ? 'searchtools.sort' : 'grid.sort';
 	}
 	
 	/**

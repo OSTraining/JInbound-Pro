@@ -16,18 +16,18 @@ $saveOrder = ($listOrder == 'Field.id');
 		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 	</th>
 	<th width="1%" class="hidden-phone">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Field.published', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_PUBLISHED', 'Field.published', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_TITLE', 'Field.title', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_TITLE', 'Field.title', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_FIELD_NAME', 'Field.name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_FIELD_NAME', 'Field.name', $listDirn, $listOrder); ?>
 	</th>
 	<th width="10%" class="nowrap">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_FIELD_TYPE_LABEL', 'Field.type', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_FIELD_TYPE_LABEL', 'Field.type', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone hidden-tablet">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_ID', 'Field.id', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_ID', 'Field.id', $listDirn, $listOrder); ?>
 	</th>
 </tr>

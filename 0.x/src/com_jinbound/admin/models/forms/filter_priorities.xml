@@ -31,6 +31,14 @@
 			<option value="">JGLOBAL_SORT_BY</option>
 			<option value="Priority.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="Priority.id DESC">JGRID_HEADING_ID_DESC</option>
+			<option value="Priority.name ASC">Name ascending</option>
+			<option value="Priority.name DESC">Name descending</option>
+			<option value="Priority.published ASC">Published ascending</option>
+			<option value="Priority.published DESC">Published descending</option>
+			<option value="Priority.ordering ASC">Ordering ascending</option>
+			<option value="Priority.ordering DESC">Ordering descending</option>
+			<option value="Priority.description ASC">Description ascending</option>
+			<option value="Priority.description DESC">Description descending</option>
 		</field>
 		<field
 			name="limit"

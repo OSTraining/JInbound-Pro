@@ -19,18 +19,18 @@ $saveOrder = ($listOrder == 'Priority.ordering');
 		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_NAME', 'Priority.name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_NAME', 'Priority.name', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Priority.published', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_PUBLISHED', 'Priority.published', $listDirn, $listOrder); ?>
 	</th>
 	<th width="12%">
-		<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ORDERING', 'Priority.ordering', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'JGRID_HEADING_ORDERING', 'Priority.ordering', $listDirn, $listOrder); ?>
 		<?php if ($saveOrder) :?>
 			<?php echo JHtml::_('grid.order',  $this->items, 'filesave.png', 'priorities.saveorder'); ?>
 		<?php endif; ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_DESCRIPTION', 'Priority.description', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_DESCRIPTION', 'Priority.description', $listDirn, $listOrder); ?>
 	</th>
 </tr>

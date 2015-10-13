@@ -25,7 +25,8 @@ require_once $helper;
 
 JInbound::registerHelper('url');
 $document = JFactory::getDocument();
-$document->addStyleSheet(JUri::root() . '/media/system/css/system.css');
+$document->addStyleSheet(JUri::root() . 'templates/jinbound/css/jinbound.css');
+$document->addStyleSheet(JUri::root() . 'media/system/css/system.css');
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
 
@@ -34,19 +35,6 @@ $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<jdoc:include type="head" />
-		<style>
-.tip,.tooltip {
-	border: 1px solid black;
-	background: white;
-	padding: 5px 12px 5px 12px;
-}
-.tooltip {
-	max-width: 120px;
-}
-.tip .tip-title {
-	font-weight: bold;
-}
-		</style>
 	</head>
 	<body>
 		<div class="container" id="jinbound_component">

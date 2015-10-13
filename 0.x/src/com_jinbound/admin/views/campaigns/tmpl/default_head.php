@@ -7,8 +7,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$listOrder	= $this->state->get('list.ordering');
-$listDirn	= $this->state->get('list.direction');
+$listOrder = $this->state->get('list.ordering');
+$listDirn  = $this->state->get('list.direction');
 $saveOrder = ($listOrder == 'Campaign.id');
 ?>
 <tr>
@@ -19,12 +19,12 @@ $saveOrder = ($listOrder == 'Campaign.id');
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%">
-		<?php echo JHtml::_('grid.sort', 'JPUBLISHED', 'Campaign.published', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'JPUBLISHED', 'Campaign.published', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%">
-		<?php echo JHtml::_('grid.sort', 'JGLOBAL_CREATED', 'Campaign.created', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'JGLOBAL_CREATED', 'Campaign.created', $listDirn, $listOrder); ?>
 	</th>
 </tr>

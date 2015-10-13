@@ -31,6 +31,12 @@
 			<option value="">JGLOBAL_SORT_BY</option>
 			<option value="Form.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="Form.id DESC">JGRID_HEADING_ID_DESC</option>
+			<option value="Form.published ASC">Published ascending</option>
+			<option value="Form.published DESC">Published descending</option>
+			<option value="Form.title ASC">Title ascending</option>
+			<option value="Form.title DESC">Title descending</option>
+			<option value="FormFieldCount ASC">Field Count ascending</option>
+			<option value="FormFieldCount DESC">Field Count descending</option>
 		</field>
 		<field
 			name="limit"

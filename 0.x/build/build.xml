@@ -295,7 +295,7 @@
 		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_cta" filtering="true">
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_cta"
-				includes="${cfg.pfx.mod}${cfg.name}_cta.php,${cfg.pfx.mod}${cfg.name}_cta.xml,adapter.php,helper.php,adapters/,fields/,language/,media/,tmpl/"
+				includes="${cfg.pfx.mod}${cfg.name}_cta.php,${cfg.pfx.mod}${cfg.name}_cta.xml,adapter.php,helper.php,adapters/,fields/,language/,liveupdate/,media/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -304,7 +304,7 @@
 		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_form" filtering="true">
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_form"
-				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,helper.php,language/,media/,tmpl/"
+				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,helper.php,language/,liveupdate/,media/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>

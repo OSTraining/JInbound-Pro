@@ -16,15 +16,15 @@ $saveOrder = ($listOrder == 'Form.id');
 		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 	</th>
 	<th width="1%" class="nowrap">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Form.published', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_PUBLISHED', 'Form.published', $listDirn, $listOrder); ?>
 	</th>
 	<th class="nowrap">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_TITLE', 'Form.title', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_TITLE', 'Form.title', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_FIELD_COUNT', 'FormFieldCount', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_FIELD_COUNT', 'FormFieldCount', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone hidden-tablet">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_ID', 'Form.id', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_ID', 'Form.id', $listDirn, $listOrder); ?>
 	</th>
 </tr>

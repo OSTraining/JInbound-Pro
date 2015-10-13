@@ -16,19 +16,19 @@ $saveOrder = ($listOrder == 'Email.id');
 		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 	</th>
 	<th width="15%">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_CAMPAIGN_NAME', 'Campaign.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_NAME', 'Email.name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_EMAIL_NAME', 'Email.name', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%" class="nowrap hidden-phone">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Email.published', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_CAMPAIGN_ACTIVE', 'Email.published', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_EMAIL_TYPE', 'Email.type', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_EMAIL_TYPE', 'Email.type', $listDirn, $listOrder); ?>
 	</th>
 	<th width="5%" class="nowrap hidden-phone">
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Email.sendafter', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_CAMPAIGN_SCHEDULE', 'Email.sendafter', $listDirn, $listOrder); ?>
 	</th>
 	<th width="1%" class="nowrap hidden-phone">
 		<?php echo JText::_('COM_JINBOUND_ID'); ?>

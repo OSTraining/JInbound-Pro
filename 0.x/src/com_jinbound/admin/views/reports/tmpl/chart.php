@@ -22,6 +22,13 @@ JText::script('COM_JINBOUND_NOT_FOUND');
 JText::script('COM_JINBOUND_GOAL_COMPLETIONS');
 JText::script('COM_JINBOUND_GOAL_COMPLETION_RATE');
 
+JText::script('COM_JINBOUND_REPORTS');
+JText::script('COM_JINBOUND_REPORTS_TITLE_CONVERSIONCOUNT');
+JText::script('COM_JINBOUND_REPORTS_TITLE_CONVERSIONRATE');
+JText::script('COM_JINBOUND_REPORTS_TITLE_LEADS');
+JText::script('COM_JINBOUND_REPORTS_TITLE_VIEWS');
+JText::script('COM_JINBOUND_REPORTS_TITLE_VIEWSTOLEADS');
+
 $chart_options = array(
 	(object) array('text' => JText::_('COM_JINBOUND_VIEWS'), 'value' => 'views')
 ,	(object) array('text' => JText::_('COM_JINBOUND_LEADS'), 'value' => 'leads')
@@ -87,12 +94,17 @@ $chart_options = array(
 		echo JRoute::_('index.php?option=com_jinbound&view=reports&layout=chart', false);
 	?>';
 	window.jinbound_last_filter = false;
+	window.changeTitle = function(title) {
+		$('h1.page-title, .pagetitle h2').each(function(idx, el){
+			$(el).text(title);
+		});
+	};
 	window.fetchReports = function() {
 		var filter = '', args = arguments;
 		$.each(window.jinbound_chart_filters, function(idx, el) {
 			var key = idx + 2;
 			if (args.length > key) {
-				filter += '&filter_' + el + '=' + args[key];
+				filter += '&filter_' + el + '=' + ('undefined' === typeof args[key] ? '' : args[key]);
 			}
 		});
 		$.ajax(window.jinbound_chart_baseurl + filter, {
@@ -105,13 +117,18 @@ $chart_options = array(
 				}
 				chart = $('#filter_chart').find(':selected').val();
 				charts = {
-					views: {name: 'hits', pct: false, label: 'COM_JINBOUND_VIEWS'}
-				,	leads: {name: 'leads', pct: false, label: 'COM_JINBOUND_LEADS'}
+					views: {name: 'hits', pct: false, label: 'COM_JINBOUND_VIEWS',
+					title: 'COM_JINBOUND_REPORTS_TITLE_VIEWS'}
+				,	leads: {name: 'leads', pct: false, label: 'COM_JINBOUND_LEADS',
+					title: 'COM_JINBOUND_REPORTS_TITLE_LEADS'}
 				,	viewstoleads: {dem: 'hits', num: 'leads', pct: true,
-					demlabel: 'COM_JINBOUND_VIEWS', numlabel: 'COM_JINBOUND_LEADS'}
+					demlabel: 'COM_JINBOUND_VIEWS', numlabel: 'COM_JINBOUND_LEADS',
+					title: 'COM_JINBOUND_REPORTS_TITLE_VIEWSTOLEADS'}
 				,	conversionrate: {dem: 'leads', num: 'conversions', pct: true,
-					demlabel: 'COM_JINBOUND_LEADS', numlabel: 'COM_JINBOUND_CONVERSIONS'}
-				,	conversioncount: {name: 'conversions', pct: false, label: 'COM_JINBOUND_CONVERSIONS'}
+					demlabel: 'COM_JINBOUND_LEADS', numlabel: 'COM_JINBOUND_CONVERSIONS',
+					title: 'COM_JINBOUND_REPORTS_TITLE_CONVERSIONRATE'}
+				,	conversioncount: {name: 'conversions', pct: false, label: 'COM_JINBOUND_CONVERSIONS',
+					title: 'COM_JINBOUND_REPORTS_TITLE_CONVERSIONCOUNT'}
 				};
 				if ('undefined' == typeof charts[chart]) {
 					alert(Joomla.JText._('COM_JINBOUND_ERROR_LOADING_PLOT_DATA'));
@@ -123,6 +140,7 @@ $chart_options = array(
 					window.jinbound_last_filter = filter;
 					window.history.pushState({}, '', window.jinbound_history_baseurl + filter + '&filter_chart=' + chart);
 				}
+				window.changeTitle(Joomla.JText._(c.title));
 				if (c.pct) {
 					d = [data[c.dem], data[c.num]];
 					s = [

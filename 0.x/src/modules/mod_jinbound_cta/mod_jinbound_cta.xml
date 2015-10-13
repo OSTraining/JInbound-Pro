@@ -20,12 +20,14 @@
 		<filename>fields/modjinboundctacondition.php</filename>
 		<filename>fields/modjinboundctamode.php</filename>
 		<filename>fields/modjinboundctamodule.php</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
 		<filename>tmpl/default.php</filename>
 		<folder>language</folder>
 	</files>
 	<media destination="mod_jinbound_cta" folder="media">
-		<folder>css</folder>
-		<folder>js</folder>
+		<filename>css/modjinboundctacondition.css</filename>
+		<filename>js/admin.js</filename>
 	</media>
 	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
 		<fields name="params" addfieldpath="/modules/mod_jinbound_cta/fields">

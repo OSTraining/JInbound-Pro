@@ -31,6 +31,16 @@
 			<option value="">JGLOBAL_SORT_BY</option>
 			<option value="Email.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="Email.id DESC">JGRID_HEADING_ID_DESC</option>
+			<option value="Campaign.name ASC">Campaign Name ascending</option>
+			<option value="Campaign.name DESC">Campaign Name descending</option>
+			<option value="Email.name ASC">Email Name ascending</option>
+			<option value="Email.name DESC">Email Name descending</option>
+			<option value="Email.published ASC">Email Published ascending</option>
+			<option value="Email.published DESC">Email Published descending</option>
+			<option value="Email.type ASC">Email Type ascending</option>
+			<option value="Email.type DESC">Email Type descending</option>
+			<option value="Email.sendafter ASC">Email Schedule ascending</option>
+			<option value="Email.sendafter DESC">Email Schedule descending</option>
 		</field>
 		<field
 			name="limit"

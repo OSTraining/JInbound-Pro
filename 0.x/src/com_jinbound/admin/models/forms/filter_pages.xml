@@ -53,6 +53,24 @@
 			<option value="">JGLOBAL_SORT_BY</option>
 			<option value="Page.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="Page.id DESC">JGRID_HEADING_ID_DESC</option>
+			<option value="Page.name ASC">Landing Page Name ascending</option>
+			<option value="Page.name DESC">Landing Page Name descending</option>
+			<option value="Page.published ASC">Published ascending</option>
+			<option value="Page.published DESC">Published descending</option>
+			<option value="campaign_name ASC">Campaign Name ascending</option>
+			<option value="campaign_name DESC">Campaign Name descending</option>
+			<option value="Page.category ASC">Category ascending</option>
+			<option value="Page.category DESC">Category descending</option>
+			<option value="Page.layout ASC">Layout ascending</option>
+			<option value="Page.layout DESC">Layout descending</option>
+			<option value="Page.hits ASC">Views ascending</option>
+			<option value="Page.hits DESC">Views descending</option>
+			<option value="submissions ASC">Views ascending</option>
+			<option value="submissions DESC">Views descending</option>
+			<option value="contact_submissions ASC">Leads ascending</option>
+			<option value="contact_submissions DESC">Leads descending</option>
+			<option value="conversions ASC">Conversions ascending</option>
+			<option value="conversions DESC">Conversions descending</option>
 		</field>
 		<field
 			name="limit"

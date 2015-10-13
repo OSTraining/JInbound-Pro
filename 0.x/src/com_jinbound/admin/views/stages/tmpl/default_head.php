@@ -19,12 +19,12 @@ $saveOrder = ''; //($listOrder == 'Page.id');
 		<input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY_NAME', 'Status.name', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_CATEGORY_NAME', 'Status.name', $listDirn, $listOrder); ?>
 	</th>
 	<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_PUBLISHED', 'Status.status', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_PUBLISHED', 'Status.status', $listDirn, $listOrder); ?>
 	</th>
 			<th>
-		<?php echo JHtml::_('grid.sort', 'COM_JINBOUND_CATEGORY_DESCRIPTION', 'Status.description', $listDirn, $listOrder); ?>
+		<?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_CATEGORY_DESCRIPTION', 'Status.description', $listDirn, $listOrder); ?>
 	</th>
 </tr>

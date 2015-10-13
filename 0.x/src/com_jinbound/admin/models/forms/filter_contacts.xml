@@ -88,6 +88,20 @@
 			<option value="">JGLOBAL_SORT_BY</option>
 			<option value="Contact.id ASC">JGRID_HEADING_ID_ASC</option>
 			<option value="Contact.id DESC">JGRID_HEADING_ID_DESC</option>
+			<option value="full_name ASC">Name ascending</option>
+			<option value="full_name DESC">Name descending</option>
+			<option value="Contact.email ASC">Name ascending</option>
+			<option value="Contact.email DESC">Name descending</option>
+			<option value="Contact.published ASC">Published ascending</option>
+			<option value="Contact.published DESC">Published descending</option>
+			<option value="Contact.created ASC">Date ascending</option>
+			<option value="Contact.created DESC">Date descending</option>
+			<option value="Priority.name ASC">Priority ascending</option>
+			<option value="Priority.name DESC">Priority descending</option>
+			<option value="Campaign.name ASC">Campaign ascending</option>
+			<option value="Campaign.name DESC">Campaign descending</option>
+			<option value="Status.name ASC">Status ascending</option>
+			<option value="Status.name DESC">Status descending</option>
 		</field>
 		<field
 			name="limit"
