@@ -14,7 +14,7 @@ class LiveUpdateConfig extends LiveUpdateAbstractConfig
 {
 	var $_extensionName			= 'mod_jinbound_form';
 	var $_extensionTitle		= 'jInbound Form';
-	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=4';
+	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=10';
 	var $_requiresAuthorization	= true;
 	var $_versionStrategy		= 'vcompare';
 	var $_storageAdapter		= 'file';

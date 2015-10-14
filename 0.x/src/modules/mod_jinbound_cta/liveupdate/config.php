@@ -14,7 +14,7 @@ class LiveUpdateConfig extends LiveUpdateAbstractConfig
 {
 	var $_extensionName			= 'mod_jinbound_cta';
 	var $_extensionTitle		= 'jInbound CTA';
-	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=4';
+	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=11';
 	var $_requiresAuthorization	= true;
 	var $_versionStrategy		= 'vcompare';
 	var $_storageAdapter		= 'file';
