@@ -54,6 +54,22 @@ class plgSystemJInbound extends JPlugin
 		{
 			$this->setUserCookie();
 		}
+		else
+		{
+			$modules = $this->getJinboundModules();
+			$option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
+			$view = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
+			if (in_array($option, $modules) && 'liveupdate' === $view)
+			{
+				$name = preg_replace('/^mod_/', '', $option);
+				require_once JPATH_ROOT . '/modules/' . $option . '/liveupdate/liveupdate.php';
+				$updateInfo = LiveUpdate::getUpdateInformation();
+				if ($updateInfo->hasUpdates) {
+					echo JText::sprintf('PLG_SYSTEM_JINBOUND_MODULE_UPDATE_HASUPDATES', $name, $option, $updateInfo->version);
+				}
+				jexit();
+			}
+		}
 	}
 	
 	/**
@@ -280,6 +296,45 @@ class plgSystemJInbound extends JPlugin
 			return;
 		}
 		$url .= (false === strpos($url, '?') ? '?' : '&') . 'dlid=' . $dlid;
+	}
+	
+	public function onJinboundDashboardUpdate()
+	{
+		$modules = $this->getJinboundModules();
+		$urls    = array();
+		foreach ($modules as $module)
+		{
+			$urls[] = "index.php?option=$module&view=liveupdate";
+		}
+		if (!empty($urls))
+		{
+			return $urls;
+		}
+	}
+	
+	private function getJinboundModules()
+	{
+		$modules = array();
+		$modbase = JPATH_ROOT . '/modules';
+		// locate any installed jinbound modules - for now just use names
+		if (($files = scandir($modbase)))
+		{
+			foreach ($files as $file)
+			{
+				$filename = basename($file);
+				$root = "$modbase/$filename";
+				if (!(is_dir($root) && preg_match('/^mod_jinbound_/', $filename)))
+				{
+					continue;
+				}
+				if (!file_exists("$root/liveupdate/liveupdate.php"))
+				{
+					continue;
+				}
+				$modules[] = $filename;
+			}
+		}
+		return $modules;
 	}
 	
 	/**

@@ -32,7 +32,17 @@ Joomla.submitbutton = function(task) {
 	$updates = array();
 	foreach ($this->updates as $update)
 	{
-		$updates[] = "'" . JInboundHelperFilter::escape_js($update) . "'";
+		if (is_array($update))
+		{
+			foreach ($update as $url)
+			{
+				$updates[] = "'" . JInboundHelperFilter::escape_js($url) . "'";
+			}
+		}
+		else
+		{
+			$updates[] = "'" . JInboundHelperFilter::escape_js($update) . "'";
+		}
 	}
 	echo implode(',', $updates);
 	?>];
