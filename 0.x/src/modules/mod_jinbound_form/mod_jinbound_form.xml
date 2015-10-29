@@ -14,6 +14,8 @@
 		<filename module="mod_jinbound_form">helper.php</filename>
 		<filename module="mod_jinbound_form">mod_jinbound_form.xml</filename>
 		<filename module="mod_jinbound_form">tmpl/default.php</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_form.ini</filename>
 	</files>
 	<media destination="mod_jinbound_form" folder="media">

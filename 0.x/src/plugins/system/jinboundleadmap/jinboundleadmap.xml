@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>plg_system_jinboundleadmap</name>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>@ant_current_date@</creationDate>
+	<author>Anything Digital</author>
+	<authorEmail>admin@anything-digital.com</authorEmail>
+	<authorUrl>http://anything-digital.com</authorUrl>
+	<copyright>@ant_xml_copyright@</copyright>
+	<license>GNU/GPL</license>
+	<version>@ant_leadmap_version_number@</version>
+	<description>PLG_SYSTEM_JINBOUNDLEADMAP_XML_DESCRIPTION</description>
+	<scriptfile>jinboundleadmap.install.php</scriptfile>
+	<updateservers>
+		<server type="collection" name="plg_system_jinboundleadmap">https://jinbound.com/index.php?option=com_ars&amp;view=update&amp;task=category&amp;id=plugins&amp;format=xml&amp;dummy=extension.xml</server>
+		<server type="extension" name="plg_system_jinboundleadmap">https://jinbound.com/index.php?option=com_ars&amp;view=update&amp;task=stream&amp;id=13&amp;format=xml&amp;dummy=extension.xml</server>
+	</updateservers>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_system_jinboundleadmap.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="jinboundleadmap">jinboundleadmap.php</filename>
+		<filename plugin="jinboundleadmap">jinboundleadmap.install.php</filename>
+		<filename>language/en-GB/en-GB.plg_system_jinboundleadmap.sys.ini</filename>
+		<filename>lib/geoip2.phar</filename>
+		<filename>liveupdate/config.php</filename>
+		<filename>liveupdate/liveupdate.php</filename>
+		<filename>tmpl/default.php</filename>
+	</files>
+	<media destination="jinboundleadmap" folder="media">
+		<folder>js</folder>
+	</media>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+			</fieldset>
+		</fields>
+	</config>
+</extension>

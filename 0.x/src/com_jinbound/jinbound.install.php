@@ -102,6 +102,7 @@ class com_JInboundInstallerScript
 				// fix component config
 				$this->_saveDefaults($parent);
 			case 'update':
+				$this->_triggerMenu();
 				$this->_fixGenericFormFields();
 				$this->_checkDefaultReportEmails();
 				$this->_saveDefaultAssets($parent);
@@ -121,6 +122,11 @@ class com_JInboundInstallerScript
 				$this->_cleanupMissingRecords();
 				break;
 		}
+	}
+	
+	private function _triggerMenu()
+	{
+		JDispatcher::getInstance()->trigger('onJinboundRebuildMenu');
 	}
 	
 	private function _fixGenericFormFields()

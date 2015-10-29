@@ -193,6 +193,7 @@ class JInboundView extends JInboundBaseView
 		}
 		
 		$vName  = $this->app->input->get('view', '', 'cmd');
+		$task   = $this->app->input->get('task', '', 'cmd');
 		$option = $this->app->input->get('option', '', 'cmd');
 		
 		if (empty($vName)) {
@@ -201,7 +202,7 @@ class JInboundView extends JInboundBaseView
 		
 		$vName = strtolower($vName);
 		// Dashboard
-		$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM) . '_DASHBOARD'), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')));
+		$this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM) . '_DASHBOARD'), JInboundHelperUrl::_(), $option == JInbound::COM && in_array($vName, array('', 'dashboard')) && '' == $task);
 		// the rest
 		$subMenuItems = array(
 			'campaigns'   => 'CAMPAIGNS_MANAGER',
@@ -245,13 +246,16 @@ class JInboundView extends JInboundBaseView
 			$this->addSubMenuEntry($label, $href, $active);
 		}
 		
+		// trigger a plugin event to allow other extensions to add their own views
+		JDispatcher::getInstance()->trigger('onJinboundBeforeMenuBar', array(&$this));
+		
 		$this->sidebar = false;
 		if (class_exists('JHtmlSidebar')) {
 			$this->sidebar = JHtmlSidebar::render();
 		}
 	}
 	
-	protected function addSubMenuEntry($label, $href, $active) {
+	public function addSubMenuEntry($label, $href, $active) {
 		if (class_exists('JHtmlSidebar')) {
 			return JHtmlSidebar::addEntry($label, $href, $active);
 		}
