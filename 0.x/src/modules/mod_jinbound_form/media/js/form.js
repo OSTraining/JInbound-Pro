@@ -2,7 +2,7 @@
  * form.js
  * 
  * This script should be embedded in 3rd party sites using the following markup:
- * <script src="{path}/form.js" data-j-ref="jinbound" data-j-form="{id}"></script>
+ * <script src="{path}/form.js" data-j-ref="jinbound" data-j-module="{id}"></script>
  */
 
 // based on http://dustindiaz.com/smallest-domready-ever
@@ -10,7 +10,7 @@ function JInboundRemoteReady(f){/in/.test(document.readyState)?setTimeout('JInbo
 
 /**
  * JInbound object
- * @returns {JInbound}
+ * @returns {JInboundRemote}
  */
 var JInboundRemote = function()
 {
@@ -18,7 +18,7 @@ var JInboundRemote = function()
 };
 
 /**
- * JInbound object constructor
+ * JInboundRemote object constructor
  * @returns {undefined}
  */
 JInboundRemote.prototype.__constructor = function()
@@ -57,16 +57,80 @@ JInboundRemote.prototype.initForm = function(tag)
 				$this.ajaxError(0, err);
 				return;
 			}
-			if (json && json.data)
+			if (json)
 			{
-				tag.outerHTML = json.data.form;
-				if (json.data.style)
+				if (json.data)
 				{
-					var link = document.createElement('link');
-					link.type = 'text/css';
-					link.rel  = 'stylesheet';
-					link.href = json.data.style;
-					document.head.appendChild(link);
+					var nostyle = tag.getAttribute('data-j-nostyle');
+					var noscript = tag.getAttribute('data-j-noscript');
+					tag.outerHTML = json.data.form;
+					if (!nostyle && json.data.style)
+					{
+						var link = document.createElement('link');
+						link.type = 'text/css';
+						link.rel  = 'stylesheet';
+						link.href = json.data.style;
+						document.head.appendChild(link);
+					}
+					var moo = false, j = false;
+					if (!noscript && json.data.scripts)
+					{
+						for (var i = 0, n = json.data.scripts.length; i < n; i++)
+						{
+							moo = moo ? moo : json.data.scripts[i].src.match(/mootools/i);
+							j = j ? j : json.data.scripts[i].src.match(/jquery/i);
+							var script = document.createElement('script');
+							script.type = json.data.scripts[i].mime;
+							script.src = $this.remoteRelativeUrlToAbsolute(tag, json.data.scripts[i].src);
+							if (json.data.scripts[i].defer)
+							{
+								script.defer = true;
+							}
+							if (json.data.scripts[i].async)
+							{
+								script.async = true;
+							}
+							document.head.appendChild(script);
+						}
+					}
+					if (!noscript && json.data.script)
+					{
+						try
+						{
+							if (moo && 'function' === typeof $)
+							{
+								$.prototype.load = function (f)
+								{
+									f();
+								};
+							}
+							if (j && 'function' === typeof jQuery)
+							{
+								jQuery.prototype.ready = function (f)
+								{
+									f(jQuery);
+								}
+								jQuery.prototype.load = function (f)
+								{
+									f(jQuery);
+								}
+							}
+							eval(json.data.script);
+						}
+						catch (err)
+						{
+							$this.ajaxError(0, err);
+						}
+					}
+				}
+				else if (false === json.success && !tag.getAttribute('data-j-quiet'))
+				{
+					var msg = json.message + '';
+					if (json.messages && json.messages.length)
+					{
+						msg = '<ul><li>' + json.messages.join('</li><li>') + '</li></ul>';
+					}
+					tag.outerHTML = '<div class="alert alert-error">' + msg + '</div>';
 				}
 			}
 		}
@@ -79,7 +143,12 @@ JInboundRemote.prototype.getUrlFromTag = function(tag)
 	,   o = tag.getAttribute('data-j-option')
 	,   r = tag.getAttribute('data-j-return');
 	return tag.getAttribute('src').replace(/media\/mod_jinbound_form\/js\/form\.js$/, 'index.php?option=com_' + (o ? o + '&task=' : '') + 'ajax&format=json&module=jinbound_form&method=getForm&id=' + f + (r ? '&return_url=' + r : ''));
-}
+};
+
+JInboundRemote.prototype.remoteRelativeUrlToAbsolute = function(tag, relative)
+{
+	return tag.getAttribute('src').replace(/media\/mod_jinbound_form\/js\/form\.js$/, relative);
+};
 
 // http://stackoverflow.com/questions/8567114/how-to-make-an-ajax-call-without-jquery
 JInboundRemote.prototype.ajax = function(options)
@@ -108,6 +177,7 @@ JInboundRemote.prototype.ajax = function(options)
 	}
 	
 	xmlhttp.open(options.type || "GET", options.url, true);
+	xmlhttp.withCredentials = true;
 	xmlhttp.send();
 };
 

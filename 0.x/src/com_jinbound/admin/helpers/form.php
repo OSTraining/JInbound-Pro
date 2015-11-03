@@ -18,6 +18,41 @@ JInboundBaseModel::addIncludePath(JInboundHelperPath::admin('models'));
 
 abstract class JInboundHelperForm
 {
+	static public function getJinboundForm($form_id)
+	{
+		// initialise
+		if (empty($form_id))
+		{
+			return false;
+		}
+		// set up JForm
+		JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/forms');
+		try
+		{
+			$form = JForm::getInstance('jinbound_form_module', '<form><!-- --></form>', array('control' => 'jform'));
+		}
+		catch (Exception $e)
+		{
+			return false;
+		}
+
+		// get the model
+		JModelLegacy::addIncludePath(JPATH_ROOT . '/components/com_jinbound/models', 'JInboundModel');
+		$model  = JModelLegacy::getInstance('Page', 'JInboundModel');
+
+		// add fields to form
+		$fields = JInboundHelperForm::getFields($form_id);
+		$model->addFieldsToForm($fields, $form, JText::_('COM_JINBOUND_FIELDSET_LEAD'));
+
+		// sanity checks
+		if (empty($fields) || !($form instanceof JForm))
+		{
+			return false;
+		}
+		
+		return $form;
+	}
+	
 	public static function getForm($name, $data, $asset = false) {
 		// only load once
 		static $loaded;

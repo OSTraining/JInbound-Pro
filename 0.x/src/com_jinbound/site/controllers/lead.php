@@ -9,6 +9,7 @@ defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerHelper('form');
+JInbound::registerHelper('module');
 JInbound::registerHelper('path');
 JInbound::registerHelper('priority');
 JInbound::registerHelper('status');
@@ -62,22 +63,30 @@ class JInboundControllerLead extends JInboundBaseController
 			// no data for this token - try to load it
 			if (!is_object($session_data))
 			{
-				// parse the token
-				$token_base = 'mod_jinbound_form.form.';
-				if (substr($token, 0, strlen($token_base)) === $token_base)
+				$token_parts = explode('.', $token);
+				if (3 === count($token_parts))
 				{
-					$module_id = intval(substr($token, strrpos($token, '.') + 1));
-					if (file_exists($helper = JPATH_ROOT . '/modules/mod_jinbound_form/helper.php'))
+					list($module_name, $type, $module_id) = $token;
+					$helper = JPATH_ROOT . '/modules/' . $module_name . '/helper.php';
+					$class  = str_replace(' ', '', ucwords(str_replace('_', ' ', $module_name))) . 'Helper';
+					$method = 'get' . ucwords($type) . 'Data';
+					if (!class_exists($class))
 					{
-						require_once $helper;
+						if (file_exists($helper))
+						{
+							require_once $helper;
+						}
+					}
+					if (class_exists($class) && method_exists($class, $method))
+					{
 						try
 						{
-							$module = modJinboundFormHelper::getModuleObject($module_id);
+							$module = JinboundHelperModule::getModuleObject($module_id);
 							$params = new JRegistry();
 							$params->loadString($module->params);
-							$session_data = modJinboundFormHelper::getFormData($module, $params);
+							$session_data = call_user_func_array(array($class, $method), array($module, $params));
 						}
-						catch (Exception $e)
+						catch (Exception $ex)
 						{
 							$app->enqueueMessage($e->getMessage(), 'error');
 						}

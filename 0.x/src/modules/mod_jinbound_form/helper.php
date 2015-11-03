@@ -10,6 +10,7 @@ defined('_JEXEC') or die;
 // load required classes
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/jinbound.php');
 JInbound::registerHelper('form');
+JInbound::registerHelper('module');
 JInbound::registerHelper('url');
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
@@ -20,21 +21,72 @@ abstract class modJinboundFormHelper
 {
 	static public function getFormAjax()
 	{
+		// reset the document
+		$doc = JFactory::getDocument();
+		$doc->_scripts     = array();
+		$doc->_script      = array();
+		$doc->_styleSheets = array();
+		$doc->_style       = array();
+		// get the module id to load
 		$input = JFactory::getApplication()->input;
 		$id    = $input->getInt('id', 0);
-		if (!headers_sent())
+		// get ORIGIN
+		// TODO: whitelist? param?
+		if (filter_has_var(INPUT_SERVER, 'HTTP_ORIGIN'))
 		{
-			$origin = filter_input(INPUT_SERVER, 'HTTP_ORIGIN', FILTER_SANITIZE_URL);
-			header('Access-Control-Allow-Origin: ' . $origin);
-			header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-			header('Access-Control-Max-Age: 1000');
-			header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+			$origin = filter_input(INPUT_SERVER, 'HTTP_ORIGIN');
 		}
-		$module  = static::getModuleObject();
+		else
+		{
+			$origin = (isset($_SERVER['HTTP_ORIGIN']) ? filter_var($_SERVER['HTTP_ORIGIN'],
+FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
+		}
+		if (empty($origin))
+		{
+			$origin = '*';
+		}
+		// set CORS headers
+		header('Access-Control-Allow-Origin: ' . $origin);
+		header('Access-Control-Allow-Credentials: true');
+		header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+		header('Access-Control-Max-Age: 1000');
+		header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description, Authorization, X-Requested-With');
+		// get the module and render the form
+		$module  = JInboundHelperModule::getModuleObject();
 		$attribs = array('style' => 'none');
+		$form    = JModuleHelper::renderModule($module, $attribs);
+		// get module-specific scripts 
+		$corescripts  = $doc->_scripts;
+		$corescript   = $doc->_script;
+		$corestyles   = $doc->_styleSheets;
+		$corestyle    = $doc->_style;
+		// adjust the script structures
+		$finalscripts = array();
+		if (!empty($corescripts))
+		{
+			$root = JUri::root(true);
+			foreach ($corescripts as $script => $attributes)
+			{
+				// remove root if possible
+				if (substr($script, 0, strlen($root)) === $root)
+				{
+					$script = substr($script, strlen($root));
+				}
+				$finalscripts[] = array_merge($attributes, array('src' => $script));
+			}
+		}
+		$finalscript = '';
+		if (is_array($corescript) && array_key_exists('text/javascript', $corescript))
+		{
+			$finalscript = $corescript['text/javascript'];
+		}
+		// send data structure
 		return array(
-			'form'    => JModuleHelper::renderModule($module, $attribs),
-			'style'   => false,
+			'form'    => $form,
+			'styles'  => empty($corestyles) ? false : $corestyles,
+			'style'   => empty($corestyle) ? false : $corestyle,
+			'scripts' => empty($finalscripts) ? false : $finalscripts,
+			'script'  => empty($finalscript) ? false : $finalscript,
 			'session' => JFactory::getSession()->get('mod_jinbound_form.form.' . $id)
 		);
 	}
@@ -42,49 +94,15 @@ abstract class modJinboundFormHelper
 	/**
 	 * Fetches the module object needed to operate
 	 * 
+	 * This method is deprecated, use JInboundHelperModule::getModuleObject instead
+	 * 
 	 * @return stdClass
 	 * @throws UnexpectedValueException
+	 * @deprecated
 	 */
 	static public function getModuleObject($module_id = null)
 	{
-		// init
-		$input  = JFactory::getApplication()->input;
-		$db     = JFactory::getDbo();
-		$id     = is_null($module_id) ? $input->getInt('id', 0) : $module_id;
-		$return = base64_decode($input->getBase64('return_url', base64_encode(JUri::root(true))));
-		// there must be a module id to continue
-		if (empty($id))
-		{
-			throw new UnexpectedValueException('Module not found');
-		}
-		// load the module by title
-		$title = $db->setQuery($db->getQuery(true)
-			->select('title')
-			->from('#__modules')
-			->where('id = ' . $id)
-		)->loadResult();
-		if (empty($title))
-		{
-			throw new UnexpectedValueException('Module not found');
-		}
-		// use the module helper to load the module object
-		$module = JModuleHelper::getModule('mod_jinbound_form', $title);
-		if ($module->id != $id)
-		{
-			throw new UnexpectedValueException('Module not found');
-		}
-		// fix the params
-		if (!is_a($module->params, 'Registry'))
-		{
-			$registry = JInbound::registry($module->params);
-			$module->params = $registry;
-		}
-		// set return url if desired
-		if (!empty($return))
-		{
-			$module->params->set('return_url', $return);
-		}
-		return $module;
+		return JInboundHelperModule::getModuleObject($module_id);
 	}
 	
 	static public function getFormData(&$module, &$params)
@@ -111,43 +129,6 @@ abstract class modJinboundFormHelper
 	
 	static public function getForm(&$params)
 	{
-		// initialise
-		$form_id = (int) $params->get('formid', 0);
-		if (empty($form_id))
-		{
-			return false;
-		}
-		// check that jinbound is installed
-		$jinbound_base = JPATH_ADMINISTRATOR . '/components/com_jinbound';
-		if (!JFolder::exists($jinbound_base))
-		{
-			return false;
-		}
-		// set up JForm
-		JForm::addFormPath("$jinbound_base/models/forms");
-		try
-		{
-			$form = JForm::getInstance('jinbound_form_module', '<form><!-- --></form>', array('control' => 'jform'));
-		}
-		catch (Exception $e)
-		{
-			return false;
-		}
-
-		// get the model
-		JModelLegacy::addIncludePath(JPATH_ROOT . '/components/com_jinbound/models', 'JInboundModel');
-		$model  = JModelLegacy::getInstance('Page', 'JInboundModel');
-
-		// add fields to form
-		$fields = JInboundHelperForm::getFields($form_id);
-		$model->addFieldsToForm($fields, $form, JText::_('COM_JINBOUND_FIELDSET_LEAD'));
-
-		// sanity checks
-		if (empty($fields) || !($form instanceof JForm))
-		{
-			return false;
-		}
-		
-		return $form;
+		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0));
 	}
 }

@@ -10,6 +10,12 @@ defined('_JEXEC') or die;
 // get helper class
 require_once dirname(__FILE__) . '/helper.php';
 
+if (version_compare(JInbound::VERSION, '2.1.6', '<='))
+{
+	echo JText::_('MOD_JINBOUND_FORM_REQUIRES_JINBOUND_2_1_6');
+	return;
+}
+
 // initialise
 $form = modJinboundFormHelper::getForm($params);
 $data = modJinboundFormHelper::getFormData($module, $params);

@@ -28,6 +28,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging/modules" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_cta" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form" />
+		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_popup" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins/content" />
@@ -81,6 +82,9 @@
 		<condition property="str.versionmoduleformforxml" value="${cfg.version.module.form}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
+		<condition property="str.versionmodulepopupforxml" value="${cfg.version.module.popup}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.popup}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
 		<tstamp>
 			<format property="str.datefmt" pattern="${cfg.datefmt}" locale="${cfg.dateloc}" />
 		</tstamp>
@@ -125,6 +129,9 @@
 		<condition property="str.version.module.form" value="${cfg.versionprefix}${cfg.version.module.form}" else="${cfg.version.module.form}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
+		<condition property="str.version.module.popup" value="${cfg.versionprefix}${cfg.version.module.popup}" else="${cfg.version.module.popup}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
 		<condition property="str.date" value="_${str.datefmt}" else="">
 			<istrue value="${cfg.adddate}" />
 		</condition>
@@ -162,8 +169,10 @@
 		<property name="str.mod.bookmark.file" value="${cfg.packages}/temp/packages/${str.mod.bookmark.filename}" />
 		<property name="str.mod.cta.filename" value="${cfg.pfx.mod}${cfg.name}_cta_${str.version.module.cta}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.cta.file" value="${cfg.packages}/current/${str.mod.cta.filename}" />
-		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version.module.cta}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version.module.form}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.form.file" value="${cfg.packages}/current/${str.mod.form.filename}" />
+		<property name="str.mod.popup.filename" value="${cfg.pfx.mod}${cfg.name}_popup_${str.version.module.popup}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.popup.file" value="${cfg.packages}/current/${str.mod.popup.filename}" />
 		
 		<!-- perform filtering -->
 		<filter token="ant_version_number" value="${str.versionforxml}" />
@@ -177,6 +186,7 @@
 		<filter token="ant_leadmap_version_number" value="${str.versionleadmapforxml}" />
 		<filter token="ant_module_cta_version_number" value="${str.versionmodulectaforxml}" />
 		<filter token="ant_module_form_version_number" value="${str.versionmoduleformforxml}" />
+		<filter token="ant_module_popup_version_number" value="${str.versionmoduleformforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
 		<filter token="ant_component_id" value="${cfg.pfx.com}${cfg.name}" />
@@ -209,6 +219,7 @@
 		<property name="git.title.leadmap" value="JInbound Lead Map Plugin Changelog" />
 		<property name="git.title.mod_jinbound_cta" value="JInbound Call-To-Action Module Changelog" />
 		<property name="git.title.mod_jinbound_form" value="JInbound Form Module Changelog" />
+		<property name="git.title.mod_jinbound_popup" value="JInbound Popup Form Module Changelog" />
 		<property name="git.log.dir" value="${cfg.buildpath}changelog" />
 		<property name="git.log.filename" value="changelog.src.log" />
 		<property name="git.log.file" value="${git.log.dir}/${git.log.filename}" />
@@ -236,6 +247,8 @@
 		<property name="git.log.fileout.mod_jinbound_cta" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_cta}" />
 		<property name="git.log.fileoutname.mod_jinbound_form" value="mod_jinbound_form.changelog.log" />
 		<property name="git.log.fileout.mod_jinbound_form" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_form}" />
+		<property name="git.log.fileoutname.mod_jinbound_popup" value="mod_jinbound_popup.changelog.log" />
+		<property name="git.log.fileout.mod_jinbound_popup" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_popup}" />
 		
 		<property name="git.rootDir" value="/home/jeff/git/jinbound/0.x/src/" />
 		<property name="git.buildDir" value="/home/jeff/git/jinbound/0.x/build/" />
@@ -318,6 +331,15 @@
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_form"
 				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,helper.php,language/,liveupdate/,media/,tmpl/"
+				excludes="**.git"
+			/>
+		</copy>
+		
+		<!-- popup module -->
+		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_popup" filtering="true">
+			<fileset
+				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_popup"
+				includes="${cfg.pfx.mod}${cfg.name}_popup.php,${cfg.pfx.mod}${cfg.name}_popup.xml,helper.php,language/,liveupdate/,media/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -511,6 +533,9 @@
 		<exec executable="${cfg.php.bin}">
 			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_form}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_form}" --milestone_prefix="mod_jinbound_form "' />
 		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_popup}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_popup}" --milestone_prefix="mod_jinbound_popup "' />
+		</exec>
 		<echo>Raw git log processed</echo>
 		
 		<!-- Copy changelog to extension dir -->
@@ -634,6 +659,13 @@
 		</zip>
 		<zip destfile="${str.mod.form.file}.zip" update="true">
 			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mod_jinbound_form}" />
+		</zip>
+		
+		<zip destfile="${str.mod.popup.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_popup" excludes="" />
+		</zip>
+		<zip destfile="${str.mod.popup.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mod_jinbound_popup}" />
 		</zip>
 		
 		<!-- create pkg -->
