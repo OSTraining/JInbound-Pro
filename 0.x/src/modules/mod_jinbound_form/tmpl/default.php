@@ -8,6 +8,7 @@
 defined('_JEXEC') or die;
 
 ?>
+<!-- <?php echo $form->getName(); ?> -->
 <div class="row-fluid">
 	<div class="span12">
 		<form action="<?php echo $form_url; ?>" method="post" enctype="multipart/form-data">

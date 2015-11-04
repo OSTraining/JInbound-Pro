@@ -27,7 +27,12 @@ class JInboundControllerLead extends JInboundBaseController
 		$dispatcher      = JDispatcher::getInstance();
 		$page_id         = $app->input->post->get('page_id', 0, 'int');
 		$token           = $app->input->get('token', '', 'cmd');
-		$raw_data        = $app->input->post->get('jform', array(), 'array');
+		$raw_param       = 'jform';
+		if (!empty($token))
+		{
+			$raw_param = preg_replace('/^(.*?)\.(.*?)\.(.*?)$/', '${1}_${3}', $token);
+		}
+		$raw_data        = $app->input->post->get($raw_param, array(), 'array');
 		$contact_data    = array();
 		$conversion_data = array('page_id' => $page_id);
 		// import content plugins

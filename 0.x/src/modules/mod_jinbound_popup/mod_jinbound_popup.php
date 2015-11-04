@@ -25,7 +25,7 @@ if (version_compare(JInbound::VERSION, '2.1.6', '<='))
 modJinboundPopupHelper::addHtmlAssets();
 
 // initialise
-$form = JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0));
+$form = modJinboundPopupHelper::getForm($module, $params);
 $data = modJinboundPopupHelper::getFormData($module, $params);
 $introtext = $params->get('introtext', '');
 $stripped  = strip_tags($introtext);

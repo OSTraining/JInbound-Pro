@@ -17,7 +17,7 @@ if (version_compare(JInbound::VERSION, '2.1.6', '<='))
 }
 
 // initialise
-$form = modJinboundFormHelper::getForm($params);
+$form = modJinboundFormHelper::getForm($module, $params);
 $data = modJinboundFormHelper::getFormData($module, $params);
 
 if (false === $form || false === $data)

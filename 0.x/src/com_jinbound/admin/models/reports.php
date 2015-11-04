@@ -940,7 +940,6 @@ class JInboundModelReports extends JInboundListModel
 			// send emails
 			$mailer = JFactory::getMailer();
 			$mailer->ClearAllRecipients();
-			$mailer->addRecipient($sendto);
 			$mailer->setSubject($subject);
 			$mailer->setBody($htmlbody);
 			$mailer->IsHtml(true);
@@ -953,37 +952,40 @@ class JInboundModelReports extends JInboundListModel
 				echo $htmlbody;
 			}
 			
-			$send_response = $mailer->send();
-			if (false !== $send_response && !($send_response instanceof JError) && !($send_response instanceof Exception))
+			// #641 if one recipient succeeds, the whole thing should succeed
+			foreach ($sendto as $recipient)
 			{
-				$query = $db->getQuery(true)
-					->insert('#__jinbound_reports_emails')
-					->columns(array('email', 'email_id', 'created'))
-				;
-				foreach ($sendto as $email)
+				$mailer->ClearAllRecipients();
+				$mailer->addRecipient($recipient);
+				$send_response = $mailer->send();
+				if (false !== $send_response && !($send_response instanceof JError) && !($send_response instanceof Exception))
 				{
-					$query->values($db->quote($email) . ', ' . intval($emailrecord->id) . ', NOW()');
-				}
-				try
-				{
-					$db->setQuery($query)->query();
-				}
-				catch (Exception $e)
-				{
-					if ($out)
+					$query = $db->getQuery(true)
+						->insert('#__jinbound_reports_emails')
+						->columns(array('email', 'email_id', 'created'))
+						->values($db->quote($recipient) . ', ' . intval($emailrecord->id) . ', NOW()')
+					;
+					try
 					{
-						echo "<p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+						$db->setQuery($query)->query();
 					}
-					return;
+					catch (Exception $e)
+					{
+						if ($out)
+						{
+							echo "<p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+						}
+						return;
+					}
 				}
-			}
-			else if (false === $send_response && $out)
-			{
-				echo "<p>Unspecified error sending mail!</p>";
-			}
-			else if ($send_response instanceof Exception && $out)
-			{
-				echo "<p>" . $e->getMessage() . "</p>";
+				else if (false === $send_response && $out)
+				{
+					echo "<p>Unspecified error sending mail!</p>";
+				}
+				else if ($send_response instanceof Exception && $out)
+				{
+					echo "<p>" . $e->getMessage() . "</p>";
+				}
 			}
 		}
 	}

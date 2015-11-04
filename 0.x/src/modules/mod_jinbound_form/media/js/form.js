@@ -97,25 +97,30 @@ JInboundRemote.prototype.initForm = function(tag)
 					{
 						try
 						{
-							if (moo && 'function' === typeof $)
-							{
-								$.prototype.load = function (f)
+							setTimeout(function(){
+								if (moo && 'function' === typeof $)
 								{
-									f();
-								};
-							}
-							if (j && 'function' === typeof jQuery)
-							{
-								jQuery.prototype.ready = function (f)
-								{
-									f(jQuery);
+									$.prototype.load = function (f)
+									{
+										console.log('mootools.load');
+										f();
+									};
 								}
-								jQuery.prototype.load = function (f)
+								if (j && 'function' === typeof jQuery)
 								{
-									f(jQuery);
+									jQuery.prototype.ready = function (f)
+									{
+										console.log('jquery.ready');
+										f(jQuery);
+									}
+									jQuery.prototype.load = function (f)
+									{
+										console.log('jquery.load');
+										f(jQuery);
+									}
 								}
-							}
-							eval(json.data.script);
+								eval(json.data.script);
+							}, 1000);
 						}
 						catch (err)
 						{
@@ -147,7 +152,11 @@ JInboundRemote.prototype.getUrlFromTag = function(tag)
 
 JInboundRemote.prototype.remoteRelativeUrlToAbsolute = function(tag, relative)
 {
-	return tag.getAttribute('src').replace(/media\/mod_jinbound_form\/js\/form\.js$/, relative);
+	if (relative.match(/^(https?\:)?\/\//))
+	{
+		return relative;
+	}
+	return tag.getAttribute('src').replace(/\/media\/mod_jinbound_form\/js\/form\.js$/, relative);
 };
 
 // http://stackoverflow.com/questions/8567114/how-to-make-an-ajax-call-without-jquery

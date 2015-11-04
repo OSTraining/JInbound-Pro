@@ -18,7 +18,7 @@ JInboundBaseModel::addIncludePath(JInboundHelperPath::admin('models'));
 
 abstract class JInboundHelperForm
 {
-	static public function getJinboundForm($form_id)
+	static public function getJinboundForm($form_id, $form_options = array())
 	{
 		// initialise
 		if (empty($form_id))
@@ -29,7 +29,8 @@ abstract class JInboundHelperForm
 		JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/forms');
 		try
 		{
-			$form = JForm::getInstance('jinbound_form_module', '<form><!-- --></form>', array('control' => 'jform'));
+			$options = array_merge(array('control' => 'jform'), $form_options);
+			$form = JForm::getInstance('jinbound_form_module_' . md5(serialize($options)), '<form><!-- --></form>', $options);
 		}
 		catch (Exception $e)
 		{

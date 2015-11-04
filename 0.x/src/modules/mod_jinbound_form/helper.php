@@ -127,8 +127,8 @@ FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
 		);
 	}
 	
-	static public function getForm(&$params)
+	static public function getForm(&$module, &$params)
 	{
-		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0));
+		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0), array('control' => 'mod_jinbound_form_' . $module->id));
 	}
 }

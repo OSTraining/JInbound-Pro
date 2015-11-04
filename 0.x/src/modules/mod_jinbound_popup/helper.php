@@ -39,9 +39,9 @@ abstract class modJinboundPopupHelper
 		);
 	}
 	
-	static public function getForm(&$params)
+	static public function getForm(&$module, &$params)
 	{
-		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0));
+		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0), array('control' => 'mod_jinbound_popup_' . $module->id));
 	}
 	
 	static public function addHtmlAssets()

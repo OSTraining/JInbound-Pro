@@ -10,6 +10,7 @@ defined('_JEXEC') or die;
 JHtml::_('behavior.modal');
 
 ?>
+<!-- <?php echo $form->getName(); ?> -->
 <div
 	data-url="<?php echo JRoute::_($url); ?>"
 	data-moduleid="<?php echo $module->id; ?>"
