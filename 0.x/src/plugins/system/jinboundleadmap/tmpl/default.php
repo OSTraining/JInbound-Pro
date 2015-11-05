@@ -52,6 +52,12 @@ mapReady(function() {
 			title: latLngs[i].city,
 			styleIcon: latLngs[i].lead ? leadIcon : guestIcon
 		});
+		if (latLngs[i].lead) {
+			marker._jib_lead = latLngs[i].lead;
+			marker.addListener('click', function() {
+				window.location.href = 'index.php?option=com_jinbound&task=contact.edit&id=' + this._jib_lead;
+			});
+		}
 	}
 });
 		</script>

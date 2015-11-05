@@ -252,7 +252,7 @@ class PlgSystemJinboundleadmap extends JPlugin
 		$patterns  = array('/^127\.0\.0\.1$/', '/^10\./', '/^192\.168\./');
 		$db        = JFactory::getDbo();
 		$records   = $db->setQuery($db->getQuery(true)
-			->select('t.ip, l.id AS lead_id')
+			->select('t.ip, GROUP_CONCAT(l.id) AS lead_id')
 			->from('#__jinbound_tracks AS t')
 			->leftJoin('#__jinbound_contacts AS l ON l.cookie = t.cookie')
 			->group('t.ip')
@@ -282,6 +282,18 @@ class PlgSystemJinboundleadmap extends JPlugin
 					}
 					continue;
 				}
+				$lead_ids = explode(',', $record->lead_id);
+				$islead   = false;
+				if (!empty($lead_ids))
+				{
+					foreach ($lead_ids as $lead_id)
+					{
+						if (($islead = (int) $lead_id))
+						{
+							break;
+						}
+					}
+				}
 				try
 				{
 					$record = $reader->city($record->ip);
@@ -289,7 +301,7 @@ class PlgSystemJinboundleadmap extends JPlugin
 						'latitude'  => $record->location->latitude
 					,	'longitude' => $record->location->longitude
 					,	'city'      => $record->city->name
-					,	'lead'      => !empty($record->lead_id)
+					,	'lead'      => $islead
 					);
 				}
 				catch (Exception $ex)
