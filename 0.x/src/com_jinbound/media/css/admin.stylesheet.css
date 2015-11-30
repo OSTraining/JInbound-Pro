@@ -101,6 +101,7 @@
 	display: block;
 	min-height: 45px;
 	padding: 10px 0 0;
+	font-weight: bold;
 }
 
 #live_update .icon a div {
