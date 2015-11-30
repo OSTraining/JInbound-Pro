@@ -83,4 +83,40 @@ class JInboundController extends JInboundBaseController
 		}
 		$app->redirect(JInboundHelperUrl::_());
 	}
+	
+	public function rss()
+	{
+		// feed whitelist
+		$feeds = array(
+			'feed' => array('url' => 'https://jinbound.com/blog/feed/rss.html', 'showDescription' => false)
+		,	'news' => array('url' => 'https://jinbound.com/news/?format=feed', 'showDescription' => false)
+		);
+		$app = JFactory::getApplication();
+		// check type
+		$var = $app->input->get('type');
+		if (!in_array($var, array_keys($feeds)))
+		{
+			echo 'No data found';
+			$app->close();
+		}
+		$feed = $feeds[$var];
+		// load rss
+		JInbound::registerLibrary('JInboundRSSView', 'views/rssview');
+		$app->input->set('layout', 'rss');
+		// get RSS view and display its contents
+		try
+		{
+			$rss = new JInboundRSSView();
+			$rss->showDetails = array_key_exists('showDetails', $feed) ? $feed['showDetails'] : false;
+			$rss->showDescription = array_key_exists('showDescription', $feed) ? $feed['showDescription'] : true;
+			$rss->url = $feed['url'];
+			$rss->getFeed($feed['url']);
+			echo $rss->loadTemplate(null, 'rss');
+		}
+		catch (Exception $e)
+		{
+			echo $e->getMessage();
+		}
+		$app->close();
+	}
 }

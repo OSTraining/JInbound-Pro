@@ -195,20 +195,51 @@ Joomla.submitbutton = function(task) {
 			
 		</div>
 		<!-- Sidebar -->
-		<div class="span4">
+		<div class="span4 jinbound-dashboard-sidebar">
 			<?php if ($canManageReport) : ?>
 			<div class="well">
 				<h3><?php echo JHtml::link(JInboundHelperUrl::view('reports'), '<img alt="' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '" src="' . JInboundHelperUrl::media() . '/images/view_reports.png" /> <span>' . JText::_('COM_JINBOUND_VIEW_REPORTS') . '</span>'); ?></h3>
 			</div>
 			<?php endif; ?>
-			<div class="well"><?php echo $this->news; ?></div>
-			<div class="well"><?php echo $this->feed; ?></div>
+			<div class="well jinbound-rss jinbound-rss-news"> ... </div>
+			<div class="well jinbound-rss jinbound-rss-feed"> ... </div>
 		</div>
 
   </div>
 	
 	</div>
 </div>
+<script type="text/javascript">
+(function($){
+	// helper function to load rss async
+	var loadRss = function (target)
+	{
+		// find the rss target element
+		var well = $('.jinbound-dashboard-sidebar .jinbound-rss-' + target);
+		if (!well.length)
+		{
+			return;
+		}
+		// url to ask for rss
+		var url = '<?php
+			$url = JRoute::_('index.php?option=com_jinbound&task=rss', false);
+			echo $url . (false === strpos($url, '?') ? '?' : '&') . 'type=';
+		?>' + target;
+		// fetch the rss via ajax
+		$.ajax({
+			url: url,
+			success: function(data)
+			{
+				well.html(data);
+			}
+		});
+	};
+	$(document).ready(function(){
+		loadRss('news');
+		loadRss('feed');
+	});
+})(jQuery);
+</script>
 <?php
 
 echo $this->loadTemplate('footer');

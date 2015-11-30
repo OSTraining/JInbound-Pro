@@ -54,7 +54,10 @@ class JInboundViewDashboard extends JInboundView
 		$this->reports->top_pages    = $reportView->loadTemplate('pages', 'top');
 		$this->reports->recent_leads = $reportView->loadTemplate('leads', 'recent');
 		
-		
+		// instead of loading the RSS initially, allow the urls to be loaded via ajax
+		$this->feed = (object) $this->feeds['feed'];
+		$this->news = (object) $this->feeds['news'];
+		/*
 		JInbound::registerLibrary('JInboundRSSView', 'views/rssview');
 		$app->input->set('layout', 'rss');
 		foreach ($this->feeds as $var => $feed)
@@ -74,6 +77,7 @@ class JInboundViewDashboard extends JInboundView
 				$this->$var = $e->getMessage();
 			}
 		}
+		*/
 		
 		// reset template and layout data
 		$app->input->set('tmpl', $tmpl);
