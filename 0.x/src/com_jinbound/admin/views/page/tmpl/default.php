@@ -8,6 +8,9 @@
 defined('JPATH_PLATFORM') or die;
 
 JText::script('COM_JINBOUND_EMPTY_CUSTOM_TEMPLATE');
+JText::script('COM_JINBOUND_LINK');
+JText::script('COM_JINBOUND_NON_SEF_LINK');
+JText::script('COM_JINBOUND_SEF_LINK');
 
 echo $this->loadTemplate('edit');
 
@@ -23,14 +26,22 @@ window.jinboundlayouttags.form_<?php echo $tag; ?> = '<?php echo JInboundHelperF
 		dataType: 'json',
 		success: function(response) {
 			if (response) {
-				var link = '';
+				var row = $('#jform_alias').closest('.row-fluid');
 				if (response.error) {
-					link = response.error;
+					row.after($('<div class="row-fluid"><div class="span12">' + response.error + '</div></div>'));
 				}
-				else if (response.sef) {
-					link = '<a href="' + response.sef + '" target="_blank">' + response.sef + '</a>';
+				else if (response.sef && response.nonsef) {
+					if (response.sef === response.nonsef) {
+						var link = '<a href="' + response.sef + '" target="_blank">' + response.sef + '</a>';
+						row.after($('<div class="row-fluid"><div class="span2">' + Joomla.JText._('COM_JINBOUND_LINK') + '</div><div class="span9 offset1">' + link + '</div></div>'));
+					}
+					else {
+						var sef = '<a href="' + response.sef + '" target="_blank">' + response.sef + '</a>';
+						var non = '<a href="' + response.nonsef + '" target="_blank">' + response.nonsef + '</a>';
+						row.after($('<div class="row-fluid"><div class="span2">' + Joomla.JText._('COM_JINBOUND_NON_SEF_LINK') + '</div><div class="span9 offset1">' + non + '</div></div>'));
+						row.after($('<div class="row-fluid"><div class="span2">' + Joomla.JText._('COM_JINBOUND_SEF_LINK') + '</div><div class="span9 offset1">' + sef + '</div></div>'));
+					}
 				}
-				$('#jform_alias').closest('.row-fluid').after($('<div class="row-fluid"><div class="span12">' + link + '</div></div>'));
 			}
 		}
 	});
