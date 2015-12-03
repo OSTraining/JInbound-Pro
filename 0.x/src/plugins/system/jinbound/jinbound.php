@@ -50,6 +50,7 @@ class plgSystemJInbound extends JPlugin
 	
 	public function onAfterInitialise()
 	{
+		self::profile('BeforeInitialise');
 		if (!$this->app->isAdmin())
 		{
 			$this->setUserCookie();
@@ -70,6 +71,7 @@ class plgSystemJInbound extends JPlugin
 				jexit();
 			}
 		}
+		self::profile('AfterInitialise');
 	}
 	
 	/**
@@ -78,6 +80,7 @@ class plgSystemJInbound extends JPlugin
 	 * handles flair after dispatch
 	 */
 	public function onAfterDispatch() {
+		self::profile('BeforeDispatch');
 		if (!self::$_run) {
 			return;
 		}
@@ -88,6 +91,7 @@ class plgSystemJInbound extends JPlugin
 		else {
 			$this->onAfterDispatchSite($opt);
 		}
+		self::profile('AfterDispatch');
 	}
 	
 	public function onAfterDispatchSite($option) {
@@ -136,10 +140,11 @@ class plgSystemJInbound extends JPlugin
 	
 	public function onAfterRoute()
 	{
-		if (!self::$_run)
+		if (!self::$_run || $this->app->isAdmin())
 		{
 			return;
 		}
+		self::profile('BeforeRoute');
 		// read from the database any campaign params given the cookie value
 		$db     = JFactory::getDbo();
 		$cookie = $this->getCookieValue();
@@ -162,11 +167,13 @@ class plgSystemJInbound extends JPlugin
 			{
 				$this->app->enqueueMessage($e->getMessage(), 'error');
 			}
+			self::profile('AfterRoute');
 			return;
 		}
 		// this visitor is not associated
 		if (empty($campaign_data))
 		{
+			self::profile('AfterRoute');
 			return;
 		}
 		// get the final status
@@ -241,6 +248,7 @@ class plgSystemJInbound extends JPlugin
 				continue;
 			}
 		}
+		self::profile('AfterRoute');
 	}
 	
 	/**
@@ -248,9 +256,11 @@ class plgSystemJInbound extends JPlugin
 	 * 
 	 */
 	public function onAfterRender() {
-		if (!self::$_run || $this->app->isAdmin()) {
+		if (!self::$_run || $this->app->isAdmin())
+		{
 			return;
 		}
+		self::profile('BeforeRender');
 		JInbound::registerHelper('filter');
 		JInbound::registerHelper('url');
 		// get the response body so it can be altered
@@ -275,7 +285,9 @@ class plgSystemJInbound extends JPlugin
 			$body = str_replace('</body>', $add . '</body>', $body);
 			JResponse::setBody($body);
 		}
+		self::profile('BeforeTrack');
 		$this->recordUserTrack();
+		self::profile('AfterRender');
 	}
 	
 	public function onInstallerBeforePackageDownload(&$url, &$headers)
@@ -384,6 +396,7 @@ class plgSystemJInbound extends JPlugin
 		,	'type'             => $db->quote(strtoupper(filter_input(INPUT_SERVER, 'REQUEST_METHOD')))
 		,	'url'              => $db->quote(self::getURI())
 		);
+		self::profile('BeforeInsertTrack');
 		$db->setQuery($db->getQuery(true)
 			->insert('#__jinbound_tracks')
 			->columns(array_keys($track))
@@ -394,8 +407,9 @@ class plgSystemJInbound extends JPlugin
 		}
 		catch (Exception $e) {}
 		
+		self::profile('BeforeInsertUserTrack');
 		// only record user cookie for non-guests
-		if (0 === $detecteduser && $track['current_user_id'])
+		if (0 === $detecteduser && (int) $track['current_user_id'])
 		{
 			$db->setQuery($db->getQuery(true)
 				->insert('#__jinbound_users_tracks')
@@ -544,5 +558,15 @@ class plgSystemJInbound extends JPlugin
 FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
 		}
 		return $value;
+	}
+	
+	static public function profile($action)
+	{
+		if (!is_string($action) || empty($action))
+		{
+			return;
+		}
+		$profiler = JProfiler::getInstance('Application');
+		$profiler->mark("onPlgSysJinbound$action");
 	}
 }

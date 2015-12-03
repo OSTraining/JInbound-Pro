@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" position="default" client="site" method="upgrade" version="3.2">
-	<name>jInbound CTA</name>
+	<name>jInbound Smart CTA</name>
 	<author>Anything Digital</author>
 	<creationDate>March 2015</creationDate>
 	<copyright>Copyright (C) 2015</copyright>
@@ -33,46 +33,9 @@
 		<fields name="params" addfieldpath="/modules/mod_jinbound_cta/fields">
 			<fieldset name="basic">
 				<field
-					name="mode"
-					type="modjinboundctamode"
-					label="MOD_JINBOUND_CTA_MODE"
-					description="MOD_JINBOUND_CTA_MODE_DESC"
-					default="modules"
-				>
-					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
-					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
-					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
-				</field>
-				<field
-					name="mode_modules"
-					type="moduleposition"
-					label="MOD_JINBOUND_CTA_MODULES"
-					description="MOD_JINBOUND_CTA_MODULES_DESC"
-					default="jinbound-cta-default"
-				/>
-				<field
-					name="mode_module"
-					type="modjinboundctamodule"
-					label="MOD_JINBOUND_CTA_MODULE"
-					description="MOD_JINBOUND_CTA_MODULE_DESC"
-				>
-					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
-				</field>
-				<field
-					name="mode_editor"
-					type="editor"
-					label="MOD_JINBOUND_CTA_EDITOR"
-					description="MOD_JINBOUND_CTA_EDITOR_DESC"
-					cols="60" rows="8"
-					buttons="0"
-					filter="JComponentHelper::filterText"
-				/>
-			</fieldset>
-			<fieldset name="c1" label="MOD_JINBOUND_CTA_FIELDSET_C1" description="MOD_JINBOUND_CTA_FIELDSET_C1_DESC">
-				<field
 					name="c1_enabled"
 					type="radio"
-					label="MOD_JINBOUND_CTA_ENABLED"
+					label="MOD_JINBOUND_CTA_C1_ENABLED"
 					description="MOD_JINBOUND_CTA_ENABLED_DESC"
 					default="0"
 					class="btn-group btn-group-yesno"
@@ -133,12 +96,10 @@
 					buttons="0"
 					filter="JComponentHelper::filterText"
 				/>
-			</fieldset>
-			<fieldset name="c2" label="MOD_JINBOUND_CTA_FIELDSET_C2" description="MOD_JINBOUND_CTA_FIELDSET_C2_DESC">
 				<field
 					name="c2_enabled"
 					type="radio"
-					label="MOD_JINBOUND_CTA_ENABLED"
+					label="MOD_JINBOUND_CTA_C2_ENABLED"
 					description="MOD_JINBOUND_CTA_ENABLED_DESC"
 					default="0"
 					class="btn-group btn-group-yesno"
@@ -199,12 +160,10 @@
 					buttons="0"
 					filter="JComponentHelper::filterText"
 				/>
-			</fieldset>
-			<fieldset name="c3" label="MOD_JINBOUND_CTA_FIELDSET_C3" description="MOD_JINBOUND_CTA_FIELDSET_C3_DESC">
 				<field
 					name="c3_enabled"
 					type="radio"
-					label="MOD_JINBOUND_CTA_ENABLED"
+					label="MOD_JINBOUND_CTA_C3_ENABLED"
 					description="MOD_JINBOUND_CTA_ENABLED_DESC"
 					default="0"
 					class="btn-group btn-group-yesno"
@@ -258,6 +217,41 @@
 				</field>
 				<field
 					name="c3_mode_editor"
+					type="editor"
+					label="MOD_JINBOUND_CTA_EDITOR"
+					description="MOD_JINBOUND_CTA_EDITOR_DESC"
+					cols="60" rows="8"
+					buttons="0"
+					filter="JComponentHelper::filterText"
+				/>
+				<field
+					name="mode"
+					type="modjinboundctamode"
+					label="MOD_JINBOUND_CTA_MODE"
+					description="MOD_JINBOUND_CTA_MODE_DESC"
+					default="modules"
+				>
+					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
+					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
+					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
+				</field>
+				<field
+					name="mode_modules"
+					type="moduleposition"
+					label="MOD_JINBOUND_CTA_MODULES"
+					description="MOD_JINBOUND_CTA_MODULES_DESC"
+					default="jinbound-cta-default"
+				/>
+				<field
+					name="mode_module"
+					type="modjinboundctamodule"
+					label="MOD_JINBOUND_CTA_MODULE"
+					description="MOD_JINBOUND_CTA_MODULE_DESC"
+				>
+					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
+				</field>
+				<field
+					name="mode_editor"
 					type="editor"
 					label="MOD_JINBOUND_CTA_EDITOR"
 					description="MOD_JINBOUND_CTA_EDITOR_DESC"

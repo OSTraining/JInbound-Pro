@@ -61,7 +61,7 @@ abstract class ModJInboundCTAHelper
 		$buttons = static::getButtonData();
 		if (is_object($input_value))
 		{
-			foreach (array('campaign', 'priority', 'status', 'priority_campaign', 'priority_status') as $what)
+			foreach (array('isnew', 'campaign', 'priority', 'status', 'priority_campaign', 'priority_status') as $what)
 			{
 				if (!is_array($input_value->$what))
 				{
@@ -73,7 +73,7 @@ abstract class ModJInboundCTAHelper
 				}
 			}
 		}
-		//http://local.jeff/j34/index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json&type=jinboundcampaignlist&group=c1_conditions&label=MOD_JINBOUND_CTA_CAMPAIGN_LABEL&desc=MOD_JINBOUND_CTA_CAMPAIGN_DESC&name=campaign&options[0][text]=MOD_JINBOUND_CTA_CAMPAIGN_SELECT&options[0][value]=
+		//index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json&type=jinboundcampaignlist&group=c1_conditions&label=MOD_JINBOUND_CTA_CAMPAIGN_LABEL&desc=MOD_JINBOUND_CTA_CAMPAIGN_DESC&name=campaign&options[0][text]=MOD_JINBOUND_CTA_CAMPAIGN_SELECT&options[0][value]=
 		$option = 'com_ajax';
 		if (!JInbound::version()->isCompatible('3.0.0'))
 		{
@@ -93,15 +93,32 @@ abstract class ModJInboundCTAHelper
 			$group = $i . 'conditions';
 			foreach ($buttons as $button)
 			{
-				$args = '&type=' . $button['field'] . '&group=' . $group . '&label='
-					. $button['label'] . '&desc=' . $button['desc'] . '&name=' . $button['name']
-					. (array_key_exists('default', $button) ? '&default=' . $button['default'] : '')
-					. '&options[0][text]=' . $button['empty'] . '&options[0][value]='
-				;
-				$request = array_merge($button, array(
-					'group' => $group, 'format' => 'json', 'type' => $button['field'], 'options' => array(
+				if ('isnew' === $button['name'])
+				{
+					$args = '&type=' . $button['field'] . '&group=' . $group . '&label='
+						. $button['label'] . '&desc=' . $button['desc'] . '&name=' . $button['name']
+						. (array_key_exists('default', $button) ? '&default=' . $button['default'] : '')
+						. '&options[0][text]=JYES&options[0][value]=1'
+						. '&options[1][text]=JNO&options[1][value]=0'
+					;
+					$options = array(
+						0 => array('text' => JText::_('JYES'), 'value' => '1')
+					,	1 => array('text' => JText::_('JNO'), 'value' => '0')
+					);
+				}
+				else
+				{
+					$args = '&type=' . $button['field'] . '&group=' . $group . '&label='
+						. $button['label'] . '&desc=' . $button['desc'] . '&name=' . $button['name']
+						. (array_key_exists('default', $button) ? '&default=' . $button['default'] : '')
+						. '&options[0][text]=' . $button['empty'] . '&options[0][value]='
+					;
+					$options = array(
 						0 => array('text' => $button['empty'], 'value' => '')
-					)
+					);
+				}
+				$request = array_merge($button, array(
+					'group' => $group, 'format' => 'json', 'type' => $button['field'], 'options' => $options
 				));
 				$data[] = array(
 					'url' => $url . $args
@@ -346,7 +363,7 @@ abstract class ModJInboundCTAHelper
 		if (is_object($conditions))
 		{
 			// fix conditions
-			foreach (array('campaign', 'campaign_yesno', 'priority', 'priority_campaign', 'status', 'status_campaign') as $property)
+			foreach (array('isnew', 'campaign', 'campaign_yesno', 'priority', 'priority_campaign', 'status', 'status_campaign') as $property)
 			{
 				if (!property_exists($conditions, $property))
 				{
@@ -360,6 +377,22 @@ abstract class ModJInboundCTAHelper
 			if (JDEBUG)
 			{
 				$app->enqueueMessage(serialize($conditions));
+			}
+			// isnew
+			if (property_exists($conditions, 'isnew'))
+			{
+				$isnew = (array) $conditions->isnew;
+				foreach ($isnew as $key => $value)
+				{
+					foreach ((array) $value as $v)
+					{
+						if (JDEBUG)
+						{
+							$app->enqueueMessage("User should " . ((int) $v ? '' : 'NOT ') . "be new ...");
+						}
+						$matches[] = ((int) $v) && $data->isnew;
+					}
+				}
 			}
 			// there should be 3*2 variables:
 			// campaign && campaign_yesno
@@ -546,9 +579,11 @@ abstract class ModJInboundCTAHelper
 	static protected function loadContactData()
 	{
 		// init
+		$cookie = filter_input(INPUT_COOKIE, '__jib__');
 		$contact_id = static::getContactId();
 		$contact = new stdClass();
 		$contact->id       = $contact_id;
+		$contact->isnew    = empty($cookie);
 		$contact->campaign = array();
 		$contact->priority = array();
 		$contact->status   = array();
@@ -577,7 +612,14 @@ abstract class ModJInboundCTAHelper
 	public static function getButtonData()
 	{
 		$data = array(
-			'status' => array(
+			'isnew' => array(
+				'name'  => 'isnew'
+			,	'field' => 'radio'
+			,	'label' => 'MOD_JINBOUND_CTA_ISNEW_LABEL'
+			,	'desc'  => 'MOD_JINBOUND_CTA_ISNEW_DESC'
+			,	'class' => 'btn-group btn-group-yesno'
+			)
+		,	'status' => array(
 				'name'  => 'status'
 			,	'field' => 'jinboundstatuses'
 			,	'label' => 'MOD_JINBOUND_CTA_STATUS_LABEL'

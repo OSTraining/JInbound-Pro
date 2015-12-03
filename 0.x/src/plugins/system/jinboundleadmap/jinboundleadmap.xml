@@ -21,6 +21,7 @@
 	<files>
 		<filename plugin="jinboundleadmap">jinboundleadmap.php</filename>
 		<filename plugin="jinboundleadmap">jinboundleadmap.install.php</filename>
+		<filename>forms/filter_leadmap.xml</filename>
 		<filename>language/en-GB/en-GB.plg_system_jinboundleadmap.sys.ini</filename>
 		<filename>lib/geoip2.phar</filename>
 		<filename>liveupdate/config.php</filename>
@@ -28,7 +29,8 @@
 		<filename>tmpl/default.php</filename>
 	</files>
 	<media destination="jinboundleadmap" folder="media">
-		<folder>js</folder>
+		<filename>css/leadmap.css</filename>
+		<filename>js/StyledMarker.js</filename>
 	</media>
 	<config>
 		<fields name="params">

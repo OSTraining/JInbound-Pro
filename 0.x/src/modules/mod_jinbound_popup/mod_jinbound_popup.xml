@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" position="default" client="site" method="upgrade" version="2.5">
-	<name>jInbound Popup Form</name>
+	<name>jInbound Popup CTA</name>
 	<author>Anything Digital</author>
 	<creationDate>February 2015</creationDate>
 	<copyright>Copyright (C) 2015</copyright>
@@ -36,6 +36,13 @@
 					label="MOD_JINBOUND_POPUP_CAMPAIGNID"
 					description="MOD_JINBOUND_POPUP_CAMPAIGNID_DESC"
 				/>
+		<field
+			id="submit_text" name="submit_text"
+			type="text"
+			label="MOD_JINBOUND_POPUP_SUBMIT_TEXT"
+			description="MOD_JINBOUND_POPUP_SUBMIT_TEXT_DESC"
+			class="input-block-level"
+		/>
 		<field
 			id="notification_email" name="notification_email"
 			type="text"

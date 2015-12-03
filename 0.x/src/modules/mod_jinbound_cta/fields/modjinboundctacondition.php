@@ -36,7 +36,7 @@ class JFormFieldModJInboundCTACondition extends JFormField
 		// add new buttons
 		$html[] = '<div id="' . $this->id . '_buttons" class="btn-group">';
 		$buttons = ModJInboundCTAHelper::getButtonData();
-		foreach (array('status', 'priority', 'campaign') as $button)
+		foreach (array('isnew', 'status', 'priority', 'campaign') as $button)
 		{
 			$html[] = $this->getButton("MOD_JINBOUND_CTA_$button", array_merge($buttons[$button], array(
 				'group' => $this->fieldname

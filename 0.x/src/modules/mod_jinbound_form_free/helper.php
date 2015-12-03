@@ -1,7 +1,7 @@
 <?php
 /**
  * @package		JInbound
- * @subpackage	mod_jinbound_popup
+ * @subpackage	mod_jinbound_form_free
 @ant_copyright_header@
  */
 
@@ -12,10 +12,26 @@ JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/li
 JInbound::registerHelper('form');
 JInbound::registerHelper('module');
 JInbound::registerHelper('url');
+jimport('joomla.filesystem.file');
+jimport('joomla.filesystem.folder');
+jimport('joomla.form.form');
+jimport('joomla.application.module.helper');
 
-abstract class modJinboundPopupHelper
-{
-	static $assets_set = false;
+abstract class modJinboundFormFreeHelper
+{	
+	/**
+	 * Fetches the module object needed to operate
+	 * 
+	 * This method is deprecated, use JInboundHelperModule::getModuleObject instead
+	 * 
+	 * @return stdClass
+	 * @throws UnexpectedValueException
+	 * @deprecated
+	 */
+	static public function getModuleObject($module_id = null)
+	{
+		return JInboundHelperModule::getModuleObject($module_id);
+	}
 	
 	static public function getFormData(&$module, &$params)
 	{
@@ -41,35 +57,6 @@ abstract class modJinboundPopupHelper
 	
 	static public function getForm(&$module, &$params)
 	{
-		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0), array('control' => 'mod_jinbound_popup_' . $module->id));
-	}
-	
-	static public function addHtmlAssets()
-	{
-		if (!static::$assets_set)
-		{
-			$document = JFactory::getDocument();
-			$script = 'popup.js';
-			if (!JInbound::version()->isCompatible('3.0.0'))
-			{
-				$script = 'popup.legacy.js';
-			}
-			if (method_exists($document, 'addScript'))
-			{
-				$document->addScript(JUri::root() . 'media/mod_jinbound_popup/js/' . $script);
-			}
-			static::$assets_set = true;
-		}
-	}
-	
-	static public function showForm()
-	{
-		$show = false;
-		if (class_exists('plgSystemJinbound'))
-		{
-			$cookie = plgSystemJinbound::getCookieUser();
-			
-		}
-		return $show;
+		return JInboundHelperForm::getJinboundForm((int) $params->get('formid', 0), array('control' => 'mod_jinbound_form_free_' . $module->id));
 	}
 }

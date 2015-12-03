@@ -15,7 +15,7 @@ JHtml::_('behavior.modal');
 	data-url="<?php echo JRoute::_($url); ?>"
 	data-moduleid="<?php echo $module->id; ?>"
 	id="mod_jinbound_popup_<?php echo $module->id; ?>"
-	class="mod_jinbound_popup_container">
+	class="mod_jinbound_popup_container<?php if (!empty($sfx)) {echo ' mod_jinbound_popup_container' . htmlspecialchars($sfx, ENT_QUOTES, 'UTF-8');} ?>">
 	<div class="mod_jinbound_popup_form hide">
 		<div class="mod_jinbound_popup">
 			<?php if ($showintro) : ?>
@@ -47,7 +47,7 @@ JHtml::_('behavior.modal');
 						</fieldset>
 						<?php endforeach; ?>
 						<div class="btn-group">
-							<button type="submit" class="btn btn-primary"><?php echo JText::_('JSUBMIT'); ?></button>
+							<button type="submit" class="btn btn-primary"><?php echo htmlspecialchars(JText::_($btn), ENT_QUOTES, 'UTF-8'); ?></button>
 						</div>
 					</form>
 				</div>

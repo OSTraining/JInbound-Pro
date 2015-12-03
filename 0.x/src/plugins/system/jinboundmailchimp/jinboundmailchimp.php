@@ -20,6 +20,8 @@ defined('PLG_SYSTEM_JINBOUNDMAILCHIMP') or define('PLG_SYSTEM_JINBOUNDMAILCHIMP'
 
 class plgSystemJInboundmailchimp extends JPlugin
 {
+	protected $app;
+	
 	/**
 	 * Constructor
 	 * 
@@ -29,13 +31,14 @@ class plgSystemJInboundmailchimp extends JPlugin
 	public function __construct(&$subject, $config)
 	{
 		parent::__construct($subject, $config);
+		$this->app = JFactory::getApplication();
 		$this->loadLanguage('plg_system_jinboundmailchimp', JPATH_ADMINISTRATOR);
 		$this->loadLanguage('plg_system_jinboundmailchimp.sys', JPATH_ADMINISTRATOR);
 	}
 	
 	public function onAfterInitialise()
 	{
-		if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDMAILCHIMP)
+		if ($this->app->isSite() || !PLG_SYSTEM_JINBOUNDMAILCHIMP)
 		{
 			return;
 		}
@@ -63,6 +66,10 @@ class plgSystemJInboundmailchimp extends JPlugin
 		{
 			return true;
 		}
+		if (JDEBUG)
+		{
+			$this->app->enqueueMessage(__METHOD__);
+		}
 		if (!($form instanceof JForm)) {
 			$this->_subject->setError('JERROR_NOT_A_FORM');
 			return false;
@@ -72,8 +79,11 @@ class plgSystemJInboundmailchimp extends JPlugin
 			case 'com_jinbound.campaign':
 				$file = 'jinboundmailchimp';
 				break;
+			case 'com_jinbound.field':
+				$file = 'jinboundmailchimpfield';
+				break;
 			case 'com_jinbound.contact':
-				if (JFactory::getApplication()->isSite())
+				if ($this->app->isSite())
 				{
 					return true;
 				}
@@ -92,6 +102,10 @@ class plgSystemJInboundmailchimp extends JPlugin
 		if ('com_jinbound.contact.status' !== $context || !PLG_SYSTEM_JINBOUNDMAILCHIMP)
 		{
 			return;
+		}
+		if (JDEBUG)
+		{
+			$this->app->enqueueMessage(__METHOD__);
 		}
 		require_once realpath(dirname(__FILE__).'/library/helper.php');
 		$helper = new JinboundMailchimp(array('params' => $this->params));

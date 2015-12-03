@@ -656,7 +656,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_users_tracks` (
 	`cookie` VARCHAR(255)
 	COMMENT 'Cookie value'
 	
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 #####################################################
 ## Tracks, details about where a user has been
@@ -695,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_tracks` (
 	COMMENT 'URL of the request',
 	
 	PRIMARY KEY (`id`(128))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 
 #####################################################

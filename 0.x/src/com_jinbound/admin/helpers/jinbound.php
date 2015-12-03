@@ -18,6 +18,46 @@ abstract class JInbound
 	private static $_actions = array('core.admin', 'core.manage', 'core.create', 'core.create.private', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete', 'core.moderate');
 	
 	/**
+	 * Loads jQuery and Bootstrap
+	 */
+	public static function loadJsFramework()
+	{
+		$app    = JFactory::getApplication();
+		$doc    = JFactory::getDocument();
+		$canAdd = method_exists($doc, 'addStyleSheet');
+		$ext    = (JInbound::config("debug", 0) ? '.min' : '');
+		$sfx    = $app->isAdmin() ? 'back' : 'front';
+		if ($canAdd)
+		{
+			if (JInbound::version()->isCompatible('3.0.0'))
+			{
+				JHtml::_('behavior.framework', true);
+				JHtml::_('jquery.ui', array('core', 'sortable', 'tabs'));
+				JHtml::_('bootstrap.tooltip');
+			}
+			else
+			{
+				JHtml::_('behavior.tooltip', '.hasTip');
+			}
+			if (JInbound::config("load_jquery_$sfx", 1))
+			{
+				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
+			}
+			if (JInbound::config("load_jquery_ui_$sfx", 1))
+			{
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/ui/css/jinbound_component/jquery-ui-1.10.1.custom' . $ext . '.css');
+				$doc->addScript(JInboundHelperUrl::media() . '/ui/js/jquery-ui-1.10.1.custom' . $ext . '.js');
+			}
+			if (JInbound::config("load_bootstrap_$sfx", 1))
+			{
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
+				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
+				$doc->addScript(JInboundHelperUrl::media() . '/bootstrap/js/bootstrap' . $ext . '.js');
+			}
+		}
+	}
+	
+	/**
 	 * static method to register a helper
 	 *
 	 * @param string $helper

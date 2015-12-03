@@ -27,6 +27,8 @@ modJinboundPopupHelper::addHtmlAssets();
 // initialise
 $form = modJinboundPopupHelper::getForm($module, $params);
 $data = modJinboundPopupHelper::getFormData($module, $params);
+$sfx  = $params->get('moduleclass_sfx', '');
+$btn  = $params->get('submit_text', 'JSUBMIT');
 $introtext = $params->get('introtext', '');
 $stripped  = strip_tags($introtext);
 $showintro = !empty($stripped);
@@ -34,6 +36,12 @@ $showintro = !empty($stripped);
 if (false === $form || false === $data)
 {
 	return false;
+}
+
+// coerce empty button text
+if (empty($btn))
+{
+	$btn = 'JSUBMIT';
 }
 
 // create data to store in the session in order to save form

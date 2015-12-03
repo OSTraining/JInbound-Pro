@@ -12,53 +12,54 @@
 
 		$.each(modes, function (i, mode) {
 			var select = $('#jform_params_' + mode + 'mode');
-			if (isUndefined(select)) return;
-			select.change(function(e){
-				var enabled = getModeElementId($(this).find(':selected').val(), mode);
-				if (isUndefined(enabled)) return;
-				$.each($(this).find('option'), function(idx, el) {
-					var current = getModeElementId($(el).val(), mode);
-					var elem = $('#' + current);
-					if (isUndefined(elem)) return;
-					if (current === enabled) {
-						try {
-							tinyMCE.get(current).show();
+			if (!isUndefined(select)) {
+				select.change(function(e){
+					var enabled = getModeElementId($(this).find(':selected').val(), mode);
+					if (isUndefined(enabled)) return;
+					$.each($(this).find('option'), function(idx, el) {
+						var current = getModeElementId($(el).val(), mode);
+						var elem = $('#' + current);
+						if (isUndefined(elem)) return;
+						var cg = elem.closest('.control-group');
+						if (current === enabled) {
+							cg.show();
 						}
-						catch (err) {
-							setTimeout(function(){
-								try {
-									tinyMCE.get(current).show();
-								}
-								catch(error) {
-									console.log(error);
-								}
-							}, 5000);
+						else {
+							cg.hide();
 						}
-						elem.removeAttr('disabled').trigger('liszt:updated');
-						$.each(elem.parent().find('.toggle-editor'), function(tidx, tel){
-							$(tel).show();
-						});
-						return;
-					}
-					try {
-						tinyMCE.get(current).hide();
-					}
-					catch (err) {
-						setTimeout(function(){
-							try {
-								tinyMCE.get(current).hide();
-							}
-							catch(error) {
-								console.log(error);
-							}
-						}, 4000);
-					}
-					elem.attr('disabled', 'disabled').trigger('change').trigger('liszt:updated');
-					$.each(elem.parent().find('.toggle-editor'), function(tidx, tel){
-						$(tel).hide();
 					});
+				}).trigger('change').trigger('liszt:updated');
+			}
+			var c_enabled = $('#jform_params_' + mode + 'enabled');
+			if (!isUndefined(c_enabled)) {
+				c_enabled.find('input').change(function(e){
+					var fields = ['match', 'conditions', 'mode', 'mode_modules', 'mode_module', 'mode_editor'], action;
+					if (1 == $(this).val()) {
+						action = 'show';
+					}
+					else {
+						action = 'hide';
+					}
+					$.each(fields, function(fidx, fel){
+						var field = $('#jform_params_' + mode + '' + fel);
+						if (field.length) {
+							field.closest('.control-group')[action]();
+						}
+					});
+					if ('show' == action && !isUndefined(select)) {
+						select.trigger('change');
+					}
 				});
-			}).trigger('change').trigger('liszt:updated');
+				$.each(c_enabled.find('input'), function(iidx, iel){
+					if ($(iel).prop('checked')) $(iel).trigger('change');
+				});
+			}
+			if (mode.length) {
+				var c_editors = $('#jform_params_' + mode + 'mode_editor');
+				$.each(c_editors, function(eidx, eid){
+					c_editors.closest('.control-group').after($('<hr>'));
+				});
+			}
 		});
 		
 		$(document.body).on('click', 'button.mod_jinbound_cta_conditions_del', function(){
@@ -127,47 +128,64 @@
 									i = $(renderElem(data.data.field.field)), l = $(renderElem(data.data.field.label)),
 									del = $('<button type="button" class="btn mod_jinbound_cta_conditions_del jgrid"> <span class="icon-minus state trash"> </span> </button>'),
 									cmp = ('jinboundcampaignlist' === field), r = false, n = i.attr('name'),
+									isnew = ('isnew' === name),
 									rcached = false,
 									u;
 							window.ModJInboundCTAConditionInputs += 1;
 							if (cmp) {
 								u = window.ModJInboundCTAConditionURL + '&type=radio&label=x&desc=x&name=' + name + '_yesno&options[0][text]=JYES&options[0][value]=1&options[1][text]=JNO&options[1][value]=0&class=radio%20btn-group%20btn-group-yesno%20mod_jinbound_cta_campaign_toggle&default=1' + (is(group) ? '&group=' + group : '');
 							}
+							else if (isnew) {
+								u = false;
+								console.log('no extras!');
+							}
 							else {
 								u = window.ModJInboundCTAConditionURL + '&type=jinboundcampaignlist&label=x&desc=x&name=' + name + '_campaign&options[0][text]=MOD_JINBOUND_CTA_ANY_CAMPAIGN&options[0][value]=' + (is(group) ? '&group=' + group : '');
 								console.log(u);
 							}
-							$.each(window.ModJInboundCTAConditionURLs, function (idx, el){
-								if (el.url === u) {
-									rcached = el;
-								}
-							});
-							if (false !== rcached) {
-								r = $(renderElem(rcached.data.data.field));
-								window.ModJInboundCTAConditionInputs += 1;
-							}
-							else {
-								console.log('Cannot find field, asking server...');
-								$.ajax({
-									url: u
-								,	async: false
-								,	dataType: 'json'
-								,	error: err
-								,	success: function(rdata, rtextStatus, rjqXHR) {
-										if (!(rdata && rdata.success))
-										{
-											err(false, rdata.message);
-											return;
-										}
-										r = $(renderElem(rdata.data.field.field));
-										window.ModJInboundCTAConditionURLs.push({url: u, data: rdata.data});
-										window.ModJInboundCTAConditionInputs += 1;
+							if (u) {
+								$.each(window.ModJInboundCTAConditionURLs, function (idx, el){
+									if (el.url === u) {
+										rcached = el;
 									}
 								});
+								if (false !== rcached) {
+									r = $(renderElem(rcached.data.data.field));
+									window.ModJInboundCTAConditionInputs += 1;
+								}
+								else {
+									console.log('Cannot find field, asking server...');
+									$.ajax({
+										url: u
+									,	async: false
+									,	dataType: 'json'
+									,	error: err
+									,	success: function(rdata, rtextStatus, rjqXHR) {
+											if (!(rdata && rdata.success))
+											{
+												err(false, rdata.message);
+												return;
+											}
+											r = $(renderElem(rdata.data.field.field));
+											window.ModJInboundCTAConditionURLs.push({url: u, data: rdata.data});
+											window.ModJInboundCTAConditionInputs += 1;
+										}
+									});
+								}
+								if (!n.match(/\[\]$/))
+								{
+									i.attr('name', n + '[' + window.ModJInboundCTAConditionInputs + ']');
+								}
 							}
-							if (!n.match(/\[\]$/))
+							else
 							{
-								i.attr('name', n + '[' + window.ModJInboundCTAConditionInputs + ']');
+								$.each(i.find('input'), function(iidx, iel) {
+									var iname = $(iel).attr('name');
+									$(iel).attr('name', iname + '[' + window.ModJInboundCTAConditionInputs + ']')
+								});
+								$.each(i.find('label'), function(lidx, lel) {
+									$(lel).addClass('btn');
+								});
 							}
 							cg.appendTo(controls);
 							cl.appendTo(cg);
@@ -180,42 +198,6 @@
 								r.appendTo(cc);
 								if (cmp) {
 									r.find('label').addClass('btn');
-									cc.find(".btn-group label").each(function()
-									{
-										var label = $(this);
-										var input = $('#' + label.attr('for'));
-										var rname = input.attr('name');
-										if (!rname.match(/\[\]$/))
-										{
-											input.attr('name', rname + '[' + window.ModJInboundCTAConditionInputs + ']');
-										}
-									});
-									cc.find(".btn-group label:not(.active)").click(function()
-									{
-										var label = $(this);
-										var input = $('#' + label.attr('for'));
-										if (!input.prop('checked')) {
-											label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
-											if (input.val() == '') {
-												label.addClass('active btn-primary');
-											} else if (input.val() == 0) {
-												label.addClass('active btn-danger');
-											} else {
-												label.addClass('active btn-success');
-											}
-											input.prop('checked', true);
-										}
-									});
-									cc.find(".btn-group input[checked=checked]").each(function()
-									{
-										if ($(this).val() == '') {
-											$("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
-										} else if ($(this).val() == 0) {
-											$("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
-										} else {
-											$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
-										}
-									});
 									try {
 										r.button();
 									}
@@ -237,6 +219,45 @@
 									}
 								}
 							}
+							cc.find(".btn-group label").each(function()
+							{
+								var label = $(this);
+								var input = $('#' + label.attr('for'));
+								var rname = input.attr('name');
+								if (!rname.match(/\[\]$/))
+								{
+									input.attr('name', rname + '[' + window.ModJInboundCTAConditionInputs + ']');
+								}
+							});
+							cc.find(".btn-group label:not(.active)").click(function()
+							{
+								var label = $(this);
+								var input = $('#' + label.attr('for'));
+								if (!input.prop('checked')) {
+									label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
+									if (input.val() == '') {
+										label.addClass('active btn-primary');
+									} else if (input.val() == 0) {
+										label.addClass('active btn-danger');
+									} else {
+										label.addClass('active btn-success');
+									}
+									input.prop('checked', true);
+								}
+							});
+							cc.find(".btn-group input[checked=checked]").each(function()
+							{
+								if ($(this).val() == '') {
+									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
+								} else if ($(this).val() == 0) {
+									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
+								} else {
+									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
+								}
+							});
+							if (isnew) {
+								cc.find(".btn-group label").first().trigger('click');
+							}
 							window.ModJInboundCTAConditionURLs.push({url: url, data: data});
 						}
 				;
@@ -245,7 +266,8 @@
 				if (is(label)) url += '&label=' + label;
 				if (is(desc)) url += '&desc=' + desc;
 				if (is(name)) url += '&name=' + name;
-				if (is(empty)) url += '&options[0][text]=' + empty + '&options[0][value]=';
+				if (is(name) && 'isnew' === name) url += '&options[0][text]=JYES&options[0][value]=1&options[1][text]=JNO&options[1][value]=0';
+				else if (is(empty)) url += '&options[0][text]=' + empty + '&options[0][value]=';
 				
 				$.each(window.ModJInboundCTAConditionURLs, function (idx, el){
 					if (el.url === url) {
@@ -264,7 +286,17 @@
 					,	success: success
 					});
 				}
-				if (is(def)) console.log(controls.find('.control-group:last-child').find('select').first().val(def));
+				if (is(def)) {
+					console.log(def);
+					var group = controls.find('.control-group:last-child');
+					if (is(name) && 'isnew' === name) {
+						var nid = group.find(".btn-group input[value=" + def + "]").attr('id');
+						group.find('.btn-group label[for=' + nid + ']').trigger('click');
+					}
+					else {
+						console.log(group.find('select').first().val(def));
+					}
+				}
 			});
 		});
 		if (init) {
@@ -298,6 +330,20 @@
 					cb.removeAttr('data-default');
 					cb.removeAttr('data-default-yesno');
 				});
+			}
+			if (init.isnew) {
+				cb = $('#' + id + '_buttons button[data-name="isnew"]');
+				for (var prop in init.isnew)
+				{
+					if (prop.match(/^[0-9]*$/))
+					{
+						console.log(prop);
+						console.log(init.isnew[prop][prop]);
+						cb.attr('data-default', init.isnew[prop][prop]);
+						cb.trigger('click');
+						cb.removeAttr('data-default');
+					}
+				}
 			}
 		}
 	};

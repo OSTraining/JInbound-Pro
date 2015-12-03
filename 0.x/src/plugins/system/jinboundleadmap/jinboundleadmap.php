@@ -37,12 +37,8 @@ class PlgSystemJinboundleadmap extends JPlugin
 		$table = JTable::getInstance('menu');
 		// load the parent menu item
 		$parent_id = $db->setQuery($db->getQuery(true)
-			->select('m.id')
-			->from('#__menu AS m')
-			->leftJoin('#__extensions AS e ON m.component_id = e.extension_id')
-			->where('m.parent_id = 1')
-			->where("m.client_id = 1")
-			->where('e.element = ' . $db->quote('com_jinbound'))
+			->select('id')->from('#__menu')->where('client_id = 1')
+			->where('title = ' . $db->quote('COM_JINBOUND'))
 		)->loadResult();
 		// if the parent is missing, stop unless uninstalling
 		if (empty($parent_id))
@@ -53,12 +49,27 @@ class PlgSystemJinboundleadmap extends JPlugin
 			}
 			return;
 		}
+		// load the lead menu item
+		$lead_id = $db->setQuery($db->getQuery(true)
+			->select('id')->from('#__menu')->where('client_id = 1')
+			->where('parent_id = ' . (int) $parent_id)
+			->where('title = ' . $db->quote('COM_JINBOUND_LEADS'))
+		)->loadResult();
+		// if the parent is missing, stop unless uninstalling
+		if (empty($lead_id))
+		{
+			if (JDEBUG)
+			{
+				$app->enqueueMessage('[' . __METHOD__ . '] Lead menu is empty');
+			}
+			return;
+		}
 		// load the existing plg_system_jinboundleadmap menu item
 		$existing = $db->setQuery($db->getQuery(true)
-			->select('m.id')
-			->from('#__menu AS m')
-			->where('m.parent_id = ' . (int) $parent_id)
-			->where("m.client_id = 1")
+			->select('id')
+			->from('#__menu')
+			->where('parent_id = ' . (int) $parent_id)
+			->where("client_id = 1")
 			->where("link LIKE " . $db->quote('%jinboundleadmap%'))
 		)->loadResult();
 		// if there is an existing menu, remove it
@@ -94,13 +105,10 @@ class PlgSystemJinboundleadmap extends JPlugin
 		$data['component_id'] = $component;
 		$data['img'] = 'class:component';
 		$data['home'] = 0;
-		$data['link'] = 'index.php?option=com_'
-			. (version_compare(JVERSION, '3.0.0', '>=') ? '' : 'jinbound&task=')
-			. 'ajax&group=system&plugin=jinboundleadmapview&format=html'
-		;
+		$data['link'] = $this->getUrl('jinboundleadmapview', array(), false, false);
 		try
 		{
-			$location = $table->setLocation($parent_id, 'last-child');
+			$location = $table->setLocation($lead_id, 'after');
 			if (false === $location)
 			{
 				throw new Exception(JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_ERROR_LOCATION_NOT_SET'));
@@ -144,7 +152,17 @@ class PlgSystemJinboundleadmap extends JPlugin
 			;
 		}
 		$label = JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_VIEW_TITLE');
-		$view->addSubMenuEntry($label, $url, $active);
+		// instead of just adding, we want to custom-place the menu item
+		$newSidebar = array();
+		foreach ($view->sidebarItems as $sidebarItem)
+		{
+			$newSidebar[] = $sidebarItem;
+			if (JText::_('COM_JINBOUND_LEADS') === $sidebarItem[0])
+			{
+				$newSidebar[] = array($label, $url, $active);
+			}
+		}
+		$view->sidebarItems = $newSidebar;
 	}
 	
 	/**
@@ -155,7 +173,10 @@ class PlgSystemJinboundleadmap extends JPlugin
 	 */
 	public function onAjaxJinboundleadmapview()
 	{
+		JLoader::register('JInbound', JPATH_ADMINISTRATOR.'/components/com_jinbound/helpers/jinbound.php');
+		JInbound::registerHelper('form');
 		$app = JFactory::getApplication();
+		$doc = JFactory::getDocument();
 		// only allow in admin
 		if (!$app->isAdmin())
 		{
@@ -167,9 +188,30 @@ class PlgSystemJinboundleadmap extends JPlugin
 		{
 			return $data;
 		}
+		// add styles
+		$doc->addStyleSheet(JUri::root() . 'media/jinboundleadmap/css/leadmap.css');
+		// add paths for filter form
+		JForm::addFormPath(dirname(__FILE__) . '/forms');
+		JForm::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/fields');
 		// render the view
 		$view = $this->getView();
 		$view->data = $data;
+		try
+		{
+			$filters = $app->input->get('filter', array(), 'array');
+			$view->filterForm = JInboundHelperForm::getForm('filter_leadmap', dirname(__FILE__) . '/forms/filter_leadmap.xml');
+			if (!empty($filters))
+			{
+				foreach ($filters as $filter => $value)
+				{
+					$view->filterForm->setValue($filter, 'filter', $value);
+				}
+			}
+		}
+		catch (Exception $e)
+		{
+			$app->enqueueMessage($e->getMessage(), 'error');
+		}
 		$view->addMenuBar();
 		$view->addToolBar();
 		if (class_exists('JToolBarHelper'))
@@ -244,31 +286,92 @@ class PlgSystemJinboundleadmap extends JPlugin
 		$mmdb = $this->getMaxmindDbFileName();
 		$data = new stdClass();
 		$data->locations = array();
+		$data->url = $this->getUrl();
+		$data->download_url = $this->getUrl('jinboundleadmapdownload');
 		if (!file_exists($mmdb))
 		{
-			return new Exception(JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB', $this->getUrl('jinboundleadmapdownload')));
+			return new Exception(JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB', $data->download_url));
 		}
 		$reader    = new Reader($mmdb);
 		$patterns  = array('/^127\.0\.0\.1$/', '/^10\./', '/^192\.168\./');
 		$db        = JFactory::getDbo();
-		$records   = $db->setQuery($db->getQuery(true)
-			->select('t.ip, GROUP_CONCAT(l.id) AS lead_id')
+		$filter    = $app->input->get('filter', array(), 'array');
+		$query     = $db->getQuery(true)
+			->select('t.ip, l.id AS lead_id')
 			->from('#__jinbound_tracks AS t')
 			->leftJoin('#__jinbound_contacts AS l ON l.cookie = t.cookie')
+			->where('t.ip <> ' . $db->q(''))
+			->group('l.id')
 			->group('t.ip')
-		)->loadObjectList();
+		;
+		if (array_key_exists('isnew', $filter) && '' !== $filter['isnew'])
+		{
+			$query->where('l.id IS ' . ((int) $filter['isnew'] ? '' : 'NOT ') . 'NULL');
+		}
+		if (array_key_exists('campaign', $filter) && $filter['campaign'])
+		{
+			$query
+				->leftJoin('#__jinbound_contacts_campaigns AS cc ON cc.contact_id = l.id AND cc.enabled = 1 AND cc.campaign_id = ' . (int) $filter['campaign'])
+				->where('cc.campaign_id IS NOT NULL')
+			;
+		}
+		if (array_key_exists('page', $filter) && $filter['page'])
+		{
+			$query
+				->leftJoin('#__jinbound_conversions AS s ON l.id = s.contact_id AND s.page_id = ' . (int) $filter['page'])
+				->where('s.page_id IS NOT NULL')
+			;
+		}
+		if (array_key_exists('status', $filter) && $filter['status'])
+		{
+			// join in only the latest status
+			$query->leftJoin('('
+				. $db->getQuery(true)
+					->select('s1.*')
+					->from('#__jinbound_contacts_statuses AS s1')
+					->leftJoin('#__jinbound_contacts_statuses AS s2 ON s1.contact_id = s2.contact_id AND s1.campaign_id = s2.campaign_id AND s1.created < s2.created')
+					->where('s2.contact_id IS NULL')
+				. ') AS cs ON cs.contact_id = l.id'
+			)->where('cs.status_id = ' . (int) $filter['status']);
+		}
+		if (array_key_exists('priority', $filter) && $filter['priority'])
+		{
+			// join in only the latest priority
+			$query->leftJoin('('
+				. $db->getQuery(true)
+					->select('p1.*')
+					->from('#__jinbound_contacts_priorities AS p1')
+					->leftJoin('#__jinbound_contacts_priorities AS p2 ON p1.contact_id = p2.contact_id AND p1.campaign_id = p2.campaign_id AND p1.created < p2.created')
+					->where('p2.contact_id IS NULL')
+				. ') AS cp ON cp.contact_id = l.id'
+			)->where('cp.priority_id = ' . (int) $filter['priority']);
+		}
+		if (array_key_exists('search', $filter) && $filter['search'])
+		{
+			$search = $db->q('%' . $filter['search'] . '%');
+			$wheres = array();
+			foreach (array('first_name', 'last_name', 'company', 'website', 'email',
+				'address', 'suburb', 'state', 'country', 'postcode', 'telephone') as $column)
+			{
+				$wheres[] = $db->qn($column) . ' LIKE ' . $search;
+			}
+			$query->where('(' . implode(' OR ', $wheres) . ')');
+		}
+		$records   = $db->setQuery($query)->loadObjectList();
 		if (JDEBUG)
 		{
-			$app->enqueueMessage('[' . __METHOD__ . '] IPs: ' . implode("<br>", $records));
+			$app->enqueueMessage('[' . __METHOD__ . '] IPs: ' . htmlspecialchars(print_r($records, 1), ENT_QUOTES, 'UTF-8'));
 		}
 		if (!empty($records))
 		{
+			$checked = array();
 			foreach ($records as $record)
 			{
-				if (empty($record->ip))
+				if (empty($record->ip) || in_array($record->ip, $checked))
 				{
 					continue;
 				}
+				$checked[] = $record->ip;
 				$check = true;
 				foreach ($patterns as $pattern)
 				{

@@ -28,6 +28,7 @@
 		<mkdir dir="${cfg.packages}/temp/staging/modules" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_cta" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form" />
+		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form_free" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_popup" />
 		<mkdir dir="${cfg.packages}/temp/staging/modules/mod_jinbound_social_bookmark" />
 		<mkdir dir="${cfg.packages}/temp/staging/plugins" />
@@ -82,6 +83,9 @@
 		<condition property="str.versionmoduleformforxml" value="${cfg.version.module.form}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
+		<condition property="str.versionmoduleformfreeforxml" value="${cfg.version.module.form_free}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.form_free}${cfg.versionsuffix}">
+			<istrue value="${cfg.addbuildtoversion}" />
+		</condition>
 		<condition property="str.versionmodulepopupforxml" value="${cfg.version.module.popup}.${build.number}${cfg.versionsuffix}" else="${cfg.version.module.popup}${cfg.versionsuffix}">
 			<istrue value="${cfg.addbuildtoversion}" />
 		</condition>
@@ -129,6 +133,9 @@
 		<condition property="str.version.module.form" value="${cfg.versionprefix}${cfg.version.module.form}" else="${cfg.version.module.form}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
+		<condition property="str.version.module.form_free" value="${cfg.versionprefix}${cfg.version.module.form_free}" else="${cfg.version.module.form_free}">
+			<istrue value="${cfg.addversion}" />
+		</condition>
 		<condition property="str.version.module.popup" value="${cfg.versionprefix}${cfg.version.module.popup}" else="${cfg.version.module.popup}">
 			<istrue value="${cfg.addversion}" />
 		</condition>
@@ -171,6 +178,8 @@
 		<property name="str.mod.cta.file" value="${cfg.packages}/current/${str.mod.cta.filename}" />
 		<property name="str.mod.form.filename" value="${cfg.pfx.mod}${cfg.name}_form_${str.version.module.form}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.form.file" value="${cfg.packages}/current/${str.mod.form.filename}" />
+		<property name="str.mod.form_free.filename" value="${cfg.pfx.mod}${cfg.name}_form_free_${str.version.module.form_free}.${str.build}${cfg.versionsuffix}${str.date}" />
+		<property name="str.mod.form_free.file" value="${cfg.packages}/current/${str.mod.form_free.filename}" />
 		<property name="str.mod.popup.filename" value="${cfg.pfx.mod}${cfg.name}_popup_${str.version.module.popup}.${str.build}${cfg.versionsuffix}${str.date}" />
 		<property name="str.mod.popup.file" value="${cfg.packages}/current/${str.mod.popup.filename}" />
 		
@@ -186,6 +195,7 @@
 		<filter token="ant_leadmap_version_number" value="${str.versionleadmapforxml}" />
 		<filter token="ant_module_cta_version_number" value="${str.versionmodulectaforxml}" />
 		<filter token="ant_module_form_version_number" value="${str.versionmoduleformforxml}" />
+		<filter token="ant_module_form_free_version_number" value="${str.versionmoduleformfreeforxml}" />
 		<filter token="ant_module_popup_version_number" value="${str.versionmoduleformforxml}" />
 		<filter token="ant_current_date" value="${str.datefmt}" />
 		<filter token="ant_copyright_header" value="${cfg.copyright}" />
@@ -219,6 +229,7 @@
 		<property name="git.title.leadmap" value="JInbound Lead Map Plugin Changelog" />
 		<property name="git.title.mod_jinbound_cta" value="JInbound Call-To-Action Module Changelog" />
 		<property name="git.title.mod_jinbound_form" value="JInbound Form Module Changelog" />
+		<property name="git.title.mod_jinbound_form_free" value="JInbound Form Free Module Changelog" />
 		<property name="git.title.mod_jinbound_popup" value="JInbound Popup Form Module Changelog" />
 		<property name="git.log.dir" value="${cfg.buildpath}changelog" />
 		<property name="git.log.filename" value="changelog.src.log" />
@@ -247,6 +258,8 @@
 		<property name="git.log.fileout.mod_jinbound_cta" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_cta}" />
 		<property name="git.log.fileoutname.mod_jinbound_form" value="mod_jinbound_form.changelog.log" />
 		<property name="git.log.fileout.mod_jinbound_form" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_form}" />
+		<property name="git.log.fileoutname.mod_jinbound_form_free" value="mod_jinbound_form_free.changelog.log" />
+		<property name="git.log.fileout.mod_jinbound_form_free" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_form_free}" />
 		<property name="git.log.fileoutname.mod_jinbound_popup" value="mod_jinbound_popup.changelog.log" />
 		<property name="git.log.fileout.mod_jinbound_popup" value="${git.log.dir}/${git.log.fileoutname.mod_jinbound_popup}" />
 		
@@ -330,7 +343,16 @@
 		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_form" filtering="true">
 			<fileset
 				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_form"
-				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,helper.php,language/,liveupdate/,media/,tmpl/"
+				includes="${cfg.pfx.mod}${cfg.name}_form.php,${cfg.pfx.mod}${cfg.name}_form.xml,helper.php,fields/,language/,liveupdate/,media/,tmpl/"
+				excludes="**.git"
+			/>
+		</copy>
+		
+		<!-- form free module -->
+		<copy todir="${cfg.packages}/temp/staging/modules/${cfg.pfx.mod}${cfg.name}_form_free" filtering="true">
+			<fileset
+				dir="${cfg.dir}/modules/${cfg.pfx.mod}${cfg.name}_form_free"
+				includes="${cfg.pfx.mod}${cfg.name}_form_free.php,${cfg.pfx.mod}${cfg.name}_form_free.xml,helper.php,language/,liveupdate/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -438,7 +460,7 @@
 		<copy todir="${cfg.packages}/temp/staging/plugins/leadmap" filtering="true">
 			<fileset
 				dir="${cfg.dir}/plugins/system/${cfg.name}leadmap"
-				includes="${cfg.name}leadmap.xml,${cfg.name}leadmap.php,${cfg.name}leadmap.install.php,liveupdate/,language/,tmpl/"
+				includes="${cfg.name}leadmap.xml,${cfg.name}leadmap.php,${cfg.name}leadmap.install.php,forms/,liveupdate/,language/,tmpl/"
 				excludes="**.git"
 			/>
 		</copy>
@@ -532,6 +554,9 @@
 		</exec>
 		<exec executable="${cfg.php.bin}">
 			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_form}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_form}" --milestone_prefix="mod_jinbound_form "' />
+		</exec>
+		<exec executable="${cfg.php.bin}">
+			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_form_free}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_form_free}" --milestone_prefix="mod_jinbound_form_free "' />
 		</exec>
 		<exec executable="${cfg.php.bin}">
 			<arg line=' changelog/logformat.php --title="${git.title.mod_jinbound_popup}" --build=${build.number} --target="${git.log.fileout.mod_jinbound_popup}" --milestone_prefix="mod_jinbound_popup "' />
@@ -659,6 +684,13 @@
 		</zip>
 		<zip destfile="${str.mod.form.file}.zip" update="true">
 			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mod_jinbound_form}" />
+		</zip>
+		
+		<zip destfile="${str.mod.form_free.file}.zip" update="false">
+			<zipfileset dir="${cfg.packages}/temp/staging/modules/mod_jinbound_form_free" excludes="" />
+		</zip>
+		<zip destfile="${str.mod.form_free.file}.zip" update="true">
+			<zipfileset dir="${git.log.dir}" includes="${git.log.fileoutname.mod_jinbound_form_free}" />
 		</zip>
 		
 		<zip destfile="${str.mod.popup.file}.zip" update="false">

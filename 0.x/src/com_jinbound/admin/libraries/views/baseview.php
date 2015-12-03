@@ -95,6 +95,8 @@ class JInboundView extends JInboundBaseView
 	public $viewItemName = '';
 	
 	protected $_filters;
+	
+	public $sidebarItems;
 
 	function display($tpl = null, $safeparams = false) {
 		$profiler = JProfiler::getInstance('Application');
@@ -249,17 +251,41 @@ class JInboundView extends JInboundBaseView
 		// trigger a plugin event to allow other extensions to add their own views
 		JDispatcher::getInstance()->trigger('onJinboundBeforeMenuBar', array(&$this));
 		
+		// render the sidebar
+		$this->renderSidebar();
+	}
+	
+	public function renderSidebar()
+	{
+		if (!empty($this->sidebarItems))
+		{
+			foreach ($this->sidebarItems as $sidebarItem)
+			{
+				list($label, $href, $active) = $sidebarItem;
+				if (class_exists('JHtmlSidebar'))
+				{
+					JHtmlSidebar::addEntry($label, $href, $active);
+				}
+				else
+				{
+					JSubMenuHelper::addEntry($label, $href, $active);
+				}
+			}
+		}
 		$this->sidebar = false;
-		if (class_exists('JHtmlSidebar')) {
+		if (class_exists('JHtmlSidebar'))
+		{
 			$this->sidebar = JHtmlSidebar::render();
 		}
 	}
 	
-	public function addSubMenuEntry($label, $href, $active) {
-		if (class_exists('JHtmlSidebar')) {
-			return JHtmlSidebar::addEntry($label, $href, $active);
+	public function addSubMenuEntry($label, $href, $active)
+	{
+		if (!is_array($this->sidebarItems))
+		{
+			$this->sidebarItems = array();
 		}
-		return JSubMenuHelper::addEntry($label, $href, $active);
+		$this->sidebarItems[] = array($label, $href, $active);
 	}
 	
 	public function renderFilters() {
@@ -274,36 +300,13 @@ class JInboundView extends JInboundBaseView
 		
 		$doc    = JFactory::getDocument();
 		$canAdd = method_exists($doc, 'addStyleSheet');
-		$ext    = (JInbound::config("debug", 0) ? '.min' : '');
-		$sfx    = $this->app->isAdmin() ? 'back' : 'front';
-		if ($canAdd) {
-			if (JInbound::version()->isCompatible('3.0.0')) {
-				JHtml::_('behavior.framework', true);
-				JHtml::_('jquery.ui', array('core', 'sortable', 'tabs'));
-				JHtml::_('bootstrap.tooltip');
-			}
-			else {
-				JHtml::_('behavior.tooltip', '.hasTip');
-			}
-			if (JInbound::config("load_jquery_$sfx", 1)) {
-				$doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
-			}
-			if (JInbound::config("load_jquery_ui_$sfx", 1)) {
-				$doc->addStyleSheet(JInboundHelperUrl::media() . '/ui/css/jinbound_component/jquery-ui-1.10.1.custom' . $ext . '.css');
-				$doc->addScript(JInboundHelperUrl::media() . '/ui/js/jquery-ui-1.10.1.custom' . $ext . '.js');
-			}
-			if (JInbound::config("load_bootstrap_$sfx", 1)) {
-				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
-				$doc->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
-				$doc->addScript(JInboundHelperUrl::media() . '/bootstrap/js/bootstrap' . $ext . '.js');
-			}
-		}
+		JInbound::loadJsFramework();
 		
 		// we don't want to run this whole function in admin,
 		// but there's still a bit we need - specifically, styles for header icons
 		// if we're in admin, just load the stylesheet and bail
 		if ($this->app->isAdmin()) {
-			if (method_exists($doc, 'addStyleSheet')) {
+			if ($canAdd) {
 				$doc->addStyleSheet(JInboundHelperUrl::media() . '/css/admin.stylesheet.css');
 			}
 			return;

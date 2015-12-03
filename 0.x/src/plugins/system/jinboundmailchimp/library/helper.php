@@ -111,6 +111,7 @@ class JinboundMailchimp
 	public function onJinboundSetStatus($status_id, $campaign_id, $contact_id)
 	{
 		// load campaign, status, contact
+		$app = JFactory::getApplication();
 		$db = JFactory::getDbo();
 		foreach (array('campaign', 'status', 'contact') as $var)
 		{
@@ -198,6 +199,96 @@ class JinboundMailchimp
 
 		// Add to MailChimp list
 		if(!empty($addMCLists)) {
+			// getting the form data to be sent to mailchimp presents a bit of a problem
+			// this method only knows the contact id, the campaign id, and the status id
+			// and everything else must be extrapolated from that
+			// what we can do is load the fields related to the pages with the same
+			// form and campaign, then check the user's conversions for that page
+			// this should give us the conversion data, including the fields
+			// 
+			// get form field params from db first
+			$fieldData = $db->setQuery($db->getQuery(true)
+				->select('Field.name')
+				->select('Field.params')
+				->select('Page.id AS page_id')
+				->from('#__jinbound_fields AS Field')
+				->leftJoin('#__jinbound_form_fields AS FormField ON FormField.field_id = Field.id')
+				->leftJoin('#__jinbound_pages AS Page ON Page.formid = FormField.form_id')
+				->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.campaign_id = Page.campaign')
+				->where('Page.id IS NOT NULL')
+				->where('Page.campaign = ' . (int) $campaign_id)
+				->group('Field.id')
+			)->loadObjectList();
+			// Build subscriber data
+			$baseMergeVals = array(
+				'FNAME' => $firstName
+			,	'LNAME' => $lastName
+			);
+			// get the contact's campaigns
+			if (!class_exists('JInboundHelperContact'))
+			{
+				require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/contact.php';
+			}
+			// NOTE: during contact save, this ends up triggering BEFORE the conversion
+			// is saved, so having no conversions at all means that it's likely
+			// that this is a new contact - in order to make this work correctly,
+			// we have to also check the post data with this request
+			// so what we'll do is loop through the fields first, set initial data
+			// from the conversions, then override using post data
+			$contactConversions = JInboundHelperContact::getContactConversions($contact_id);
+			$token              = $app->input->get('token', '', 'cmd');
+			$rawPostParam       = 'jform';
+			if (!empty($token))
+			{
+				$rawPostParam = preg_replace('/^(.*?)\.(.*?)\.(.*?)$/', '${1}_${3}', $token);
+			}
+			$rawPostData = $app->input->post->get($rawPostParam, array(), 'array');
+			// loop the fields FIRST
+			if (!empty($fieldData))
+			{
+				foreach ($fieldData as $row)
+				{
+					// decode params for this row
+					$params = new JRegistry();
+					$params->loadString($row->params);
+					$mcParams = $params->get('mailchimp', false);
+					// check mc params for mapped fields
+					if (!(is_object($mcParams) && property_exists($mcParams, 'mapped_field')
+						&& is_array($mcParams->mapped_field) && !empty($mcParams->mapped_field)))
+					{
+						continue;
+					}
+					// loop the conversions and add those
+					if (!empty($contactConversions))
+					{
+						foreach ($contactConversions as $contactConversion)
+						{
+							// skip this conversion as the page is not the same
+							if ($row->page_id != $contactConversion->page_id)
+							{
+								continue;
+							}
+							// this one matches, so confirm that the conversion data contains field data
+							if (array_key_exists($row->name, $contactConversion->formdata['lead']))
+							{
+								foreach ($mcParams->mapped_field as $fieldName)
+								{
+									$baseMergeVals[$fieldName] = $contactConversion->formdata['lead'][$row->name];
+								}
+							}
+						}
+					}
+					// now override using post data
+					if (array_key_exists('lead', $rawPostData) && is_array($rawPostData['lead']) && array_key_exists($row->name, $rawPostData['lead']))
+					{
+						foreach ($mcParams->mapped_field as $fieldName)
+						{
+							$baseMergeVals[$fieldName] = $rawPostData['lead'][$row->name];
+						}
+					}
+				}
+			}
+			
 			// Add subscriber to lists
 			foreach($addMCLists as $mcListToAdd) {
 				if(! (is_array($currentLists) && in_array($mcListToAdd, $currentLists))) {
@@ -205,11 +296,7 @@ class JinboundMailchimp
 					if($session->get('mailchimp.' . $mcSubscribeId, '', 'plg_system_jinboundmailchimp') != 'new') {
 						// Subscribe if email is not already in the MailChimp list and
 						// if the subscription is not already sent for that user (but not confirmed yet)
-						$mergeVals = array(
-									'FNAME'		=> $firstName,
-									'LNAME'		=> $lastName
-									);
-
+						$mergeVals = array_merge(array(), $baseMergeVals);
 
 						// Add MC groups to new subscription
 						$groupings = array();
@@ -242,7 +329,6 @@ class JinboundMailchimp
 								$mergeVals['GROUPINGS'][] = $newGrouping;
 							}
 						}
-
 						// Subscribe to MC list
 						if($this->mcApi->listSubscribe(
 								$mcListToAdd,
@@ -625,7 +711,7 @@ class JinboundMailchimp
 	}
 
 	/*
-	 * Return the MailChimp lists as an array of options
+	 * Return the MailChimp groups as an array of options
 	 */
 	public function getMCGroupSelectOptions($level)
 	{
@@ -651,6 +737,28 @@ class JinboundMailchimp
 		$options[] = JHTML::_('select.option','',JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
 		foreach($groups as $title => $id) {
 			$options[] = JHTML::_('select.option',$id,$title);
+		}
+		return $options;
+	}
+	
+	public function getMCMergeFieldsSelectOptions($level, $shownone = false)
+	{
+		$lists = $this->mcApi->lists();
+		$options = array();
+		if ($shownone)
+		{
+			$options[] = JHTML::_('select.option','',JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
+		}
+		foreach ($lists['data'] as $list)
+		{
+			// TODO upgrade to 3.x syntax
+			$options[] = JHTML::_('select.optgroup', $list['name']);
+			$vars = $this->mcApi->listMergeVars($list['id']);
+			foreach ($vars as $var)
+			{
+				$options[] = JHTML::_('select.option', $var['tag'], $var['name']);
+			}
+			$options[] = JHTML::_('select.optgroup', $list['name']);
 		}
 		return $options;
 	}

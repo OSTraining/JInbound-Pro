@@ -147,7 +147,7 @@ JInboundRemote.prototype.getUrlFromTag = function(tag)
 	var f = tag.getAttribute('data-j-form') || tag.getAttribute('data-j-module')
 	,   o = tag.getAttribute('data-j-option')
 	,   r = tag.getAttribute('data-j-return');
-	return tag.getAttribute('src').replace(/media\/mod_jinbound_form\/js\/form\.js$/, 'index.php?option=com_' + (o ? o + '&task=' : '') + 'ajax&format=json&module=jinbound_form&method=getForm&id=' + f + (r ? '&return_url=' + r : ''));
+	return tag.getAttribute('src').replace(/media\/mod_jinbound_form\/js\/form\.js$/, 'index.php?option=com_' + (o ? o.replace(/^com_/, '') + '&task=' : '') + 'ajax&format=json&module=jinbound_form&method=getForm&id=' + f + (r ? '&return_url=' + r : ''));
 };
 
 JInboundRemote.prototype.remoteRelativeUrlToAbsolute = function(tag, relative)

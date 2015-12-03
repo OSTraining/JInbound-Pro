@@ -8,7 +8,7 @@
 defined('_JEXEC') or die;
 
 ?>
-<div class="row-fluid mod_jinbound_form<?php if (!empty($sfx)) {echo ' mod_jinbound_form' . htmlspecialchars($sfx, ENT_QUOTES, 'UTF-8');} ?>">
+<div class="row-fluid mod_jinbound_form_free<?php if (!empty($sfx)) {echo ' mod_jinbound_form_free' . htmlspecialchars($sfx, ENT_QUOTES, 'UTF-8');} ?>">
 	<div class="span12">
 		<form action="<?php echo $form_url; ?>" method="post" enctype="multipart/form-data">
 			<?php foreach ($form->getFieldsets() as $fieldset) : ?>
