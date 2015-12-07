@@ -211,6 +211,7 @@ class JinboundMailchimp
 				->select('Field.name')
 				->select('Field.params')
 				->select('Page.id AS page_id')
+				->select('Page.campaign')
 				->from('#__jinbound_fields AS Field')
 				->leftJoin('#__jinbound_form_fields AS FormField ON FormField.field_id = Field.id')
 				->leftJoin('#__jinbound_pages AS Page ON Page.formid = FormField.form_id')
@@ -219,6 +220,10 @@ class JinboundMailchimp
 				->where('Page.campaign = ' . (int) $campaign_id)
 				->group('Field.id')
 			)->loadObjectList();
+			if (JDEBUG)
+			{
+				$app->enqueueMessage('<h3>[' . __METHOD__ . '] Field Data</h3><pre>' . htmlspecialchars(print_r($fieldData, 1), ENT_QUOTES, 'UTF-8') . '</pre>');
+			}
 			// Build subscriber data
 			$baseMergeVals = array(
 				'FNAME' => $firstName
@@ -297,6 +302,11 @@ class JinboundMailchimp
 						// Subscribe if email is not already in the MailChimp list and
 						// if the subscription is not already sent for that user (but not confirmed yet)
 						$mergeVals = array_merge(array(), $baseMergeVals);
+						
+						if (JDEBUG)
+						{
+							$app->enqueueMessage('<h3>[' . __METHOD__ . '] Merge Vals</h3><pre>' . htmlspecialchars(print_r($mergeVals, 1), ENT_QUOTES, 'UTF-8') . '</pre>');
+						}
 
 						// Add MC groups to new subscription
 						$groupings = array();

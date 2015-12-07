@@ -52,14 +52,18 @@ FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
 		header('Access-Control-Max-Age: 1000');
 		header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description, Authorization, X-Requested-With');
 		// get the module and render the form
-		$module  = JInboundHelperModule::getModuleObject();
+		$module = JInboundHelperModule::getModuleObject();
+		if (0 === (int) $module->params->get('allow_embed', 0))
+		{
+			throw new Exception(JText::_('MOD_JINBOUND_FORM_EMBED_NOT_ALLOWED'), 401);
+		}
 		$attribs = array('style' => 'none');
 		$form    = JModuleHelper::renderModule($module, $attribs);
 		// get module-specific scripts 
-		$corescripts  = $doc->_scripts;
-		$corescript   = $doc->_script;
-		$corestyles   = $doc->_styleSheets;
-		$corestyle    = $doc->_style;
+		$corescripts = $doc->_scripts;
+		$corescript  = $doc->_script;
+		$corestyles  = $doc->_styleSheets;
+		$corestyle   = $doc->_style;
 		// adjust the script structures
 		$finalscripts = array();
 		if (!empty($corescripts))

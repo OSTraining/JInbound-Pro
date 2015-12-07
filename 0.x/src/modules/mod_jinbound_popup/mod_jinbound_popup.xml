@@ -17,6 +17,7 @@
 		<filename>liveupdate/config.php</filename>
 		<filename>liveupdate/liveupdate.php</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_popup.ini</filename>
+		<filename>language/en-GB/en-GB.mod_jinbound_popup.sys.ini</filename>
 	</files>
 	<media destination="mod_jinbound_popup" folder="media">
 		<folder>js</folder>

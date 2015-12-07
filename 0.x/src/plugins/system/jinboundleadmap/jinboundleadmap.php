@@ -223,6 +223,9 @@ class PlgSystemJinboundleadmap extends JPlugin
 	
 	public function onAjaxJinboundleadmapdownload()
 	{
+		// try to kill the time limit
+		@ini_set('max_execution_time', 0);
+		@set_time_limit(0);
 		$app     = JFactory::getApplication();
 		$url     = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz';
 		$parts   = parse_url($url);
@@ -243,11 +246,13 @@ class PlgSystemJinboundleadmap extends JPlugin
 			)
 		);
 		$context  = stream_context_create($options);
+		@set_time_limit(0);
 		$response = file_get_contents($url, false, $context);
 		$config   = new JConfig;
 		$destfile = $this->getMaxmindDbFileName();
 		$tmpfile  = rtrim($config->tmp_path, '/') . '/' . basename($destfile) . '.gz';
 		file_put_contents($tmpfile, $response);
+		@set_time_limit(0);
 		jimport('joomla.filesystem.archive');
 		JArchive::extract($tmpfile, dirname($destfile));
 		unlink($tmpfile);
@@ -277,7 +282,7 @@ class PlgSystemJinboundleadmap extends JPlugin
 
 	protected function getMaxmindDbFileName()
 	{
-		return dirname(__FILE__) . '/lib/geolite2-city.mmdb';
+		return dirname(__FILE__) . '/lib/GeoLite2-City.mmdb';
 	}
 	
 	protected function getData()
