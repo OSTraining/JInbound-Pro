@@ -95,7 +95,17 @@ class plgSystemJinboundleadmapInstallerScript
 		;
 		try
 		{
-			$location = $table->setLocation($parent_id, 'last-child');
+			// find the "leads" link in the existing menu
+			$lead_id = $db->setQuery($db->getQuery(true)
+				->select('id')->from('#__menu')->where('client_id = 1')
+				->where('parent_id = ' . (int) $parent_id)
+				->where('title = ' . $db->quote('COM_JINBOUND_LEADS'))
+			)->loadResult();
+			$location = false;
+			if ($lead_id)
+			{
+				$location = $table->setLocation($lead_id, 'after');
+			}
 			if (false === $location)
 			{
 				throw new Exception(JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_ERROR_LOCATION_NOT_SET'));
