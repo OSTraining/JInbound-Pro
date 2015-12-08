@@ -17,7 +17,7 @@ $plugins = $db->setQuery($db->getQuery(true)
 	->where($db->qn('enabled') . ' = 1')
 )->loadColumn();
 $file = JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php';
-defined('PLG_SYSTEM_JINBOUNDSALESFORCE') or define('PLG_SYSTEM_JINBOUNDSALESFORCE', 1 === count($plugins) && JFile::exists($file));
+defined('PLG_SYSTEM_JINBOUNDSALESFORCE') or define('PLG_SYSTEM_JINBOUNDSALESFORCE', 1 === count($plugins) && JFile::exists($file) && class_exists('SoapClient'));
 require_once $file;
 
 class plgSystemJInboundsalesforce extends JPlugin
