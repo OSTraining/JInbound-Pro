@@ -53,6 +53,13 @@ FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE) : null);
 		header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description, Authorization, X-Requested-With');
 		// get the module and render the form
 		$module = JInboundHelperModule::getModuleObject();
+		$returl = base64_encode(JUri::root(true));
+		$return = $input->getBase64('return_url', $returl);
+		if ($returl !== $return)
+		{
+			$module->params->set('after_submit_sendto', 'url');
+			$module->params->set('send_to_url', base64_decode($return));
+		}
 		if (0 === (int) $module->params->get('allow_embed', 0))
 		{
 			throw new Exception(JText::_('MOD_JINBOUND_FORM_EMBED_NOT_ALLOWED'), 401);

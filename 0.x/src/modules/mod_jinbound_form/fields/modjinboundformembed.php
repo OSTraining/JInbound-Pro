@@ -48,7 +48,7 @@ class JFormFieldModJInboundFormEmbed extends JFormField
 			{
 				$attrs['data-j-option'] = 'com_jinbound';
 			}
-			$script = '<script';
+			$script = '<script async';
 			foreach ($attrs as $attr => $value)
 			{
 				$script .= ' ' . $attr . '="' . $value . '"';
