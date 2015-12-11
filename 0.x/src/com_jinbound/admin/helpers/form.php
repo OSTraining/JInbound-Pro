@@ -87,18 +87,31 @@ abstract class JInboundHelperForm
 	
 	public static function getField($name, $formid)
 	{
+		$app = JFactory::getApplication();
 		$fields = static::getFields($formid);
 		if (empty($fields))
 		{
+			if (JDEBUG)
+			{
+				$app->enqueueMessage('[DBG][' . __METHOD__ . '] Fields empty');
+			}
 			return false;
 		}
-		$realname = preg_replace('/^jform\[lead\]\[(.*?)\]$/', '$1', $name);
+		$realname = preg_replace('/^jform\[lead\]\[(.*?)\](\[\])?$/', '$1', $name);
+		if (JDEBUG)
+		{
+			$app->enqueueMessage('[DBG][' . __METHOD__ . '] Got real name "' . htmlspecialchars($realname, ENT_QUOTES, 'UTF-8') . '" from field name "' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '"');
+		}
 		foreach ($fields as $field)
 		{
 			if ($field->name == $realname)
 			{
 				return $field;
 			}
+		}
+		if (JDEBUG)
+		{
+			$app->enqueueMessage('[DBG][' . __METHOD__ . '] Could not find field');
 		}
 		return false;
 	}
