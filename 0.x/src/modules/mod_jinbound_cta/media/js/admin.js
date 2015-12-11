@@ -71,7 +71,6 @@
 	window.ModJInboundCTAConditionURLs = [];
 	window.ModJInboundCTAConditionInputs = 0;
 	window.ModJInboundCTACondition = function(id, init) {
-		console.log(init);
 		var block = $('#' + id), controls = $('#' + id + '_controls'), buttons = $('#' + id + '_buttons button'), renderElem = function(html) {
 			var repl = '$1$2_' + window.ModJInboundCTAConditionInputs + '$3';
 			html = html.replace(/(\sid=\")(.*?)(\")/gm, repl).replace(/(\sfor=\")(.*?)(\")/gm, repl);
@@ -116,6 +115,45 @@
 						is = function(what) {
 							return 'undefined' !== typeof what && what.length;
 						},
+						doButton = function(target) {
+							target.find(".btn-group label").each(function()
+							{
+								var label = $(this);
+								var input = $('#' + label.attr('for'));
+								var rname = input.attr('name');
+								if (!rname.match(/\[\]$/))
+								{
+									input.attr('name', rname + '[' + window.ModJInboundCTAConditionInputs + ']');
+								}
+							});
+							target.find(".btn-group label:not(.active)").click(function()
+							{
+								var label = $(this);
+								var input = $('#' + label.attr('for'));
+								if (!input.prop('checked')) {
+									label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
+									if (input.val() == '') {
+										label.addClass('active btn-primary');
+									} else if (input.val() == 0) {
+										label.addClass('active btn-danger');
+									} else {
+										label.addClass('active btn-success');
+									}
+									input.prop('checked', true);
+								}
+							});
+							target.find(".btn-group input[checked=checked]").each(function()
+							{
+								console.log($(this));
+								if ($(this).val() == '') {
+									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
+								} else if ($(this).val() == 0) {
+									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
+								} else {
+									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
+								}
+							});
+						},
 						success = function(data, textStatus, jqXHR) {
 							$('#' + id + '_loading').css('display', 'none');
 							if (!(data && data.success))
@@ -137,11 +175,9 @@
 							}
 							else if (isnew) {
 								u = false;
-								console.log('no extras!');
 							}
 							else {
 								u = window.ModJInboundCTAConditionURL + '&type=jinboundcampaignlist&label=x&desc=x&name=' + name + '_campaign&options[0][text]=MOD_JINBOUND_CTA_ANY_CAMPAIGN&options[0][value]=' + (is(group) ? '&group=' + group : '');
-								console.log(u);
 							}
 							if (u) {
 								$.each(window.ModJInboundCTAConditionURLs, function (idx, el){
@@ -154,7 +190,6 @@
 									window.ModJInboundCTAConditionInputs += 1;
 								}
 								else {
-									console.log('Cannot find field, asking server...');
 									$.ajax({
 										url: u
 									,	async: false
@@ -196,6 +231,7 @@
 							l.appendTo(cl);
 							if (r && r.length) {
 								r.appendTo(cc);
+								doButton(cc);
 								if (cmp) {
 									r.find('label').addClass('btn');
 									try {
@@ -207,6 +243,7 @@
 									if (is(yesno)) {
 										var cid = cc.find(".btn-group input[value=" + yesno + "]").attr('id');
 										cc.find('.btn-group label[for=' + cid + ']').trigger('click');
+										console.log(cc.find('.btn-group label[for=' + cid + ']'));
 									}
 								}
 								else {
@@ -219,44 +256,12 @@
 									}
 								}
 							}
-							cc.find(".btn-group label").each(function()
-							{
-								var label = $(this);
-								var input = $('#' + label.attr('for'));
-								var rname = input.attr('name');
-								if (!rname.match(/\[\]$/))
-								{
-									input.attr('name', rname + '[' + window.ModJInboundCTAConditionInputs + ']');
-								}
-							});
-							cc.find(".btn-group label:not(.active)").click(function()
-							{
-								var label = $(this);
-								var input = $('#' + label.attr('for'));
-								if (!input.prop('checked')) {
-									label.closest('.btn-group').find("label").removeClass('active btn-success btn-danger btn-primary');
-									if (input.val() == '') {
-										label.addClass('active btn-primary');
-									} else if (input.val() == 0) {
-										label.addClass('active btn-danger');
-									} else {
-										label.addClass('active btn-success');
-									}
-									input.prop('checked', true);
-								}
-							});
-							cc.find(".btn-group input[checked=checked]").each(function()
-							{
-								if ($(this).val() == '') {
-									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-primary');
-								} else if ($(this).val() == 0) {
-									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-danger');
-								} else {
-									$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
-								}
-							});
 							if (isnew) {
+								doButton(cc);
+								console.log('isnew');
+								console.log(cc.find(".btn-group label").first());
 								cc.find(".btn-group label").first().trigger('click');
+								console.log(cc.find(".btn-group input").first().prop('checked'));
 							}
 							window.ModJInboundCTAConditionURLs.push({url: url, data: data});
 						}
@@ -287,23 +292,24 @@
 					});
 				}
 				if (is(def)) {
-					console.log(def);
 					var group = controls.find('.control-group:last-child');
 					if (is(name) && 'isnew' === name) {
 						var nid = group.find(".btn-group input[value=" + def + "]").attr('id');
 						group.find('.btn-group label[for=' + nid + ']').trigger('click');
 					}
 					else {
-						console.log(group.find('select').first().val(def));
+						group.find('select').first().val(def);
 					}
 				}
 			});
 		});
 		if (init) {
+			console.log(init);
 			var cb;
 			if (init.priority && init.priority_campaign) {
 				cb = $('#' + id + '_buttons button[data-name="priority"]');
 				$.each(init.priority, function(idx, el){
+					console.log('Setting "' + id + '" to "' + el + '", yesno to "' + init.priority_campaign[idx] + '"');
 					cb.attr('data-default', el);
 					cb.attr('data-default-yesno', init.priority_campaign[idx]);
 					cb.trigger('click');
@@ -314,6 +320,7 @@
 			if (init.status && init.status_campaign) {
 				cb = $('#' + id + '_buttons button[data-name="status"]');
 				$.each(init.status, function(idx, el){
+					console.log('Setting "' + id + '" to "' + el + '", yesno to "' + init.status_campaign[idx] + '"');
 					cb.attr('data-default', el);
 					cb.attr('data-default-yesno', init.status_campaign[idx]);
 					cb.trigger('click');
@@ -324,6 +331,7 @@
 			if (init.campaign && init.campaign_yesno) {
 				cb = $('#' + id + '_buttons button[data-name="campaign"]');
 				$.each(init.campaign, function(idx, el){
+					console.log('Setting "' + id + '" to "' + el + '", yesno to "' + init.campaign_yesno[idx] + '"');
 					cb.attr('data-default', el);
 					cb.attr('data-default-yesno', init.campaign_yesno[idx]);
 					cb.trigger('click');
@@ -337,8 +345,7 @@
 				{
 					if (prop.match(/^[0-9]*$/))
 					{
-						console.log(prop);
-						console.log(init.isnew[prop][prop]);
+						console.log('Setting "' + id + '" to "' + init.isnew[prop][prop] + '"');
 						cb.attr('data-default', init.isnew[prop][prop]);
 						cb.trigger('click');
 						cb.removeAttr('data-default');
