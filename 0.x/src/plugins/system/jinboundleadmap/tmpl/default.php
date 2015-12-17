@@ -17,17 +17,6 @@ defined('JPATH_PLATFORM') or die;
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif;?>
-		<form action="<?php echo $this->data->url; ?>" method="post" name="adminForm" id="adminForm">
-			<?php
-			if (!empty($this->filterForm)) :
-				if (class_exists('JLayoutHelper')) :
-					echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this), null, array('debug' => false));
-				else:
-					echo $this->loadTemplate('filters');
-				endif;
-			endif;
-			?>
-		</form>
 <?php if ($this->data instanceof Exception) : ?>
 		<div class="alert alert-error">
 			<?php echo $this->data->getMessage(); ?>
@@ -39,7 +28,9 @@ defined('JPATH_PLATFORM') or die;
 		<div class="alert alert-error">
 			<?php echo JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_NO_LOCATIONS_FOUND'); ?>
 		</div>
+		<?php echo $this->loadTemplate('filterbar'); ?>
 <?php else : ?>
+		<?php echo $this->loadTemplate('filterbar'); ?>
 		<div id="map"></div>
 		<div id="legend"><div id="legend-container"><h3><?php echo JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_LEGEND'); ?></h3></div></div>
 		<script type="text/javascript">
@@ -88,7 +79,7 @@ mapReady(function() {
 		<script type="text/javascript" src="../media/jinboundleadmap/js/StyledMarker.js"></script>
 <?php endif; ?>
 		<div class="alert alert-success">
-			<p><?php echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $data->download_url); ?></p>
+			<p><?php echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $this->data->download_url); ?></p>
 			<p>This product includes GeoLite2 data created by MaxMind, available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.</p>
 		</div>
 	</div>

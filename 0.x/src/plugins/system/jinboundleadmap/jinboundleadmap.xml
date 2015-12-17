@@ -27,6 +27,7 @@
 		<filename>liveupdate/config.php</filename>
 		<filename>liveupdate/liveupdate.php</filename>
 		<filename>tmpl/default.php</filename>
+		<filename>tmpl/default_filterbar.php</filename>
 	</files>
 	<media destination="jinboundleadmap" folder="media">
 		<filename>css/leadmap.css</filename>
