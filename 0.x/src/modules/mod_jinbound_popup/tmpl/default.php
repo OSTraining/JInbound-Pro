@@ -12,7 +12,6 @@ JHtml::_('behavior.modal');
 ?>
 <!-- <?php echo $form->getName(); ?> -->
 <div
-	data-url="<?php echo JRoute::_($url); ?>"
 	data-moduleid="<?php echo $module->id; ?>"
 	id="mod_jinbound_popup_<?php echo $module->id; ?>"
 	class="mod_jinbound_popup_container<?php if (!empty($sfx)) {echo ' mod_jinbound_popup_container' . htmlspecialchars($sfx, ENT_QUOTES, 'UTF-8');} ?>">
