@@ -25,7 +25,7 @@ class JFormFieldModJInboundFormEmbed extends JFormField
 		$published = (int) $this->form->getValue('published');
 		$output    = JText::_('MOD_JINBOUND_FORM_EMBED_SAVE_MODULE_FIRST');
 		// we should only need the framework on 2.5
-		if (method_exists(JInbound, 'loadJsFramework') && !JInbound::version()->isCompatible('3.0.0'))
+		if (method_exists('JInbound', 'loadJsFramework') && !JInbound::version()->isCompatible('3.0.0'))
 		{
 			JInbound::loadJsFramework();
 			// fix spacing

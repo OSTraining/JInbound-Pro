@@ -45,7 +45,7 @@ abstract class modJinboundFormFreeHelper
 		return (object) array(
 			'campaign_id'         => $campaign_id,
 			'form_id'             => $form_id,
-			'page_name'           => $module->name,
+			'page_name'           => preg_replace('/^mod_/', '', $module->module),
 			'notification_email'  => $params->get('notification_email', ''),
 			'after_submit_sendto' => $params->get('after_submit_sendto', 'message'),
 			'menu_item'           => $params->get('menu_item', ''),

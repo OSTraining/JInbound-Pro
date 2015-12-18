@@ -197,6 +197,7 @@ class PlgSystemJinboundleadmap extends JPlugin
 		$view = $this->getView();
 		$view->data = $data;
 		$view->state = new JRegistry();
+		$view->download_url = $this->getUrl('jinboundleadmapdownload');
 		try
 		{
 			$filters = $app->input->get('filter', array(), 'array');
@@ -294,14 +295,13 @@ class PlgSystemJinboundleadmap extends JPlugin
 		$data = new stdClass();
 		$data->locations = array();
 		$data->url = $this->getUrl();
-		$data->download_url = $this->getUrl('jinboundleadmapdownload');
 		if (!file_exists($mmdb))
 		{
 			$mmdbpath = dirname($mmdb);
 			$mmdbfile = strtolower(basename($mmdb));
 			if (!file_exists($mmdb = $mmdbpath . '/' . $mmdbfile))
 			{
-				return new Exception(JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB', $data->download_url));
+				return new Exception(JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB', $this->getUrl('jinboundleadmapdownload')));
 			}
 		}
 		$reader    = new Reader($mmdb);

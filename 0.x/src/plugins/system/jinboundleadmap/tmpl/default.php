@@ -30,7 +30,6 @@ defined('JPATH_PLATFORM') or die;
 		</div>
 		<?php echo $this->loadTemplate('filterbar'); ?>
 <?php else : ?>
-		<?php echo $this->loadTemplate('filterbar'); ?>
 		<div id="map"></div>
 		<div id="legend"><div id="legend-container"><h3><?php echo JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_LEGEND'); ?></h3></div></div>
 		<script type="text/javascript">
@@ -79,7 +78,7 @@ mapReady(function() {
 		<script type="text/javascript" src="../media/jinboundleadmap/js/StyledMarker.js"></script>
 <?php endif; ?>
 		<div class="alert alert-success">
-			<p><?php echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $this->data->download_url); ?></p>
+			<p><?php echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $this->download_url); ?></p>
 			<p>This product includes GeoLite2 data created by MaxMind, available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.</p>
 		</div>
 	</div>

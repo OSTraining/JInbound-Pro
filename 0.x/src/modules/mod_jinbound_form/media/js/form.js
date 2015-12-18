@@ -82,13 +82,13 @@ JInboundRemote.prototype.initForm = function(tag)
 							var script = document.createElement('script');
 							script.type = json.data.scripts[i].mime;
 							script.src = $this.remoteRelativeUrlToAbsolute(tag, json.data.scripts[i].src);
-							if (json.data.scripts[i].defer)
+							if ('undefined' !== typeof json.data.scripts[i].defer)
 							{
-								script.defer = true;
+								script.defer = json.data.scripts[i].defer;
 							}
-							if (json.data.scripts[i].async)
+							if ('undefined' !== typeof json.data.scripts[i].async)
 							{
-								script.async = true;
+								script.async = json.data.scripts[i].async;
 							}
 							document.head.appendChild(script);
 						}
@@ -120,7 +120,7 @@ JInboundRemote.prototype.initForm = function(tag)
 									}
 								}
 								eval(json.data.script);
-							}, 1000);
+							}, 1500);
 						}
 						catch (err)
 						{
@@ -185,9 +185,17 @@ JInboundRemote.prototype.ajax = function(options)
 		}
 	}
 	
-	xmlhttp.open(options.type || "GET", options.url, true);
-	xmlhttp.withCredentials = true;
-	xmlhttp.send();
+	try {
+		xmlhttp.open(options.type || "GET", options.url, true);
+		xmlhttp.withCredentials = true;
+		xmlhttp.send();
+	}
+	catch (err) {
+		// cannot load - security policy in effect?
+		if ('undefined' !== typeof console && 'function' === typeof console.log) {
+			console.log(err);
+		}
+	}
 };
 
 // init

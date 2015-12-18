@@ -21,6 +21,9 @@
 						var elem = $('#' + current);
 						if (isUndefined(elem)) return;
 						var cg = elem.closest('.control-group');
+						if (0 == cg.length) {
+							cg = elem.closest('li');
+						}
 						if (current === enabled) {
 							cg.show();
 						}
@@ -41,9 +44,13 @@
 						action = 'hide';
 					}
 					$.each(fields, function(fidx, fel){
-						var field = $('#jform_params_' + mode + '' + fel);
+						var field = $('#jform_params_' + mode + '' + fel), cg;
 						if (field.length) {
-							field.closest('.control-group')[action]();
+							cg = field.closest('.control-group');
+							if (0 == cg.length) {
+								cg = field.closest('li');
+							}
+							cg[action]();
 						}
 					});
 					if ('show' == action && !isUndefined(select)) {
@@ -57,7 +64,11 @@
 			if (mode.length) {
 				var c_editors = $('#jform_params_' + mode + 'mode_editor');
 				$.each(c_editors, function(eidx, eid){
-					c_editors.closest('.control-group').after($('<hr>'));
+					var cg = c_editors.closest('.control-group');
+					var hr = $('<hr>');
+					if (cg.length) {
+						cg.after(hr);
+					}
 				});
 			}
 		});
