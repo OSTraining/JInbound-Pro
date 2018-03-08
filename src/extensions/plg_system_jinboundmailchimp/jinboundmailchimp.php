@@ -46,28 +46,6 @@ class plgSystemJInboundmailchimp extends JPlugin
         $this->loadLanguage('plg_system_jinboundmailchimp.sys', JPATH_ADMINISTRATOR);
     }
 
-    public function onAfterInitialise()
-    {
-        if ($this->app->isSite() || !PLG_SYSTEM_JINBOUNDMAILCHIMP) {
-            return;
-        }
-        $option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
-        $view   = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
-        if ('plg_system_jinboundmailchimp' === $option && 'liveupdate' === $view) {
-            require_once JPATH_ROOT . '/plugins/system/jinboundmailchimp/liveupdate/liveupdate.php';
-            $updateInfo = LiveUpdate::getUpdateInformation();
-            if ($updateInfo->hasUpdates) {
-                echo JText::sprintf('PLG_SYSTEM_JINBOUNDMAILCHIMP_UPDATE_HASUPDATES', $updateInfo->version);
-            }
-            jexit();
-        }
-    }
-
-    public function onJinboundDashboardUpdate()
-    {
-        return "index.php?option=plg_system_jinboundmailchimp&view=liveupdate";
-    }
-
     public function onContentPrepareForm($form)
     {
         if (!PLG_SYSTEM_JINBOUNDMAILCHIMP) {

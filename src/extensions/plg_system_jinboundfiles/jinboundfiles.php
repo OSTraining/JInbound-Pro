@@ -58,14 +58,7 @@ class plgSystemJInboundfiles extends JPlugin
         $this->session->clear('jinboundfiles.files');
         $option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
         $view   = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
-        if ('plg_system_jinboundfiles' === $option && 'liveupdate' === $view) {
-            require_once JPATH_ROOT . '/plugins/system/jinboundfiles/liveupdate/liveupdate.php';
-            $updateInfo = LiveUpdate::getUpdateInformation();
-            if ($updateInfo->hasUpdates) {
-                echo JText::sprintf('PLG_SYSTEM_JINBOUNDFILES_UPDATE_HASUPDATES', $updateInfo->version);
-            }
-            jexit();
-        }
+
         if ('plg_system_jinboundfiles' === $option && 'file' === $view) {
             $file    = array_key_exists('file', $_REQUEST) ? $_REQUEST['file'] : '';
             $contact = array_key_exists('contact', $_REQUEST) ? $_REQUEST['contact'] : '';
@@ -108,11 +101,6 @@ class plgSystemJInboundfiles extends JPlugin
             JFolder::create($contact_path);
         }
         return $contact_path;
-    }
-
-    public function onJinboundDashboardUpdate()
-    {
-        return "index.php?option=plg_system_jinboundfiles&view=liveupdate";
     }
 
     public function onJinboundFormbuilderView(&$view)

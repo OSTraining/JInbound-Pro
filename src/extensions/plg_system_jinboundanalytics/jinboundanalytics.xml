@@ -19,24 +19,7 @@
 	</languages>
 	<files>
 		<filename plugin="jinboundanalytics">jinboundanalytics.php</filename>
-		<filename>field/jinboundanalyticsupdate.php</filename>
 		<filename>form/jinboundanalytics.xml</filename>
 		<filename>language/en-GB/en-GB.plg_system_jinboundanalytics.sys.ini</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 	</files>
-	<config>
-		<fields name="params">
-			<fieldset name="basic" addfieldpath="/plugins/system/jinboundanalytics/field">
-				<field name="update" type="jinboundanalyticsupdate"
-                       label="PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE"
-                       description="PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE_DESC"
-                />
-				<field name="downloadid" type="text"
-                       label="PLG_SYSTEM_JINBOUNDANALYTICS_DOWNLOADID"
-                       description="PLG_SYSTEM_JINBOUNDANALYTICS_DOWNLOADID_DESC"
-                />
-			</fieldset>
-		</fields>
-	</config>
 </extension>

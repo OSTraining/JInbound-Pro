@@ -19,19 +19,12 @@
 	</languages>
 	<files>
 		<filename plugin="jinboundfiles">jinboundfiles.php</filename>
-		<filename>field/jinboundfilesupdate.php</filename>
 		<filename>language/en-GB/en-GB.plg_system_jinboundfiles.sys.ini</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 		<filename>tmpl/default_sidebar_field_file.php</filename>
 	</files>
 	<config>
 		<fields name="params">
 			<fieldset name="basic" addfieldpath="/plugins/system/jinboundfiles/field">
-				<field name="update" type="jinboundfilesupdate"
-                       label="PLG_SYSTEM_JINBOUNDFILES_UPDATE"
-                       description="PLG_SYSTEM_JINBOUNDFILES_UPDATE_DESC"
-                />
 				<field name="extensions" type="text"
                        label="PLG_SYSTEM_JINBOUNDFILES_EXTENSIONS"
                        description="PLG_SYSTEM_JINBOUNDFILES_EXTENSIONS_DESC"
@@ -40,10 +33,6 @@
 				<field name="storage_path" type="text"
                        label="PLG_SYSTEM_JINBOUNDFILES_STORAGE_PATH"
                        description="PLG_SYSTEM_JINBOUNDFILES_STORAGE_PATH_DESC"
-                />
-				<field name="downloadid" type="text"
-                       label="PLG_SYSTEM_JINBOUNDFILES_DOWNLOADID"
-                       description="PLG_SYSTEM_JINBOUNDFILES_DOWNLOADID_DESC"
                 />
 			</fieldset>
 		</fields>

@@ -70,11 +70,6 @@ class plgSystemJInboundsalesforce extends JPlugin
         jexit();
     }
 
-    public function onJinboundDashboardUpdate()
-    {
-        return "index.php?option=plg_system_jinboundsalesforce&view=liveupdate";
-    }
-
     public function onContentPrepareForm($form)
     {
         if (!PLG_SYSTEM_JINBOUNDSALESFORCE) {
@@ -250,15 +245,6 @@ class plgSystemJInboundsalesforce extends JPlugin
                 continue;
             }
             $options[] = JHtml::_('select.option', $field->name, $field->label);
-        }
-    }
-
-    private function execTaskLiveupdate()
-    {
-        require_once JPATH_ROOT . '/plugins/system/jinboundsalesforce/liveupdate/liveupdate.php';
-        $updateInfo = LiveUpdate::getUpdateInformation();
-        if ($updateInfo->hasUpdates) {
-            echo JText::sprintf('PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE_HASUPDATES', $updateInfo->version);
         }
     }
 

@@ -14,8 +14,6 @@
 		<filename module="mod_jinbound_popup">helper.php</filename>
 		<filename module="mod_jinbound_popup">mod_jinbound_popup.xml</filename>
 		<filename module="mod_jinbound_popup">tmpl/default.php</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_popup.ini</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_popup.sys.ini</filename>
 	</files>

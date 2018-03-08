@@ -21,7 +21,6 @@
 	<files>
 		<filename plugin="jinboundsalesforce">jinboundsalesforce.php</filename>
 		<filename>field/jinboundsalesforcefields.php</filename>
-		<filename>field/jinboundsalesforceupdate.php</filename>
 		<filename>field/jinboundsalesforcewsdl.php</filename>
 		<filename>field/wsdl/close.php</filename>
 		<filename>field/wsdl/default.php</filename>
@@ -38,21 +37,11 @@
 		<filename>library/force/SforcePartnerClient.php</filename>
 		<filename>library/force/SforceProcessRequest.php</filename>
 		<filename>library/force/metadata.wsdl.xml</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 		<filename>wsdl/index.html</filename>
 	</files>
 	<config>
 		<fields name="params">
 			<fieldset name="basic" addfieldpath="/plugins/system/jinboundsalesforce/field">
-				<field name="update" type="jinboundsalesforceupdate"
-                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE"
-                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE_DESC"
-                />
-				<field name="downloadid" type="text"
-                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID"
-                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID_DESC"
-                />
 				<field name="wsdl" type="jinboundsalesforcewsdl"
                        label="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL"
                        description="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL_DESC"

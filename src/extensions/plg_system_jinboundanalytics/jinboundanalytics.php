@@ -42,28 +42,6 @@ class plgSystemJInboundanalytics extends JPlugin
         $this->loadLanguage('plg_system_jinboundanalytics.sys', JPATH_ADMINISTRATOR);
     }
 
-    public function onAfterInitialise()
-    {
-        if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDANALYTICS) {
-            return;
-        }
-        $option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
-        $view   = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
-        if ('plg_system_jinboundanalytics' === $option && 'liveupdate' === $view) {
-            require_once JPATH_ROOT . '/plugins/system/jinboundanalytics/liveupdate/liveupdate.php';
-            $updateInfo = LiveUpdate::getUpdateInformation();
-            if ($updateInfo->hasUpdates) {
-                echo JText::sprintf('PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE_HASUPDATES', $updateInfo->version);
-            }
-            jexit();
-        }
-    }
-
-    public function onJinboundDashboardUpdate()
-    {
-        return "index.php?option=plg_system_jinboundanalytics&view=liveupdate";
-    }
-
     public function onContentPrepareForm($form)
     {
         if (!PLG_SYSTEM_JINBOUNDANALYTICS) {

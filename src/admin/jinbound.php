@@ -24,30 +24,6 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound')) {
     return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-// rewritten LiveUpdate code
-if ('liveupdate' == $input->get('view', '')) {
-    // check which liveupdate to load
-    $ext    = $input->get('ext', '');
-    $type   = $input->get('type', '');
-    $folder = $input->get('folder', '');
-    $base   = JPATH_COMPONENT_ADMINISTRATOR;
-    if (!empty($ext)) {
-        switch ($type) {
-            case 'mod':
-                $base = JPATH_ROOT . '/modules/mod_' . $ext;
-                break;
-            case 'plg':
-                $base = JPATH_ROOT . '/plugins/' . $folder . '/' . $ext;
-                break;
-            default:
-                throw new Exception('Unknown type');
-        }
-    }
-    require_once $base . '/liveupdate/liveupdate.php';
-    LiveUpdate::handleRequest();
-    return;
-}
-
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerHelper('form');
 JInbound::registerHelper('url');

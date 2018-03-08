@@ -14,8 +14,6 @@
 		<filename module="mod_jinbound_form_free">helper.php</filename>
 		<filename module="mod_jinbound_form_free">mod_jinbound_form_free.xml</filename>
 		<filename module="mod_jinbound_form_free">tmpl/default.php</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_form_free.ini</filename>
 		<filename>language/en-GB/en-GB.mod_jinbound_form_free.sys.ini</filename>
 	</files>

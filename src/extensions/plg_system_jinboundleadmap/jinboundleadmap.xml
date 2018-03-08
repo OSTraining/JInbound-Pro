@@ -24,8 +24,6 @@
 		<filename>forms/filter_leadmap.xml</filename>
 		<filename>language/en-GB/en-GB.plg_system_jinboundleadmap.sys.ini</filename>
 		<filename>lib/geoip2.phar</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 		<filename>tmpl/default.php</filename>
 		<filename>tmpl/default_filterbar.php</filename>
 	</files>

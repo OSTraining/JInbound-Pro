@@ -45,28 +45,6 @@ class plgSystemJInboundcaptcha extends JPlugin
         $this->app = JFactory::getApplication();
     }
 
-    public function onAfterInitialise()
-    {
-        if ($this->app->isSite() || !PLG_SYSTEM_JINBOUNDCAPTCHA) {
-            return;
-        }
-        $option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
-        $view   = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
-        if ('plg_system_jinboundcaptcha' === $option && 'liveupdate' === $view) {
-            require_once JPATH_ROOT . '/plugins/system/jinboundcaptcha/liveupdate/liveupdate.php';
-            $updateInfo = LiveUpdate::getUpdateInformation();
-            if ($updateInfo->hasUpdates) {
-                echo JText::sprintf('PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE_HASUPDATES', $updateInfo->version);
-            }
-            jexit();
-        }
-    }
-
-    public function onJinboundDashboardUpdate()
-    {
-        return 'index.php?option=plg_system_jinboundcaptcha&view=liveupdate';
-    }
-
     public function onJinboundFormbuilderDisplay(&$xml)
     {
         if (!PLG_SYSTEM_JINBOUNDCAPTCHA) {

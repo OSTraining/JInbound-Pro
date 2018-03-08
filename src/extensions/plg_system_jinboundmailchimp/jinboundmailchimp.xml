@@ -25,7 +25,6 @@
 		<filename>field/jinboundmailchimpfields.php</filename>
 		<filename>field/jinboundmailchimpgroups.php</filename>
 		<filename>field/jinboundmailchimplists.php</filename>
-		<filename>field/jinboundmailchimpupdate.php</filename>
 		<filename>form/jinboundmailchimp.xml</filename>
 		<filename>form/jinboundmailchimpcontact.xml</filename>
 		<filename>form/jinboundmailchimpfield.xml</filename>
@@ -33,20 +32,10 @@
 		<filename>language/en-GB/en-GB.plg_system_jinboundmailchimp.sys.ini</filename>
 		<filename>library/MCAPI.class.php</filename>
 		<filename>library/helper.php</filename>
-		<filename>liveupdate/config.php</filename>
-		<filename>liveupdate/liveupdate.php</filename>
 	</files>
 	<config>
 		<fields name="params">
 			<fieldset name="basic" addfieldpath="/plugins/system/jinboundmailchimp/field">
-				<field name="update" type="jinboundmailchimpupdate"
-                       label="PLG_SYSTEM_JINBOUNDMAILCHIMP_UPDATE"
-                       description="PLG_SYSTEM_JINBOUNDMAILCHIMP_UPDATE_DESC"
-                />
-				<field name="downloadid" type="text"
-                       label="PLG_SYSTEM_JINBOUNDMAILCHIMP_DOWNLOADID"
-                       description="PLG_SYSTEM_JINBOUNDMAILCHIMP_DOWNLOADID_DESC"
-                />
 				<field name="mailchimp_key" type="text" size="32" default=""
                        label="PLG_SYSTEM_JINBOUNDMAILCHIMP_APIKEY_TITLE"
                        description="PLG_SYSTEM_JINBOUNDMAILCHIMP_APIKEY_DESC"/>
