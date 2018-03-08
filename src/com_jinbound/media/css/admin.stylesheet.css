@@ -1,0 +1,171 @@
+.icon-48-jinbound,.icon-48-jinbound-dashboard,
+.icon-48-jinbound-campaign,.icon-48-jinbound-campaigns,
+.icon-48-jinbound-categories,.icon-48-jinbound-category,
+.icon-48-jinbound-contact,.icon-48-jinbound-contacts,
+.icon-48-jinbound-email,.icon-48-jinbound-emails,
+.icon-48-jinbound-field,.icon-48-jinbound-fields,
+.icon-48-jinbound-form,.icon-48-jinbound-forms,
+.icon-48-jinbound-lead,.icon-48-jinbound-leads,
+.icon-48-jinbound-page,.icon-48-jinbound-pages,
+.icon-48-jinbound-priorities,.icon-48-jinbound-priority,
+.icon-48-jinbound-report,.icon-48-jinbound-reports,
+.icon-48-jinbound-status,.icon-48-jinbound-statuses,
+.icon-48-jinbound-utilities {
+	background: url('../images/icon-48-jinbound.png') 0 0 no-repeat;
+	padding-left: 60px !important;
+}
+.icon-jinbound,.icon-jinbound-dashboard,
+.icon-jinbound-campaign,.icon-jinbound-campaigns,
+.icon-jinbound-categories,.icon-jinbound-category,
+.icon-jinbound-contact,.icon-jinbound-contacts,
+.icon-jinbound-email,.icon-jinbound-emails,
+.icon-jinbound-field,.icon-jinbound-fields,
+.icon-jinbound-form,.icon-jinbound-forms,
+.icon-jinbound-lead,.icon-jinbound-leads,
+.icon-jinbound-page,.icon-jinbound-pages,
+.icon-jinbound-priorities,.icon-jinbound-priority,
+.icon-jinbound-report,.icon-jinbound-reports,
+.icon-jinbound-status,.icon-jinbound-statuses,
+.icon-jinbound-utilities {
+	background: url('../images/icon-24-jinbound.png') 0 0 no-repeat;
+	height: 24px !important;
+	padding-left: 12px !important;
+}
+
+.layout_select_button {
+
+	width:100px;
+	height:150px;
+	border: 1px solid;
+	text-align:center;
+	padding-top:10px;
+	margin-left:15px;
+	float:left;
+}
+
+
+* html .jinbound_listbuttons{
+	height: 1%;
+	overflow: visible;
+}
+
+/* float clearing for IE7 */
+*+html .jinbound_listbuttons{
+	min-height: 1%;
+}
+
+/* float clearing for everyone else */
+.jinbound_listbuttons:after{
+	clear: both;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	font-size: 0;
+}
+
+.jinbound_addfield {
+	border:1px solid;
+	margin-bottom:3px;
+	padding:5px;
+	cursor: hand;
+	cursor: pointer;
+
+}
+
+
+#jinbound_component input#jform_first_name,
+#jinbound_component input#jform_last_name {
+	font-size: 18px !important;
+	line-height: 24px !important;
+}
+
+.leadnotes-block {
+	padding: 10px 12px;
+	width: 350px;
+	font-size: 0.8em;
+	word-wrap: break-word !important;
+	white-space: normal !important;
+}
+
+#jinbound_component .leadnotes .btn,
+#jinbound_component .leadnotes .btn span {
+	font-size: 13px !important;
+}
+
+#welcome_buttons {
+	padding-bottom: 8px;
+}
+
+#welcome_buttons .btn-text {
+	display: block;
+	min-height: 45px;
+	padding: 10px 0 0;
+	font-weight: bold;
+}
+
+#live_update .icon a div {
+	float: left;
+}
+
+#live_update .icon a span {
+	line-height: 32px;
+	padding: 5px 5px 5px 12px;
+}
+
+/* he likes big bottoms ... */
+#jinbound_component .mixalot {
+	margin-bottom: 20px;
+}
+
+/* yuck, legacy fix */
+#jinbound_component fieldset label,
+#jinbound_component fieldset span.faux-label,
+#jinbound_component .reports_search input,
+#jinbound_component .reports_search select {
+	clear: none !important;
+	float: none !important;
+}
+
+/* icons for contact sliders */
+#jinbound_component #previousCampaignSlider .accordion-toggle:after,
+#jinbound_component #campaignSlider .accordion-toggle:after,
+#jinbound_component #leadSlider .accordion-toggle:after
+{
+	font-family: "IcoMoon";
+	font-style: normal;
+	content: "\e005";
+	float:right;
+}
+
+#jinbound_component #previousCampaignSlider .accordion-toggle.collapsed:after,
+#jinbound_component #campaignSlider .accordion-toggle.collapsed:after,
+#jinbound_component #leadSlider .accordion-toggle.collapsed:after
+{
+	font-family: "IcoMoon";
+	font-style: normal;
+	content: "\e007";
+	float:right;
+}
+
+#jinbound_default_tabset {
+	margin-top: 8px;
+}
+
+.jinbound_legacy #jform_layout input {
+	display: none !important;
+}
+
+.jinbound_legacy #jform_layout label {
+	float: left;
+}
+
+.jinbound_legacy dt.tabs h3 {
+	font-size: 11px !important;
+	line-height: 18px !important;
+	margin: 0 !important;
+}
+
+.jinbound_legacy dl.tabs {
+	margin-bottom: -1px !important;
+}
