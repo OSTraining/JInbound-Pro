@@ -1,115 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="2.5" method="upgrade">
-	<name>COM_JINBOUND</name>
-	<creationDate>@ant_current_date@</creationDate>
-	<author>Anything Digital</author>
-	<authorEmail>admin@anything-digital.com</authorEmail>
-	<authorUrl>http://anything-digital.com</authorUrl>
-	<copyright>@ant_xml_copyright@</copyright>
-	<license>GNU/GPL</license>
-	<version>@ant_version_number@</version>
-	<description>COM_JINBOUND_XML_DESCRIPTION</description>
-	<install>
-		<sql>
-			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
-		</sql>
-	</install>
-	<uninstall>
-		<sql>
-			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
-		</sql>
-	</uninstall>
-	<update>
-		<schemas>
-			<schemapath type="mysql">sql/updates/mysql</schemapath>
-		</schemas>
-	</update>
-	<scriptfile>jinbound.install.php</scriptfile>
-	<files folder="site">
-		<filename>jinbound.php</filename>
-		<filename>controller.php</filename>
-		<filename>index.html</filename>
-		<filename>router.php</filename>
-		<folder>controllers</folder>
-		<folder>helpers</folder>
-		<folder>models</folder>
-		<folder>views</folder>
-	</files>
-	<media destination="jinbound" folder="media">
-		<folder>bootstrap</folder>
-		<folder>css</folder>
-		<folder>images</folder>
-		<folder>jqplot</folder>
-		<folder>js</folder>
-		<folder>ui</folder>
-		<filename>index.html</filename>
-	</media>
-	<administration>
-		<menu img="../media/jinbound/images/icon-16-jinbound.png">COM_JINBOUND</menu>
-		<submenu>
-			<menu link="option=com_jinbound"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Dashboard"
-            >COM_JINBOUND_DASHBOARD</menu>
-			<menu link="option=com_jinbound&amp;view=campaigns" view="campaigns"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Campaigns"
-            >COM_JINBOUND_CAMPAIGNS_MANAGER</menu>
-			<menu link="option=com_jinbound&amp;view=emails" view="emails"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Emails"
-            >COM_JINBOUND_LEAD_NURTURING_MANAGER</menu>
-			<menu link="option=com_jinbound&amp;view=pages" view="pages"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Pages"
-            >COM_JINBOUND_PAGES</menu>
-			<menu link="option=com_jinbound&amp;view=contacts" view="contacts"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Leads"
-            >COM_JINBOUND_LEADS</menu>
-			<menu link="option=com_jinbound&amp;view=reports" view="reports"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Reports"
-            >COM_JINBOUND_REPORTS</menu>
-			<menu link="option=com_categories&amp;view=categories&amp;extension=com_jinbound" view="categories"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Categories"
-            >JCATEGORIES</menu>
-			<menu link="option=com_jinbound&amp;view=statuses" view="statuses"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Statuses"
-            >COM_JINBOUND_STATUSES</menu>
-			<menu link="option=com_jinbound&amp;view=priorities" view="priorities"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Priorities"
-            >COM_JINBOUND_PRIORITIES</menu>
-			<menu link="option=com_jinbound&amp;view=forms" view="forms"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Forms"
-            >COM_JINBOUND_FORMS</menu>
-			<menu link="option=com_jinbound&amp;view=fields" view="fields"
-                  img="../media/jinbound/images/icon-16-jinbound.png"
-                  alt="jInbound/Fields"
-            >COM_JINBOUND_FIELDS</menu>
-		</submenu>
-		<files folder="admin">
-			<filename>access.xml</filename>
-			<filename>jinbound.php</filename>
-			<filename>config.xml</filename>
-			<filename>controller.php</filename>
-			<filename>index.html</filename>
-			<folder>controllers</folder>
-			<folder>helpers</folder>
-			<folder>libraries</folder>
-			<folder>liveupdate</folder>
-			<folder>models</folder>
-			<folder>sql</folder>
-			<folder>tables</folder>
-			<folder>views</folder>
-		</files>
-		<languages folder="language">
-			<language tag="en-GB">en-GB/en-GB.com_jinbound.ini</language>
-			<language tag="en-GB">en-GB/en-GB.com_jinbound.sys.ini</language>
-		</languages>
-	</administration>
+<extension type="component" version="3.7" method="upgrade">
+    <name>COM_JINBOUND</name>
+    <creationDate></creationDate>
+    <author>Joomlashack</author>
+    <authorEmail>help@joomlashack.com</authorEmail>
+    <authorUrl>http://joomlashack.com</authorUrl>
+    <copyright>Copyright (c) 2006-2012 Anything-Digital.com - 2016-2017 Open Source Training, LLC</copyright>
+    <license>GNU/GPL</license>
+    <version>2.1.7</version>
+    <description>COM_JINBOUND_XML_DESCRIPTION</description>
+    <variant>PRO</variant>
+
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install/mysql/install.sql</file>
+        </sql>
+    </install>
+
+    <uninstall>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install/mysql/uninstall.sql</file>
+        </sql>
+    </uninstall>
+
+    <update>
+        <schemas>
+            <schemapath type="mysql" charset="utf8">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+
+    <scriptfile>jinbound.install.php</scriptfile>
+
+    <files folder="site">
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+        <folder>models</folder>
+        <folder>views</folder>
+        <filename>controller.php</filename>
+        <filename>jinbound.php</filename>
+        <filename>router.php</filename>
+    </files>
+
+    <media destination="jinbound" folder="media">
+        <folder>bootstrap</folder>
+        <folder>css</folder>
+        <folder>images</folder>
+        <folder>jqplot</folder>
+        <folder>js</folder>
+        <folder>ui</folder>
+    </media>
+
+    <administration>
+        <menu>COM_JINBOUND</menu>
+        <submenu>
+            <menu link="option=com_jinbound">COM_JINBOUND_DASHBOARD</menu>
+            <menu link="option=com_jinbound&amp;view=campaigns" view="campaigns">COM_JINBOUND_CAMPAIGNS_MANAGER</menu>
+            <menu link="option=com_jinbound&amp;view=emails" view="emails">COM_JINBOUND_LEAD_NURTURING_MANAGER</menu>
+            <menu link="option=com_jinbound&amp;view=pages" view="pages">COM_JINBOUND_PAGES</menu>
+            <menu link="option=com_jinbound&amp;view=contacts" view="contacts">COM_JINBOUND_LEADS</menu>
+            <menu link="option=com_jinbound&amp;view=reports" view="reports">COM_JINBOUND_REPORTS</menu>
+            <menu link="option=com_categories&amp;view=categories&amp;extension=com_jinbound" view="categories">JCATEGORIES</menu>
+            <menu link="option=com_jinbound&amp;view=statuses" view="statuses">COM_JINBOUND_STATUSES</menu>
+            <menu link="option=com_jinbound&amp;view=priorities" view="priorities">COM_JINBOUND_PRIORITIES</menu>
+            <menu link="option=com_jinbound&amp;view=forms" view="forms">COM_JINBOUND_FORMS</menu>
+            <menu link="option=com_jinbound&amp;view=fields" view="fields">COM_JINBOUND_FIELDS</menu>
+        </submenu>
+
+        <files folder="admin">
+            <folder>cli</folder>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>language</folder>
+            <folder>libraries</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+            <filename>access.xml</filename>
+            <filename>jinbound.php</filename>
+            <filename>config.xml</filename>
+            <filename>controller.php</filename>
+        </files>
+    </administration>
+
+    <updateservers>
+        <server type="extension" priority="1" name="JCal-Pro"><![CDATA[https://deploy.ostraining.com/client/update/pro/stable/com_jinbound]]></server>
+    </updateservers>
 </extension>
