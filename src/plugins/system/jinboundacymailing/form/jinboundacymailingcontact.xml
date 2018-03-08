@@ -2,8 +2,8 @@
 <form>
 	<fieldset name="acymailing" label="PLG_SYSTEM_JINBOUNDACYMAILING_FIELDSET">
 		<field
-			name="acymailing"
-			type="jinboundacymailingcontactinfo"
-		/>
+            name="acymailing"
+            type="jinboundacymailingcontactinfo"
+        />
 	</fieldset>
 </form>

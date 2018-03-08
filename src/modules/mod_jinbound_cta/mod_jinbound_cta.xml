@@ -33,235 +33,236 @@
 		<fields name="params" addfieldpath="/modules/mod_jinbound_cta/fields">
 			<fieldset name="basic">
 				<field
-					name="c1_enabled"
-					type="radio"
-					label="MOD_JINBOUND_CTA_C1_ENABLED"
-					description="MOD_JINBOUND_CTA_ENABLED_DESC"
-					default="0"
-					class="btn-group btn-group-yesno"
-				>
+                    name="c1_enabled"
+                    type="radio"
+                    label="MOD_JINBOUND_CTA_C1_ENABLED"
+                    description="MOD_JINBOUND_CTA_ENABLED_DESC"
+                    default="0"
+                    class="btn-group btn-group-yesno"
+                >
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
 				<field
-					name="c1_match"
-					type="radio"
-					label="MOD_JINBOUND_CTA_MATCH"
-					description="MOD_JINBOUND_CTA_MATCH_DESC"
-					default="-1"
-					class="btn-group btn-group-yesno"
-				>
+                    name="c1_match"
+                    type="radio"
+                    label="MOD_JINBOUND_CTA_MATCH"
+                    description="MOD_JINBOUND_CTA_MATCH_DESC"
+                    default="-1"
+                    class="btn-group btn-group-yesno"
+                >
 					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
 					<option value="1">JALL</option>
 					<option value="0">JNONE</option>
 				</field>
 				<field
-					name="c1_conditions"
-					type="modjinboundctacondition"
-					label="MOD_JINBOUND_CTA_CONDITIONS"
-					description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
-				/>
+                    name="c1_conditions"
+                    type="modjinboundctacondition"
+                    label="MOD_JINBOUND_CTA_CONDITIONS"
+                    description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
+                />
 				<field
-					name="c1_mode"
-					type="modjinboundctamode"
-					label="MOD_JINBOUND_CTA_MODE"
-					description="MOD_JINBOUND_CTA_MODE_DESC"
-					default="modules"
-				>
+                    name="c1_mode"
+                    type="modjinboundctamode"
+                    label="MOD_JINBOUND_CTA_MODE"
+                    description="MOD_JINBOUND_CTA_MODE_DESC"
+                    default="modules"
+                >
 					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
 					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
 					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
 				</field>
 				<field
-					name="c1_mode_modules"
-					type="moduleposition"
-					label="MOD_JINBOUND_CTA_MODULES"
-					description="MOD_JINBOUND_CTA_MODULES_DESC"
-					default="jinbound-cta-c1"
-				/>
+                    name="c1_mode_modules"
+                    type="moduleposition"
+                    label="MOD_JINBOUND_CTA_MODULES"
+                    description="MOD_JINBOUND_CTA_MODULES_DESC"
+                    default="jinbound-cta-c1"
+                />
 				<field
-					name="c1_mode_module"
-					type="modjinboundctamodule"
-					label="MOD_JINBOUND_CTA_MODULE"
-					description="MOD_JINBOUND_CTA_MODULE_DESC"
-				>
+                    name="c1_mode_module"
+                    type="modjinboundctamodule"
+                    label="MOD_JINBOUND_CTA_MODULE"
+                    description="MOD_JINBOUND_CTA_MODULE_DESC"
+                >
 					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
 				</field>
 				<field
-					name="c1_mode_editor"
-					type="editor"
-					label="MOD_JINBOUND_CTA_EDITOR"
-					description="MOD_JINBOUND_CTA_EDITOR_DESC"
-					cols="60" rows="8"
-					buttons="0"
-					filter="JComponentHelper::filterText"
-				/>
+                    name="c1_mode_editor"
+                    type="editor"
+                    label="MOD_JINBOUND_CTA_EDITOR"
+                    description="MOD_JINBOUND_CTA_EDITOR_DESC"
+                    cols="60" rows="8"
+                    buttons="0"
+                    filter="JComponentHelper::filterText"
+                />
 				<field
-					name="c2_enabled"
-					type="radio"
-					label="MOD_JINBOUND_CTA_C2_ENABLED"
-					description="MOD_JINBOUND_CTA_ENABLED_DESC"
-					default="0"
-					class="btn-group btn-group-yesno"
-				>
+                    name="c2_enabled"
+                    type="radio"
+                    label="MOD_JINBOUND_CTA_C2_ENABLED"
+                    description="MOD_JINBOUND_CTA_ENABLED_DESC"
+                    default="0"
+                    class="btn-group btn-group-yesno"
+                >
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
 				<field
-					name="c2_match"
-					type="radio"
-					label="MOD_JINBOUND_CTA_MATCH"
-					description="MOD_JINBOUND_CTA_MATCH_DESC"
-					default="-1"
-					class="btn-group btn-group-yesno"
-				>
+                    name="c2_match"
+                    type="radio"
+                    label="MOD_JINBOUND_CTA_MATCH"
+                    description="MOD_JINBOUND_CTA_MATCH_DESC"
+                    default="-1"
+                    class="btn-group btn-group-yesno"
+                >
 					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
 					<option value="1">JALL</option>
 					<option value="0">JNONE</option>
 				</field>
 				<field
-					name="c2_conditions"
-					type="modjinboundctacondition"
-					label="MOD_JINBOUND_CTA_CONDITIONS"
-					description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
-				/>
+                    name="c2_conditions"
+                    type="modjinboundctacondition"
+                    label="MOD_JINBOUND_CTA_CONDITIONS"
+                    description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
+                />
 				<field
-					name="c2_mode"
-					type="modjinboundctamode"
-					label="MOD_JINBOUND_CTA_MODE"
-					description="MOD_JINBOUND_CTA_MODE_DESC"
-					default="modules"
-				>
+                    name="c2_mode"
+                    type="modjinboundctamode"
+                    label="MOD_JINBOUND_CTA_MODE"
+                    description="MOD_JINBOUND_CTA_MODE_DESC"
+                    default="modules"
+                >
 					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
 					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
 					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
 				</field>
 				<field
-					name="c2_mode_modules"
-					type="moduleposition"
-					label="MOD_JINBOUND_CTA_MODULES"
-					description="MOD_JINBOUND_CTA_MODULES_DESC"
-					default="jinbound-cta-c2"
-				/>
+                    name="c2_mode_modules"
+                    type="moduleposition"
+                    label="MOD_JINBOUND_CTA_MODULES"
+                    description="MOD_JINBOUND_CTA_MODULES_DESC"
+                    default="jinbound-cta-c2"
+                />
 				<field
-					name="c2_mode_module"
-					type="modjinboundctamodule"
-					label="MOD_JINBOUND_CTA_MODULE"
-					description="MOD_JINBOUND_CTA_MODULE_DESC"
-				>
+                    name="c2_mode_module"
+                    type="modjinboundctamodule"
+                    label="MOD_JINBOUND_CTA_MODULE"
+                    description="MOD_JINBOUND_CTA_MODULE_DESC"
+                >
 					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
 				</field>
 				<field
-					name="c2_mode_editor"
-					type="editor"
-					label="MOD_JINBOUND_CTA_EDITOR"
-					description="MOD_JINBOUND_CTA_EDITOR_DESC"
-					cols="60" rows="8"
-					buttons="0"
-					filter="JComponentHelper::filterText"
-				/>
+                    name="c2_mode_editor"
+                    type="editor"
+                    label="MOD_JINBOUND_CTA_EDITOR"
+                    description="MOD_JINBOUND_CTA_EDITOR_DESC"
+                    cols="60" rows="8"
+                    buttons="0"
+                    filter="JComponentHelper::filterText"
+                />
 				<field
-					name="c3_enabled"
-					type="radio"
-					label="MOD_JINBOUND_CTA_C3_ENABLED"
-					description="MOD_JINBOUND_CTA_ENABLED_DESC"
-					default="0"
-					class="btn-group btn-group-yesno"
-				>
+                    name="c3_enabled"
+                    type="radio"
+                    label="MOD_JINBOUND_CTA_C3_ENABLED"
+                    description="MOD_JINBOUND_CTA_ENABLED_DESC"
+                    default="0"
+                    class="btn-group btn-group-yesno"
+                >
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>
 				<field
-					name="c3_match"
-					type="radio"
-					label="MOD_JINBOUND_CTA_MATCH"
-					description="MOD_JINBOUND_CTA_MATCH_DESC"
-					default="-1"
-					class="btn-group btn-group-yesno"
-				>
+                    name="c3_match"
+                    type="radio"
+                    label="MOD_JINBOUND_CTA_MATCH"
+                    description="MOD_JINBOUND_CTA_MATCH_DESC"
+                    default="-1"
+                    class="btn-group btn-group-yesno"
+                >
 					<option value="-1">MOD_JINBOUND_CTA_ANY</option>
 					<option value="1">JALL</option>
 					<option value="0">JNONE</option>
 				</field>
 				<field
-					name="c3_conditions"
-					type="modjinboundctacondition"
-					label="MOD_JINBOUND_CTA_CONDITIONS"
-					description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
-				/>
+                    name="c3_conditions"
+                    type="modjinboundctacondition"
+                    label="MOD_JINBOUND_CTA_CONDITIONS"
+                    description="MOD_JINBOUND_CTA_CONDITIONS_DESC"
+                />
 				<field
-					name="c3_mode"
-					type="modjinboundctamode"
-					label="MOD_JINBOUND_CTA_MODE"
-					description="MOD_JINBOUND_CTA_MODE_DESC"
-					default="modules"
-				>
+                    name="c3_mode"
+                    type="modjinboundctamode"
+                    label="MOD_JINBOUND_CTA_MODE"
+                    description="MOD_JINBOUND_CTA_MODE_DESC"
+                    default="modules"
+                >
 					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
 					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
 					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
 				</field>
 				<field
-					name="c3_mode_modules"
-					type="moduleposition"
-					label="MOD_JINBOUND_CTA_MODULES"
-					description="MOD_JINBOUND_CTA_MODULES_DESC"
-					default="jinbound-cta-c3"
-				/>
+                    name="c3_mode_modules"
+                    type="moduleposition"
+                    label="MOD_JINBOUND_CTA_MODULES"
+                    description="MOD_JINBOUND_CTA_MODULES_DESC"
+                    default="jinbound-cta-c3"
+                />
 				<field
-					name="c3_mode_module"
-					type="modjinboundctamodule"
-					label="MOD_JINBOUND_CTA_MODULE"
-					description="MOD_JINBOUND_CTA_MODULE_DESC"
-				>
+                    name="c3_mode_module"
+                    type="modjinboundctamodule"
+                    label="MOD_JINBOUND_CTA_MODULE"
+                    description="MOD_JINBOUND_CTA_MODULE_DESC"
+                >
 					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
 				</field>
 				<field
-					name="c3_mode_editor"
-					type="editor"
-					label="MOD_JINBOUND_CTA_EDITOR"
-					description="MOD_JINBOUND_CTA_EDITOR_DESC"
-					cols="60" rows="8"
-					buttons="0"
-					filter="JComponentHelper::filterText"
-				/>
+                    name="c3_mode_editor"
+                    type="editor"
+                    label="MOD_JINBOUND_CTA_EDITOR"
+                    description="MOD_JINBOUND_CTA_EDITOR_DESC"
+                    cols="60" rows="8"
+                    buttons="0"
+                    filter="JComponentHelper::filterText"
+                />
 				<field
-					name="mode"
-					type="modjinboundctamode"
-					label="MOD_JINBOUND_CTA_MODE"
-					description="MOD_JINBOUND_CTA_MODE_DESC"
-					default="modules"
-				>
+                    name="mode"
+                    type="modjinboundctamode"
+                    label="MOD_JINBOUND_CTA_MODE"
+                    description="MOD_JINBOUND_CTA_MODE_DESC"
+                    default="modules"
+                >
 					<option value="modules">MOD_JINBOUND_CTA_MODE_OPTION_MODULES</option>
 					<option value="module">MOD_JINBOUND_CTA_MODE_OPTION_MODULE</option>
 					<option value="editor">MOD_JINBOUND_CTA_MODE_OPTION_EDITOR</option>
 				</field>
 				<field
-					name="mode_modules"
-					type="moduleposition"
-					label="MOD_JINBOUND_CTA_MODULES"
-					description="MOD_JINBOUND_CTA_MODULES_DESC"
-					default="jinbound-cta-default"
-				/>
+                    name="mode_modules"
+                    type="moduleposition"
+                    label="MOD_JINBOUND_CTA_MODULES"
+                    description="MOD_JINBOUND_CTA_MODULES_DESC"
+                    default="jinbound-cta-default"
+                />
 				<field
-					name="mode_module"
-					type="modjinboundctamodule"
-					label="MOD_JINBOUND_CTA_MODULE"
-					description="MOD_JINBOUND_CTA_MODULE_DESC"
-				>
+                    name="mode_module"
+                    type="modjinboundctamodule"
+                    label="MOD_JINBOUND_CTA_MODULE"
+                    description="MOD_JINBOUND_CTA_MODULE_DESC"
+                >
 					<option value="">MOD_JINBOUND_CTA_MODULE_OPTION_SELECT</option>
 				</field>
 				<field
-					name="mode_editor"
-					type="editor"
-					label="MOD_JINBOUND_CTA_EDITOR"
-					description="MOD_JINBOUND_CTA_EDITOR_DESC"
-					cols="60" rows="8"
-					buttons="0"
-					filter="JComponentHelper::filterText"
-				/>
+                    name="mode_editor"
+                    type="editor"
+                    label="MOD_JINBOUND_CTA_EDITOR"
+                    description="MOD_JINBOUND_CTA_EDITOR_DESC"
+                    cols="60" rows="8"
+                    buttons="0"
+                    filter="JComponentHelper::filterText"
+                />
 			</fieldset>
 			<fieldset name="advanced">
-				<field name="moduleclass_sfx" type="textarea" rows="3" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"	description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+				<field name="moduleclass_sfx" type="textarea" rows="3" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                       description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"/>
 			</fieldset>
 		</fields>
 	</config>

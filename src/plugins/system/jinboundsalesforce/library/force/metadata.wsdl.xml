@@ -4,7 +4,9 @@ Salesforce.com Metadata API version 27.0
 
 Copyright 2006-2010 Salesforce.com, inc. All Rights Reserved
 -->
-<definitions targetNamespace="http://soap.sforce.com/2006/04/metadata" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/2006/04/metadata">
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://soap.sforce.com/2006/04/metadata" targetNamespace="http://soap.sforce.com/2006/04/metadata"
+             xmlns="http://schemas.xmlsoap.org/wsdl/">
  <types>
   <xsd:schema elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/2006/04/metadata">
    <xsd:element name="DebuggingInfo">
@@ -303,7 +305,8 @@ Copyright 2006-2010 Salesforce.com, inc. All Rights Reserved
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="customDataTypeComponents" minOccurs="0" maxOccurs="unbounded" type="tns:CustomDataTypeComponent"/>
+       <xsd:element name="customDataTypeComponents" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:CustomDataTypeComponent"/>
        <xsd:element name="description" minOccurs="0" type="xsd:string"/>
        <xsd:element name="displayFormula" minOccurs="0" type="xsd:string"/>
        <xsd:element name="editComponentsOnSeparateLines" minOccurs="0" type="xsd:boolean"/>
@@ -1923,10 +1926,13 @@ Copyright 2006-2010 Salesforce.com, inc. All Rights Reserved
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="customApplications" minOccurs="0" maxOccurs="unbounded" type="tns:CustomApplicationTranslation"/>
-       <xsd:element name="customDataTypeTranslations" minOccurs="0" maxOccurs="unbounded" type="tns:CustomDataTypeTranslation"/>
+       <xsd:element name="customApplications" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:CustomApplicationTranslation"/>
+       <xsd:element name="customDataTypeTranslations" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:CustomDataTypeTranslation"/>
        <xsd:element name="customLabels" minOccurs="0" maxOccurs="unbounded" type="tns:CustomLabelTranslation"/>
-       <xsd:element name="customPageWebLinks" minOccurs="0" maxOccurs="unbounded" type="tns:CustomPageWebLinkTranslation"/>
+       <xsd:element name="customPageWebLinks" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:CustomPageWebLinkTranslation"/>
        <xsd:element name="customTabs" minOccurs="0" maxOccurs="unbounded" type="tns:CustomTabTranslation"/>
        <xsd:element name="reportTypes" minOccurs="0" maxOccurs="unbounded" type="tns:ReportTypeTranslation"/>
        <xsd:element name="scontrols" minOccurs="0" maxOccurs="unbounded" type="tns:ScontrolTranslation"/>
@@ -2032,14 +2038,17 @@ Copyright 2006-2010 Salesforce.com, inc. All Rights Reserved
     <xsd:complexContent>
      <xsd:extension base="tns:Metadata">
       <xsd:sequence>
-       <xsd:element name="applicationVisibilities" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileApplicationVisibility"/>
+       <xsd:element name="applicationVisibilities" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:ProfileApplicationVisibility"/>
        <xsd:element name="classAccesses" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileApexClassAccess"/>
-       <xsd:element name="fieldLevelSecurities" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileFieldLevelSecurity"/>
+       <xsd:element name="fieldLevelSecurities" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:ProfileFieldLevelSecurity"/>
        <xsd:element name="layoutAssignments" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileLayoutAssignment"/>
        <xsd:element name="loginIpRanges" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileLoginIpRange"/>
        <xsd:element name="objectPermissions" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileObjectPermissions"/>
        <xsd:element name="pageAccesses" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileApexPageAccess"/>
-       <xsd:element name="recordTypeVisibilities" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileRecordTypeVisibility"/>
+       <xsd:element name="recordTypeVisibilities" minOccurs="0" maxOccurs="unbounded"
+                    type="tns:ProfileRecordTypeVisibility"/>
        <xsd:element name="tabVisibilities" minOccurs="0" maxOccurs="unbounded" type="tns:ProfileTabVisibility"/>
        <xsd:element name="userLicense" minOccurs="0" type="xsd:string"/>
       </xsd:sequence>
@@ -3093,15 +3102,15 @@ Copyright 2006-2010 Salesforce.com, inc. All Rights Reserved
    </xsd:element>
   </xsd:schema>
  </types>
- <!-- Message for the header parts -->
- <message name="Header">
+    <!-- Message for the header parts -->
+    <message name="Header">
   <part name="CallOptions" element="tns:CallOptions"/>
   <part name="DebuggingHeader" element="tns:DebuggingHeader"/>
   <part name="DebuggingInfo" element="tns:DebuggingInfo"/>
   <part name="SessionHeader" element="tns:SessionHeader"/>
  </message>
- <!-- Operation Messages -->
- <message name="checkDeployStatusRequest">
+    <!-- Operation Messages -->
+    <message name="checkDeployStatusRequest">
   <part element="tns:checkDeployStatus" name="parameters"/>
  </message>
  <message name="checkDeployStatusResponse">

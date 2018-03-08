@@ -2,15 +2,15 @@
 <form>
 	<fieldset name="rules" label="JCONFIG_PERMISSIONS_LABEL">
 		<field
-			name="rules"
-			type="rules"
-			label="JCONFIG_PERMISSIONS_LABEL"
-			class="inputbox"
-			validate="rules"
-			filter="rules"
-			component="com_jinbound"
-			section="page"
-		/>
-		<field name="asset_id" type="hidden" class="readonly" readonly="true" />
+            name="rules"
+            type="rules"
+            label="JCONFIG_PERMISSIONS_LABEL"
+            class="inputbox"
+            validate="rules"
+            filter="rules"
+            component="com_jinbound"
+            section="page"
+        />
+		<field name="asset_id" type="hidden" class="readonly" readonly="true"/>
 	</fieldset>
 </form>

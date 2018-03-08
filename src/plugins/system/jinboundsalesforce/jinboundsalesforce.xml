@@ -46,34 +46,34 @@
 		<fields name="params">
 			<fieldset name="basic" addfieldpath="/plugins/system/jinboundsalesforce/field">
 				<field name="update" type="jinboundsalesforceupdate"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_UPDATE_DESC"
+                />
 				<field name="downloadid" type="text"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_DOWNLOADID_DESC"
+                />
 				<field name="wsdl" type="jinboundsalesforcewsdl"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL_DESC"
+                />
 				<field name="username" type="text"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_USERNAME"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_USERNAME_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_USERNAME"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_USERNAME_DESC"
+                />
 				<field name="password" type="password"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_PASSWORD"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_PASSWORD_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_PASSWORD"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_PASSWORD_DESC"
+                />
 				<field name="security_token" type="text"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_SECURITY_TOKEN"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_SECURITY_TOKEN_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_SECURITY_TOKEN"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_SECURITY_TOKEN_DESC"
+                />
 				<field name="use_token" type="radio" class="radio btn-group btn-group-yesno"
-							 label="PLG_SYSTEM_JINBOUNDSALESFORCE_USE_TOKEN"
-							 description="PLG_SYSTEM_JINBOUNDSALESFORCE_USE_TOKEN_DESC"
-							 default="1"
-				>
+                       label="PLG_SYSTEM_JINBOUNDSALESFORCE_USE_TOKEN"
+                       description="PLG_SYSTEM_JINBOUNDSALESFORCE_USE_TOKEN_DESC"
+                       default="1"
+                >
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>

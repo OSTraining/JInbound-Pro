@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset
-		name="default"
-		label="COM_JINBOUND_PRIORITY_FIELDSET_DEFAULT"
-	>
+        name="default"
+        label="COM_JINBOUND_PRIORITY_FIELDSET_DEFAULT"
+    >
 		<field
-			id="name" name="name"
-			type="text"
-			label="COM_JINBOUND_NAME"
-			description="COM_JINBOUND_NAME_DESC"
-			class="input-block-level"
-			size="30"
-			required="true"
-		/>
+            id="name" name="name"
+            type="text"
+            label="COM_JINBOUND_NAME"
+            description="COM_JINBOUND_NAME_DESC"
+            class="input-block-level"
+            size="30"
+            required="true"
+        />
 
 		<field
-			id="description" name="description"
-			type="textarea"
-			label="COM_JINBOUND_DESCRIPTION"
-			description="COM_JINBOUND_DESCRIPTION_DESC"
-			class="input-block-level"
-		/>
+            id="description" name="description"
+            type="textarea"
+            label="COM_JINBOUND_DESCRIPTION"
+            description="COM_JINBOUND_DESCRIPTION_DESC"
+            class="input-block-level"
+        />
 
 		<field
-			id="published" name="published"
-			type="jinboundpublished"
-			label="COM_JINBOUND_PUBLISHED"
-			description="COM_JINBOUND_PUBLISHED_DESC"
-			class="input-medium"
-			default="1"
-		/>
+            id="published" name="published"
+            type="jinboundpublished"
+            label="COM_JINBOUND_PUBLISHED"
+            description="COM_JINBOUND_PUBLISHED_DESC"
+            class="input-medium"
+            default="1"
+        />
 
 		<field
-			id="id" name="id"
-			type="hidden"
-			class="readonly"
-			label="COM_JINBOUND_ID"
-			default="0"
-			readonly="true"
-		/>
+            id="id" name="id"
+            type="hidden"
+            class="readonly"
+            label="COM_JINBOUND_ID"
+            default="0"
+            readonly="true"
+        />
 
 	</fieldset>
 

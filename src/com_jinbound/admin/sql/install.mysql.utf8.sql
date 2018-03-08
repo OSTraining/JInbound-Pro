@@ -13,52 +13,52 @@
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	
-	`name` varchar(255) NOT NULL
-	COMMENT 'name of this record',
-	
-	`label` tinyint(1) default '0'
-	COMMENT 'label type',
-	
-	`greedy` tinyint(1) default '0'
-	COMMENT 'this campaign wants the contacts to itself',
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
-	`conversion_url` TEXT NOT NULL default ''
-	COMMENT 'query params that denote a successful conversion',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
-	`params` TEXT
-	COMMENT 'JSON encoded custom parameters',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `name`             VARCHAR(255)     NOT NULL
+  COMMENT 'name of this record',
 
+  `label`            TINYINT(1)                DEFAULT '0'
+  COMMENT 'label type',
 
+  `greedy`           TINYINT(1)                DEFAULT '0'
+  COMMENT 'this campaign wants the contacts to itself',
+
+  `conversion_url`   TEXT             NOT NULL DEFAULT ''
+  COMMENT 'query params that denote a successful conversion',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  `params`           TEXT
+  COMMENT 'JSON encoded custom parameters',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Emails                          ##
@@ -68,57 +68,57 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_campaigns` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_emails` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	
-	`name` varchar(255) NOT NULL
-	COMMENT 'name of this record',
-	
-	`type` VARCHAR(255) NOT NULL DEFAULT 'campaign'
-	COMMENT 'type of record',
-	
-	`campaign_id` int(11) NOT NULL
-	COMMENT 'Primary key of associated campaign',
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
-	`layout` varchar(1) NOT NULL DEFAULT "A"
-	COMMENT 'Layout type - 0 for custom, or A-D',
-	
-	`fromname` varchar(255) NOT NULL,
-	`fromemail` varchar(255) NOT NULL,
-	`sendafter` int(4) NOT NULL,
-	`subject` varchar(255) NOT NULL,
-	`htmlbody` blob NOT NULL,
-	`plainbody` blob NOT NULL,
-	`params` BLOB NOT NULL,
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
+  `name`             VARCHAR(255)     NOT NULL
+  COMMENT 'name of this record',
 
+  `type`             VARCHAR(255)     NOT NULL DEFAULT 'campaign'
+  COMMENT 'type of record',
+
+  `campaign_id`      INT(11)          NOT NULL
+  COMMENT 'Primary key of associated campaign',
+
+  `layout`           VARCHAR(1)       NOT NULL DEFAULT "A"
+  COMMENT 'Layout type - 0 for custom, or A-D',
+
+  `fromname`         VARCHAR(255)     NOT NULL,
+  `fromemail`        VARCHAR(255)     NOT NULL,
+  `sendafter`        INT(4)           NOT NULL,
+  `subject`          VARCHAR(255)     NOT NULL,
+  `htmlbody`         BLOB             NOT NULL,
+  `plainbody`        BLOB             NOT NULL,
+  `params`           BLOB             NOT NULL,
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Email Records                   ##
@@ -128,28 +128,28 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_emails` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_emails_records` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
+  `id`         INT(11)  NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
-	`email_id` int(11) NOT NULL
-	COMMENT 'Primary Key of associated Email',
+  `asset_id`   INT(11)  NOT NULL
+  COMMENT 'Key for assets table',
 
-	`version_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'Primary Key of associated Email version',
-	
-	`lead_id` int(11) NOT NULL
-	COMMENT 'Primary key of associated Lead',
-	
-	`sent` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `email_id`   INT(11)  NOT NULL
+  COMMENT 'Primary Key of associated Email',
 
+  `version_id` INT(11)  NOT NULL DEFAULT 0
+  COMMENT 'Primary Key of associated Email version',
 
+  `lead_id`    INT(11)  NOT NULL
+  COMMENT 'Primary key of associated Lead',
+
+  `sent`       DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Leads                           ##
@@ -162,64 +162,64 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_emails_records` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_leads` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	
-	`page_id` int(11) NOT NULL
-	COMMENT 'Primary key of Page associated with this lead',
-	
-	`contact_id` int(11) NOT NULL
-	COMMENT 'Primary key of Contact associated with this lead',
-	
-	`priority_id` int(11) NOT NULL
-	COMMENT 'Primary key of Priority associated with this lead',
-	
-	`status_id` int(11) NOT NULL
-	COMMENT 'Primary key of Status associated with this lead',
-	
-	`campaign_id` int(11) NOT NULL
-	COMMENT 'Primary key of Campaign associated with this lead',
-	
-	`first_name` varchar(255) NOT NULL
-	COMMENT 'First name of Lead (contacts uses single column for both names)',
-	
-	`last_name` varchar(255) NOT NULL
-	COMMENT 'Last name of Lead (contacts uses single column for both names)',
-	
-	`ip` varchar(255) NOT NULL DEFAULT ''
-	COMMENT 'IPv4/6 address of record creator',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	`formdata` TEXT
-	COMMENT 'JSON encoded form data',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
+  `page_id`          INT(11)          NOT NULL
+  COMMENT 'Primary key of Page associated with this lead',
+
+  `contact_id`       INT(11)          NOT NULL
+  COMMENT 'Primary key of Contact associated with this lead',
+
+  `priority_id`      INT(11)          NOT NULL
+  COMMENT 'Primary key of Priority associated with this lead',
+
+  `status_id`        INT(11)          NOT NULL
+  COMMENT 'Primary key of Status associated with this lead',
+
+  `campaign_id`      INT(11)          NOT NULL
+  COMMENT 'Primary key of Campaign associated with this lead',
+
+  `first_name`       VARCHAR(255)     NOT NULL
+  COMMENT 'First name of Lead (contacts uses single column for both names)',
+
+  `last_name`        VARCHAR(255)     NOT NULL
+  COMMENT 'Last name of Lead (contacts uses single column for both names)',
+
+  `ip`               VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'IPv4/6 address of record creator',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  `formdata`         TEXT
+  COMMENT 'JSON encoded form data',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Lead Statuses                   ##
@@ -232,55 +232,55 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_leads` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_lead_statuses` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	
-	`name` varchar(255) NOT NULL
-	COMMENT 'name of this record',
-	
-	`description` mediumtext NOT NULL
-	COMMENT 'description of this record',
-	 
-	`ordering` int(11) NOT NULL default '0'
-	COMMENT 'Ordering column for priority level',
-	
-	`default` tinyint(1) default '0'
-	COMMENT 'Default status',
-	
-	`active` tinyint(1) default '0'
-	COMMENT 'Active statuses count towards leads, inactive do not',
-	
-	`final` tinyint(1) default '0'
-	COMMENT 'Final status',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
+  `name`             VARCHAR(255)     NOT NULL
+  COMMENT 'name of this record',
+
+  `description`      MEDIUMTEXT       NOT NULL
+  COMMENT 'description of this record',
+
+  `ordering`         INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'Ordering column for priority level',
+
+  `default`          TINYINT(1)                DEFAULT '0'
+  COMMENT 'Default status',
+
+  `active`           TINYINT(1)                DEFAULT '0'
+  COMMENT 'Active statuses count towards leads, inactive do not',
+
+  `final`            TINYINT(1)                DEFAULT '0'
+  COMMENT 'Final status',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Pages                           ##
@@ -290,82 +290,82 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_lead_statuses` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
+  `id`                        INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
-	`layout` varchar(1) NOT NULL DEFAULT "A"
-	COMMENT 'Layout type - 0 for custom, or A-D',
-	
-	`heading` varchar(255) NOT NULL,
-	`subheading` varchar(255) NOT NULL,
-	`socialmedia` tinyint(1) NOT NULL,
-	`maintext` blob NOT NULL,
-	`sidebartext` blob NOT NULL,
-	`alias` varchar(255) NOT NULL,
-	`name` varchar(255) NOT NULL,
-	`image` varchar(255) NOT NULL,
-	`imagealttext` varchar(255) NOT NULL,
+  `asset_id`                  INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
-  `image_size_large_width` varchar(50) NOT NULL DEFAULT '',
-  `image_size_large_height` varchar(50) NOT NULL DEFAULT '',
-  `image_size_medium_width` varchar(50) NOT NULL DEFAULT '',
-  `image_size_medium_height` varchar(50) NOT NULL DEFAULT '',
-  `image_size_small_width` varchar(50) NOT NULL DEFAULT '',
-  `image_size_small_height` varchar(50) NOT NULL DEFAULT '',
+  `layout`                    VARCHAR(1)       NOT NULL DEFAULT "A"
+  COMMENT 'Layout type - 0 for custom, or A-D',
 
-	`category` varchar(255) NOT NULL,
-	`metatitle` varchar(55) NOT NULL,
-	`metadescription` varchar(155) NOT NULL,
-	`formid` INT(11) NOT NULL DEFAULT 0,
-	`formname` varchar(255) NOT NULL,
-	`formbuilder` blob NOT NULL,
-	`campaign` int(11) NOT NULL,
-	`converts_on_another_form` varchar(25) NOT NULL,
-	`converts_on_same_campaign` varchar(25) NOT NULL,
-	`submit_text` varchar(255) NOT NULL,
-	`notify_form_submits` varchar(255) NOT NULL,
-	`notification_email` varchar(255) NOT NULL,
-	`after_submit_sendto` varchar(20) NOT NULL,
-	`menu_item` varchar(10) NOT NULL,
-	`send_to_url` varchar(255) NOT NULL,
-	`sendto_message` text NOT NULL,
-	`template` text NOT NULL,
-	`css` text NOT NULL DEFAULT '',
+  `heading`                   VARCHAR(255)     NOT NULL,
+  `subheading`                VARCHAR(255)     NOT NULL,
+  `socialmedia`               TINYINT(1)       NOT NULL,
+  `maintext`                  BLOB             NOT NULL,
+  `sidebartext`               BLOB             NOT NULL,
+  `alias`                     VARCHAR(255)     NOT NULL,
+  `name`                      VARCHAR(255)     NOT NULL,
+  `image`                     VARCHAR(255)     NOT NULL,
+  `imagealttext`              VARCHAR(255)     NOT NULL,
 
-	`ga` TINYINT(1) NOT NULL DEFAULT 0,
-	`ga_code` VARCHAR(255) NOT NULL DEFAULT '',
-	
-	`hits` int(11) default '0'
-	COMMENT 'number of views for this record',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `image_size_large_width`    VARCHAR(50)      NOT NULL DEFAULT '',
+  `image_size_large_height`   VARCHAR(50)      NOT NULL DEFAULT '',
+  `image_size_medium_width`   VARCHAR(50)      NOT NULL DEFAULT '',
+  `image_size_medium_height`  VARCHAR(50)      NOT NULL DEFAULT '',
+  `image_size_small_width`    VARCHAR(50)      NOT NULL DEFAULT '',
+  `image_size_small_height`   VARCHAR(50)      NOT NULL DEFAULT '',
 
+  `category`                  VARCHAR(255)     NOT NULL,
+  `metatitle`                 VARCHAR(55)      NOT NULL,
+  `metadescription`           VARCHAR(155)     NOT NULL,
+  `formid`                    INT(11)          NOT NULL DEFAULT 0,
+  `formname`                  VARCHAR(255)     NOT NULL,
+  `formbuilder`               BLOB             NOT NULL,
+  `campaign`                  INT(11)          NOT NULL,
+  `converts_on_another_form`  VARCHAR(25)      NOT NULL,
+  `converts_on_same_campaign` VARCHAR(25)      NOT NULL,
+  `submit_text`               VARCHAR(255)     NOT NULL,
+  `notify_form_submits`       VARCHAR(255)     NOT NULL,
+  `notification_email`        VARCHAR(255)     NOT NULL,
+  `after_submit_sendto`       VARCHAR(20)      NOT NULL,
+  `menu_item`                 VARCHAR(10)      NOT NULL,
+  `send_to_url`               VARCHAR(255)     NOT NULL,
+  `sendto_message`            TEXT             NOT NULL,
+  `template`                  TEXT             NOT NULL,
+  `css`                       TEXT             NOT NULL DEFAULT '',
 
+  `ga`                        TINYINT(1)       NOT NULL DEFAULT 0,
+  `ga_code`                   VARCHAR(255)     NOT NULL DEFAULT '',
+
+  `hits`                      INT(11)                   DEFAULT '0'
+  COMMENT 'number of views for this record',
+
+  `published`                 TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`                   DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`                INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`                  DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`               INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`               INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Priorities                      ##
@@ -376,46 +376,46 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_pages` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_priorities` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	
-	`name` varchar(255) NOT NULL
-	COMMENT 'name of this record',
-	
-	`description` mediumtext NOT NULL
-	COMMENT 'description of this record',
-	 
-	`ordering` int(11) NOT NULL default '0'
-	COMMENT 'Ordering column for priority level',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
+  `name`             VARCHAR(255)     NOT NULL
+  COMMENT 'name of this record',
+
+  `description`      MEDIUMTEXT       NOT NULL
+  COMMENT 'description of this record',
+
+  `ordering`         INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'Ordering column for priority level',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Stages                          ##
@@ -426,48 +426,46 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_priorities` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_stages` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	
-	`name` varchar(255) NOT NULL
-	COMMENT 'name of this record',
-	
-	`description` mediumtext NOT NULL
-	COMMENT 'description of this record',
-	 
-	`ordering` int(11) NOT NULL default '0'
-	COMMENT 'Ordering column for stage level',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
 
+  `name`             VARCHAR(255)     NOT NULL
+  COMMENT 'name of this record',
 
+  `description`      MEDIUMTEXT       NOT NULL
+  COMMENT 'description of this record',
 
+  `ordering`         INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'Ordering column for stage level',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Notes                           ##
@@ -477,41 +475,43 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_stages` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_notes` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	 
-	`asset_id` int(11) NOT NULL
-	COMMENT 'Key for assets table',
-	 
-	`lead_id` int(11) NOT NULL
-	COMMENT 'Key for leads table',
-	
-	`text` mediumtext NOT NULL
-	COMMENT 'note text',
-	
-	`published` tinyint(1) default '1'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
+
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'Key for assets table',
+
+  `lead_id`          INT(11)          NOT NULL
+  COMMENT 'Key for leads table',
+
+  `text`             MEDIUMTEXT       NOT NULL
+  COMMENT 'note text',
+
+  `published`        TINYINT(1)                DEFAULT '1'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Subscriptions                   ##
@@ -521,19 +521,22 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_notes` (
 ########################################;
 
 CREATE TABLE IF NOT EXISTS #__jinbound_subscriptions (
-	
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	
-	`contact_id` int(11) NOT NULL
-	COMMENT 'FK to #__contact_details.id',
-	
-	`enabled` int(1) NOT NULL DEFAULT 1
-	COMMENT 'If 0 emails will not be sent',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+  `id` INT (11
+) NOT NULL AUTO_INCREMENT
+COMMENT 'Primary Key',
+
+  `contact_id` INT (11
+) NOT NULL
+COMMENT 'FK to #__contact_details.id',
+
+  `enabled` INT (1
+) NOT NULL DEFAULT 1
+COMMENT 'If 0 emails will not be sent',
+
+PRIMARY KEY (`id`
+)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 ########################################
 ##    Email Versions                  ##
@@ -544,22 +547,23 @@ CREATE TABLE IF NOT EXISTS #__jinbound_subscriptions (
 ########################################;
 
 CREATE TABLE IF NOT EXISTS #__jinbound_emails_versions (
-	
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	
-	`email_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_emails.id',
-	
-	`subject` varchar(255),
-	`htmlbody` blob,
-	`plainbody` blob,
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+  `id` INT (11
+) NOT NULL AUTO_INCREMENT
+COMMENT 'Primary Key',
 
+  `email_id` INT (11
+) NOT NULL
+COMMENT 'FK to #__jinbound_emails.id',
 
+  `subject` VARCHAR (255
+),
+  `htmlbody` BLOB,
+  `plainbody` BLOB,
+
+PRIMARY KEY (`id`
+)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 ## updated database structure ;
 
@@ -569,94 +573,98 @@ CREATE TABLE IF NOT EXISTS #__jinbound_emails_versions (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_contacts` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	
-	`user_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__users table',
-	
-	`core_contact_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__contact_details table',
-	
-	`asset_id` int(11) NOT NULL
-	COMMENT 'FK to #__assets table',
-	
-	`cookie` VARCHAR(255)
-	COMMENT 'Cookie value',
-	
-	`alias` varchar(255) NOT NULL
-	COMMENT 'Slug for URL',
-	
-	`first_name` varchar(255) NOT NULL
-	COMMENT 'First name of Contact',
-	
-	`last_name` varchar(255) NOT NULL
-	COMMENT 'Last name of Contact',
-	
-	`company` varchar(255) NOT NULL DEFAULT ''
-	COMMENT 'Company name of Contact',
-	
-	`website` varchar(255) NOT NULL DEFAULT ''
-	COMMENT 'Company name of Contact',
-	
-	`email` varchar(255) NOT NULL
-	COMMENT 'Email of Contact',
-	
-	`address` TEXT NOT NULL DEFAULT ''
-	COMMENT 'Address of Contact',
-	
-	`suburb` varchar(100) NOT NULL DEFAULT ''
-	COMMENT 'City/suburb of Contact',
-	
-	`state` varchar(100) NOT NULL DEFAULT ''
-	COMMENT 'State of Contact',
-	
-	`country` varchar(100) NOT NULL DEFAULT ''
-	COMMENT 'Country of Contact',
-	
-	`postcode` varchar(100) NOT NULL DEFAULT ''
-	COMMENT 'Postal code of Contact',
-	
-	`telephone` varchar(255) NOT NULL DEFAULT ''
-	COMMENT 'Telephone number of Contact',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
+
+  `user_id`          INT(11)          NOT NULL DEFAULT 0
+  COMMENT 'FK to #__users table',
+
+  `core_contact_id`  INT(11)          NOT NULL DEFAULT 0
+  COMMENT 'FK to #__contact_details table',
+
+  `asset_id`         INT(11)          NOT NULL
+  COMMENT 'FK to #__assets table',
+
+  `cookie`           VARCHAR(255)
+  COMMENT 'Cookie value',
+
+  `alias`            VARCHAR(255)     NOT NULL
+  COMMENT 'Slug for URL',
+
+  `first_name`       VARCHAR(255)     NOT NULL
+  COMMENT 'First name of Contact',
+
+  `last_name`        VARCHAR(255)     NOT NULL
+  COMMENT 'Last name of Contact',
+
+  `company`          VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Company name of Contact',
+
+  `website`          VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Company name of Contact',
+
+  `email`            VARCHAR(255)     NOT NULL
+  COMMENT 'Email of Contact',
+
+  `address`          TEXT             NOT NULL DEFAULT ''
+  COMMENT 'Address of Contact',
+
+  `suburb`           VARCHAR(100)     NOT NULL DEFAULT ''
+  COMMENT 'City/suburb of Contact',
+
+  `state`            VARCHAR(100)     NOT NULL DEFAULT ''
+  COMMENT 'State of Contact',
+
+  `country`          VARCHAR(100)     NOT NULL DEFAULT ''
+  COMMENT 'Country of Contact',
+
+  `postcode`         VARCHAR(100)     NOT NULL DEFAULT ''
+  COMMENT 'Postal code of Contact',
+
+  `telephone`        VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Telephone number of Contact',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## Associates tracks to contacts
 #####################################################;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_users_tracks` (
-	
-	`user_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__users table',
-	
-	`cookie` VARCHAR(255)
-	COMMENT 'Cookie value'
-	
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+  `user_id` INT(11) NOT NULL DEFAULT 0
+  COMMENT 'FK to #__users table',
+
+  `cookie`  VARCHAR(255)
+  COMMENT 'Cookie value'
+
+)
+  ENGINE = MyISAM
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## Tracks, details about where a user has been
@@ -664,39 +672,40 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_users_tracks` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_tracks` (
 
-	`id` VARCHAR(128) NOT NULL
-	COMMENT 'Primary Key, microtime + ip + md5(session id)',
-	
-	`cookie` VARCHAR(255)
-	COMMENT 'Cookie value for this track',
-	
-	`detected_user_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__users table',
-	
-	`current_user_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__users table',
-	
-	`user_agent` TEXT
-	COMMENT 'Browser User Agent',
-	
-	`created` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
-	COMMENT 'Date this request was made',
-	
-	`ip` VARCHAR(64)
-	COMMENT 'IP address as determined by PHP, either ipv4 or ipv6',
-	
-	`session_id` VARCHAR(255)
-	COMMENT 'Session ID as determined by PHP',
-	
-	`type` ENUM('GET', 'POST', 'HEAD', 'PUT')
-	COMMENT 'Request type',
-	
-	`url` TEXT
-	COMMENT 'URL of the request',
-	
-	PRIMARY KEY (`id`(128))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+  `id`               VARCHAR(128) NOT NULL
+  COMMENT 'Primary Key, microtime + ip + md5(session id)',
 
+  `cookie`           VARCHAR(255)
+  COMMENT 'Cookie value for this track',
+
+  `detected_user_id` INT(11)      NOT NULL DEFAULT 0
+  COMMENT 'FK to #__users table',
+
+  `current_user_id`  INT(11)      NOT NULL DEFAULT 0
+  COMMENT 'FK to #__users table',
+
+  `user_agent`       TEXT
+  COMMENT 'Browser User Agent',
+
+  `created`          DATETIME     NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date this request was made',
+
+  `ip`               VARCHAR(64)
+  COMMENT 'IP address as determined by PHP, either ipv4 or ipv6',
+
+  `session_id`       VARCHAR(255)
+  COMMENT 'Session ID as determined by PHP',
+
+  `type`             ENUM ('GET', 'POST', 'HEAD', 'PUT')
+  COMMENT 'Request type',
+
+  `url`              TEXT
+  COMMENT 'URL of the request',
+
+  PRIMARY KEY (`id`(128))
+)
+  ENGINE = MyISAM
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## Conversions table, replaces former "leads" table
@@ -704,157 +713,160 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_tracks` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_conversions` (
 
-	`id` int(11) NOT NULL AUTO_INCREMENT
-	COMMENT 'Primary Key',
-	
-	`page_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_pages table',
-	
-	`contact_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_contacts table',
-	
-	`published` tinyint(1) default '0'
-	COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time record was checked out',
-	
-	`formdata` TEXT
-	COMMENT 'JSON encoded form data',
-	
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
+
+  `page_id`          INT(11)          NOT NULL
+  COMMENT 'FK to #__jinbound_pages table',
+
+  `contact_id`       INT(11)          NOT NULL
+  COMMENT 'FK to #__jinbound_contacts table',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time record was checked out',
+
+  `formdata`         TEXT
+  COMMENT 'JSON encoded form data',
+
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## Associates contacts to campaigns
 #####################################################;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_campaigns` (
-	
-	`contact_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__jinbound_contacts table',
-	
-	`campaign_id` int(11) NOT NULL DEFAULT 0
-	COMMENT 'FK to #__jinbound_campaigns table',
-	
-	`enabled` tinyint(1) NOT NULL DEFAULT 1
-	COMMENT 'enabled status, 1 = enabled, 0 = disabled',
-	
-	`added` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when contact was added to campaign, in UTC'
-	
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+  `contact_id`  INT(11)    NOT NULL DEFAULT 0
+  COMMENT 'FK to #__jinbound_contacts table',
+
+  `campaign_id` INT(11)    NOT NULL DEFAULT 0
+  COMMENT 'FK to #__jinbound_campaigns table',
+
+  `enabled`     TINYINT(1) NOT NULL DEFAULT 1
+  COMMENT 'enabled status, 1 = enabled, 0 = disabled',
+
+  `added`       DATETIME   NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when contact was added to campaign, in UTC'
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## Tracks contact statuses over time
 #####################################################;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_statuses` (
-	
-	`status_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_lead_statuses table',
-	
-	`campaign_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_campaigns table',
-	
-	`contact_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_contacts table',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier'
-	
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  `status_id`   INT(11)  NOT NULL
+  COMMENT 'FK to #__jinbound_lead_statuses table',
 
+  `campaign_id` INT(11)  NOT NULL
+  COMMENT 'FK to #__jinbound_campaigns table',
+
+  `contact_id`  INT(11)  NOT NULL
+  COMMENT 'FK to #__jinbound_contacts table',
+
+  `created`     DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`  INT(11)  NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`    DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by` INT(11)  NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier'
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## Tracks contact priorities over time
 #####################################################;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_priorities` (
-	
-	`priority_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_lead_statuses table',
-	
-	`campaign_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_campaigns table',
-	
-	`contact_id` int(11) NOT NULL
-	COMMENT 'FK to #__jinbound_contacts table',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC',
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of record creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was last modified in UTC',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier'
-	
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+  `priority_id` INT(11)  NOT NULL
+  COMMENT 'FK to #__jinbound_lead_statuses table',
+
+  `campaign_id` INT(11)  NOT NULL
+  COMMENT 'FK to #__jinbound_campaigns table',
+
+  `contact_id`  INT(11)  NOT NULL
+  COMMENT 'FK to #__jinbound_contacts table',
+
+  `created`     DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC',
+
+  `created_by`  INT(11)  NOT NULL DEFAULT '0'
+  COMMENT 'User id of record creator',
+
+  `modified`    DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was last modified in UTC',
+
+  `modified_by` INT(11)  NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier'
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## reports email records
 #####################################################;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_reports_emails` (
-	
-	`email` TEXT NOT NULL
-	COMMENT 'Email the reports were sent to',
 
-	`email_id` INT(11) NOT NULL DEFAULT 0
-	COMMENT 'References #__jinbound_emails.id',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when record was created, in UTC'
-	
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `email`    TEXT     NOT NULL
+  COMMENT 'Email the reports were sent to',
 
+  `email_id` INT(11)  NOT NULL DEFAULT 0
+  COMMENT 'References #__jinbound_emails.id',
+
+  `created`  DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when record was created, in UTC'
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #####################################################
 ## pages hits records
 #####################################################;
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_landing_pages_hits` (
-	
-	`day` DATE NOT NULL,
-	`page_id` INT(11) NOT NULL DEFAULT 0,
-	`hits` INT(11) NOT NULL DEFAULT 0,
-	PRIMARY KEY (`day`, `page_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-
+  `day`     DATE    NOT NULL,
+  `page_id` INT(11) NOT NULL DEFAULT 0,
+  `hits`    INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`day`, `page_id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 #############################################
 ##               Forms Table               ##
@@ -862,43 +874,42 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_landing_pages_hits` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_forms` (
 
-	`id` int(11)	NOT NULL auto_increment
-	COMMENT 'Primary Key',
-	
-	`asset_id` int(10) unsigned NOT NULL DEFAULT '0'
-	COMMENT 'FK to the #__assets table.', 
-	 
-	`title` varchar(255) NOT NULL default ''
-	COMMENT 'Form Title',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when form was created',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of form creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when form was last modified',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	 
-	`published` tinyint(1) default '0'
-	COMMENT 'Publication status',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'Date and Time form was checked out',
-	 
-	`default` tinyint(1) NOT NULL default '0'
-	COMMENT 'Determines if this is the default custom form',
-	 
-	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
+  `asset_id`         INT(10) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'FK to the #__assets table.',
 
+  `title`            VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Form Title',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when form was created',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of form creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when form was last modified',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'Publication status',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'Date and Time form was checked out',
+
+  `default`          TINYINT(1)       NOT NULL DEFAULT '0'
+  COMMENT 'Determines if this is the default custom form',
+
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 #############################################
 ##               Fields Table              ##
@@ -906,55 +917,54 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_forms` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_fields` (
 
-	`id` int(11)	NOT NULL auto_increment
-	COMMENT 'Primary Key',
-	
-	`asset_id` int(10) unsigned NOT NULL DEFAULT '0'
-	COMMENT 'FK to the #__assets table.',
-	 
-	`name` varchar(255) NOT NULL default ''
-	COMMENT 'Field name attribute',
-	 
-	`title` varchar(255) NOT NULL default ''
-	COMMENT 'Field Title (and label)',
-	 
-	`type` varchar(255) NOT NULL default 'text'
-	COMMENT 'Type of field, which must match a corresponding class/trigger',
-	 
-	`description` text NOT NULL default ''
-	COMMENT 'Description of field displayed to the end user',
-	
-	`default` varchar(255) NOT NULL default ''
-	COMMENT 'Default value of the field',
-	
-	`params` text NOT NULL default ''
-	COMMENT 'Various parameters for field - options, html attributes, etc',
-	
-	`created` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when field was created',	
-	 
-	`created_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of field creator',
-	
-	`modified` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when field was last modified',	
-	 
-	`modified_by` int(11) NOT NULL default '0'
-	COMMENT 'User id of last modifier',
-	 
-	`published` tinyint(1) default '0'
-	COMMENT 'Publication status',
-	
-	`checked_out` int(11) unsigned NOT NULL default '0'
-	COMMENT 'Locking column to prevent simultaneous updates',
-	
-	`checked_out_time` datetime NOT NULL default '0000-00-00 00:00:00'
-	COMMENT 'when field was checked out',
-	 
-	PRIMARY KEY (id)
-) ENGINE=MyISAM;
+  `id`               INT(11)          NOT NULL AUTO_INCREMENT
+  COMMENT 'Primary Key',
 
+  `asset_id`         INT(10) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'FK to the #__assets table.',
 
+  `name`             VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Field name attribute',
+
+  `title`            VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Field Title (and label)',
+
+  `type`             VARCHAR(255)     NOT NULL DEFAULT 'text'
+  COMMENT 'Type of field, which must match a corresponding class/trigger',
+
+  `description`      TEXT             NOT NULL DEFAULT ''
+  COMMENT 'Description of field displayed to the end user',
+
+  `default`          VARCHAR(255)     NOT NULL DEFAULT ''
+  COMMENT 'Default value of the field',
+
+  `params`           TEXT             NOT NULL DEFAULT ''
+  COMMENT 'Various parameters for field - options, html attributes, etc',
+
+  `created`          DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when field was created',
+
+  `created_by`       INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of field creator',
+
+  `modified`         DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when field was last modified',
+
+  `modified_by`      INT(11)          NOT NULL DEFAULT '0'
+  COMMENT 'User id of last modifier',
+
+  `published`        TINYINT(1)                DEFAULT '0'
+  COMMENT 'Publication status',
+
+  `checked_out`      INT(11) UNSIGNED NOT NULL DEFAULT '0'
+  COMMENT 'Locking column to prevent simultaneous updates',
+
+  `checked_out_time` DATETIME         NOT NULL DEFAULT '0000-00-00 00:00:00'
+  COMMENT 'when field was checked out',
+
+  PRIMARY KEY (id)
+)
+  ENGINE = MyISAM;
 
 #############################################
 ##         Form Fields Xref Table          ##
@@ -962,17 +972,17 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_fields` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_form_fields` (
 
-	`form_id` int(11) NOT NULL
-	COMMENT 'Primary key of form',
-	
-	`field_id` int(11) NOT NULL
-	COMMENT 'Primary key of field',
-	
-	`ordering` int(11) NOT NULL DEFAULT 0
-	COMMENT 'ordering of fields'
-	
-) ENGINE=MyISAM;
+  `form_id`  INT(11) NOT NULL
+  COMMENT 'Primary key of form',
 
+  `field_id` INT(11) NOT NULL
+  COMMENT 'Primary key of field',
+
+  `ordering` INT(11) NOT NULL DEFAULT 0
+  COMMENT 'ordering of fields'
+
+)
+  ENGINE = MyISAM;
 
 #############################################
 ##       Contact Follower Xref Table       ##
@@ -980,14 +990,15 @@ CREATE TABLE IF NOT EXISTS `#__jinbound_form_fields` (
 
 CREATE TABLE IF NOT EXISTS `#__jinbound_contacts_followers` (
 
-	`contact_id` int(11) NOT NULL
-	COMMENT 'Primary key of contact',
-	
-	`follower_id` int(11) NOT NULL
-	COMMENT 'Primary key of user',
+  `contact_id`  INT(11) NOT NULL
+  COMMENT 'Primary key of contact',
+
+  `follower_id` INT(11) NOT NULL
+  COMMENT 'Primary key of user',
 
   UNIQUE KEY `idx_contact_follower` (`contact_id`, `follower_id`)
-	
-) ENGINE=MyISAM;
+
+)
+  ENGINE = MyISAM;
 
 

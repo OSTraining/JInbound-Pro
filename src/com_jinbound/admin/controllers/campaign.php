@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -12,10 +12,11 @@ JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerf
 
 class JInboundControllerCampaign extends JInboundFormController
 {
-	public function edit($key = 'id', $urlVar = 'id') {
-		if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.campaign')) {
-			return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
-		}
-		return parent::edit($key, $urlVar);
-	}
+    public function edit($key = 'id', $urlVar = 'id')
+    {
+        if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.campaign')) {
+            return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+        }
+        return parent::edit($key, $urlVar);
+    }
 }

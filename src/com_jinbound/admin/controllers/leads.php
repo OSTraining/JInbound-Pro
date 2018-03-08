@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -14,7 +14,8 @@ jimport('joomla.application.component.controlleradmin');
 
 class JInboundControllerLeads extends JControllerAdmin
 {
-	public function getModel($name='Lead', $prefix = 'JInboundModel') {
-		return parent::getModel($name, $prefix, array('ignore_request' => true));
-	}
+    public function getModel($name = 'Lead', $prefix = 'JInboundModel')
+    {
+        return parent::getModel($name, $prefix, array('ignore_request' => true));
+    }
 }

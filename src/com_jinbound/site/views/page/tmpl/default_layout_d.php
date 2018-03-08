@@ -1,35 +1,35 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
 
 ?>
 <?php if (!empty($this->item->subheading)) : ?>
-<div class="row-fluid">
-	<div class="span12">
-		<h2 class="text-center"><?php echo $this->escape($this->item->subheading); ?></h2>
-	</div>
-</div>
+    <div class="row-fluid">
+        <div class="span12">
+            <h2 class="text-center"><?php echo $this->escape($this->item->subheading); ?></h2>
+        </div>
+    </div>
 <?php endif; ?>
 <div class="row-fluid">
-	<div class="span6">
-		<div class="row-fluid">
-			<?php echo $this->loadTemplate('body'); ?>
-		</div>
-		<div class="row-fluid">
-			<?php echo $this->loadTemplate('social'); ?>
-		</div>
-	</div>
-	<div class="span6">
-		<div class="row-fluid">
-			<?php echo $this->loadTemplate('image'); ?>
-		</div>
-		<div class="row-fluid well">
-			<?php echo $this->loadTemplate('form'); ?>
-		</div>
-	</div>
+    <div class="span6">
+        <div class="row-fluid">
+            <?php echo $this->loadTemplate('body'); ?>
+        </div>
+        <div class="row-fluid">
+            <?php echo $this->loadTemplate('social'); ?>
+        </div>
+    </div>
+    <div class="span6">
+        <div class="row-fluid">
+            <?php echo $this->loadTemplate('image'); ?>
+        </div>
+        <div class="row-fluid well">
+            <?php echo $this->loadTemplate('form'); ?>
+        </div>
+    </div>
 </div>

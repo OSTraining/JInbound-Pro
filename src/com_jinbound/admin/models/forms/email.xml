@@ -1,146 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset
-		name="default"
-		label="COM_JINBOUND_EMAIL_FIELDSET_DEFAULT"
-	>
-		<field name="id" type="hidden" default="0" readonly="true" />
-		
+        name="default"
+        label="COM_JINBOUND_EMAIL_FIELDSET_DEFAULT"
+    >
+		<field name="id" type="hidden" default="0" readonly="true"/>
+
 		<field
-			id="name" name="name"
-			type="text"
-			label="COM_JINBOUND_EMAIL_NAME"
-			description="COM_JINBOUND_EMAIL_NAME_DESC"
-			class="input-block-level"
-			size="30"
-			required="true"
-		/>
+            id="name" name="name"
+            type="text"
+            label="COM_JINBOUND_EMAIL_NAME"
+            description="COM_JINBOUND_EMAIL_NAME_DESC"
+            class="input-block-level"
+            size="30"
+            required="true"
+        />
 	</fieldset>
-	
+
 	<fieldset
-		name="content"
-		label="COM_JINBOUND_EMAIL_FIELDSET_EMAIL"
-	>
+        name="content"
+        label="COM_JINBOUND_EMAIL_FIELDSET_EMAIL"
+    >
 		<field
-			name="published"
-			type="jinboundpublished"
-			label="JPUBLISHED"
-			description="COM_JINBOUND_EMAIL_PUBLISHED_DESC"
-			class="input-block-level"
-			default="1"
-		/>
-		
+            name="published"
+            type="jinboundpublished"
+            label="JPUBLISHED"
+            description="COM_JINBOUND_EMAIL_PUBLISHED_DESC"
+            class="input-block-level"
+            default="1"
+        />
+
 		<field
-			name="type"
-			type="jinboundpluginlist"
-			label="COM_JINBOUND_EMAIL_TYPE"
-			description="COM_JINBOUND_EMAIL_TYPE_DESC"
-			class="input-block-level"
-			default="campaign"
-		>
+            name="type"
+            type="jinboundpluginlist"
+            label="COM_JINBOUND_EMAIL_TYPE"
+            description="COM_JINBOUND_EMAIL_TYPE_DESC"
+            class="input-block-level"
+            default="campaign"
+        >
 			<option value="campaign">COM_JINBOUND_EMAIL_TYPE_CAMPAIGN</option>
 			<option value="report">COM_JINBOUND_EMAIL_TYPE_REPORT</option>
 		</field>
 
 		<field
-			name="campaign_id"
-			type="jinboundcampaignlist"
-			class="input-block-level"
-			label="COM_JINBOUND_CAMPAIGN_ID"
-			description="COM_JINBOUND_CAMPAIGN_ID_DESC"
-		>
+            name="campaign_id"
+            type="jinboundcampaignlist"
+            class="input-block-level"
+            label="COM_JINBOUND_CAMPAIGN_ID"
+            description="COM_JINBOUND_CAMPAIGN_ID_DESC"
+        >
 			<option value="0">COM_JINBOUND_SELECT_CAMPAIGN</option>
 		</field>
 
 		<field
-			name="fromname"
-			type="text"
-			label="COM_JINBOUND_EMAIL_FROM_NAME"
-			description="COM_JINBOUND_EMAIL_FROM_NAME_DESC"
-			class="input-block-level"
-			size="30"
-			required="true"
-		/>
+            name="fromname"
+            type="text"
+            label="COM_JINBOUND_EMAIL_FROM_NAME"
+            description="COM_JINBOUND_EMAIL_FROM_NAME_DESC"
+            class="input-block-level"
+            size="30"
+            required="true"
+        />
 
 		<field
-			name="fromemail"
-			type="text"
-			label="COM_JINBOUND_EMAIL_FROM_EMAIL"
-			description="COM_JINBOUND_EMAIL_FROM_EMAIL_DESC"
-			class="input-block-level"
-			size="30"
-			required="true"
-		/>
+            name="fromemail"
+            type="text"
+            label="COM_JINBOUND_EMAIL_FROM_EMAIL"
+            description="COM_JINBOUND_EMAIL_FROM_EMAIL_DESC"
+            class="input-block-level"
+            size="30"
+            required="true"
+        />
 
 		<field
-			name="sendafter"
-			type="jinboundtimespan"
-			label="COM_JINBOUND_EMAIL_SEND_AFTER"
-			description="COM_JINBOUND_EMAIL_SEND_AFTER_DESC"
-			class="input-block-level"
-			size="30"
-		/>
-		
-		<field
-			id="layout" name="layout"
-			type="hidden"
-			label="COM_JINBOUND_LAYOUT"
-			description="COM_JINBOUND_EMAIL_LAYOUT_DESC"
-			default="A"
-		/>
+            name="sendafter"
+            type="jinboundtimespan"
+            label="COM_JINBOUND_EMAIL_SEND_AFTER"
+            description="COM_JINBOUND_EMAIL_SEND_AFTER_DESC"
+            class="input-block-level"
+            size="30"
+        />
 
 		<field
-			id="subject" name="subject"
-			type="text"
-			label="COM_JINBOUND_EMAIL_SUBJECT"
-			description="COM_JINBOUND_EMAIL_SUBJECT_DESC"
-			class="input-block-level"
-			size="30"
-			required="true"
-		/>
+            id="layout" name="layout"
+            type="hidden"
+            label="COM_JINBOUND_LAYOUT"
+            description="COM_JINBOUND_EMAIL_LAYOUT_DESC"
+            default="A"
+        />
+
+		<field
+            id="subject" name="subject"
+            type="text"
+            label="COM_JINBOUND_EMAIL_SUBJECT"
+            description="COM_JINBOUND_EMAIL_SUBJECT_DESC"
+            class="input-block-level"
+            size="30"
+            required="true"
+        />
 	</fieldset>
 	<fieldset
-		name="editor"
-		label="COM_JINBOUND_EMAIL_FIELDSET_CONTENT"
-	>
+        name="editor"
+        label="COM_JINBOUND_EMAIL_FIELDSET_CONTENT"
+    >
 		<field
-			type="jinboundtips"
-			name="email_tips"
-			id="email_tips"
-		/>
+            type="jinboundtips"
+            name="email_tips"
+            id="email_tips"
+        />
 
 		<field
-			id="htmlbody" name="htmlbody"
-			type="editor"
-			label="COM_JINBOUND_EMAIL_HTMLBODY"
-			description="COM_JINBOUND_EMAIL_HTMLBODY_DESC"
-			class="input-block-level"
-			cols="60" rows="12"
-			hide="pagebreak,readmore"
-			filter="JComponentHelper::filterText"
-		/>
+            id="htmlbody" name="htmlbody"
+            type="editor"
+            label="COM_JINBOUND_EMAIL_HTMLBODY"
+            description="COM_JINBOUND_EMAIL_HTMLBODY_DESC"
+            class="input-block-level"
+            cols="60" rows="12"
+            hide="pagebreak,readmore"
+            filter="JComponentHelper::filterText"
+        />
 
 		<field
-			id="plainbody" name="plainbody"
-			type="textarea"
-			label="COM_JINBOUND_EMAIL_PLAINBODY"
-			description="COM_JINBOUND_EMAIL_PLAINBODY_DESC"
-			class="input-block-level"
-			cols="100" rows="14"
-		/>
+            id="plainbody" name="plainbody"
+            type="textarea"
+            label="COM_JINBOUND_EMAIL_PLAINBODY"
+            description="COM_JINBOUND_EMAIL_PLAINBODY_DESC"
+            class="input-block-level"
+            cols="100" rows="14"
+        />
 
 	</fieldset>
-	
+
 	<fields name="params">
 		<fieldset name="reports" label="COM_JINBOUND_EMAIL_FIELDSET_REPORTS">
 			<field
-				name="reports_frequency"
-				type="list"
-				label="COM_JINBOUND_EMAIL_FREQUENCY"
-				description="COM_JINBOUND_EMAIL_FREQUENCY_DESC"
-				class="input-block-level"
-				default="1 WEEK"
-			>
+                name="reports_frequency"
+                type="list"
+                label="COM_JINBOUND_EMAIL_FREQUENCY"
+                description="COM_JINBOUND_EMAIL_FREQUENCY_DESC"
+                class="input-block-level"
+                default="1 WEEK"
+            >
 				<option value="1 DAY">COM_JINBOUND_EMAIL_FREQUENCY_1_DAY</option>
 				<option value="1 WEEK">COM_JINBOUND_EMAIL_FREQUENCY_1_WEEK</option>
 				<option value="2 WEEK">COM_JINBOUND_EMAIL_FREQUENCY_2_WEEK</option>
@@ -151,21 +151,21 @@
 				<option value="1 YEAR">COM_JINBOUND_EMAIL_FREQUENCY_1_YEAR</option>
 			</field>
 			<field
-				name="recipients"
-				type="text"
-				label="COM_JINBOUND_EMAIL_RECIPIENTS"
-				description="COM_JINBOUND_EMAIL_RECIPIENTS_DESC"
-				class="input-block-level"
-			/>
+                name="recipients"
+                type="text"
+                label="COM_JINBOUND_EMAIL_RECIPIENTS"
+                description="COM_JINBOUND_EMAIL_RECIPIENTS_DESC"
+                class="input-block-level"
+            />
 			<field
-				name="campaigns"
-				type="jinboundcampaignlist"
-				class="input-block-level"
-				label="COM_JINBOUND_EMAIL_CAMPAIGNS"
-				description="COM_JINBOUND_EMAIL_CAMPAIGNS_DESC"
-				multiple="true"
-				size="8"
-			/>
+                name="campaigns"
+                type="jinboundcampaignlist"
+                class="input-block-level"
+                label="COM_JINBOUND_EMAIL_CAMPAIGNS"
+                description="COM_JINBOUND_EMAIL_CAMPAIGNS_DESC"
+                multiple="true"
+                size="8"
+            />
 		</fieldset>
 	</fields>
 </form>

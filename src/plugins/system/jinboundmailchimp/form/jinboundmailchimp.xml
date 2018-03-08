@@ -3,29 +3,29 @@
 	<fields name="params">
 		<fieldset name="mailchimp" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_FIELDSET">
 			<field
-				name="addlists" type="jinboundmailchimplists"
-				label="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDLISTS_TITLE"
-				description="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDLISTS_DESC"
-				multiple="multiple" class="input-xxlarge" size="8"
-			/>
+                name="addlists" type="jinboundmailchimplists"
+                label="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDLISTS_TITLE"
+                description="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDLISTS_DESC"
+                multiple="multiple" class="input-xxlarge" size="8"
+            />
 			<field
-				name="removelists" type="jinboundmailchimplists"
-				label="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVELISTS_TITLE"
-				description="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVELISTS_DESC"
-				multiple="multiple" class="input-xxlarge" size="8"
-			/>
+                name="removelists" type="jinboundmailchimplists"
+                label="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVELISTS_TITLE"
+                description="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVELISTS_DESC"
+                multiple="multiple" class="input-xxlarge" size="8"
+            />
 			<field
-				name="addgroups" type="jinboundmailchimpgroups"
-				label="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDGROUPS_TITLE"
-				description="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDGROUPS_DESC"
-				multiple="multiple" class="input-xxlarge" size="8"
-			/>
+                name="addgroups" type="jinboundmailchimpgroups"
+                label="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDGROUPS_TITLE"
+                description="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDGROUPS_DESC"
+                multiple="multiple" class="input-xxlarge" size="8"
+            />
 			<field
-				name="removegroups" type="jinboundmailchimpgroups"
-				label="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVEGROUPS_TITLE"
-				description="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVEGROUPS_DESC"
-				multiple="multiple" class="input-xxlarge" size="8"
-			/>
+                name="removegroups" type="jinboundmailchimpgroups"
+                label="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVEGROUPS_TITLE"
+                description="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVEGROUPS_DESC"
+                multiple="multiple" class="input-xxlarge" size="8"
+            />
 		</fieldset>
 	</fields>
 </form>

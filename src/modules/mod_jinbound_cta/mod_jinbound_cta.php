@@ -1,17 +1,16 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	mod_jinbound_cta
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          mod_jinbound_cta
+ * @ant_copyright_header@
  */
 
 defined('_JEXEC') or die;
 
 // check that jinbound is installed
 $jinbound_base = JPATH_ADMINISTRATOR . '/components/com_jinbound';
-if (!is_dir($jinbound_base))
-{
-	return false;
+if (!is_dir($jinbound_base)) {
+    return false;
 }
 
 // include additional classes
@@ -19,15 +18,13 @@ require_once dirname(__FILE__) . '/adapter.php';
 require_once dirname(__FILE__) . '/helper.php';
 
 // this module requires the jinbound system plugin
-if (!class_exists('plgSystemJInbound'))
-{
-	return false;
+if (!class_exists('plgSystemJInbound')) {
+    return false;
 }
 
 // since this module renders other modules, don't let it render itself
-if (ModJInboundCTAHelper::$running)
-{
-	return false;
+if (ModJInboundCTAHelper::$running) {
+    return false;
 }
 ModJInboundCTAHelper::$running = true;
 

@@ -29,13 +29,13 @@
 		<fields name="params">
 			<fieldset name="basic" addfieldpath="/plugins/system/jinboundcaptcha/field">
 				<field name="update" type="jinboundcaptchaupdate"
-							 label="PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE"
-							 description="PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE"
+                       description="PLG_SYSTEM_JINBOUNDCAPTCHA_UPDATE_DESC"
+                />
 				<field name="downloadid" type="text"
-							 label="PLG_SYSTEM_JINBOUNDCAPTCHA_DOWNLOADID"
-							 description="PLG_SYSTEM_JINBOUNDCAPTCHA_DOWNLOADID_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDCAPTCHA_DOWNLOADID"
+                       description="PLG_SYSTEM_JINBOUNDCAPTCHA_DOWNLOADID_DESC"
+                />
 			</fieldset>
 		</fields>
 	</config>

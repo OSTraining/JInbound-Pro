@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 // no direct access
@@ -18,12 +18,12 @@ jimport('joomla.application.categories');
  */
 class JinboundCategories extends JCategories
 {
-	public function __construct($options = array())
-	{
-		$options['table'] = '#__jinbound_pages';
-		$options['extension'] = 'com_jinbound';
-		$options['field'] = 'category';
-		$options['statefield'] = 'published';
-		parent::__construct($options);
-	}
+    public function __construct($options = array())
+    {
+        $options['table']      = '#__jinbound_pages';
+        $options['extension']  = 'com_jinbound';
+        $options['field']      = 'category';
+        $options['statefield'] = 'published';
+        parent::__construct($options);
+    }
 }

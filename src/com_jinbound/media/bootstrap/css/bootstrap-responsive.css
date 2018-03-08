@@ -9,1105 +9,1338 @@
  */
 
 #jinbound_component .clearfix {
-  *zoom: 1;
+    *zoom: 1;
 }
 
 #jinbound_component .clearfix:before,
 #jinbound_component .clearfix:after {
-  display: table;
-  line-height: 0;
-  content: "";
+    display: table;
+    line-height: 0;
+    content: "";
 }
 
 #jinbound_component .clearfix:after {
-  clear: both;
+    clear: both;
 }
 
 #jinbound_component .hide-text {
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
 }
 
 #jinbound_component .input-block-level {
-  display: block;
-  width: 100%;
-  min-height: 30px;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-height: 30px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 @-ms-viewport {
-  width: device-width;
+    width: device-width;
 }
 
 #jinbound_component .hidden {
-  display: none;
-  visibility: hidden;
+    display: none;
+    visibility: hidden;
 }
 
 #jinbound_component .visible-phone {
-  display: none !important;
+    display: none !important;
 }
 
 #jinbound_component .visible-tablet {
-  display: none !important;
+    display: none !important;
 }
 
 #jinbound_component .hidden-desktop {
-  display: none !important;
+    display: none !important;
 }
 
 #jinbound_component .visible-desktop {
-  display: inherit !important;
+    display: inherit !important;
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
- #jinbound_component  .hidden-desktop {
-    display: inherit !important;
-  }
-  #jinbound_component .visible-desktop {
-    display: none !important ;
-  }
-  #jinbound_component .visible-tablet {
-    display: inherit !important;
-  }
-  #jinbound_component .hidden-tablet {
-    display: none !important;
-  }
+    #jinbound_component .hidden-desktop {
+        display: inherit !important;
+    }
+
+    #jinbound_component .visible-desktop {
+        display: none !important;
+    }
+
+    #jinbound_component .visible-tablet {
+        display: inherit !important;
+    }
+
+    #jinbound_component .hidden-tablet {
+        display: none !important;
+    }
 }
 
 @media (max-width: 767px) {
-  #jinbound_component .hidden-desktop {
-    display: inherit !important;
-  }
-  #jinbound_component .visible-desktop {
-    display: none !important;
-  }
-  #jinbound_component .visible-phone {
-    display: inherit !important;
-  }
-  #jinbound_component .hidden-phone {
-    display: none !important;
-  }
+    #jinbound_component .hidden-desktop {
+        display: inherit !important;
+    }
+
+    #jinbound_component .visible-desktop {
+        display: none !important;
+    }
+
+    #jinbound_component .visible-phone {
+        display: inherit !important;
+    }
+
+    #jinbound_component .hidden-phone {
+        display: none !important;
+    }
 }
 
 #jinbound_component .visible-print {
-  display: none !important;
+    display: none !important;
 }
 
 @media print {
-  #jinbound_component .visible-print {
-    display: inherit !important;
-  }
-  #jinbound_component .hidden-print {
-    display: none !important;
-  }
+    #jinbound_component .visible-print {
+        display: inherit !important;
+    }
+
+    #jinbound_component .hidden-print {
+        display: none !important;
+    }
 }
 
 @media (min-width: 1200px) {
-  #jinbound_component .row {
-    margin-left: -30px;
-    *zoom: 1;
-  }
-  #jinbound_component .row:before,
-  #jinbound_component .row:after {
-    display: table;
-    line-height: 0;
-    content: "";
-  }
-  #jinbound_component .row:after {
-    clear: both;
-  }
-  #jinbound_component [class*="span"] {
-    float: left;
-    min-height: 1px;
-    margin-left: 30px;
-  }
-  #jinbound_component .container,
-  #jinbound_component .navbar-static-top .container,
-  #jinbound_component .navbar-fixed-top .container,
-  #jinbound_component .navbar-fixed-bottom .container {
-    width: 1170px;
-  }
-  #jinbound_component .span12 {
-    width: 1170px;
-  }
-  #jinbound_component .span11 {
-    width: 1070px;
-  }
-  #jinbound_component .span10 {
-    width: 970px;
-  }
-  #jinbound_component .span9 {
-    width: 870px;
-  }
-  #jinbound_component .span8 {
-    width: 770px;
-  }
-  #jinbound_component .span7 {
-    width: 670px;
-  }
-  #jinbound_component .span6 {
-    width: 570px;
-  }
-  #jinbound_component .span5 {
-    width: 470px;
-  }
-  #jinbound_component .span4 {
-    width: 370px;
-  }
-  #jinbound_component .span3 {
-    width: 270px;
-  }
-  #jinbound_component .span2 {
-    width: 170px;
-  }
-  #jinbound_component .span1 {
-    width: 70px;
-  }
-  #jinbound_component .offset12 {
-    margin-left: 1230px;
-  }
-  #jinbound_component .offset11 {
-    margin-left: 1130px;
-  }
-  #jinbound_component .offset10 {
-    margin-left: 1030px;
-  }
-  #jinbound_component .offset9 {
-    margin-left: 930px;
-  }
-  #jinbound_component .offset8 {
-    margin-left: 830px;
-  }
-  #jinbound_component .offset7 {
-    margin-left: 730px;
-  }
-  #jinbound_component .offset6 {
-    margin-left: 630px;
-  }
-  #jinbound_component .offset5 {
-    margin-left: 530px;
-  }
-  #jinbound_component .offset4 {
-    margin-left: 430px;
-  }
-  #jinbound_component .offset3 {
-    margin-left: 330px;
-  }
-  #jinbound_component .offset2 {
-    margin-left: 230px;
-  }
-  #jinbound_component .offset1 {
-    margin-left: 130px;
-  }
-  #jinbound_component .row-fluid {
-    width: 100%;
-    *zoom: 1;
-  }
-  #jinbound_component .row-fluid:before,
-  #jinbound_component .row-fluid:after {
-    display: table;
-    line-height: 0;
-    content: "";
-  }
-  #jinbound_component .row-fluid:after {
-    clear: both;
-  }
-  #jinbound_component .row-fluid [class*="span"] {
-    display: block;
-    float: left;
-    width: 100%;
-    min-height: 30px;
-    margin-left: 2.564102564102564%;
-    *margin-left: 2.5109110747408616%;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-  }
-  #jinbound_component .row-fluid [class*="span"]:first-child {
-    margin-left: 0;
-  }
-  #jinbound_component .row-fluid .controls-row [class*="span"] + [class*="span"] {
-    margin-left: 2.564102564102564%;
-  }
-  #jinbound_component .row-fluid .span12 {
-    width: 100%;
-    *width: 99.94680851063829%;
-  }
-  #jinbound_component .row-fluid .span11 {
-    width: 91.45299145299145%;
-    *width: 91.39979996362975%;
-  }
-  #jinbound_component .row-fluid .span10 {
-    width: 82.90598290598291%;
-    *width: 82.8527914166212%;
-  }
-  #jinbound_component .row-fluid .span9 {
-    width: 74.35897435897436%;
-    *width: 74.30578286961266%;
-  }
-  #jinbound_component .row-fluid .span8 {
-    width: 65.81196581196582%;
-    *width: 65.75877432260411%;
-  }
-  #jinbound_component .row-fluid .span7 {
-    width: 57.26495726495726%;
-    *width: 57.21176577559556%;
-  }
-  #jinbound_component .row-fluid .span6 {
-    width: 48.717948717948715%;
-    *width: 48.664757228587014%;
-  }
-  #jinbound_component .row-fluid .span5 {
-    width: 40.17094017094017%;
-    *width: 40.11774868157847%;
-  }
-  #jinbound_component .row-fluid .span4 {
-    width: 31.623931623931625%;
-    *width: 31.570740134569924%;
-  }
-  #jinbound_component .row-fluid .span3 {
-    width: 23.076923076923077%;
-    *width: 23.023731587561375%;
-  }
-  #jinbound_component .row-fluid .span2 {
-    width: 14.52991452991453%;
-    *width: 14.476723040552828%;
-  }
-  #jinbound_component .row-fluid .span1 {
-    width: 5.982905982905983%;
-    *width: 5.929714493544281%;
-  }
-  #jinbound_component .row-fluid .offset12 {
-    margin-left: 105.12820512820512%;
-    *margin-left: 105.02182214948171%;
-  }
-  #jinbound_component .row-fluid .offset12:first-child {
-    margin-left: 102.56410256410257%;
-    *margin-left: 102.45771958537915%;
-  }
-  #jinbound_component .row-fluid .offset11 {
-    margin-left: 96.58119658119658%;
-    *margin-left: 96.47481360247316%;
-  }
-  #jinbound_component .row-fluid .offset11:first-child {
-    margin-left: 94.01709401709402%;
-    *margin-left: 93.91071103837061%;
-  }
-  #jinbound_component .row-fluid .offset10 {
-    margin-left: 88.03418803418803%;
-    *margin-left: 87.92780505546462%;
-  }
-  #jinbound_component .row-fluid .offset10:first-child {
-    margin-left: 85.47008547008548%;
-    *margin-left: 85.36370249136206%;
-  }
-  #jinbound_component .row-fluid .offset9 {
-    margin-left: 79.48717948717949%;
-    *margin-left: 79.38079650845607%;
-  }
-  #jinbound_component .row-fluid .offset9:first-child {
-    margin-left: 76.92307692307693%;
-    *margin-left: 76.81669394435352%;
-  }
-  #jinbound_component .row-fluid .offset8 {
-    margin-left: 70.94017094017094%;
-    *margin-left: 70.83378796144753%;
-  }
-  #jinbound_component .row-fluid .offset8:first-child {
-    margin-left: 68.37606837606839%;
-    *margin-left: 68.26968539734497%;
-  }
-  #jinbound_component .row-fluid .offset7 {
-    margin-left: 62.393162393162385%;
-    *margin-left: 62.28677941443899%;
-  }
-  #jinbound_component .row-fluid .offset7:first-child {
-    margin-left: 59.82905982905982%;
-    *margin-left: 59.72267685033642%;
-  }
-  #jinbound_component .row-fluid .offset6 {
-    margin-left: 53.84615384615384%;
-    *margin-left: 53.739770867430444%;
-  }
-  #jinbound_component .row-fluid .offset6:first-child {
-    margin-left: 51.28205128205128%;
-    *margin-left: 51.175668303327875%;
-  }
-  #jinbound_component .row-fluid .offset5 {
-    margin-left: 45.299145299145295%;
-    *margin-left: 45.1927623204219%;
-  }
-  #jinbound_component .row-fluid .offset5:first-child {
-    margin-left: 42.73504273504273%;
-    *margin-left: 42.62865975631933%;
-  }
-  #jinbound_component .row-fluid .offset4 {
-    margin-left: 36.75213675213675%;
-    *margin-left: 36.645753773413354%;
-  }
-  #jinbound_component .row-fluid .offset4:first-child {
-    margin-left: 34.18803418803419%;
-    *margin-left: 34.081651209310785%;
-  }
-  #jinbound_component .row-fluid .offset3 {
-    margin-left: 28.205128205128204%;
-    *margin-left: 28.0987452264048%;
-  }
-  #jinbound_component .row-fluid .offset3:first-child {
-    margin-left: 25.641025641025642%;
-    *margin-left: 25.53464266230224%;
-  }
-  #jinbound_component .row-fluid .offset2 {
-    margin-left: 19.65811965811966%;
-    *margin-left: 19.551736679396257%;
-  }
-  #jinbound_component .row-fluid .offset2:first-child {
-    margin-left: 17.094017094017094%;
-    *margin-left: 16.98763411529369%;
-  }
-  #jinbound_component .row-fluid .offset1 {
-    margin-left: 11.11111111111111%;
-    *margin-left: 11.004728132387708%;
-  }
-  #jinbound_component .row-fluid .offset1:first-child {
-    margin-left: 8.547008547008547%;
-    *margin-left: 8.440625568285142%;
-  }
-  #jinbound_component input,
-  #jinbound_component textarea,
-  #jinbound_component .uneditable-input {
-    margin-left: 0;
-  }
-  #jinbound_component .controls-row [class*="span"] + [class*="span"] {
-    margin-left: 30px;
-  }
-  #jinbound_component input.span12,
-  #jinbound_component textarea.span12,
-  #jinbound_component .uneditable-input.span12 {
-    width: 1156px;
-  }
-  #jinbound_component input.span11,
-  #jinbound_component textarea.span11,
-  #jinbound_component .uneditable-input.span11 {
-    width: 1056px;
-  }
-  #jinbound_component input.span10,
-  #jinbound_component textarea.span10,
-  #jinbound_component .uneditable-input.span10 {
-    width: 956px;
-  }
-  #jinbound_component input.span9,
-  #jinbound_component textarea.span9,
-  #jinbound_component .uneditable-input.span9 {
-    width: 856px;
-  }
-  #jinbound_component input.span8,
-  #jinbound_component textarea.span8,
-  #jinbound_component .uneditable-input.span8 {
-    width: 756px;
-  }
-  #jinbound_component input.span7,
-  #jinbound_component textarea.span7,
-  #jinbound_component .uneditable-input.span7 {
-    width: 656px;
-  }
-  #jinbound_component input.span6,
-  #jinbound_component textarea.span6,
-  #jinbound_component .uneditable-input.span6 {
-    width: 556px;
-  }
-  #jinbound_component input.span5,
-  #jinbound_component textarea.span5,
-  #jinbound_component .uneditable-input.span5 {
-    width: 456px;
-  }
-  #jinbound_component input.span4,
-  #jinbound_component textarea.span4,
-  #jinbound_component .uneditable-input.span4 {
-    width: 356px;
-  }
-  #jinbound_component input.span3,
-  #jinbound_component textarea.span3,
-  #jinbound_component .uneditable-input.span3 {
-    width: 256px;
-  }
-  #jinbound_component input.span2,
-  #jinbound_component textarea.span2,
-  #jinbound_component .uneditable-input.span2 {
-    width: 156px;
-  }
-  #jinbound_component input.span1,
-  #jinbound_component textarea.span1,
-  #jinbound_component .uneditable-input.span1 {
-    width: 56px;
-  }
-  #jinbound_component .thumbnails {
-    margin-left: -30px;
-  }
-  #jinbound_component .thumbnails > li {
-    margin-left: 30px;
-  }
-  #jinbound_component .row-fluid .thumbnails {
-    margin-left: 0;
-  }
+    #jinbound_component .row {
+        margin-left: -30px;
+        *zoom: 1;
+    }
+
+    #jinbound_component .row:before,
+    #jinbound_component .row:after {
+        display: table;
+        line-height: 0;
+        content: "";
+    }
+
+    #jinbound_component .row:after {
+        clear: both;
+    }
+
+    #jinbound_component [class*="span"] {
+        float: left;
+        min-height: 1px;
+        margin-left: 30px;
+    }
+
+    #jinbound_component .container,
+    #jinbound_component .navbar-static-top .container,
+    #jinbound_component .navbar-fixed-top .container,
+    #jinbound_component .navbar-fixed-bottom .container {
+        width: 1170px;
+    }
+
+    #jinbound_component .span12 {
+        width: 1170px;
+    }
+
+    #jinbound_component .span11 {
+        width: 1070px;
+    }
+
+    #jinbound_component .span10 {
+        width: 970px;
+    }
+
+    #jinbound_component .span9 {
+        width: 870px;
+    }
+
+    #jinbound_component .span8 {
+        width: 770px;
+    }
+
+    #jinbound_component .span7 {
+        width: 670px;
+    }
+
+    #jinbound_component .span6 {
+        width: 570px;
+    }
+
+    #jinbound_component .span5 {
+        width: 470px;
+    }
+
+    #jinbound_component .span4 {
+        width: 370px;
+    }
+
+    #jinbound_component .span3 {
+        width: 270px;
+    }
+
+    #jinbound_component .span2 {
+        width: 170px;
+    }
+
+    #jinbound_component .span1 {
+        width: 70px;
+    }
+
+    #jinbound_component .offset12 {
+        margin-left: 1230px;
+    }
+
+    #jinbound_component .offset11 {
+        margin-left: 1130px;
+    }
+
+    #jinbound_component .offset10 {
+        margin-left: 1030px;
+    }
+
+    #jinbound_component .offset9 {
+        margin-left: 930px;
+    }
+
+    #jinbound_component .offset8 {
+        margin-left: 830px;
+    }
+
+    #jinbound_component .offset7 {
+        margin-left: 730px;
+    }
+
+    #jinbound_component .offset6 {
+        margin-left: 630px;
+    }
+
+    #jinbound_component .offset5 {
+        margin-left: 530px;
+    }
+
+    #jinbound_component .offset4 {
+        margin-left: 430px;
+    }
+
+    #jinbound_component .offset3 {
+        margin-left: 330px;
+    }
+
+    #jinbound_component .offset2 {
+        margin-left: 230px;
+    }
+
+    #jinbound_component .offset1 {
+        margin-left: 130px;
+    }
+
+    #jinbound_component .row-fluid {
+        width: 100%;
+        *zoom: 1;
+    }
+
+    #jinbound_component .row-fluid:before,
+    #jinbound_component .row-fluid:after {
+        display: table;
+        line-height: 0;
+        content: "";
+    }
+
+    #jinbound_component .row-fluid:after {
+        clear: both;
+    }
+
+    #jinbound_component .row-fluid [class*="span"] {
+        display: block;
+        float: left;
+        width: 100%;
+        min-height: 30px;
+        margin-left: 2.564102564102564%;
+        *margin-left: 2.5109110747408616%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #jinbound_component .row-fluid [class*="span"]:first-child {
+        margin-left: 0;
+    }
+
+    #jinbound_component .row-fluid .controls-row [class*="span"] + [class*="span"] {
+        margin-left: 2.564102564102564%;
+    }
+
+    #jinbound_component .row-fluid .span12 {
+        width: 100%;
+        *width: 99.94680851063829%;
+    }
+
+    #jinbound_component .row-fluid .span11 {
+        width: 91.45299145299145%;
+        *width: 91.39979996362975%;
+    }
+
+    #jinbound_component .row-fluid .span10 {
+        width: 82.90598290598291%;
+        *width: 82.8527914166212%;
+    }
+
+    #jinbound_component .row-fluid .span9 {
+        width: 74.35897435897436%;
+        *width: 74.30578286961266%;
+    }
+
+    #jinbound_component .row-fluid .span8 {
+        width: 65.81196581196582%;
+        *width: 65.75877432260411%;
+    }
+
+    #jinbound_component .row-fluid .span7 {
+        width: 57.26495726495726%;
+        *width: 57.21176577559556%;
+    }
+
+    #jinbound_component .row-fluid .span6 {
+        width: 48.717948717948715%;
+        *width: 48.664757228587014%;
+    }
+
+    #jinbound_component .row-fluid .span5 {
+        width: 40.17094017094017%;
+        *width: 40.11774868157847%;
+    }
+
+    #jinbound_component .row-fluid .span4 {
+        width: 31.623931623931625%;
+        *width: 31.570740134569924%;
+    }
+
+    #jinbound_component .row-fluid .span3 {
+        width: 23.076923076923077%;
+        *width: 23.023731587561375%;
+    }
+
+    #jinbound_component .row-fluid .span2 {
+        width: 14.52991452991453%;
+        *width: 14.476723040552828%;
+    }
+
+    #jinbound_component .row-fluid .span1 {
+        width: 5.982905982905983%;
+        *width: 5.929714493544281%;
+    }
+
+    #jinbound_component .row-fluid .offset12 {
+        margin-left: 105.12820512820512%;
+        *margin-left: 105.02182214948171%;
+    }
+
+    #jinbound_component .row-fluid .offset12:first-child {
+        margin-left: 102.56410256410257%;
+        *margin-left: 102.45771958537915%;
+    }
+
+    #jinbound_component .row-fluid .offset11 {
+        margin-left: 96.58119658119658%;
+        *margin-left: 96.47481360247316%;
+    }
+
+    #jinbound_component .row-fluid .offset11:first-child {
+        margin-left: 94.01709401709402%;
+        *margin-left: 93.91071103837061%;
+    }
+
+    #jinbound_component .row-fluid .offset10 {
+        margin-left: 88.03418803418803%;
+        *margin-left: 87.92780505546462%;
+    }
+
+    #jinbound_component .row-fluid .offset10:first-child {
+        margin-left: 85.47008547008548%;
+        *margin-left: 85.36370249136206%;
+    }
+
+    #jinbound_component .row-fluid .offset9 {
+        margin-left: 79.48717948717949%;
+        *margin-left: 79.38079650845607%;
+    }
+
+    #jinbound_component .row-fluid .offset9:first-child {
+        margin-left: 76.92307692307693%;
+        *margin-left: 76.81669394435352%;
+    }
+
+    #jinbound_component .row-fluid .offset8 {
+        margin-left: 70.94017094017094%;
+        *margin-left: 70.83378796144753%;
+    }
+
+    #jinbound_component .row-fluid .offset8:first-child {
+        margin-left: 68.37606837606839%;
+        *margin-left: 68.26968539734497%;
+    }
+
+    #jinbound_component .row-fluid .offset7 {
+        margin-left: 62.393162393162385%;
+        *margin-left: 62.28677941443899%;
+    }
+
+    #jinbound_component .row-fluid .offset7:first-child {
+        margin-left: 59.82905982905982%;
+        *margin-left: 59.72267685033642%;
+    }
+
+    #jinbound_component .row-fluid .offset6 {
+        margin-left: 53.84615384615384%;
+        *margin-left: 53.739770867430444%;
+    }
+
+    #jinbound_component .row-fluid .offset6:first-child {
+        margin-left: 51.28205128205128%;
+        *margin-left: 51.175668303327875%;
+    }
+
+    #jinbound_component .row-fluid .offset5 {
+        margin-left: 45.299145299145295%;
+        *margin-left: 45.1927623204219%;
+    }
+
+    #jinbound_component .row-fluid .offset5:first-child {
+        margin-left: 42.73504273504273%;
+        *margin-left: 42.62865975631933%;
+    }
+
+    #jinbound_component .row-fluid .offset4 {
+        margin-left: 36.75213675213675%;
+        *margin-left: 36.645753773413354%;
+    }
+
+    #jinbound_component .row-fluid .offset4:first-child {
+        margin-left: 34.18803418803419%;
+        *margin-left: 34.081651209310785%;
+    }
+
+    #jinbound_component .row-fluid .offset3 {
+        margin-left: 28.205128205128204%;
+        *margin-left: 28.0987452264048%;
+    }
+
+    #jinbound_component .row-fluid .offset3:first-child {
+        margin-left: 25.641025641025642%;
+        *margin-left: 25.53464266230224%;
+    }
+
+    #jinbound_component .row-fluid .offset2 {
+        margin-left: 19.65811965811966%;
+        *margin-left: 19.551736679396257%;
+    }
+
+    #jinbound_component .row-fluid .offset2:first-child {
+        margin-left: 17.094017094017094%;
+        *margin-left: 16.98763411529369%;
+    }
+
+    #jinbound_component .row-fluid .offset1 {
+        margin-left: 11.11111111111111%;
+        *margin-left: 11.004728132387708%;
+    }
+
+    #jinbound_component .row-fluid .offset1:first-child {
+        margin-left: 8.547008547008547%;
+        *margin-left: 8.440625568285142%;
+    }
+
+    #jinbound_component input,
+    #jinbound_component textarea,
+    #jinbound_component .uneditable-input {
+        margin-left: 0;
+    }
+
+    #jinbound_component .controls-row [class*="span"] + [class*="span"] {
+        margin-left: 30px;
+    }
+
+    #jinbound_component input.span12,
+    #jinbound_component textarea.span12,
+    #jinbound_component .uneditable-input.span12 {
+        width: 1156px;
+    }
+
+    #jinbound_component input.span11,
+    #jinbound_component textarea.span11,
+    #jinbound_component .uneditable-input.span11 {
+        width: 1056px;
+    }
+
+    #jinbound_component input.span10,
+    #jinbound_component textarea.span10,
+    #jinbound_component .uneditable-input.span10 {
+        width: 956px;
+    }
+
+    #jinbound_component input.span9,
+    #jinbound_component textarea.span9,
+    #jinbound_component .uneditable-input.span9 {
+        width: 856px;
+    }
+
+    #jinbound_component input.span8,
+    #jinbound_component textarea.span8,
+    #jinbound_component .uneditable-input.span8 {
+        width: 756px;
+    }
+
+    #jinbound_component input.span7,
+    #jinbound_component textarea.span7,
+    #jinbound_component .uneditable-input.span7 {
+        width: 656px;
+    }
+
+    #jinbound_component input.span6,
+    #jinbound_component textarea.span6,
+    #jinbound_component .uneditable-input.span6 {
+        width: 556px;
+    }
+
+    #jinbound_component input.span5,
+    #jinbound_component textarea.span5,
+    #jinbound_component .uneditable-input.span5 {
+        width: 456px;
+    }
+
+    #jinbound_component input.span4,
+    #jinbound_component textarea.span4,
+    #jinbound_component .uneditable-input.span4 {
+        width: 356px;
+    }
+
+    #jinbound_component input.span3,
+    #jinbound_component textarea.span3,
+    #jinbound_component .uneditable-input.span3 {
+        width: 256px;
+    }
+
+    #jinbound_component input.span2,
+    #jinbound_component textarea.span2,
+    #jinbound_component .uneditable-input.span2 {
+        width: 156px;
+    }
+
+    #jinbound_component input.span1,
+    #jinbound_component textarea.span1,
+    #jinbound_component .uneditable-input.span1 {
+        width: 56px;
+    }
+
+    #jinbound_component .thumbnails {
+        margin-left: -30px;
+    }
+
+    #jinbound_component .thumbnails > li {
+        margin-left: 30px;
+    }
+
+    #jinbound_component .row-fluid .thumbnails {
+        margin-left: 0;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
-  #jinbound_component .row {
-    margin-left: -20px;
-    *zoom: 1;
-  }
-  #jinbound_component .row:before,
-  #jinbound_component .row:after {
-    display: table;
-    line-height: 0;
-    content: "";
-  }
-  #jinbound_component .row:after {
-    clear: both;
-  }
-  #jinbound_component [class*="span"] {
-    float: left;
-    min-height: 1px;
-    margin-left: 20px;
-  }
-  #jinbound_component .container,
-  #jinbound_component .navbar-static-top .container,
-  #jinbound_component .navbar-fixed-top .container,
-  #jinbound_component .navbar-fixed-bottom .container {
-    width: 724px;
-  }
-  #jinbound_component .span12 {
-    width: 724px;
-  }
-  #jinbound_component .span11 {
-    width: 662px;
-  }
-  #jinbound_component .span10 {
-    width: 600px;
-  }
-  #jinbound_component .span9 {
-    width: 538px;
-  }
-  #jinbound_component .span8 {
-    width: 476px;
-  }
-  #jinbound_component .span7 {
-    width: 414px;
-  }
-  #jinbound_component .span6 {
-    width: 352px;
-  }
-  #jinbound_component .span5 {
-    width: 290px;
-  }
-  #jinbound_component .span4 {
-    width: 228px;
-  }
-  #jinbound_component .span3 {
-    width: 166px;
-  }
-  #jinbound_component .span2 {
-    width: 104px;
-  }
-  #jinbound_component .span1 {
-    width: 42px;
-  }
-  #jinbound_component .offset12 {
-    margin-left: 764px;
-  }
-  #jinbound_component .offset11 {
-    margin-left: 702px;
-  }
-  #jinbound_component .offset10 {
-    margin-left: 640px;
-  }
-  #jinbound_component .offset9 {
-    margin-left: 578px;
-  }
-  #jinbound_component .offset8 {
-    margin-left: 516px;
-  }
-  #jinbound_component .offset7 {
-    margin-left: 454px;
-  }
-  #jinbound_component .offset6 {
-    margin-left: 392px;
-  }
-  #jinbound_component .offset5 {
-    margin-left: 330px;
-  }
-  #jinbound_component .offset4 {
-    margin-left: 268px;
-  }
-  #jinbound_component .offset3 {
-    margin-left: 206px;
-  }
-  #jinbound_component .offset2 {
-    margin-left: 144px;
-  }
-  #jinbound_component .offset1 {
-    margin-left: 82px;
-  }
-  #jinbound_component .row-fluid {
-    width: 100%;
-    *zoom: 1;
-  }
-  #jinbound_component .row-fluid:before,
-  #jinbound_component .row-fluid:after {
-    display: table;
-    line-height: 0;
-    content: "";
-  }
-  #jinbound_component .row-fluid:after {
-    clear: both;
-  }
-  #jinbound_component .row-fluid [class*="span"] {
-    display: block;
-    float: left;
-    width: 100%;
-    min-height: 30px;
-    margin-left: 2.7624309392265194%;
-    *margin-left: 2.709239449864817%;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-  }
-  #jinbound_component .row-fluid [class*="span"]:first-child {
-    margin-left: 0;
-  }
-  #jinbound_component .row-fluid .controls-row [class*="span"] + [class*="span"] {
-    margin-left: 2.7624309392265194%;
-  }
-  #jinbound_component .row-fluid .span12 {
-    width: 100%;
-    *width: 99.94680851063829%;
-  }
-  #jinbound_component .row-fluid .span11 {
-    width: 91.43646408839778%;
-    *width: 91.38327259903608%;
-  }
-  #jinbound_component .row-fluid .span10 {
-    width: 82.87292817679558%;
-    *width: 82.81973668743387%;
-  }
-  #jinbound_component .row-fluid .span9 {
-    width: 74.30939226519337%;
-    *width: 74.25620077583166%;
-  }
-  #jinbound_component .row-fluid .span8 {
-    width: 65.74585635359117%;
-    *width: 65.69266486422946%;
-  }
-  #jinbound_component .row-fluid .span7 {
-    width: 57.18232044198895%;
-    *width: 57.12912895262725%;
-  }
-  #jinbound_component .row-fluid .span6 {
-    width: 48.61878453038674%;
-    *width: 48.56559304102504%;
-  }
-  #jinbound_component .row-fluid .span5 {
-    width: 40.05524861878453%;
-    *width: 40.00205712942283%;
-  }
-  #jinbound_component .row-fluid .span4 {
-    width: 31.491712707182323%;
-    *width: 31.43852121782062%;
-  }
-  #jinbound_component .row-fluid .span3 {
-    width: 22.92817679558011%;
-    *width: 22.87498530621841%;
-  }
-  #jinbound_component .row-fluid .span2 {
-    width: 14.3646408839779%;
-    *width: 14.311449394616199%;
-  }
-  #jinbound_component .row-fluid .span1 {
-    width: 5.801104972375691%;
-    *width: 5.747913483013988%;
-  }
-  #jinbound_component .row-fluid .offset12 {
-    margin-left: 105.52486187845304%;
-    *margin-left: 105.41847889972962%;
-  }
-  #jinbound_component .row-fluid .offset12:first-child {
-    margin-left: 102.76243093922652%;
-    *margin-left: 102.6560479605031%;
-  }
-  #jinbound_component .row-fluid .offset11 {
-    margin-left: 96.96132596685082%;
-    *margin-left: 96.8549429881274%;
-  }
-  #jinbound_component .row-fluid .offset11:first-child {
-    margin-left: 94.1988950276243%;
-    *margin-left: 94.09251204890089%;
-  }
-  #jinbound_component .row-fluid .offset10 {
-    margin-left: 88.39779005524862%;
-    *margin-left: 88.2914070765252%;
-  }
-  #jinbound_component .row-fluid .offset10:first-child {
-    margin-left: 85.6353591160221%;
-    *margin-left: 85.52897613729868%;
-  }
-  #jinbound_component .row-fluid .offset9 {
-    margin-left: 79.8342541436464%;
-    *margin-left: 79.72787116492299%;
-  }
-  #jinbound_component .row-fluid .offset9:first-child {
-    margin-left: 77.07182320441989%;
-    *margin-left: 76.96544022569647%;
-  }
-  #jinbound_component .row-fluid .offset8 {
-    margin-left: 71.2707182320442%;
-    *margin-left: 71.16433525332079%;
-  }
-  #jinbound_component .row-fluid .offset8:first-child {
-    margin-left: 68.50828729281768%;
-    *margin-left: 68.40190431409427%;
-  }
-  #jinbound_component .row-fluid .offset7 {
-    margin-left: 62.70718232044199%;
-    *margin-left: 62.600799341718584%;
-  }
-  #jinbound_component .row-fluid .offset7:first-child {
-    margin-left: 59.94475138121547%;
-    *margin-left: 59.838368402492065%;
-  }
-  #jinbound_component .row-fluid .offset6 {
-    margin-left: 54.14364640883978%;
-    *margin-left: 54.037263430116376%;
-  }
-  #jinbound_component .row-fluid .offset6:first-child {
-    margin-left: 51.38121546961326%;
-    *margin-left: 51.27483249088986%;
-  }
-  #jinbound_component .row-fluid .offset5 {
-    margin-left: 45.58011049723757%;
-    *margin-left: 45.47372751851417%;
-  }
-  #jinbound_component .row-fluid .offset5:first-child {
-    margin-left: 42.81767955801105%;
-    *margin-left: 42.71129657928765%;
-  }
-  #jinbound_component .row-fluid .offset4 {
-    margin-left: 37.01657458563536%;
-    *margin-left: 36.91019160691196%;
-  }
-  #jinbound_component .row-fluid .offset4:first-child {
-    margin-left: 34.25414364640884%;
-    *margin-left: 34.14776066768544%;
-  }
-  #jinbound_component .row-fluid .offset3 {
-    margin-left: 28.45303867403315%;
-    *margin-left: 28.346655695309746%;
-  }
-  #jinbound_component .row-fluid .offset3:first-child {
-    margin-left: 25.69060773480663%;
-    *margin-left: 25.584224756083227%;
-  }
-  #jinbound_component .row-fluid .offset2 {
-    margin-left: 19.88950276243094%;
-    *margin-left: 19.783119783707537%;
-  }
-  #jinbound_component .row-fluid .offset2:first-child {
-    margin-left: 17.12707182320442%;
-    *margin-left: 17.02068884448102%;
-  }
-  #jinbound_component .row-fluid .offset1 {
-    margin-left: 11.32596685082873%;
-    *margin-left: 11.219583872105325%;
-  }
-  #jinbound_component .row-fluid .offset1:first-child {
-    margin-left: 8.56353591160221%;
-    *margin-left: 8.457152932878806%;
-  }
-  #jinbound_component input,
-  #jinbound_component textarea,
-  #jinbound_component .uneditable-input {
-    margin-left: 0;
-  }
-  #jinbound_component .controls-row [class*="span"] + [class*="span"] {
-    margin-left: 20px;
-  }
-  #jinbound_component input.span12,
-  #jinbound_component textarea.span12,
-  #jinbound_component .uneditable-input.span12 {
-    width: 710px;
-  }
-  #jinbound_component input.span11,
-  #jinbound_component textarea.span11,
-  #jinbound_component .uneditable-input.span11 {
-    width: 648px;
-  }
-  #jinbound_component input.span10,
-  #jinbound_component textarea.span10,
-  #jinbound_component .uneditable-input.span10 {
-    width: 586px;
-  }
-  #jinbound_component input.span9,
-  #jinbound_component textarea.span9,
-  #jinbound_component .uneditable-input.span9 {
-    width: 524px;
-  }
-  #jinbound_component input.span8,
-  #jinbound_component textarea.span8,
-  #jinbound_component .uneditable-input.span8 {
-    width: 462px;
-  }
-  #jinbound_component input.span7,
-  #jinbound_component textarea.span7,
-  #jinbound_component .uneditable-input.span7 {
-    width: 400px;
-  }
-  #jinbound_component input.span6,
-  #jinbound_component textarea.span6,
-  #jinbound_component .uneditable-input.span6 {
-    width: 338px;
-  }
-  #jinbound_component input.span5,
-  #jinbound_component textarea.span5,
-  #jinbound_component .uneditable-input.span5 {
-    width: 276px;
-  }
-  #jinbound_component input.span4,
-  #jinbound_component textarea.span4,
-  #jinbound_component .uneditable-input.span4 {
-    width: 214px;
-  }
-  #jinbound_component input.span3,
-  #jinbound_component textarea.span3,
-  #jinbound_component .uneditable-input.span3 {
-    width: 152px;
-  }
-  #jinbound_component input.span2,
-  #jinbound_component textarea.span2,
-  #jinbound_component .uneditable-input.span2 {
-    width: 90px;
-  }
-  #jinbound_component input.span1,
-  #jinbound_component textarea.span1,
-  #jinbound_component .uneditable-input.span1 {
-    width: 28px;
-  }
+    #jinbound_component .row {
+        margin-left: -20px;
+        *zoom: 1;
+    }
+
+    #jinbound_component .row:before,
+    #jinbound_component .row:after {
+        display: table;
+        line-height: 0;
+        content: "";
+    }
+
+    #jinbound_component .row:after {
+        clear: both;
+    }
+
+    #jinbound_component [class*="span"] {
+        float: left;
+        min-height: 1px;
+        margin-left: 20px;
+    }
+
+    #jinbound_component .container,
+    #jinbound_component .navbar-static-top .container,
+    #jinbound_component .navbar-fixed-top .container,
+    #jinbound_component .navbar-fixed-bottom .container {
+        width: 724px;
+    }
+
+    #jinbound_component .span12 {
+        width: 724px;
+    }
+
+    #jinbound_component .span11 {
+        width: 662px;
+    }
+
+    #jinbound_component .span10 {
+        width: 600px;
+    }
+
+    #jinbound_component .span9 {
+        width: 538px;
+    }
+
+    #jinbound_component .span8 {
+        width: 476px;
+    }
+
+    #jinbound_component .span7 {
+        width: 414px;
+    }
+
+    #jinbound_component .span6 {
+        width: 352px;
+    }
+
+    #jinbound_component .span5 {
+        width: 290px;
+    }
+
+    #jinbound_component .span4 {
+        width: 228px;
+    }
+
+    #jinbound_component .span3 {
+        width: 166px;
+    }
+
+    #jinbound_component .span2 {
+        width: 104px;
+    }
+
+    #jinbound_component .span1 {
+        width: 42px;
+    }
+
+    #jinbound_component .offset12 {
+        margin-left: 764px;
+    }
+
+    #jinbound_component .offset11 {
+        margin-left: 702px;
+    }
+
+    #jinbound_component .offset10 {
+        margin-left: 640px;
+    }
+
+    #jinbound_component .offset9 {
+        margin-left: 578px;
+    }
+
+    #jinbound_component .offset8 {
+        margin-left: 516px;
+    }
+
+    #jinbound_component .offset7 {
+        margin-left: 454px;
+    }
+
+    #jinbound_component .offset6 {
+        margin-left: 392px;
+    }
+
+    #jinbound_component .offset5 {
+        margin-left: 330px;
+    }
+
+    #jinbound_component .offset4 {
+        margin-left: 268px;
+    }
+
+    #jinbound_component .offset3 {
+        margin-left: 206px;
+    }
+
+    #jinbound_component .offset2 {
+        margin-left: 144px;
+    }
+
+    #jinbound_component .offset1 {
+        margin-left: 82px;
+    }
+
+    #jinbound_component .row-fluid {
+        width: 100%;
+        *zoom: 1;
+    }
+
+    #jinbound_component .row-fluid:before,
+    #jinbound_component .row-fluid:after {
+        display: table;
+        line-height: 0;
+        content: "";
+    }
+
+    #jinbound_component .row-fluid:after {
+        clear: both;
+    }
+
+    #jinbound_component .row-fluid [class*="span"] {
+        display: block;
+        float: left;
+        width: 100%;
+        min-height: 30px;
+        margin-left: 2.7624309392265194%;
+        *margin-left: 2.709239449864817%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #jinbound_component .row-fluid [class*="span"]:first-child {
+        margin-left: 0;
+    }
+
+    #jinbound_component .row-fluid .controls-row [class*="span"] + [class*="span"] {
+        margin-left: 2.7624309392265194%;
+    }
+
+    #jinbound_component .row-fluid .span12 {
+        width: 100%;
+        *width: 99.94680851063829%;
+    }
+
+    #jinbound_component .row-fluid .span11 {
+        width: 91.43646408839778%;
+        *width: 91.38327259903608%;
+    }
+
+    #jinbound_component .row-fluid .span10 {
+        width: 82.87292817679558%;
+        *width: 82.81973668743387%;
+    }
+
+    #jinbound_component .row-fluid .span9 {
+        width: 74.30939226519337%;
+        *width: 74.25620077583166%;
+    }
+
+    #jinbound_component .row-fluid .span8 {
+        width: 65.74585635359117%;
+        *width: 65.69266486422946%;
+    }
+
+    #jinbound_component .row-fluid .span7 {
+        width: 57.18232044198895%;
+        *width: 57.12912895262725%;
+    }
+
+    #jinbound_component .row-fluid .span6 {
+        width: 48.61878453038674%;
+        *width: 48.56559304102504%;
+    }
+
+    #jinbound_component .row-fluid .span5 {
+        width: 40.05524861878453%;
+        *width: 40.00205712942283%;
+    }
+
+    #jinbound_component .row-fluid .span4 {
+        width: 31.491712707182323%;
+        *width: 31.43852121782062%;
+    }
+
+    #jinbound_component .row-fluid .span3 {
+        width: 22.92817679558011%;
+        *width: 22.87498530621841%;
+    }
+
+    #jinbound_component .row-fluid .span2 {
+        width: 14.3646408839779%;
+        *width: 14.311449394616199%;
+    }
+
+    #jinbound_component .row-fluid .span1 {
+        width: 5.801104972375691%;
+        *width: 5.747913483013988%;
+    }
+
+    #jinbound_component .row-fluid .offset12 {
+        margin-left: 105.52486187845304%;
+        *margin-left: 105.41847889972962%;
+    }
+
+    #jinbound_component .row-fluid .offset12:first-child {
+        margin-left: 102.76243093922652%;
+        *margin-left: 102.6560479605031%;
+    }
+
+    #jinbound_component .row-fluid .offset11 {
+        margin-left: 96.96132596685082%;
+        *margin-left: 96.8549429881274%;
+    }
+
+    #jinbound_component .row-fluid .offset11:first-child {
+        margin-left: 94.1988950276243%;
+        *margin-left: 94.09251204890089%;
+    }
+
+    #jinbound_component .row-fluid .offset10 {
+        margin-left: 88.39779005524862%;
+        *margin-left: 88.2914070765252%;
+    }
+
+    #jinbound_component .row-fluid .offset10:first-child {
+        margin-left: 85.6353591160221%;
+        *margin-left: 85.52897613729868%;
+    }
+
+    #jinbound_component .row-fluid .offset9 {
+        margin-left: 79.8342541436464%;
+        *margin-left: 79.72787116492299%;
+    }
+
+    #jinbound_component .row-fluid .offset9:first-child {
+        margin-left: 77.07182320441989%;
+        *margin-left: 76.96544022569647%;
+    }
+
+    #jinbound_component .row-fluid .offset8 {
+        margin-left: 71.2707182320442%;
+        *margin-left: 71.16433525332079%;
+    }
+
+    #jinbound_component .row-fluid .offset8:first-child {
+        margin-left: 68.50828729281768%;
+        *margin-left: 68.40190431409427%;
+    }
+
+    #jinbound_component .row-fluid .offset7 {
+        margin-left: 62.70718232044199%;
+        *margin-left: 62.600799341718584%;
+    }
+
+    #jinbound_component .row-fluid .offset7:first-child {
+        margin-left: 59.94475138121547%;
+        *margin-left: 59.838368402492065%;
+    }
+
+    #jinbound_component .row-fluid .offset6 {
+        margin-left: 54.14364640883978%;
+        *margin-left: 54.037263430116376%;
+    }
+
+    #jinbound_component .row-fluid .offset6:first-child {
+        margin-left: 51.38121546961326%;
+        *margin-left: 51.27483249088986%;
+    }
+
+    #jinbound_component .row-fluid .offset5 {
+        margin-left: 45.58011049723757%;
+        *margin-left: 45.47372751851417%;
+    }
+
+    #jinbound_component .row-fluid .offset5:first-child {
+        margin-left: 42.81767955801105%;
+        *margin-left: 42.71129657928765%;
+    }
+
+    #jinbound_component .row-fluid .offset4 {
+        margin-left: 37.01657458563536%;
+        *margin-left: 36.91019160691196%;
+    }
+
+    #jinbound_component .row-fluid .offset4:first-child {
+        margin-left: 34.25414364640884%;
+        *margin-left: 34.14776066768544%;
+    }
+
+    #jinbound_component .row-fluid .offset3 {
+        margin-left: 28.45303867403315%;
+        *margin-left: 28.346655695309746%;
+    }
+
+    #jinbound_component .row-fluid .offset3:first-child {
+        margin-left: 25.69060773480663%;
+        *margin-left: 25.584224756083227%;
+    }
+
+    #jinbound_component .row-fluid .offset2 {
+        margin-left: 19.88950276243094%;
+        *margin-left: 19.783119783707537%;
+    }
+
+    #jinbound_component .row-fluid .offset2:first-child {
+        margin-left: 17.12707182320442%;
+        *margin-left: 17.02068884448102%;
+    }
+
+    #jinbound_component .row-fluid .offset1 {
+        margin-left: 11.32596685082873%;
+        *margin-left: 11.219583872105325%;
+    }
+
+    #jinbound_component .row-fluid .offset1:first-child {
+        margin-left: 8.56353591160221%;
+        *margin-left: 8.457152932878806%;
+    }
+
+    #jinbound_component input,
+    #jinbound_component textarea,
+    #jinbound_component .uneditable-input {
+        margin-left: 0;
+    }
+
+    #jinbound_component .controls-row [class*="span"] + [class*="span"] {
+        margin-left: 20px;
+    }
+
+    #jinbound_component input.span12,
+    #jinbound_component textarea.span12,
+    #jinbound_component .uneditable-input.span12 {
+        width: 710px;
+    }
+
+    #jinbound_component input.span11,
+    #jinbound_component textarea.span11,
+    #jinbound_component .uneditable-input.span11 {
+        width: 648px;
+    }
+
+    #jinbound_component input.span10,
+    #jinbound_component textarea.span10,
+    #jinbound_component .uneditable-input.span10 {
+        width: 586px;
+    }
+
+    #jinbound_component input.span9,
+    #jinbound_component textarea.span9,
+    #jinbound_component .uneditable-input.span9 {
+        width: 524px;
+    }
+
+    #jinbound_component input.span8,
+    #jinbound_component textarea.span8,
+    #jinbound_component .uneditable-input.span8 {
+        width: 462px;
+    }
+
+    #jinbound_component input.span7,
+    #jinbound_component textarea.span7,
+    #jinbound_component .uneditable-input.span7 {
+        width: 400px;
+    }
+
+    #jinbound_component input.span6,
+    #jinbound_component textarea.span6,
+    #jinbound_component .uneditable-input.span6 {
+        width: 338px;
+    }
+
+    #jinbound_component input.span5,
+    #jinbound_component textarea.span5,
+    #jinbound_component .uneditable-input.span5 {
+        width: 276px;
+    }
+
+    #jinbound_component input.span4,
+    #jinbound_component textarea.span4,
+    #jinbound_component .uneditable-input.span4 {
+        width: 214px;
+    }
+
+    #jinbound_component input.span3,
+    #jinbound_component textarea.span3,
+    #jinbound_component .uneditable-input.span3 {
+        width: 152px;
+    }
+
+    #jinbound_component input.span2,
+    #jinbound_component textarea.span2,
+    #jinbound_component .uneditable-input.span2 {
+        width: 90px;
+    }
+
+    #jinbound_component input.span1,
+    #jinbound_component textarea.span1,
+    #jinbound_component .uneditable-input.span1 {
+        width: 28px;
+    }
 }
 
 @media (max-width: 767px) {
-  body {
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-  #jinbound_component .navbar-fixed-top,
-  #jinbound_component .navbar-fixed-bottom,
-  #jinbound_component .navbar-static-top {
-    margin-right: -20px;
-    margin-left: -20px;
-  }
-  #jinbound_component .container-fluid {
-    padding: 0;
-  }
-  #jinbound_component .dl-horizontal dt {
-    float: none;
-    width: auto;
-    clear: none;
-    text-align: left;
-  }
-  #jinbound_component .dl-horizontal dd {
-    margin-left: 0;
-  }
-  #jinbound_component .container {
-    width: auto;
-  }
-  #jinbound_component .row-fluid {
-    width: 100%;
-  }
-  #jinbound_component .row,
-  #jinbound_component .thumbnails {
-    margin-left: 0;
-  }
-  #jinbound_component .thumbnails > li {
-    float: none;
-    margin-left: 0;
-  }
-  #jinbound_component [class*="span"],
-  #jinbound_component .uneditable-input[class*="span"],
-  #jinbound_component .row-fluid [class*="span"] {
-    display: block;
-    float: none;
-    width: 100%;
-    margin-left: 0;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-  }
-  #jinbound_component .span12,
-  #jinbound_component .row-fluid .span12 {
-    width: 100%;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-  }
-  #jinbound_component .row-fluid [class*="offset"]:first-child {
-    margin-left: 0;
-  }
-  #jinbound_component .input-large,
-  #jinbound_component .input-xlarge,
-  #jinbound_component .input-xxlarge,
-  #jinbound_component input[class*="span"],
-  #jinbound_component select[class*="span"],
-  #jinbound_component textarea[class*="span"],
-  #jinbound_component .uneditable-input {
-    display: block;
-    width: 100%;
-    min-height: 30px;
-    -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-  }
-  #jinbound_component .input-prepend input,
-  #jinbound_component .input-append input,
-  #jinbound_component .input-prepend input[class*="span"],
-  #jinbound_component .input-append input[class*="span"] {
-    display: inline-block;
-    width: auto;
-  }
-  #jinbound_component .controls-row [class*="span"] + [class*="span"] {
-    margin-left: 0;
-  }
-  /*
-  #jinbound_component .modal {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    left: 20px;
-    width: auto;
-    margin: 0;
-  }
-  #jinbound_component .modal.fade {
-    top: -100px;
-  }
-  #jinbound_component .modal.fade.in {
-    top: 20px;
-  }
-  */
+    body {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+    #jinbound_component .navbar-fixed-top,
+    #jinbound_component .navbar-fixed-bottom,
+    #jinbound_component .navbar-static-top {
+        margin-right: -20px;
+        margin-left: -20px;
+    }
+
+    #jinbound_component .container-fluid {
+        padding: 0;
+    }
+
+    #jinbound_component .dl-horizontal dt {
+        float: none;
+        width: auto;
+        clear: none;
+        text-align: left;
+    }
+
+    #jinbound_component .dl-horizontal dd {
+        margin-left: 0;
+    }
+
+    #jinbound_component .container {
+        width: auto;
+    }
+
+    #jinbound_component .row-fluid {
+        width: 100%;
+    }
+
+    #jinbound_component .row,
+    #jinbound_component .thumbnails {
+        margin-left: 0;
+    }
+
+    #jinbound_component .thumbnails > li {
+        float: none;
+        margin-left: 0;
+    }
+
+    #jinbound_component [class*="span"],
+    #jinbound_component .uneditable-input[class*="span"],
+    #jinbound_component .row-fluid [class*="span"] {
+        display: block;
+        float: none;
+        width: 100%;
+        margin-left: 0;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #jinbound_component .span12,
+    #jinbound_component .row-fluid .span12 {
+        width: 100%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #jinbound_component .row-fluid [class*="offset"]:first-child {
+        margin-left: 0;
+    }
+
+    #jinbound_component .input-large,
+    #jinbound_component .input-xlarge,
+    #jinbound_component .input-xxlarge,
+    #jinbound_component input[class*="span"],
+    #jinbound_component select[class*="span"],
+    #jinbound_component textarea[class*="span"],
+    #jinbound_component .uneditable-input {
+        display: block;
+        width: 100%;
+        min-height: 30px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    #jinbound_component .input-prepend input,
+    #jinbound_component .input-append input,
+    #jinbound_component .input-prepend input[class*="span"],
+    #jinbound_component .input-append input[class*="span"] {
+        display: inline-block;
+        width: auto;
+    }
+
+    #jinbound_component .controls-row [class*="span"] + [class*="span"] {
+        margin-left: 0;
+    }
+
+    /*
+    #jinbound_component .modal {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      left: 20px;
+      width: auto;
+      margin: 0;
+    }
+    #jinbound_component .modal.fade {
+      top: -100px;
+    }
+    #jinbound_component .modal.fade.in {
+      top: 20px;
+    }
+    */
 }
 
 @media (max-width: 480px) {
-  #jinbound_component .nav-collapse {
-    -webkit-transform: translate3d(0, 0, 0);
-  }
-  #jinbound_component .page-header h1 small {
-    display: block;
-    line-height: 20px;
-  }
-  #jinbound_component input[type="checkbox"],
-  #jinbound_component input[type="radio"] {
-    border: 1px solid #ccc;
-  }
-  #jinbound_component .form-horizontal .control-label {
-    float: none;
-    width: auto;
-    padding-top: 0;
-    text-align: left;
-  }
-  #jinbound_component .form-horizontal .controls {
-    margin-left: 0;
-  }
-  #jinbound_component .form-horizontal .control-list {
-    padding-top: 0;
-  }
-  #jinbound_component .form-horizontal .form-actions {
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-  #jinbound_component .media .pull-left,
-  #jinbound_component .media .pull-right {
-    display: block;
-    float: none;
-    margin-bottom: 10px;
-  }
-  #jinbound_component .media-object {
-    margin-right: 0;
-    margin-left: 0;
-  }
-  /*
-  #jinbound_component .modal {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-  }
-  */
-  #jinbound_component .modal-header .close {
-    padding: 10px;
-    margin: -10px;
-  }
-  #jinbound_component .carousel-caption {
-    position: static;
-  }
+    #jinbound_component .nav-collapse {
+        -webkit-transform: translate3d(0, 0, 0);
+    }
+
+    #jinbound_component .page-header h1 small {
+        display: block;
+        line-height: 20px;
+    }
+
+    #jinbound_component input[type="checkbox"],
+    #jinbound_component input[type="radio"] {
+        border: 1px solid #ccc;
+    }
+
+    #jinbound_component .form-horizontal .control-label {
+        float: none;
+        width: auto;
+        padding-top: 0;
+        text-align: left;
+    }
+
+    #jinbound_component .form-horizontal .controls {
+        margin-left: 0;
+    }
+
+    #jinbound_component .form-horizontal .control-list {
+        padding-top: 0;
+    }
+
+    #jinbound_component .form-horizontal .form-actions {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    #jinbound_component .media .pull-left,
+    #jinbound_component .media .pull-right {
+        display: block;
+        float: none;
+        margin-bottom: 10px;
+    }
+
+    #jinbound_component .media-object {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    /*
+    #jinbound_component .modal {
+      top: 10px;
+      right: 10px;
+      left: 10px;
+    }
+    */
+    #jinbound_component .modal-header .close {
+        padding: 10px;
+        margin: -10px;
+    }
+
+    #jinbound_component .carousel-caption {
+        position: static;
+    }
 }
 
 @media (max-width: 979px) {
-  body {
-    padding-top: 0;
-  }
-  #jinbound_component .navbar-fixed-top,
-  #jinbound_component .navbar-fixed-bottom {
-    position: static;
-  }
-  #jinbound_component .navbar-fixed-top {
-    margin-bottom: 20px;
-  }
-  #jinbound_component .navbar-fixed-bottom {
-    margin-top: 20px;
-  }
-  #jinbound_component .navbar-fixed-top .navbar-inner,
-  #jinbound_component .navbar-fixed-bottom .navbar-inner {
-    padding: 5px;
-  }
-  #jinbound_component .navbar .container {
-    width: auto;
-    padding: 0;
-  }
-  #jinbound_component .navbar .brand {
-    padding-right: 10px;
-    padding-left: 10px;
-    margin: 0 0 0 -5px;
-  }
-  #jinbound_component .nav-collapse {
-    clear: both;
-  }
-  #jinbound_component .nav-collapse .nav {
-    float: none;
-    margin: 0 0 10px;
-  }
-  #jinbound_component .nav-collapse .nav > li {
-    float: none;
-  }
-  #jinbound_component .nav-collapse .nav > li > a {
-    margin-bottom: 2px;
-  }
-  #jinbound_component .nav-collapse .nav > .divider-vertical {
-    display: none;
-  }
-  #jinbound_component .nav-collapse .nav .nav-header {
-    color: #777777;
-    text-shadow: none;
-  }
-  #jinbound_component .nav-collapse .nav > li > a,
-  #jinbound_component .nav-collapse .dropdown-menu a {
-    padding: 9px 15px;
-    font-weight: bold;
-    color: #777777;
-    -webkit-border-radius: 3px;
-       -moz-border-radius: 3px;
-            border-radius: 3px;
-  }
-  #jinbound_component .nav-collapse .btn {
-    padding: 4px 10px 4px;
-    font-weight: normal;
-    -webkit-border-radius: 4px;
-       -moz-border-radius: 4px;
-            border-radius: 4px;
-  }
-  #jinbound_component .nav-collapse .dropdown-menu li + li a {
-    margin-bottom: 2px;
-  }
-  #jinbound_component .nav-collapse .nav > li > a:hover,
-  #jinbound_component .nav-collapse .nav > li > a:focus,
-  #jinbound_component .nav-collapse .dropdown-menu a:hover,
-  #jinbound_component .nav-collapse .dropdown-menu a:focus {
-    background-color: #f2f2f2;
-  }
-  #jinbound_component .navbar-inverse .nav-collapse .nav > li > a,
-  #jinbound_component .navbar-inverse .nav-collapse .dropdown-menu a {
-    color: #999999;
-  }
-  #jinbound_component .navbar-inverse .nav-collapse .nav > li > a:hover,
-  #jinbound_component .navbar-inverse .nav-collapse .nav > li > a:focus,
-  #jinbound_component .navbar-inverse .nav-collapse .dropdown-menu a:hover,
-  #jinbound_component .navbar-inverse .nav-collapse .dropdown-menu a:focus {
-    background-color: #111111;
-  }
-  #jinbound_component .nav-collapse.in .btn-group {
-    padding: 0;
-    margin-top: 5px;
-  }
-  #jinbound_component .nav-collapse .dropdown-menu {
-    position: static;
-    top: auto;
-    left: auto;
-    display: none;
-    float: none;
-    max-width: none;
-    padding: 0;
-    margin: 0 15px;
-    background-color: transparent;
-    border: none;
-    -webkit-border-radius: 0;
-       -moz-border-radius: 0;
-            border-radius: 0;
-    -webkit-box-shadow: none;
-       -moz-box-shadow: none;
-            box-shadow: none;
-  }
-  #jinbound_component .nav-collapse .open > .dropdown-menu {
-    display: block;
-  }
-  #jinbound_component .nav-collapse .dropdown-menu:before,
-  #jinbound_component .nav-collapse .dropdown-menu:after {
-    display: none;
-  }
-  #jinbound_component .nav-collapse .dropdown-menu .divider {
-    display: none;
-  }
-  #jinbound_component .nav-collapse .nav > li > .dropdown-menu:before,
-  #jinbound_component .nav-collapse .nav > li > .dropdown-menu:after {
-    display: none;
-  }
-  #jinbound_component .nav-collapse .navbar-form,
-  #jinbound_component .nav-collapse .navbar-search {
-    float: none;
-    padding: 10px 15px;
-    margin: 10px 0;
-    border-top: 1px solid #f2f2f2;
-    border-bottom: 1px solid #f2f2f2;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-       -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-  #jinbound_component .navbar-inverse .nav-collapse .navbar-form,
-  #jinbound_component .navbar-inverse .nav-collapse .navbar-search {
-    border-top-color: #111111;
-    border-bottom-color: #111111;
-  }
-  #jinbound_component .navbar .nav-collapse .nav.pull-right {
-    float: none;
-    margin-left: 0;
-  }
-  #jinbound_component .nav-collapse,
-  #jinbound_component .nav-collapse.collapse {
-    height: 0;
-    overflow: hidden;
-  }
-  #jinbound_component .navbar .btn-navbar {
-    display: block;
-  }
-  #jinbound_component .navbar-static .navbar-inner {
-    padding-right: 10px;
-    padding-left: 10px;
-  }
+    body {
+        padding-top: 0;
+    }
+
+    #jinbound_component .navbar-fixed-top,
+    #jinbound_component .navbar-fixed-bottom {
+        position: static;
+    }
+
+    #jinbound_component .navbar-fixed-top {
+        margin-bottom: 20px;
+    }
+
+    #jinbound_component .navbar-fixed-bottom {
+        margin-top: 20px;
+    }
+
+    #jinbound_component .navbar-fixed-top .navbar-inner,
+    #jinbound_component .navbar-fixed-bottom .navbar-inner {
+        padding: 5px;
+    }
+
+    #jinbound_component .navbar .container {
+        width: auto;
+        padding: 0;
+    }
+
+    #jinbound_component .navbar .brand {
+        padding-right: 10px;
+        padding-left: 10px;
+        margin: 0 0 0 -5px;
+    }
+
+    #jinbound_component .nav-collapse {
+        clear: both;
+    }
+
+    #jinbound_component .nav-collapse .nav {
+        float: none;
+        margin: 0 0 10px;
+    }
+
+    #jinbound_component .nav-collapse .nav > li {
+        float: none;
+    }
+
+    #jinbound_component .nav-collapse .nav > li > a {
+        margin-bottom: 2px;
+    }
+
+    #jinbound_component .nav-collapse .nav > .divider-vertical {
+        display: none;
+    }
+
+    #jinbound_component .nav-collapse .nav .nav-header {
+        color: #777777;
+        text-shadow: none;
+    }
+
+    #jinbound_component .nav-collapse .nav > li > a,
+    #jinbound_component .nav-collapse .dropdown-menu a {
+        padding: 9px 15px;
+        font-weight: bold;
+        color: #777777;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+    }
+
+    #jinbound_component .nav-collapse .btn {
+        padding: 4px 10px 4px;
+        font-weight: normal;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+    }
+
+    #jinbound_component .nav-collapse .dropdown-menu li + li a {
+        margin-bottom: 2px;
+    }
+
+    #jinbound_component .nav-collapse .nav > li > a:hover,
+    #jinbound_component .nav-collapse .nav > li > a:focus,
+    #jinbound_component .nav-collapse .dropdown-menu a:hover,
+    #jinbound_component .nav-collapse .dropdown-menu a:focus {
+        background-color: #f2f2f2;
+    }
+
+    #jinbound_component .navbar-inverse .nav-collapse .nav > li > a,
+    #jinbound_component .navbar-inverse .nav-collapse .dropdown-menu a {
+        color: #999999;
+    }
+
+    #jinbound_component .navbar-inverse .nav-collapse .nav > li > a:hover,
+    #jinbound_component .navbar-inverse .nav-collapse .nav > li > a:focus,
+    #jinbound_component .navbar-inverse .nav-collapse .dropdown-menu a:hover,
+    #jinbound_component .navbar-inverse .nav-collapse .dropdown-menu a:focus {
+        background-color: #111111;
+    }
+
+    #jinbound_component .nav-collapse.in .btn-group {
+        padding: 0;
+        margin-top: 5px;
+    }
+
+    #jinbound_component .nav-collapse .dropdown-menu {
+        position: static;
+        top: auto;
+        left: auto;
+        display: none;
+        float: none;
+        max-width: none;
+        padding: 0;
+        margin: 0 15px;
+        background-color: transparent;
+        border: none;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+
+    #jinbound_component .nav-collapse .open > .dropdown-menu {
+        display: block;
+    }
+
+    #jinbound_component .nav-collapse .dropdown-menu:before,
+    #jinbound_component .nav-collapse .dropdown-menu:after {
+        display: none;
+    }
+
+    #jinbound_component .nav-collapse .dropdown-menu .divider {
+        display: none;
+    }
+
+    #jinbound_component .nav-collapse .nav > li > .dropdown-menu:before,
+    #jinbound_component .nav-collapse .nav > li > .dropdown-menu:after {
+        display: none;
+    }
+
+    #jinbound_component .nav-collapse .navbar-form,
+    #jinbound_component .nav-collapse .navbar-search {
+        float: none;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-top: 1px solid #f2f2f2;
+        border-bottom: 1px solid #f2f2f2;
+        -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+        -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    #jinbound_component .navbar-inverse .nav-collapse .navbar-form,
+    #jinbound_component .navbar-inverse .nav-collapse .navbar-search {
+        border-top-color: #111111;
+        border-bottom-color: #111111;
+    }
+
+    #jinbound_component .navbar .nav-collapse .nav.pull-right {
+        float: none;
+        margin-left: 0;
+    }
+
+    #jinbound_component .nav-collapse,
+    #jinbound_component .nav-collapse.collapse {
+        height: 0;
+        overflow: hidden;
+    }
+
+    #jinbound_component .navbar .btn-navbar {
+        display: block;
+    }
+
+    #jinbound_component .navbar-static .navbar-inner {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
 }
 
 @media (min-width: 980px) {
-  #jinbound_component .nav-collapse.collapse {
-    height: auto !important;
-    overflow: visible !important;
-  }
+    #jinbound_component .nav-collapse.collapse {
+        height: auto !important;
+        overflow: visible !important;
+    }
 }

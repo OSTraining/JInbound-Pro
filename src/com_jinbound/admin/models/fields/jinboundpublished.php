@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -13,13 +13,14 @@ JFormHelper::loadFieldClass('list');
 
 class JFormFieldJinboundPublished extends JFormFieldList
 {
-	public $type = 'Jinboundpublished';
+    public $type = 'Jinboundpublished';
 
-	protected function getOptions() {
-		// list of published types
-		$list = array();
-		$list[] = JHtml::_('select.option', 0, JText::_('COM_JINBOUND_UNPUBLISHED'));
-		$list[] = JHtml::_('select.option', 1, JText::_('COM_JINBOUND_PUBLISHED'));
-		return array_merge(parent::getOptions(), $list);
-	}
+    protected function getOptions()
+    {
+        // list of published types
+        $list   = array();
+        $list[] = JHtml::_('select.option', 0, JText::_('COM_JINBOUND_UNPUBLISHED'));
+        $list[] = JHtml::_('select.option', 1, JText::_('COM_JINBOUND_PUBLISHED'));
+        return array_merge(parent::getOptions(), $list);
+    }
 }

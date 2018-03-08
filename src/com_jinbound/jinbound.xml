@@ -48,49 +48,49 @@
 		<menu img="../media/jinbound/images/icon-16-jinbound.png">COM_JINBOUND</menu>
 		<submenu>
 			<menu link="option=com_jinbound"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Dashboard"
-			>COM_JINBOUND_DASHBOARD</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Dashboard"
+            >COM_JINBOUND_DASHBOARD</menu>
 			<menu link="option=com_jinbound&amp;view=campaigns" view="campaigns"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Campaigns"
-			>COM_JINBOUND_CAMPAIGNS_MANAGER</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Campaigns"
+            >COM_JINBOUND_CAMPAIGNS_MANAGER</menu>
 			<menu link="option=com_jinbound&amp;view=emails" view="emails"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Emails"
-			>COM_JINBOUND_LEAD_NURTURING_MANAGER</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Emails"
+            >COM_JINBOUND_LEAD_NURTURING_MANAGER</menu>
 			<menu link="option=com_jinbound&amp;view=pages" view="pages"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Pages"
-			>COM_JINBOUND_PAGES</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Pages"
+            >COM_JINBOUND_PAGES</menu>
 			<menu link="option=com_jinbound&amp;view=contacts" view="contacts"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Leads"
-			>COM_JINBOUND_LEADS</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Leads"
+            >COM_JINBOUND_LEADS</menu>
 			<menu link="option=com_jinbound&amp;view=reports" view="reports"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Reports"
-			>COM_JINBOUND_REPORTS</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Reports"
+            >COM_JINBOUND_REPORTS</menu>
 			<menu link="option=com_categories&amp;view=categories&amp;extension=com_jinbound" view="categories"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Categories"
-			>JCATEGORIES</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Categories"
+            >JCATEGORIES</menu>
 			<menu link="option=com_jinbound&amp;view=statuses" view="statuses"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Statuses"
-			>COM_JINBOUND_STATUSES</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Statuses"
+            >COM_JINBOUND_STATUSES</menu>
 			<menu link="option=com_jinbound&amp;view=priorities" view="priorities"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Priorities"
-			>COM_JINBOUND_PRIORITIES</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Priorities"
+            >COM_JINBOUND_PRIORITIES</menu>
 			<menu link="option=com_jinbound&amp;view=forms" view="forms"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Forms"
-			>COM_JINBOUND_FORMS</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Forms"
+            >COM_JINBOUND_FORMS</menu>
 			<menu link="option=com_jinbound&amp;view=fields" view="fields"
-						img="../media/jinbound/images/icon-16-jinbound.png"
-						alt="jInbound/Fields"
-			>COM_JINBOUND_FIELDS</menu>
+                  img="../media/jinbound/images/icon-16-jinbound.png"
+                  alt="jInbound/Fields"
+            >COM_JINBOUND_FIELDS</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>

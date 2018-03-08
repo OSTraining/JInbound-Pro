@@ -1,8 +1,8 @@
 <?php
 /**
- * @package LiveUpdate
+ * @package   LiveUpdate
  * @copyright Copyright ©2011-2013 Nicholas K. Dionysopoulos / AkeebaBackup.com
- * @license GNU LGPLv3 or later <http://www.gnu.org/copyleft/lesser.html>
+ * @license   GNU LGPLv3 or later <http://www.gnu.org/copyleft/lesser.html>
  */
 
 defined('_JEXEC') or die();
@@ -12,33 +12,32 @@ defined('_JEXEC') or die();
  */
 class LiveUpdateConfig extends LiveUpdateAbstractConfig
 {
-	var $_extensionName			= 'plg_system_jinboundsalesforce';
-	var $_extensionTitle		= 'System - JInbound Salesforce';
-	var $_updateURL				= 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=8';
-	var $_requiresAuthorization	= true;
-	var $_versionStrategy		= 'vcompare';
-	var $_storageAdapter		= 'file';
-	var $_storageConfig			= array(
-		'extensionName'	=> 'plg_system_jinboundsalesforce',
-		'key'			=> 'liveupdate'
-	);
-	var $_xmlFilename       = 'jinboundsalesforce.xml';
-	
-	public function __construct()
-	{
-		parent::__construct();
-		$db = JFactory::getDbo();
-		$json = $db->setQuery($db->getQuery(true)
-			->select('params')
-			->from('#__extensions')
-			->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
-			->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
-			->where($db->quoteName('element') . ' = ' . $db->quote('jinboundsalesforce'))
-		)->loadResult();
-		$params = json_decode($json);
-		if (is_object($params) && property_exists($params, 'downloadid'))
-		{
-			$this->_downloadID = $params->downloadid;
-		}
-	}
+    var $_extensionName         = 'plg_system_jinboundsalesforce';
+    var $_extensionTitle        = 'System - JInbound Salesforce';
+    var $_updateURL             = 'http://jinbound.com/index.php?option=com_ars&view=update&format=ini&id=8';
+    var $_requiresAuthorization = true;
+    var $_versionStrategy       = 'vcompare';
+    var $_storageAdapter        = 'file';
+    var $_storageConfig         = array(
+        'extensionName' => 'plg_system_jinboundsalesforce',
+        'key'           => 'liveupdate'
+    );
+    var $_xmlFilename           = 'jinboundsalesforce.xml';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $db     = JFactory::getDbo();
+        $json   = $db->setQuery($db->getQuery(true)
+            ->select('params')
+            ->from('#__extensions')
+            ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
+            ->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
+            ->where($db->quoteName('element') . ' = ' . $db->quote('jinboundsalesforce'))
+        )->loadResult();
+        $params = json_decode($json);
+        if (is_object($params) && property_exists($params, 'downloadid')) {
+            $this->_downloadID = $params->downloadid;
+        }
+    }
 }

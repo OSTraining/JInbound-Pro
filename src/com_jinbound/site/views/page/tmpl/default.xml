@@ -2,27 +2,27 @@
 <metadata>
 	<layout title="com_jinbound_page_view_default_title" option="com_jinbound_page_view_default_option">
 		<help
-			key="JHELP_MENUS_MENU_ITEM_JINBOUND_PAGE"
-		/>
+            key="JHELP_MENUS_MENU_ITEM_JINBOUND_PAGE"
+        />
 		<message>
 			<![CDATA[com_jinbound_page_view_default_desc]]>
 		</message>
 	</layout>
 
-	<!-- Add fields to the request variables for the layout. -->
-	<fields name="request">
+    <!-- Add fields to the request variables for the layout. -->
+    <fields name="request">
 		<fieldset name="request"
-			addfieldpath="/administrator/components/com_jinbound/models/fields"
-		>
+                  addfieldpath="/administrator/components/com_jinbound/models/fields"
+        >
 			<field
-				name="id" type="jinboundpage"
-				description="COM_JINBOUND_PAGE_FIELD_LANDING_PAGE_DESC"
-				label="COM_JINBOUND_PAGE_FIELD_LANDING_PAGE"
-				required="true"
-			/>
+                name="id" type="jinboundpage"
+                description="COM_JINBOUND_PAGE_FIELD_LANDING_PAGE_DESC"
+                label="COM_JINBOUND_PAGE_FIELD_LANDING_PAGE"
+                required="true"
+            />
 		</fieldset>
 	</fields>
-	<!-- Add fields to the parameters object for the layout. -->
-	<fields name="params">
+    <!-- Add fields to the parameters object for the layout. -->
+    <fields name="params">
 	</fields>
 </metadata>

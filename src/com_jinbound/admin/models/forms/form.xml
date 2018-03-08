@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form addfieldpath="/administrator/components/com_jinbound/models/fields">
 	<fieldset
-		name="default"
-		label="COM_JINBOUND_FORM_FIELDSET_DEFAULT"
-	>
-		<field name="id" type="hidden" default="0" readonly="true" />
-		<field name="created" type="hidden" default="" readonly="true" />
-		<field name="created_by" type="hidden" default="0" readonly="true" />
-		<field name="modified" type="hidden" default="" readonly="true" />
-		<field name="modified_by" type="hidden" default="0" readonly="true" />
+        name="default"
+        label="COM_JINBOUND_FORM_FIELDSET_DEFAULT"
+    >
+		<field name="id" type="hidden" default="0" readonly="true"/>
+		<field name="created" type="hidden" default="" readonly="true"/>
+		<field name="created_by" type="hidden" default="0" readonly="true"/>
+		<field name="modified" type="hidden" default="" readonly="true"/>
+		<field name="modified_by" type="hidden" default="0" readonly="true"/>
 		<field
-			id="title" name="title"
-			type="text"
-			label="JGLOBAL_TITLE"
-			description="JFIELD_TITLE_DESC"
-			class="inputbox"
-			size="24"
-			required="true"
-		/>
+            id="title" name="title"
+            type="text"
+            label="JGLOBAL_TITLE"
+            description="JFIELD_TITLE_DESC"
+            class="inputbox"
+            size="24"
+            required="true"
+        />
 	</fieldset>
-	
-	<!-- 
-	
-	Form details
-	
-	-->
-	<fieldset
-		name="content"
-		label="COM_JINBOUND_FORM_FIELDSET_CONTENT"
-	>
+
+    <!--
+
+    Form details
+
+    -->
+    <fieldset
+        name="content"
+        label="COM_JINBOUND_FORM_FIELDSET_CONTENT"
+    >
 		<field
-			id="published" name="published"
-			type="jinboundpublished"
-			label="COM_JINBOUND_PUBLISHED"
-			description="COM_JINBOUND_PUBLISHED_DESC"
-			class="inputbox"
-		/>
+            id="published" name="published"
+            type="jinboundpublished"
+            label="COM_JINBOUND_PUBLISHED"
+            description="COM_JINBOUND_PUBLISHED_DESC"
+            class="inputbox"
+        />
 		<field
-			id="formfields" name="formfields"
-			type="jinboundfields"
-			label="COM_JINBOUND_FORM_FORMFIELDS_LABEL"
-			description="COM_JINBOUND_FORM_FORMFIELDS_DESC"
-		/>
+            id="formfields" name="formfields"
+            type="jinboundfields"
+            label="COM_JINBOUND_FORM_FORMFIELDS_LABEL"
+            description="COM_JINBOUND_FORM_FORMFIELDS_DESC"
+        />
 	</fieldset>
 </form>

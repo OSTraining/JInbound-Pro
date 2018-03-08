@@ -1,13 +1,16 @@
 #jinbound_component .checkbox ul {
-	list-style-type: none;
-	margin-left: 0px !important;
+    list-style-type: none;
+    margin-left: 0px !important;
 }
+
 #jinbound_component .jinbound_image {
-	padding-bottom: 20px;
+    padding-bottom: 20px;
 }
+
 #jinbound_component .invalid {
-	color: red;
+    color: red;
 }
+
 #jinbound_component input.invalid, #jinbound_component select.invalid {
-	border: 1px solid red !important;
+    border: 1px solid red !important;
 }

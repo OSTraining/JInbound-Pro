@@ -5,29 +5,29 @@
  */
 
 .jinboundkeyval {
-	float: left;
-	display: block;
+    float: left;
+    display: block;
 }
 
 .jinboundkeyval input {
-	float: none;
-	float: none !important;
-	margin: 5px 0;
+    float: none;
+    float: none !important;
+    margin: 5px 0;
 }
 
 .jinboundkeyval_key, .jinboundkeyval_stage {
-	clear: left;
+    clear: left;
 }
 
 .jinboundkeyval_labels span {
-	float: left;
-	display: block;
-	text-align: center;
-	font-weight: bold;
+    float: left;
+    display: block;
+    text-align: center;
+    font-weight: bold;
 }
 
 .jinboundkeyval_labels span,
 .jinboundkeyval_key,
 .jinboundkeyval_value {
-	width: 28%;
+    width: 28%;
 }

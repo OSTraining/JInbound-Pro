@@ -1,8 +1,8 @@
 <?php
 /**
- * @package LiveUpdate
+ * @package   LiveUpdate
  * @copyright Copyright (c)2010-2013 Nicholas K. Dionysopoulos / AkeebaBackup.com
- * @license GNU LGPLv3 or later <http://www.gnu.org/copyleft/lesser.html>
+ * @license   GNU LGPLv3 or later <http://www.gnu.org/copyleft/lesser.html>
  *
  * One-click updater for Joomla! extensions
  * Copyright (C) 2011-2013  Nicholas K. Dionysopoulos / AkeebaBackup.com
@@ -23,111 +23,112 @@
 
 defined('_JEXEC') or die();
 
-require_once JPATH_ADMINISTRATOR.'/components/com_jinbound/liveupdate/classes/abstractconfig.php';
-require_once dirname(__FILE__).'/config.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/liveupdate/classes/abstractconfig.php';
+require_once dirname(__FILE__) . '/config.php';
 
 class LiveUpdate
 {
-	/** @var string The current version of Akeeba Live Update */
-	public static $version = '1.1';
+    /** @var string The current version of Akeeba Live Update */
+    public static $version = '1.1';
 
-	/**
-	 * Loads the translation strings -- this is an internal function, called automatically
-	 */
-	private static function loadLanguage()
-	{
-		// Load translations
-		$basePath = JPATH_ADMINISTRATOR.'/components/com_jinbound/liveupdate';
-		$jlang = JFactory::getLanguage();
-		$jlang->load('liveupdate', $basePath, 'en-GB', true); // Load English (British)
-		$jlang->load('liveupdate', $basePath, $jlang->getDefault(), true); // Load the site's default language
-		$jlang->load('liveupdate', $basePath, null, true); // Load the currently selected language
-	}
+    /**
+     * Handles requests to the "liveupdate" view which is used to display
+     * update information and perform the live updates
+     */
+    public static function handleRequest()
+    {
+        // Load language strings
+        self::loadLanguage();
 
-	/**
-	 * Handles requests to the "liveupdate" view which is used to display
-	 * update information and perform the live updates
-	 */
-	public static function handleRequest()
-	{
-		// Load language strings
-		self::loadLanguage();
+        // Load the controller and let it run the show
+        require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/liveupdate/classes/controller.php';
+        $controller = new LiveUpdateController();
+        $controller->execute(JRequest::getCmd('task', 'overview'));
+        $controller->redirect();
+    }
 
-		// Load the controller and let it run the show
-		require_once JPATH_ADMINISTRATOR.'/components/com_jinbound/liveupdate/classes/controller.php';
-		$controller = new LiveUpdateController();
-		$controller->execute(JRequest::getCmd('task','overview'));
-		$controller->redirect();
-	}
+    /**
+     * Loads the translation strings -- this is an internal function, called automatically
+     */
+    private static function loadLanguage()
+    {
+        // Load translations
+        $basePath = JPATH_ADMINISTRATOR . '/components/com_jinbound/liveupdate';
+        $jlang    = JFactory::getLanguage();
+        $jlang->load('liveupdate', $basePath, 'en-GB', true); // Load English (British)
+        $jlang->load('liveupdate', $basePath, $jlang->getDefault(), true); // Load the site's default language
+        $jlang->load('liveupdate', $basePath, null, true); // Load the currently selected language
+    }
 
-	/**
-	 * Returns update information about your extension, based on your configuration settings
-	 * @return stdClass
-	 */
-	public static function getUpdateInformation($force = false)
-	{
-		require_once JPATH_ADMINISTRATOR.'/components/com_jinbound/liveupdate/classes/updatefetch.php';
-		$update = new LiveUpdateFetch();
-		$info = $update->getUpdateInformation($force);
-		$hasUpdates = $update->hasUpdates($force);
-		$info->hasUpdates = $hasUpdates;
+    public static function getIcon($config = array())
+    {
+        // Load language strings
+        self::loadLanguage();
 
-		$config = LiveUpdateConfig::getInstance();
-		$extInfo = $config->getExtensionInformation();
+        // Initialize the array of button options
+        $button = array();
 
-		$info->extInfo = (object)$extInfo;
+        $defaultConfig = array(
+            'option'   => 'plg_system_jinboundregistration',
+            'view'     => 'liveupdate',
+            'mediaurl' => JURI::base() . 'components/com_jinbound/liveupdate/assets/'
+        );
+        $c             = array_merge($defaultConfig, $config);
 
-		return $info;
-	}
+        $button['link']  = 'index.php?option=com_jinbound&view=' . $c['view'] . '&ext=jinboundregistration&type=plg&folder=system';
+        $button['image'] = $c['mediaurl'];
 
-	public static function getIcon($config=array())
-	{
-		// Load language strings
-		self::loadLanguage();
+        $updateInfo = self::getUpdateInformation();
+        if (!$updateInfo->supported) {
+            // Unsupported
+            $button['class'] = 'liveupdate-icon-notsupported';
+            $button['image'] .= 'nosupport-32.png';
+            $button['text']  = JText::_('LIVEUPDATE_ICON_UNSUPPORTED');
+        } elseif ($updateInfo->stuck) {
+            // Stuck
+            $button['class'] = 'liveupdate-icon-crashed';
+            $button['image'] .= 'nosupport-32.png';
+            $button['text']  = JText::_('LIVEUPDATE_ICON_CRASHED');
+        } elseif ($updateInfo->hasUpdates) {
+            // Has updates
+            $button['class'] = 'liveupdate-icon-updates';
+            $button['image'] .= 'update-32.png';
+            $button['text']  = JText::_('LIVEUPDATE_ICON_UPDATES');
+        } else {
+            // Already in the latest release
+            $button['class'] = 'liveupdate-icon-noupdates';
+            $button['image'] .= 'current-32.png';
+            $button['text']  = JText::_('LIVEUPDATE_ICON_CURRENT');
+        }
+        if (version_compare(JVERSION, '2.5', 'ge')) {
+            return '<div class="icon"><a href="' . $button['link'] . '">' .
+                '<div style="text-align: center;"><img src="' . $button['image'] . '" width="32" height="32" border="0" align="middle" style="float: none" /></div>' .
+                '<span class="' . $button['class'] . '">' . $button['text'] . '</span></a></div>';
+        } else {
+            return '<div class="icon"><a href="' . $button['link'] . '">' .
+                '<div><img src="' . $button['image'] . '" width="32" height="32" border="0" align="middle" style="float: none" /></div>' .
+                '<span class="' . $button['class'] . '">' . $button['text'] . '</span></a></div>';
+        }
+    }
 
-		// Initialize the array of button options
-		$button = array();
+    /**
+     * Returns update information about your extension, based on your configuration settings
+     *
+     * @return stdClass
+     */
+    public static function getUpdateInformation($force = false)
+    {
+        require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/liveupdate/classes/updatefetch.php';
+        $update           = new LiveUpdateFetch();
+        $info             = $update->getUpdateInformation($force);
+        $hasUpdates       = $update->hasUpdates($force);
+        $info->hasUpdates = $hasUpdates;
 
-		$defaultConfig = array(
-			'option'			=> 'plg_system_jinboundregistration',
-			'view'				=> 'liveupdate',
-			'mediaurl'			=> JURI::base().'components/com_jinbound/liveupdate/assets/'
-		);
-		$c = array_merge($defaultConfig, $config);
+        $config  = LiveUpdateConfig::getInstance();
+        $extInfo = $config->getExtensionInformation();
 
-		$button['link'] = 'index.php?option=com_jinbound&view='.$c['view'].'&ext=jinboundregistration&type=plg&folder=system';
-		$button['image'] = $c['mediaurl'];
+        $info->extInfo = (object)$extInfo;
 
-		$updateInfo = self::getUpdateInformation();
-		if(!$updateInfo->supported) {
-			// Unsupported
-			$button['class'] = 'liveupdate-icon-notsupported';
-			$button['image'] .= 'nosupport-32.png';
-			$button['text'] = JText::_('LIVEUPDATE_ICON_UNSUPPORTED');
-		} elseif($updateInfo->stuck) {
-			// Stuck
-			$button['class'] = 'liveupdate-icon-crashed';
-			$button['image'] .= 'nosupport-32.png';
-			$button['text'] = JText::_('LIVEUPDATE_ICON_CRASHED');
-		} elseif($updateInfo->hasUpdates) {
-			// Has updates
-			$button['class'] = 'liveupdate-icon-updates';
-			$button['image'] .= 'update-32.png';
-			$button['text'] = JText::_('LIVEUPDATE_ICON_UPDATES');
-		} else {
-			// Already in the latest release
-			$button['class'] = 'liveupdate-icon-noupdates';
-			$button['image'] .= 'current-32.png';
-			$button['text'] = JText::_('LIVEUPDATE_ICON_CURRENT');
-		}
-		if(version_compare(JVERSION, '2.5', 'ge')) {
-			return '<div class="icon"><a href="'.$button['link'].'">'.
-			'<div style="text-align: center;"><img src="'.$button['image'].'" width="32" height="32" border="0" align="middle" style="float: none" /></div>'.
-			'<span class="'.$button['class'].'">'.$button['text'].'</span></a></div>';
-		} else {
-			return '<div class="icon"><a href="'.$button['link'].'">'.
-			'<div><img src="'.$button['image'].'" width="32" height="32" border="0" align="middle" style="float: none" /></div>'.
-			'<span class="'.$button['class'].'">'.$button['text'].'</span></a></div>';
-		}
-	}
+        return $info;
+    }
 }

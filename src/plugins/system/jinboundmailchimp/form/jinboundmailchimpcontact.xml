@@ -2,8 +2,8 @@
 <form>
 	<fieldset name="mailchimp" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_FIELDSET">
 		<field
-			name="mailchimp"
-			type="jinboundmailchimpcontactinfo"
-		/>
+            name="mailchimp"
+            type="jinboundmailchimpcontactinfo"
+        />
 	</fieldset>
 </form>

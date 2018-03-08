@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -16,26 +16,29 @@ JInbound::registerLibrary('JInboundTable', 'table');
 class JInboundTableStage extends JInboundTable
 {
 
-	function __construct(&$db) {
-		parent::__construct('#__jinbound_stages', 'id', $db);
-	}
-	
-	/**
-	 * Redefined asset name, as we support action control
-	 */
-	protected function _getAssetName() {
-		$k = $this->_tbl_key;
-		return 'com_jinbound.stage.'.(int) $this->$k;
-	}
-	
-	/**
-	 * We provide our global ACL as parent
-	 * @see JTable::_getAssetParentId()
-	 */
-	protected function _compat_getAssetParentId($table = null, $id = null)
-	{
-		$asset = JTable::getInstance('Asset');
-		$asset->loadByName('com_jinbound');
-		return $asset->id;
-	}
+    function __construct(&$db)
+    {
+        parent::__construct('#__jinbound_stages', 'id', $db);
+    }
+
+    /**
+     * Redefined asset name, as we support action control
+     */
+    protected function _getAssetName()
+    {
+        $k = $this->_tbl_key;
+        return 'com_jinbound.stage.' . (int)$this->$k;
+    }
+
+    /**
+     * We provide our global ACL as parent
+     *
+     * @see JTable::_getAssetParentId()
+     */
+    protected function _compat_getAssetParentId($table = null, $id = null)
+    {
+        $asset = JTable::getInstance('Asset');
+        $asset->loadByName('com_jinbound');
+        return $asset->id;
+    }
 }

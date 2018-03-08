@@ -1,131 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form addfieldpath="/administrator/components/com_jinbound/models/fields">
 	<fieldset
-		name="default"
-		label="COM_JINBOUND_FIELD_FIELDSET_DEFAULT"
-	>
-		<field name="id" type="hidden" default="0" readonly="true" />
-		<field name="asset_id" type="hidden" default="0" readonly="true" />
-		<field name="created" type="hidden" default="" readonly="true" />
-		<field name="created_by" type="hidden" default="0" readonly="true" />
-		<field name="modified" type="hidden" default="" readonly="true" />
-		<field name="modified_by" type="hidden" default="0" readonly="true" />
+        name="default"
+        label="COM_JINBOUND_FIELD_FIELDSET_DEFAULT"
+    >
+		<field name="id" type="hidden" default="0" readonly="true"/>
+		<field name="asset_id" type="hidden" default="0" readonly="true"/>
+		<field name="created" type="hidden" default="" readonly="true"/>
+		<field name="created_by" type="hidden" default="0" readonly="true"/>
+		<field name="modified" type="hidden" default="" readonly="true"/>
+		<field name="modified_by" type="hidden" default="0" readonly="true"/>
 		<field
-			id="title" name="title"
-			type="text"
-			label="JGLOBAL_TITLE"
-			description="JFIELD_TITLE_DESC"
-			class="input-block-level"
-			size="30"
-			required="true"
-		/>
+            id="title" name="title"
+            type="text"
+            label="JGLOBAL_TITLE"
+            description="JFIELD_TITLE_DESC"
+            class="input-block-level"
+            size="30"
+            required="true"
+        />
 	</fieldset>
-	<!-- 
-	
-	Main "field" fieldset
-	
-	-->
-	<fieldset
-		name="content"
-		label="COM_JINBOUND_FIELD_FIELDSET_CONTENT"
-	>
+    <!--
+
+    Main "field" fieldset
+
+    -->
+    <fieldset
+        name="content"
+        label="COM_JINBOUND_FIELD_FIELDSET_CONTENT"
+    >
 		<field
-			id="published" name="published"
-			type="jinboundpublished"
-			label="COM_JINBOUND_PUBLISHED"
-			description="COM_JINBOUND_PUBLISHED_DESC"
-			class="inputbox"
-		/>
+            id="published" name="published"
+            type="jinboundpublished"
+            label="COM_JINBOUND_PUBLISHED"
+            description="COM_JINBOUND_PUBLISHED_DESC"
+            class="inputbox"
+        />
 		<field
-			id="name" name="name"
-			type="text"
-			label="COM_JINBOUND_FIELD_NAME_LABEL"
-			description="COM_JINBOUND_FIELD_NAME_DESC"
-			class="inputbox"
-			size="30"
-			required="true"
-		/>
+            id="name" name="name"
+            type="text"
+            label="COM_JINBOUND_FIELD_NAME_LABEL"
+            description="COM_JINBOUND_FIELD_NAME_DESC"
+            class="inputbox"
+            size="30"
+            required="true"
+        />
 		<field
-			id="type" name="type"
-			type="jinboundfieldtype"
-			label="COM_JINBOUND_FIELD_TYPE_LABEL"
-			description="COM_JINBOUND_FIELD_TYPE_DESC"
-			class="inputbox"
-			ignoredfields="accesslevel,cachehandler,calendar,category,combo,componentlayout,contentlanguage,databaseconnection,editor,editors,file,filelist,folderlist,imagelist,groupedlist,helpsite,language,menu,menuitem,modulelayout,note,password,plugins,predefinedlist,repeatable,rules,sessionhandler,spacer,sql,templatestyle,timezone,user,usergroup"
-		/>
+            id="type" name="type"
+            type="jinboundfieldtype"
+            label="COM_JINBOUND_FIELD_TYPE_LABEL"
+            description="COM_JINBOUND_FIELD_TYPE_DESC"
+            class="inputbox"
+            ignoredfields="accesslevel,cachehandler,calendar,category,combo,componentlayout,contentlanguage,databaseconnection,editor,editors,file,filelist,folderlist,imagelist,groupedlist,helpsite,language,menu,menuitem,modulelayout,note,password,plugins,predefinedlist,repeatable,rules,sessionhandler,spacer,sql,templatestyle,timezone,user,usergroup"
+        />
 		<field
-			id="description" name="description"
-			type="textarea"
-			label="COM_JINBOUND_FIELD_DESCRIPTION_LABEL"
-			description="COM_JINBOUND_FIELD_DESCRIPTION_DESC"
-			class="inputbox"
-		/>
+            id="description" name="description"
+            type="textarea"
+            label="COM_JINBOUND_FIELD_DESCRIPTION_LABEL"
+            description="COM_JINBOUND_FIELD_DESCRIPTION_DESC"
+            class="inputbox"
+        />
 		<field
-			id="default" name="default"
-			type="text"
-			label="COM_JINBOUND_FIELD_DEFAULT_LABEL"
-			description="COM_JINBOUND_FIELD_DEFAULT_DESC"
-			class="inputbox"
-		/>
+            id="default" name="default"
+            type="text"
+            label="COM_JINBOUND_FIELD_DEFAULT_LABEL"
+            description="COM_JINBOUND_FIELD_DEFAULT_DESC"
+            class="inputbox"
+        />
 	</fieldset>
-	<!--
-	
-	Parameters fields for "field"
-	
-	-->
-	<fields name="params">
+    <!--
+
+    Parameters fields for "field"
+
+    -->
+    <fields name="params">
 		<fieldset
-			name="attributes"
-			label="COM_JINBOUND_FIELD_FIELDSET_ATTRIBUTES"
-		>
+            name="attributes"
+            label="COM_JINBOUND_FIELD_FIELDSET_ATTRIBUTES"
+        >
 			<field
-				name="classname"
-				type="text"
-				default="input-block-level"
-				label="COM_JINBOUND_FIELD_PARAMS_CLASSNAME_LABEL"
-				description="COM_JINBOUND_FIELD_PARAMS_CLASSNAME_DESC"
-			/>
+                name="classname"
+                type="text"
+                default="input-block-level"
+                label="COM_JINBOUND_FIELD_PARAMS_CLASSNAME_LABEL"
+                description="COM_JINBOUND_FIELD_PARAMS_CLASSNAME_DESC"
+            />
 			<field
-				name="required"
-				type="radio"
-				default="0"
-				label="COM_JINBOUND_FIELD_REQUIRED"
-				description="COM_JINBOUND_FIELD_REQUIRED_DESC"
-				class="radio btn-group btn-group-yesno"
-			>
+                name="required"
+                type="radio"
+                default="0"
+                label="COM_JINBOUND_FIELD_REQUIRED"
+                description="COM_JINBOUND_FIELD_REQUIRED_DESC"
+                class="radio btn-group btn-group-yesno"
+            >
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
 			<field
-				name="show_label"
-				type="radio"
-				default="1"
-				label="COM_JINBOUND_FIELD_SHOW_LABEL"
-				description="COM_JINBOUND_FIELD_SHOW_LABEL_DESC"
-				class="radio btn-group btn-group-yesno"
-			>
+                name="show_label"
+                type="radio"
+                default="1"
+                label="COM_JINBOUND_FIELD_SHOW_LABEL"
+                description="COM_JINBOUND_FIELD_SHOW_LABEL_DESC"
+                class="radio btn-group btn-group-yesno"
+            >
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
 			<field
-				name="opts"
-				type="jinboundkeyval"
-				default=""
-				label="COM_JINBOUND_FIELD_PARAMS_OPTIONS_LABEL"
-				description="COM_JINBOUND_FIELD_PARAMS_OPTIONS_DESC"
-				keylabel="COM_JINBOUND_FIELD_PARAMS_OPTIONS_KEYLABEL"
-				valuelabel="COM_JINBOUND_FIELD_PARAMS_OPTIONS_VALUELABEL"
-				ordering="true"
-			/>
+                name="opts"
+                type="jinboundkeyval"
+                default=""
+                label="COM_JINBOUND_FIELD_PARAMS_OPTIONS_LABEL"
+                description="COM_JINBOUND_FIELD_PARAMS_OPTIONS_DESC"
+                keylabel="COM_JINBOUND_FIELD_PARAMS_OPTIONS_KEYLABEL"
+                valuelabel="COM_JINBOUND_FIELD_PARAMS_OPTIONS_VALUELABEL"
+                ordering="true"
+            />
 			<field
-				name="attrs"
-				type="jinboundkeyval"
-				default=""
-				label="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_LABEL"
-				description="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_DESC"
-				keylabel="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_KEYLABEL"
-				valuelabel="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_VALUELABEL"
-			/>
+                name="attrs"
+                type="jinboundkeyval"
+                default=""
+                label="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_LABEL"
+                description="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_DESC"
+                keylabel="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_KEYLABEL"
+                valuelabel="COM_JINBOUND_FIELD_PARAMS_ATTRIBUTES_VALUELABEL"
+            />
 		</fieldset>
 	</fields>
 </form>

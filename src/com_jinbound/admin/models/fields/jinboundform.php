@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -17,25 +17,26 @@ JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 class JFormFieldJInboundForm extends JFormFieldList
 {
-	public $type = 'Jinboundform';
+    public $type = 'Jinboundform';
 
-	protected function getOptions() {
-		// get our form model
-		JInboundBaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models');
-		$model = JInboundBaseModel::getInstance('Forms', 'JInboundModel');
-		// fetch the list of available, published forms from the model
-		$model->getState('filter.published');
-		$model->setState('filter.published', '1');
-		$forms = $model->getItems();
-		// list of available forms
-		$list = array();
-		// loop available forms & add to the list
-		if (!empty($forms)) {
-			foreach ($forms as $form) {
-				$list[] = JHtml::_('select.option', $form->id, $form->title);
-			}
-		}
-    // send back all options
-    return array_merge(parent::getOptions(), $list);
-	}
+    protected function getOptions()
+    {
+        // get our form model
+        JInboundBaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models');
+        $model = JInboundBaseModel::getInstance('Forms', 'JInboundModel');
+        // fetch the list of available, published forms from the model
+        $model->getState('filter.published');
+        $model->setState('filter.published', '1');
+        $forms = $model->getItems();
+        // list of available forms
+        $list = array();
+        // loop available forms & add to the list
+        if (!empty($forms)) {
+            foreach ($forms as $form) {
+                $list[] = JHtml::_('select.option', $form->id, $form->title);
+            }
+        }
+        // send back all options
+        return array_merge(parent::getOptions(), $list);
+    }
 }

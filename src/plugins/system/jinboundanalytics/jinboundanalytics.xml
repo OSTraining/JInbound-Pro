@@ -29,13 +29,13 @@
 		<fields name="params">
 			<fieldset name="basic" addfieldpath="/plugins/system/jinboundanalytics/field">
 				<field name="update" type="jinboundanalyticsupdate"
-							 label="PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE"
-							 description="PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE"
+                       description="PLG_SYSTEM_JINBOUNDANALYTICS_UPDATE_DESC"
+                />
 				<field name="downloadid" type="text"
-							 label="PLG_SYSTEM_JINBOUNDANALYTICS_DOWNLOADID"
-							 description="PLG_SYSTEM_JINBOUNDANALYTICS_DOWNLOADID_DESC"
-				/>
+                       label="PLG_SYSTEM_JINBOUNDANALYTICS_DOWNLOADID"
+                       description="PLG_SYSTEM_JINBOUNDANALYTICS_DOWNLOADID_DESC"
+                />
 			</fieldset>
 		</fields>
 	</config>

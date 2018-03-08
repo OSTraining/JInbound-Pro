@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
- @ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -13,28 +13,30 @@ JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_ji
 
 class JFormFieldJinboundTimespan extends JFormFieldText
 {
-	protected $type = 'JinboundTimespan';
-	
-	/**
-	 * Builds the input element
-	 * 
-	 * (non-PHPdoc)
-	 * @see JFormField::getInput()
-	 */
-	protected function getInput() {
-		$view = $this->getView();
-		$view->input = parent::getInput();
-		return $view->loadTemplate();
-	}
-	
-	/**
-	 * gets a new instance of the base field view
-	 * 
-	 * @return JInboundFieldView
-	 */
-	protected function getView() {
-		$viewConfig = array('template_path' => dirname(__FILE__) . '/timespan');
-		$view = new JInboundFieldView($viewConfig);
-		return $view;
-	}
+    protected $type = 'JinboundTimespan';
+
+    /**
+     * Builds the input element
+     *
+     * (non-PHPdoc)
+     * @see JFormField::getInput()
+     */
+    protected function getInput()
+    {
+        $view        = $this->getView();
+        $view->input = parent::getInput();
+        return $view->loadTemplate();
+    }
+
+    /**
+     * gets a new instance of the base field view
+     *
+     * @return JInboundFieldView
+     */
+    protected function getView()
+    {
+        $viewConfig = array('template_path' => dirname(__FILE__) . '/timespan');
+        $view       = new JInboundFieldView($viewConfig);
+        return $view;
+    }
 }

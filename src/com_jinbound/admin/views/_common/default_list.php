@@ -2,7 +2,7 @@
 /**
  * @package		JInbound
  * @subpackage	com_jinbound
-@ant_copyright_header@
+* @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -31,7 +31,7 @@ $listDirn  = $this->state->get('list.direction');
 				else:
 					echo $this->loadTemplate('filters');
 				endif;
-				
+
 				if (empty($this->items)) :
 					echo $this->loadTemplate('empty');
 				else :

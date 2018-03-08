@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		jInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             jInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -17,16 +17,16 @@ JInbound::registerHelper('path');
 
 class JFormFieldJInboundPluginList extends JFormFieldList
 {
-	public $type = 'Jinboundpluginlist';
+    public $type = 'Jinboundpluginlist';
 
-	protected function getOptions()
-	{
-		$dispatcher = JDispatcher::getInstance();
-		// get options
-		$options = parent::getOptions();
-		// trigger plugins
-		$dispatcher->trigger('onJInboundPluginList', array($this->type, &$options));
-		// all done
-		return $options;
-	}
+    protected function getOptions()
+    {
+        $dispatcher = JDispatcher::getInstance();
+        // get options
+        $options = parent::getOptions();
+        // trigger plugins
+        $dispatcher->trigger('onJInboundPluginList', array($this->type, &$options));
+        // all done
+        return $options;
+    }
 }

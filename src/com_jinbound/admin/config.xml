@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config addfieldpath="/administrator/components/com_jinbound/models/fields">
 	<fieldset
-		name="general"
-		label="COM_JINBOUND_CONFIG_FIELDSET_GENERAL"
-	>
+        name="general"
+        label="COM_JINBOUND_CONFIG_FIELDSET_GENERAL"
+    >
 		<field
-			name="downloadid" type="text" default="" size="30"
-			label="COM_JINBOUND_DOWNLOAD_ID"
-			description="COM_JINBOUND_DOWNLOAD_ID_DESC"
-		/>
+            name="downloadid" type="text" default="" size="30"
+            label="COM_JINBOUND_DOWNLOAD_ID"
+            description="COM_JINBOUND_DOWNLOAD_ID_DESC"
+        />
 		<field
-			name="unsubscribe" id="unsubscribe"
-			type="list"
-			label="COM_JINBOUND_UNSUBSCRIBE"
-			description="COM_JINBOUND_UNSUBSCRIBE_DESC"
-			default="1"
-		>
+            name="unsubscribe" id="unsubscribe"
+            type="list"
+            label="COM_JINBOUND_UNSUBSCRIBE"
+            description="COM_JINBOUND_UNSUBSCRIBE_DESC"
+            default="1"
+        >
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
 		<field
-			name="history" id="history"
-			type="list"
-			label="COM_JINBOUND_HISTORY"
-			description="COM_JINBOUND_HISTORY_DESC"
-			default="365"
-		>
+            name="history" id="history"
+            type="list"
+            label="COM_JINBOUND_HISTORY"
+            description="COM_JINBOUND_HISTORY_DESC"
+            default="365"
+        >
 			<option value="0">COM_JINBOUND_HISTORY_UNLIMITED</option>
 			<option value="90">COM_JINBOUND_HISTORY_3_MONTHS</option>
 			<option value="180">COM_JINBOUND_HISTORY_6_MONTHS</option>
@@ -34,145 +34,145 @@
 			<option value="1826">COM_JINBOUND_HISTORY_5_YEARS</option>
 		</field>
 		<field
-			name="cron_type"
-			type="list"
-			label="COM_JINBOUND_CRON_TYPE"
-			description="COM_JINBOUND_CRON_TYPE_DESC"
-			default="0"
-			menu="hide"
-		>
+            name="cron_type"
+            type="list"
+            label="COM_JINBOUND_CRON_TYPE"
+            description="COM_JINBOUND_CRON_TYPE_DESC"
+            default="0"
+            menu="hide"
+        >
 			<option value="0">COM_JINBOUND_CRON_TYPE_FAKE</option>
 			<option value="1">COM_JINBOUND_CRON_TYPE_REAL</option>
 		</field>
 		<field
-			name="cron_max_reports"
-			type="text"
-			label="COM_JINBOUND_CRON_MAX_REPORTS"
-			description="COM_JINBOUND_CRON_MAX_REPORTS_DESC"
-			default="0"
-			filter="int"
-			menu="hide"
-		/>
+            name="cron_max_reports"
+            type="text"
+            label="COM_JINBOUND_CRON_MAX_REPORTS"
+            description="COM_JINBOUND_CRON_MAX_REPORTS_DESC"
+            default="0"
+            filter="int"
+            menu="hide"
+        />
 		<field
-			name="cron_max_campaign_mails"
-			type="text"
-			label="COM_JINBOUND_CRON_MAX_CAMPAIGN_MAILS"
-			description="COM_JINBOUND_CRON_MAX_CAMPAIGN_MAILS_DESC"
-			default="0"
-			filter="int"
-			menu="hide"
-		/>
+            name="cron_max_campaign_mails"
+            type="text"
+            label="COM_JINBOUND_CRON_MAX_CAMPAIGN_MAILS"
+            description="COM_JINBOUND_CRON_MAX_CAMPAIGN_MAILS_DESC"
+            default="0"
+            filter="int"
+            menu="hide"
+        />
 		<field
-			name="cron_url"
-			type="jinboundcronurl"
-			label="COM_JINBOUND_CRON_URL"
-			description="COM_JINBOUND_CRON_URL_DESC"
-		/>
+            name="cron_url"
+            type="jinboundcronurl"
+            label="COM_JINBOUND_CRON_URL"
+            description="COM_JINBOUND_CRON_URL_DESC"
+        />
 		<field
-			name="debug" id="debug"
-			type="list"
-			label="COM_JINBOUND_DEBUG"
-			description="COM_JINBOUND_DEBUG_DESC"
-			default="0"
-		>
+            name="debug" id="debug"
+            type="list"
+            label="COM_JINBOUND_DEBUG"
+            description="COM_JINBOUND_DEBUG_DESC"
+            default="0"
+        >
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
 	</fieldset>
 	<fieldset
-		name="frontend"
-		label="COM_JINBOUND_CONFIG_FIELDSET_FRONTEND"
-	>
+        name="frontend"
+        label="COM_JINBOUND_CONFIG_FIELDSET_FRONTEND"
+    >
 		<field
-			name="load_jquery_front" id="load_jquery_front"
-			type="list"
-			label="COM_JINBOUND_LOAD_JQUERY"
-			description="COM_JINBOUND_LOAD_JQUERY_DESC"
-			default="1"
-		>
+            name="load_jquery_front" id="load_jquery_front"
+            type="list"
+            label="COM_JINBOUND_LOAD_JQUERY"
+            description="COM_JINBOUND_LOAD_JQUERY_DESC"
+            default="1"
+        >
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
 		<field
-			name="load_jquery_ui_front" id="load_jquery_ui_front"
-			type="list"
-			label="COM_JINBOUND_LOAD_JQUERY_UI"
-			description="COM_JINBOUND_LOAD_JQUERY_UI_DESC"
-			default="1"
-		>
+            name="load_jquery_ui_front" id="load_jquery_ui_front"
+            type="list"
+            label="COM_JINBOUND_LOAD_JQUERY_UI"
+            description="COM_JINBOUND_LOAD_JQUERY_UI_DESC"
+            default="1"
+        >
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
 		<field
-			name="load_bootstrap_front" id="load_bootstrap_front"
-			type="list"
-			label="COM_JINBOUND_LOAD_BOOTSTRAP"
-			description="COM_JINBOUND_LOAD_BOOTSTRAP_DESC"
-			default="1"
-		>
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-	</fieldset>
-	
-	<fieldset
-		name="backend"
-		label="COM_JINBOUND_CONFIG_FIELDSET_BACKEND"
-	>
-		<field
-			name="load_jquery_back" id="load_jquery_back"
-			type="list"
-			label="COM_JINBOUND_LOAD_JQUERY"
-			description="COM_JINBOUND_LOAD_JQUERY_DESC"
-			default="1"
-		>
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-		<field
-			name="load_jquery_ui_back" id="load_jquery_ui_back"
-			type="list"
-			label="COM_JINBOUND_LOAD_JQUERY_UI"
-			description="COM_JINBOUND_LOAD_JQUERY_UI_DESC"
-			default="1"
-		>
-			<option value="1">JYES</option>
-			<option value="0">JNO</option>
-		</field>
-		<field
-			name="load_bootstrap_back" id="load_bootstrap_back"
-			type="list"
-			label="COM_JINBOUND_LOAD_BOOTSTRAP"
-			description="COM_JINBOUND_LOAD_BOOTSTRAP_DESC"
-			default="1"
-		>
+            name="load_bootstrap_front" id="load_bootstrap_front"
+            type="list"
+            label="COM_JINBOUND_LOAD_BOOTSTRAP"
+            description="COM_JINBOUND_LOAD_BOOTSTRAP_DESC"
+            default="1"
+        >
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
 	</fieldset>
-	
-	
+
 	<fieldset
-		name="reports"
-		label="COM_JINBOUND_CONFIG_FIELDSET_REPORTS"
-	>
+        name="backend"
+        label="COM_JINBOUND_CONFIG_FIELDSET_BACKEND"
+    >
 		<field
-			name="send_reports" id="send_reports"
-			type="list"
-			label="COM_JINBOUND_SEND_REPORTS"
-			description="COM_JINBOUND_SEND_REPORTS_DESC"
-			default="1"
-		>
+            name="load_jquery_back" id="load_jquery_back"
+            type="list"
+            label="COM_JINBOUND_LOAD_JQUERY"
+            description="COM_JINBOUND_LOAD_JQUERY_DESC"
+            default="1"
+        >
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
 		<field
-			name="report_frequency" id="report_frequency"
-			type="list"
-			label="COM_JINBOUND_REPORT_FREQUENCY"
-			description="COM_JINBOUND_REPORT_FREQUENCY_DESC"
-			default="0"
-		>
+            name="load_jquery_ui_back" id="load_jquery_ui_back"
+            type="list"
+            label="COM_JINBOUND_LOAD_JQUERY_UI"
+            description="COM_JINBOUND_LOAD_JQUERY_UI_DESC"
+            default="1"
+        >
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+            name="load_bootstrap_back" id="load_bootstrap_back"
+            type="list"
+            label="COM_JINBOUND_LOAD_BOOTSTRAP"
+            description="COM_JINBOUND_LOAD_BOOTSTRAP_DESC"
+            default="1"
+        >
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+	</fieldset>
+
+
+	<fieldset
+        name="reports"
+        label="COM_JINBOUND_CONFIG_FIELDSET_REPORTS"
+    >
+		<field
+            name="send_reports" id="send_reports"
+            type="list"
+            label="COM_JINBOUND_SEND_REPORTS"
+            description="COM_JINBOUND_SEND_REPORTS_DESC"
+            default="1"
+        >
+			<option value="1">JYES</option>
+			<option value="0">JNO</option>
+		</field>
+		<field
+            name="report_frequency" id="report_frequency"
+            type="list"
+            label="COM_JINBOUND_REPORT_FREQUENCY"
+            description="COM_JINBOUND_REPORT_FREQUENCY_DESC"
+            default="0"
+        >
 			<option value="0">COM_JINBOUND_REPORT_FREQUENCY_NEVER</option>
 			<option value="3">COM_JINBOUND_REPORT_FREQUENCY_EVERY_3_HOURS</option>
 			<option value="6">COM_JINBOUND_REPORT_FREQUENCY_EVERY_6_HOURS</option>
@@ -185,40 +185,40 @@
 			<option value="720">COM_JINBOUND_REPORT_FREQUENCY_EVERY_30_DAYS</option>
 		</field>
 		<field
-			name="report_recipients" id="report_recipients"
-			type="text"
-			label="COM_JINBOUND_REPORT_RECIPIENTS"
-			description="COM_JINBOUND_REPORT_RECIPIENTS_DESC"
-			size="100"
-			default=""
-		/>
+            name="report_recipients" id="report_recipients"
+            type="text"
+            label="COM_JINBOUND_REPORT_RECIPIENTS"
+            description="COM_JINBOUND_REPORT_RECIPIENTS_DESC"
+            size="100"
+            default=""
+        />
 		<field
-			name="report_force_admin" id="report_force_admin"
-			type="hidden" default="0"
-			description="If this variable is null during install report_recipients defaults to the global admin email"
-		/>
+            name="report_force_admin" id="report_force_admin"
+            type="hidden" default="0"
+            description="If this variable is null during install report_recipients defaults to the global admin email"
+        />
 	</fieldset>
-	
+
 	<fieldset
-		name="permissions"
-		label="JCONFIG_PERMISSIONS_LABEL"
-		description="JCONFIG_PERMISSIONS_DESC"
-	>
+        name="permissions"
+        label="JCONFIG_PERMISSIONS_LABEL"
+        description="JCONFIG_PERMISSIONS_DESC"
+    >
 		<field
-			name="rules"
-			type="rules"
-			label="JCONFIG_PERMISSIONS_LABEL"
-			class="inputbox"
-			validate="rules"
-			filter="rules"
-			component="com_jinbound"
-			section="component"
-		/>
+            name="rules"
+            type="rules"
+            label="JCONFIG_PERMISSIONS_LABEL"
+            class="inputbox"
+            validate="rules"
+            filter="rules"
+            component="com_jinbound"
+            section="component"
+        />
 		<field
-			name="help_url"
-			type="hidden"
-			default="http://anything-digital.com/jinbound/learn-more/user-manual.html"
-			readonly="true"
-		/>
+            name="help_url"
+            type="hidden"
+            default="http://anything-digital.com/jinbound/learn-more/user-manual.html"
+            readonly="true"
+        />
 	</fieldset>
 </config>

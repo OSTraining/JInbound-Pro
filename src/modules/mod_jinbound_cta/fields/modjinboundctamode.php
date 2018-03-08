@@ -1,8 +1,8 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	mod_jinbound_cta
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          mod_jinbound_cta
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -19,27 +19,25 @@ JInbound::registerHelper('url');
 
 class JFormFieldModJInboundCTAMode extends JFormFieldList
 {
-	public $type = 'ModJInboundCTAMode';
+    public $type = 'ModJInboundCTAMode';
 
-	protected function getInput()
-	{
-		$this->insertScript();
-		return parent::getInput();
-	}
-	
-	protected function insertScript()
-	{
-		global $mod_jinbound_cta_script_loaded;
-		if (is_null($mod_jinbound_cta_script_loaded))
-		{
-			$document = JFactory::getDocument();
-			if (!JInbound::version()->isCompatible('3.0.0'))
-			{
-				// force jQuery
-				$document->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
-			}
-			$document->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
-			$mod_jinbound_cta_script_loaded = true;
-		}
-	}
+    protected function getInput()
+    {
+        $this->insertScript();
+        return parent::getInput();
+    }
+
+    protected function insertScript()
+    {
+        global $mod_jinbound_cta_script_loaded;
+        if (is_null($mod_jinbound_cta_script_loaded)) {
+            $document = JFactory::getDocument();
+            if (!JInbound::version()->isCompatible('3.0.0')) {
+                // force jQuery
+                $document->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
+            }
+            $document->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
+            $mod_jinbound_cta_script_loaded = true;
+        }
+    }
 }

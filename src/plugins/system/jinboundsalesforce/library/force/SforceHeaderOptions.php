@@ -27,20 +27,20 @@
 
 /**
  * This file contains three classes.
+ *
  * @package SalesforceSoapClient
  */
+class CallOptions
+{
+    public $client;
+    public $defaultNamespace;
 
-
-class CallOptions {
-	public $client;
-	public $defaultNamespace;
-
-	public function __construct($client, $defaultNamespace=NULL) {
-		$this->client = $client;
-		$this->defaultNamespace = $defaultNamespace;
-	}
+    public function __construct($client, $defaultNamespace = null)
+    {
+        $this->client           = $client;
+        $this->defaultNamespace = $defaultNamespace;
+    }
 }
-
 
 
 /**
@@ -49,26 +49,28 @@ class CallOptions {
  *
  * @package SalesforceSoapClient
  */
-class AssignmentRuleHeader {
-	// int
-	public $assignmentRuleId;
-	// boolean
-	public $useDefaultRuleFlag;
+class AssignmentRuleHeader
+{
+    // int
+    public $assignmentRuleId;
+    // boolean
+    public $useDefaultRuleFlag;
 
-	/**
-	 * Constructor.  Only one param can be set.
-	 *
-	 * @param int $id  AssignmentRuleId
-	 * @param boolean $flag  UseDefaultRule flag
-	 */
-	public function __construct($id = NULL, $flag = NULL) {
-		if ($id != NULL) {
-			$this->assignmentRuleId = $id;
-		}
-		if ($flag != NULL) {
-			$this->useDefaultRuleFlag = $flag;
-		}
-	}
+    /**
+     * Constructor.  Only one param can be set.
+     *
+     * @param int     $id   AssignmentRuleId
+     * @param boolean $flag UseDefaultRule flag
+     */
+    public function __construct($id = null, $flag = null)
+    {
+        if ($id != null) {
+            $this->assignmentRuleId = $id;
+        }
+        if ($flag != null) {
+            $this->useDefaultRuleFlag = $flag;
+        }
+    }
 }
 
 /**
@@ -76,13 +78,15 @@ class AssignmentRuleHeader {
  *
  * @package SalesforceSoapClient
  */
-class MruHeader {
-	// boolean that Indicates whether to update the list of most recently used items (True) or not (False).
-	public $updateMruFlag;
+class MruHeader
+{
+    // boolean that Indicates whether to update the list of most recently used items (True) or not (False).
+    public $updateMruFlag;
 
-	public function __construct($bool) {
-		$this->updateMruFlag = $bool;
-	}
+    public function __construct($bool)
+    {
+        $this->updateMruFlag = $bool;
+    }
 }
 
 /**
@@ -90,15 +94,17 @@ class MruHeader {
  *
  * @package SalesforceSoapClient
  */
-class LoginScopeHeader {
-  // boolean that Indicates whether to update the list of most recently used items (True) or not (False).
-  public $organizationId;
-  public $portalId;
+class LoginScopeHeader
+{
+    // boolean that Indicates whether to update the list of most recently used items (True) or not (False).
+    public $organizationId;
+    public $portalId;
 
-  public function __construct($orgId = NULL, $portalId = NULL) {
-    $this->organizationId = $orgId;
-    $this->portalId = $portalId;
-  }
+    public function __construct($orgId = null, $portalId = null)
+    {
+        $this->organizationId = $orgId;
+        $this->portalId       = $portalId;
+    }
 }
 
 /**
@@ -106,100 +112,121 @@ class LoginScopeHeader {
  *
  * @package SalesforceSoapClient
  */
-class QueryOptions {
-	// int - Batch size for the number of records returned in a query or queryMore call. The default is 500; the minimum is 200, and the maximum is 2,000.
-	public $batchSize;
+class QueryOptions
+{
+    // int - Batch size for the number of records returned in a query or queryMore call. The default is 500; the minimum is 200, and the maximum is 2,000.
+    public $batchSize;
 
-	/**
-	 * Constructor
-	 *
-	 * @param int $limit  Batch size
-	 */
-	public function __construct($limit) {
-		$this->batchSize = $limit;
-	}
+    /**
+     * Constructor
+     *
+     * @param int $limit Batch size
+     */
+    public function __construct($limit)
+    {
+        $this->batchSize = $limit;
+    }
 }
 
-class EmailHeader {
-	public $triggerAutoResponseEmail;
-	public $triggerOtherEmail;
-	public $triggerUserEmail;
+class EmailHeader
+{
+    public $triggerAutoResponseEmail;
+    public $triggerOtherEmail;
+    public $triggerUserEmail;
 
-	public function __construct($triggerAutoResponseEmail = false, $triggerOtherEmail = false, $triggerUserEmail = false) {
-		$this->triggerAutoResponseEmail = $triggerAutoResponseEmail;
-		$this->triggerOtherEmail = $triggerOtherEmail;
-		$this->triggerUserEmail = $triggerUserEmail;
-	}
+    public function __construct(
+        $triggerAutoResponseEmail = false,
+        $triggerOtherEmail = false,
+        $triggerUserEmail = false
+    ) {
+        $this->triggerAutoResponseEmail = $triggerAutoResponseEmail;
+        $this->triggerOtherEmail        = $triggerOtherEmail;
+        $this->triggerUserEmail         = $triggerUserEmail;
+    }
 }
 
-class UserTerritoryDeleteHeader {
-	public $transferToUserId;
+class UserTerritoryDeleteHeader
+{
+    public $transferToUserId;
 
-	public function __construct($transferToUserId) {
-		$this->transferToUserId = $transferToUserId;
-	}
+    public function __construct($transferToUserId)
+    {
+        $this->transferToUserId = $transferToUserId;
+    }
 }
 
-class AllowFieldTruncationHeader {
+class AllowFieldTruncationHeader
+{
     public $allowFieldTruncation;
-    
-    public function __construct($allowFieldTruncation) {
+
+    public function __construct($allowFieldTruncation)
+    {
         $this->allowFieldTruncation = $allowFieldTruncation;
     }
 }
 
-class LocaleOptions {
+class LocaleOptions
+{
     public $language;
-    
+
     /**
      * Class constructor.
-     * 
+     *
      * @param string $language
+     *
      * @return void
      */
-    public function __construct($language) {
+    public function __construct($language)
+    {
         $this->language = $language;
     }
 }
 
-class PackageVersionHeader {
+class PackageVersionHeader
+{
     /**
      * @var array $packageVersions
      */
     public $packageVersions;
-    
+
     /**
      * Class constructor.
-     * 
+     *
      * @param array $packageVersions
+     *
      * @return void
      */
-    public function __construct($packageVersions) {
+    public function __construct($packageVersions)
+    {
         $this->packageVersions = $packageVersions;
     }
 }
 
 /**
  * This class is used by PackageVersionHeader
+ *
  * @see PackageVersionHeader
  */
-class PackageVersion {
+class PackageVersion
+{
     public $majorNumber;
     public $minorNumber;
     public $namespace;
-    
+
     /**
      * Class constructor.
-     * 
-     * @param int $majorNumber
-     * @param int $minorNumber
+     *
+     * @param int    $majorNumber
+     * @param int    $minorNumber
      * @param string $namespace
+     *
      * @return void
      */
-    public function __construct($majorNumber, $minorNumber, $namespace) {
+    public function __construct($majorNumber, $minorNumber, $namespace)
+    {
         $this->majorNumber = $majorNumber;
         $this->minorNumber = $minorNumber;
-        $this->namespace = $namespace;
+        $this->namespace   = $namespace;
     }
 }
 

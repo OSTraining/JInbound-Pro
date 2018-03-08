@@ -1,15 +1,15 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
 
-$go = trim((string) $this->item->submit_text);
+$go = trim((string)$this->item->submit_text);
 if (empty($go)) {
-	$go = JText::_('JSUBMIT');
+    $go = JText::_('JSUBMIT');
 }
 
 ?>

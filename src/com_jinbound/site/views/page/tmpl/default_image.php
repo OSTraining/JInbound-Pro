@@ -1,12 +1,13 @@
 <?php
 /**
- * @package		JInbound
- * @subpackage	com_jinbound
-@ant_copyright_header@
+ * @package             JInbound
+ * @subpackage          com_jinbound
+ * @ant_copyright_header@
  */
 
 defined('JPATH_PLATFORM') or die;
 
 if (!empty($this->item->image)) :
-	?><img class="jinbound_image" src="<?php echo $this->escape($this->item->image); ?>" alt="<?php echo $this->escape($this->item->imagealttext); ?>" /><?php
+    ?><img class="jinbound_image" src="<?php echo $this->escape($this->item->image); ?>"
+           alt="<?php echo $this->escape($this->item->imagealttext); ?>" /><?php
 endif;
