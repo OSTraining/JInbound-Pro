@@ -2,7 +2,7 @@
 <extension type="module" position="jinbound_social" client="site" method="upgrade" version="2.5">
 	<name>JInbound Social Bookmark</name>
 	<author>Nikola Biškup</author>
-	<creationDate>Aug 2013</creationDate>
+	<creationDate>Sept 2013</creationDate>
 	<copyright>Copyright (C) 2013</copyright>
 	<license>GNU General Public License version 2 or later</license>
 	<authorEmail>nikola@salamander-studios.com</authorEmail>
