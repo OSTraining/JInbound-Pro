@@ -1,0 +1,24 @@
+{
+    "name"             : "joomlashack/jinbound-pro",
+    "description"      : "JInbound Pro",
+    "minimum-stability": "stable",
+    "license"          : "GPL-2+",
+    "type"             : "joomla.component",
+    "extra"            : {
+        "element"        : "com_jinbound",
+        "element-short"  : "jinbound",
+        "name"           : "JInbound Pro",
+        "client"         : "administrator",
+        "package-license": "pro",
+        "target-platform": "3.*"
+    },
+    "authors"          : [
+        {
+            "name" : "Joomlashack",
+            "email": "help@joomlashack.com"
+        }
+    ],
+    "require"          : {
+        "php"           : ">= 5.6"
+    }
+}

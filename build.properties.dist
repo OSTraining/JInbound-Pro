@@ -1,0 +1,5 @@
+builder.path=/path/to/AllediaBuilder
+
+project.AllediaInstaller.path=/path/to/AllediaInstaller
+
+project.hasFreeVersion=0
