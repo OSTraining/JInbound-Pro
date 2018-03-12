@@ -143,10 +143,10 @@ class com_JInboundInstallerScript extends AbstractScript
             // Fall through
 
             case 'update':
+                $this->checkAssets();
                 $this->triggerMenu();
                 $this->fixGenericFormFields();
                 $this->checkDefaultReportEmails();
-                $this->saveDefaultAssets($parent);
                 $this->forceReportEmailOption($parent);
                 $this->migrateOldData($root);
                 $this->checkContactCategory();
@@ -357,39 +357,6 @@ class com_JInboundInstallerScript extends AbstractScript
         }
 
         $app->enqueueMessage('Could not save default emails', 'error');
-    }
-
-    /**
-     * @param JInstallerAdapter $parent
-     *
-     * @return void
-     * @throws Exception
-     */
-    protected function saveDefaultAssets($parent)
-    {
-        if (!class_exists('JInboundHelperAccess')) {
-            $base = $parent->getParent()->getPath('extension_root');
-
-            foreach (array('jinbound', 'access') as $helper) {
-                $file = "$base/helpers/$helper.php";
-                if (!is_file($file)) {
-                    continue;
-                }
-                require_once $file;
-            }
-        }
-
-        if (!class_exists('JInboundHelperAccess')) {
-            return;
-        }
-
-        foreach (array('campaign', 'contact', 'conversion', 'email', 'page', 'priority', 'status', 'report') as $type) {
-            if (($parent = JInboundHelperAccess::getParent($type))) {
-                return;
-            }
-
-            JInboundHelperAccess::saveRules($type, new stdClass, false);
-        }
     }
 
     /**
@@ -1141,6 +1108,119 @@ class com_JInboundInstallerScript extends AbstractScript
 
             } catch (Exception $e) {
                 continue;
+            }
+        }
+    }
+
+    /**
+     * Check and fix any legacy issues with assets
+     * NOTE! This CANNOT be called before parent post flight completes!
+     */
+    public function checkAssets()
+    {
+        /** @var JTableAsset $root */
+        $root = JTable::getInstance('Asset');
+        $root->loadByName('com_jinbound');
+
+        $sectionNames = array(
+            'campaign'   => 'campaigns',
+            'contact'    => 'contacts',
+            'conversion' => 'conversions',
+            'email'      => 'emails',
+            'field'      => 'fields',
+            'form'       => 'forms',
+            'page'       => 'pages',
+            'priority'   => 'priorities',
+            'report'     => 'reports',
+            'status'     => 'statuses'
+        );
+
+        foreach ($sectionNames as $itemName => $sectionName) {
+            /** @var JTableAsset $sectionRoot */
+            $name        = 'com_jinbound.' . $sectionName;
+            $sectionRoot = JTable::getInstance('Asset');
+
+            if (!$sectionRoot->loadByName('com_jinbound.' . $itemName)) {
+                $sectionRoot->loadByName($name);
+            }
+
+            $success = true;
+            if ($sectionRoot->id) {
+                echo '<pre>' . print_r($sectionRoot->getProperties(), 1) . '</pre>';
+
+                $rules = json_decode($sectionRoot->rules);
+                $dummy = 'core.dummy';
+                if (isset($rules->$dummy)) {
+                    unset($rules->$dummy);
+                }
+
+                $rootTitle = JText::_(sprintf('COM_JINBOUND_%s_PERMISSIONS', strtoupper($sectionName)));
+                $sectionRoot->setProperties(
+                    array(
+                        'name'      => $name,
+                        'title'     => $rootTitle,
+                        'parent_id' => $root->id,
+                        'rules'     => json_encode((object)$rules)
+                    )
+                );
+
+                if ($success = $sectionRoot->store()) {
+                    if ($sectionRoot->parent_id != $root->id) {
+                        $sectionRoot->moveByReference($root->id, 'last-child');
+                    }
+                    if (($sectionRoot->rgt - $sectionRoot->lft) < 2) {
+                        if ($success = $sectionRoot->rebuild()) {
+                            $this->checkAssetLeaves($sectionName, $itemName);
+                        }
+                    }
+
+                    if ($success = $sectionRoot->moveByReference($root->id, 'last-child')) {
+                        $this->checkAssetLeaves($sectionName, $itemName);
+                    }
+                }
+            }
+
+            if (!$success) {
+                $this->setMessage($sectionRoot->getError(), 'error');
+            }
+        }
+    }
+
+    /**
+     * Checks assets at level 3 from the custom asset areas
+     *
+     * @param string $sectionName
+     * @param string $itemName
+     *
+     * @return void
+     */
+    protected function checkAssetLeaves($sectionName, $itemName)
+    {
+        $db = JFactory::getDbo();
+
+        /**
+         * Check for any incorrectly nested registration assets
+         */
+        $query = $db->getQuery(true)
+            ->select('id')
+            ->from('#__assets')
+            ->where(
+                array(
+                    'name LIKE ' . $db->quote("com_jinbound.{$itemName}.%"),
+                    'level != 3'
+                )
+            );
+
+        if ($assetIds = $db->setQuery($query)->loadColumn()) {
+            /** @var JTableAsset $rootAsset */
+            $rootAsset = JTable::getInstance('Asset');
+            if ($rootAsset->loadByName("com_jinbound.{$sectionName}")) {
+                foreach ($assetIds as $assetId) {
+                    /** @var JTableAsset $asset */
+                    $asset = JTable::getInstance('Asset');
+                    $asset->load($assetId);
+                    $asset->moveByReference($rootAsset->id, 'last-child');
+                }
             }
         }
     }
