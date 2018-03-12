@@ -15,13 +15,21 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Alledia\Installer\AbstractScript;
 use Joomla\Utilities\ArrayHelper;
 
-defined('JPATH_PLATFORM') or die;
+defined('_JEXEC') or die;
+
+// Adapt for install and uninstall environments
+if (file_exists(__DIR__ . '/admin/library/Installer/AbstractScript.php')) {
+    require_once __DIR__ . '/admin/library/Installer/AbstractScript.php';
+} else {
+    require_once __DIR__ . '/library/Installer/AbstractScript.php';
+}
 
 jimport('joomla.form.form');
 
-class com_JInboundInstallerScript
+class com_JInboundInstallerScript extends AbstractScript
 {
     /**
      * @TODO: remove contacts added with jinbound, including category (must remove contacts first)
@@ -33,6 +41,8 @@ class com_JInboundInstallerScript
      */
     public function uninstall($parent)
     {
+        parent::uninstall($parent);
+
         $app = JFactory::getApplication();
         $db  = JFactory::getDbo();
 
@@ -118,6 +128,8 @@ class com_JInboundInstallerScript
      */
     public function postflight($type, $parent)
     {
+        parent::postFlight($type, $parent);
+
         $lang = JFactory::getLanguage();
         $root = $parent->getParent()->getPath('source');
 
