@@ -22,51 +22,44 @@ JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
 
 class JInboundTableContact extends JInboundAssetTable
 {
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_contacts', 'id', $db);
     }
 
     public function delete($pk = null)
     {
-        // run delete
-        $result = parent::delete($pk);
-        // no deletion? just return
-        if (!$result) {
-            return $result;
+        if ($result = parent::delete($pk)) {
+            $tables = array(
+                '#__jinbound_contacts_campaigns'  => 'contact_id',
+                '#__jinbound_conversions'         => 'contact_id',
+                '#__jinbound_contacts_statuses'   => 'contact_id',
+                '#__jinbound_contacts_priorities' => 'contact_id',
+                '#__jinbound_emails_records'      => 'lead_id',
+                '#__jinbound_notes'               => 'lead_id',
+                '#__jinbound_subscriptions'       => 'contact_id'
+            );
+
+            $db = $this->getDbo();
+            foreach ($tables as $table => $key) {
+                $db->setQuery(
+                    $db->getQuery(true)
+                        ->delete($table)
+                        ->where($db->quoteName($key) . ' = ' . $this->id)
+                )
+                    ->execute();
+            }
+
+            return true;
         }
-        $tables = array(
-            // contacts have campaigns
-            '#__jinbound_contacts_campaigns'  => 'contact_id'
-            // contacts have conversions
-        ,
-            '#__jinbound_conversions'         => 'contact_id'
-            // contacts have statuses
-        ,
-            '#__jinbound_contacts_statuses'   => 'contact_id'
-            // contacts have priorities
-        ,
-            '#__jinbound_contacts_priorities' => 'contact_id'
-            // contacts have email records
-        ,
-            '#__jinbound_emails_records'      => 'lead_id'
-            // contacts have notes
-        ,
-            '#__jinbound_notes'               => 'lead_id'
-            // contacts have subscriptions
-        ,
-            '#__jinbound_subscriptions'       => 'contact_id'
-        );
-        foreach ($tables as $table => $key) {
-            $this->_db->setQuery($this->_db->getQuery(true)
-                ->delete($table)
-                ->where($this->_db->quoteName($key) . ' = ' . $this->id)
-            )->query();
-        }
+
+        return false;
     }
 
     /**
      * Redefined asset name, as we support action control
+     *
+     * @return string
      */
     protected function _getAssetName()
     {
@@ -77,10 +70,15 @@ class JInboundTableContact extends JInboundAssetTable
     /**
      * We provide our global ACL as parent
      *
-     * @see JTable::_getAssetParentId()
+     * @param JTableAsset $table
+     * @param int         $id
+     *
+     * @return int
+     * @throws Exception
      */
     protected function _compat_getAssetParentId($table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
         $asset->loadByName('com_jinbound.contact');
         return $asset->id;
