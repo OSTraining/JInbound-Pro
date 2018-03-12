@@ -29,7 +29,7 @@
         </schemas>
     </update>
 
-    <scriptfile>jinbound.install.php</scriptfile>
+    <scriptfile>script.install.php</scriptfile>
 
     <files folder="site">
         <folder>controllers</folder>
