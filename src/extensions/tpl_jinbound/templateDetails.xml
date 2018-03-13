@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="2.5" type="template" client="site" method="upgrade">
-	<name>jInbound</name>
-    <creationDate></creationDate>
+<extension version="3.7" type="template" client="site" method="upgrade">
+    <name>jInbound</name>
+    <creationDate>March 13, 2018</creationDate>
     <author>Joomlashack</author>
     <authorEmail>help@joomlashack.com</authorEmail>
     <authorUrl>http://joomlashack.com</authorUrl>
     <copyright>Copyright (c) 2006-2012 Anything-Digital.com - 2016-2017 Open Source Training, LLC</copyright>
     <license>GNU/GPL</license>
-    <version>2.1.7</version>
-	<description>TPL_JINBOUND_DESCRIPTION</description>
-	<files>
-		<folder>language</folder>
-		<folder>css</folder>
-		<filename>index.php</filename>
-		<filename>index.html</filename>
-		<filename>templateDetails.xml</filename>
-	</files>
-	<languages folder="language">
-		<language tag="en-GB">en-GB/en-GB.tpl_jinbound.ini</language>
-		<language tag="en-GB">en-GB/en-GB.tpl_jinbound.sys.ini</language>
-	</languages>
+    <version>3.0.0a1</version>
+    <description>TPL_JINBOUND_DESCRIPTION</description>
+
+    <files>
+        <folder>css</folder>
+        <folder>language</folder>
+        <filename>index.php</filename>
+    </files>
 </extension>

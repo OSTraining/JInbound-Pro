@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" position="default" client="site" method="upgrade" version="2.5">
-	<name>jInbound Popup CTA</name>
+<extension type="module" position="default" client="site" method="upgrade" version="3.7">
+    <name>jInbound Popup CTA</name>
     <creationDate>March 13 2018</creationDate>
     <author>Joomlashack</author>
     <authorEmail>help@joomlashack.com</authorEmail>
@@ -8,98 +8,82 @@
     <copyright>Copyright (c) 2006-2012 Anything-Digital.com - 2016-2017 Open Source Training, LLC</copyright>
     <license>GNU/GPL</license>
     <version>3.0.0a1</version>
-	<description>MOD_JINBOUND_POPUP_DESCRIPTION</description>
-	<files>
-		<filename module="mod_jinbound_popup">mod_jinbound_popup.php</filename>
-		<filename module="mod_jinbound_popup">helper.php</filename>
-		<filename module="mod_jinbound_popup">mod_jinbound_popup.xml</filename>
-		<filename module="mod_jinbound_popup">tmpl/default.php</filename>
-		<filename>language/en-GB/en-GB.mod_jinbound_popup.ini</filename>
-		<filename>language/en-GB/en-GB.mod_jinbound_popup.sys.ini</filename>
-	</files>
-	<media destination="mod_jinbound_popup" folder="media">
-		<folder>js</folder>
-	</media>
-	<config addfieldpath="/administrator/components/com_jinbound/models/fields">
-		<fields name="params">
-			<fieldset name="basic">
-				<field
-                    name="formid"
-                    type="jinboundform"
-                    label="MOD_JINBOUND_POPUP_FORMID"
-                    description="MOD_JINBOUND_POPUP_FORMID_DESC"
-                />
-				<field
-                    name="campaignid"
-                    type="jinboundcampaignlist"
-                    label="MOD_JINBOUND_POPUP_CAMPAIGNID"
-                    description="MOD_JINBOUND_POPUP_CAMPAIGNID_DESC"
-                />
-		<field
-            id="submit_text" name="submit_text"
-            type="text"
-            label="MOD_JINBOUND_POPUP_SUBMIT_TEXT"
-            description="MOD_JINBOUND_POPUP_SUBMIT_TEXT_DESC"
-            class="input-block-level"
-        />
-		<field
-            id="notification_email" name="notification_email"
-            type="text"
-            label="MOD_JINBOUND_POPUP_NOTIFICATION_EMAIL"
-            description="MOD_JINBOUND_POPUP_NOTIFICATION_EMAIL_DESC"
-            class="input-block-level"
-        />
+    <description>MOD_JINBOUND_POPUP_DESCRIPTION</description>
 
-		<field
-            id="after_submit_sendto" name="after_submit_sendto"
-            type="list"
-            label="MOD_JINBOUND_POPUP_AFTER_SUBMIT_SENDTO"
-            description="MOD_JINBOUND_POPUP_AFTER_SUBMIT_SENDTO_DESC"
-            default="message"
-            class="input-large"
-        >
-			<option value="menuitem">MOD_JINBOUND_POPUP_MENU_ITEM</option>
-			<option value="url">MOD_JINBOUND_POPUP_REDIRECT_TO_URL</option>
-			<option value="message">MOD_JINBOUND_POPUP_MESSAGE</option>
-		</field>
+    <files>
+        <folder>language</folder>
+        <folder>tmpl</folder>
+        <filename module="mod_jinbound_popup">mod_jinbound_popup.php</filename>
+        <filename>helper.php</filename>
+    </files>
 
-		<field
-            id="menu_item" name="menu_item"
-            type="menuitem"
-            label="MOD_JINBOUND_POPUP_MENU_ITEM"
-            description="MOD_JINBOUND_POPUP_MENU_ITEM_DESC"
-            class="input-large"
-        />
+    <media destination="mod_jinbound_popup" folder="media">
+        <folder>js</folder>
+    </media>
 
-		<field
-            id="send_to_url" name="send_to_url"
-            type="text"
-            label="MOD_JINBOUND_POPUP_SEND_TO_URL"
-            description="MOD_JINBOUND_POPUP_SEND_TO_URL_DESC"
-            class="input-block-level"
-        />
+    <config addfieldpath="/administrator/components/com_jinbound/models/fields">
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="formid"
+                       type="jinboundform"
+                       label="MOD_JINBOUND_POPUP_FORMID"
+                       description="MOD_JINBOUND_POPUP_FORMID_DESC"/>
 
-		<field
-            id="sendto_message" name="sendto_message"
-            type="textarea"
-            label="MOD_JINBOUND_POPUP_SENDTO_MESSAGE"
-            description="MOD_JINBOUND_POPUP_SENDTO_MESSAGE_DESC"
-            class="input-block-level"
-        />
-				<field
-                    name="introtext"
-                    type="editor"
-                    label="MOD_JINBOUND_POPUP_INTROTEXT"
-                    description="MOD_JINBOUND_POPUP_INTROTEXT_DESC"
-                    cols="60" rows="8"
-                    buttons="0"
-                    filter="JComponentHelper::filterText"
-                />
-			</fieldset>
-			<fieldset name="advanced">
-				<field name="moduleclass_sfx" type="textarea" rows="3" label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+                <field name="campaignid"
+                       type="jinboundcampaignlist"
+                       label="MOD_JINBOUND_POPUP_CAMPAIGNID"
+                       description="MOD_JINBOUND_POPUP_CAMPAIGNID_DESC"/>
+
+                <field name="submit_text"
+                       type="text"
+                       label="MOD_JINBOUND_POPUP_SUBMIT_TEXT"
+                       description="MOD_JINBOUND_POPUP_SUBMIT_TEXT_DESC"/>
+
+                <field name="notification_email"
+                       type="text"
+                       label="MOD_JINBOUND_POPUP_NOTIFICATION_EMAIL"
+                       description="MOD_JINBOUND_POPUP_NOTIFICATION_EMAIL_DESC"/>
+
+                <field name="after_submit_sendto"
+                       type="list"
+                       label="MOD_JINBOUND_POPUP_AFTER_SUBMIT_SENDTO"
+                       description="MOD_JINBOUND_POPUP_AFTER_SUBMIT_SENDTO_DESC"
+                       default="message">
+                    <option value="menuitem">MOD_JINBOUND_POPUP_MENU_ITEM</option>
+                    <option value="url">MOD_JINBOUND_POPUP_REDIRECT_TO_URL</option>
+                    <option value="message">MOD_JINBOUND_POPUP_MESSAGE</option>
+                </field>
+
+                <field name="menu_item"
+                       type="menuitem"
+                       label="MOD_JINBOUND_POPUP_MENU_ITEM"
+                       description="MOD_JINBOUND_POPUP_MENU_ITEM_DESC"/>
+
+                <field name="send_to_url"
+                       type="text"
+                       label="MOD_JINBOUND_POPUP_SEND_TO_URL"
+                       description="MOD_JINBOUND_POPUP_SEND_TO_URL_DESC"/>
+
+                <field name="sendto_message"
+                       type="textarea"
+                       label="MOD_JINBOUND_POPUP_SENDTO_MESSAGE"
+                       description="MOD_JINBOUND_POPUP_SENDTO_MESSAGE_DESC"/>
+
+                <field name="introtext"
+                       type="editor"
+                       label="MOD_JINBOUND_POPUP_INTROTEXT"
+                       description="MOD_JINBOUND_POPUP_INTROTEXT_DESC"
+                       buttons="0"
+                       filter="JComponentHelper::filterText"/>
+            </fieldset>
+
+            <fieldset name="advanced">
+                <field name="moduleclass_sfx"
+                       type="textarea"
+                       rows="3"
+                       label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
                        description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC"/>
-			</fieldset>
-		</fields>
-	</config>
+            </fieldset>
+        </fields>
+    </config>
 </extension>

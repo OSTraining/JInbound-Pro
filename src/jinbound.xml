@@ -173,14 +173,24 @@
 
             <extension type="template"
                        publish="true"
-                       uninstall="true"
-                       element="jinbound">tpl_jinbound</extension>
+                       uninstall="true">tpl_jinbound</extension>
         </relatedExtensions>
 
         <obsolete>
             <file>administrator/language/en-GB/en-GB.com_jinbound.ini</file>
             <file>administrator/language/en-GB/en-GB.com_jinbound.sys.ini</file>
             <file>administrator/language/en-GB/en-GB.pkg_jinbound.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_content_jinbound.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinbound.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundacymailing.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundanalytics.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundcaptcha.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundfiles.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundleadmap.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundmailchimp.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundmailchimp.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_system_jinboundsalesforce.sys.ini</file>
+            <file>administrator/language/en-GB/en-GB.plg_user_jinbound.sys.ini</file>
             <file>administrator/manifests/packages/pkg_jinbound.xml</file>
         </obsolete>
     </alledia>
