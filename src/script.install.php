@@ -143,6 +143,7 @@ class com_JInboundInstallerScript extends AbstractScript
             // Fall through
 
             case 'update':
+                $this->removePackage();
                 $this->checkAssets();
                 $this->triggerMenu();
                 $this->fixGenericFormFields();
@@ -1144,45 +1145,40 @@ class com_JInboundInstallerScript extends AbstractScript
                 $sectionRoot->loadByName($name);
             }
 
-            $success = true;
-            if ($sectionRoot->id) {
-                echo '<pre>' . print_r($sectionRoot->getProperties(), 1) . '</pre>';
+            $rules = $sectionRoot->rules ? json_decode($sectionRoot->rules) : new stdClass();
+            $dummy = 'core.dummy';
+            if (isset($rules->$dummy)) {
+                unset($rules->$dummy);
+            }
 
-                $rules = json_decode($sectionRoot->rules);
-                $dummy = 'core.dummy';
-                if (isset($rules->$dummy)) {
-                    unset($rules->$dummy);
+            $rootTitle = JText::_(sprintf('COM_JINBOUND_%s_PERMISSIONS', strtoupper($sectionName)));
+            $sectionRoot->setProperties(
+                array(
+                    'name'      => $name,
+                    'title'     => $rootTitle,
+                    'parent_id' => $root->id,
+                    'rules'     => json_encode((object)$rules)
+                )
+            );
+
+            if ($success = $sectionRoot->store()) {
+                if ($sectionRoot->parent_id != $root->id) {
+                    $sectionRoot->moveByReference($root->id, 'last-child');
                 }
-
-                $rootTitle = JText::_(sprintf('COM_JINBOUND_%s_PERMISSIONS', strtoupper($sectionName)));
-                $sectionRoot->setProperties(
-                    array(
-                        'name'      => $name,
-                        'title'     => $rootTitle,
-                        'parent_id' => $root->id,
-                        'rules'     => json_encode((object)$rules)
-                    )
-                );
-
-                if ($success = $sectionRoot->store()) {
-                    if ($sectionRoot->parent_id != $root->id) {
-                        $sectionRoot->moveByReference($root->id, 'last-child');
-                    }
-                    if (($sectionRoot->rgt - $sectionRoot->lft) < 2) {
-                        if ($success = $sectionRoot->rebuild()) {
-                            $this->checkAssetLeaves($sectionName, $itemName);
-                        }
-                    }
-
-                    if ($success = $sectionRoot->moveByReference($root->id, 'last-child')) {
+                if (($sectionRoot->rgt - $sectionRoot->lft) < 2) {
+                    if ($success = $sectionRoot->rebuild()) {
                         $this->checkAssetLeaves($sectionName, $itemName);
                     }
                 }
-            }
 
-            if (!$success) {
-                $this->setMessage($sectionRoot->getError(), 'error');
+                if ($success = $sectionRoot->moveByReference($root->id, 'last-child')) {
+                    $this->checkAssetLeaves($sectionName, $itemName);
+                }
             }
+        }
+
+        if (!$success) {
+            $this->setMessage($sectionRoot->getError(), 'error');
         }
     }
 
@@ -1222,6 +1218,53 @@ class com_JInboundInstallerScript extends AbstractScript
                     $asset->moveByReference($rootAsset->id, 'last-child');
                 }
             }
+        }
+    }
+
+    /**
+     * Remove all references to the old package installer
+     */
+    protected function removePackage()
+    {
+        $db = JFactory::getDbo();
+
+        $query       = $db->getQuery(true)
+            ->select('extension_id')
+            ->from('#__extensions')
+            ->where('element = ' . $db->quote('pkg_jinbound'));
+        $extensionId = $db->setQuery($query)->loadResult();
+
+        if (!empty($extensionId)) {
+            // Extension
+            $query = $db->getQuery(true)
+                ->delete('#__extensions')
+                ->where('element = ' . $db->quote('pkg_jinbound'));
+            $db->setQuery($query)->execute();
+
+            // Update site
+            $query = $db->getQuery(true)
+                ->delete('#__update_sites')
+                ->where('name = ' . $db->quote('jinbound'))
+                ->where('type = ' . $db->quote('collection'));
+            $db->setQuery($query)->execute();
+
+            // Update sites extension
+            $query = $db->getQuery(true)
+                ->delete('#__update_sites_extensions')
+                ->where('extension_id = ' . $db->quote($extensionId));
+            $db->setQuery($query)->execute();
+
+            // Updates
+            $query = $db->getQuery(true)
+                ->delete('#__updates')
+                ->where('extension_id = ' . $db->quote($extensionId));
+            $db->setQuery($query)->execute();
+
+            // Schemas
+            $query = $db->getQuery(true)
+                ->delete('#__schemas')
+                ->where('extension_id = ' . $db->quote($extensionId));
+            $db->setQuery($query)->execute();
         }
     }
 }

@@ -181,6 +181,7 @@
             <file>administrator/language/en-GB/en-GB.com_jinbound.ini</file>
             <file>administrator/language/en-GB/en-GB.com_jinbound.sys.ini</file>
             <file>administrator/language/en-GB/en-GB.pkg_jinbound.sys.ini</file>
+            <file>administrator/manifests/packages/pkg_jinbound.xml</file>
         </obsolete>
     </alledia>
 
