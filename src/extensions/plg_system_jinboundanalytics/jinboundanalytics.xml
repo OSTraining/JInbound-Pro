@@ -11,7 +11,7 @@
     <description>PLG_SYSTEM_JINBOUNDANALYTICS_XML_DESCRIPTION</description>
 
     <files>
-        <folder>form></folder>
+        <folder>form</folder>
         <folder>language</folder>
         <filename plugin="jinboundanalytics">jinboundanalytics.php</filename>
     </files>

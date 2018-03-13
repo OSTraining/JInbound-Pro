@@ -72,6 +72,7 @@
             <folder>helpers</folder>
             <folder>language</folder>
             <folder>libraries</folder>
+            <folder>library</folder>
             <folder>models</folder>
             <folder>sql</folder>
             <folder>tables</folder>
@@ -173,7 +174,8 @@
 
             <extension type="template"
                        publish="true"
-                       uninstall="true">tpl_jinbound</extension>
+                       uninstall="true"
+                        element="jinbound">tpl_jinbound</extension>
         </relatedExtensions>
 
         <obsolete>
