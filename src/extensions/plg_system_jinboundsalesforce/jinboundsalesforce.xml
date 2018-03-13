@@ -17,7 +17,6 @@
         <folder>form</folder>
         <folder>language</folder>
         <folder>library</folder>
-        <folder>wsdl</folder>
         <filename plugin="jinboundsalesforce">jinboundsalesforce.php</filename>
     </files>
 
@@ -25,7 +24,7 @@
         <fields name="params">
             <fieldset name="basic" addfieldpath="/plugins/system/jinboundsalesforce/field">
                 <field name="wsdl"
-                       type="jinboundsalesforcewsdl"
+                       type="jib.salesforcewsdl"
                        label="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL"
                        description="PLG_SYSTEM_JINBOUNDSALESFORCE_WSDL_DESC"/>
 

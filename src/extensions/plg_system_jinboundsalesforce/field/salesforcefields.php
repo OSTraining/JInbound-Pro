@@ -19,15 +19,17 @@ defined('_JEXEC') or die;
 
 JFormHelper::loadFieldClass('list');
 
-class JFormFieldJinboundsalesforcefields extends JFormFieldList
+class JibFormFieldSalesforcefields extends JFormFieldList
 {
-    public $type = 'Jinboundsalesforcefields';
-
     protected function getOptions()
     {
-        $options = array();
-        JFactory::getLanguage()->load('plg_system_jinboundsalesforce.sys', JPATH_ADMINISTRATOR);
-        JDispatcher::getInstance()->trigger('onJInboundSalesforceFields', array(&$options));
-        return array_merge(parent::getOptions(), $options);
+        JFactory::getLanguage()->load(
+            'plg_system_jinboundsalesforce.sys',
+            JPATH_PLUGINS . '/system/jinboundsalesforce'
+        );
+
+        $results = JDispatcher::getInstance()->trigger('onJInboundSalesforceFields');
+
+        return array_merge(parent::getOptions(), $results);
     }
 }

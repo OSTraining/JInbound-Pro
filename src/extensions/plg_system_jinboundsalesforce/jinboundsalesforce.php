@@ -17,52 +17,53 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.filesystem.file');
-jimport('joomla.plugin.plugin');
-
-$db      = JFactory::getDbo();
-$plugins = $db->setQuery($db->getQuery(true)
-    ->select('extension_id')->from('#__extensions')
-    ->where($db->qn('element') . ' = ' . $db->q('com_jinbound'))
-    ->where($db->qn('enabled') . ' = 1')
-)->loadColumn();
-$file    = JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php';
-defined('PLG_SYSTEM_JINBOUNDSALESFORCE') or define('PLG_SYSTEM_JINBOUNDSALESFORCE',
-    1 === count($plugins) && JFile::exists($file) && class_exists('SoapClient'));
-require_once $file;
-
 class plgSystemJInboundsalesforce extends JPlugin
 {
-    protected $app;
+    protected static $client = null;
 
-    private $client;
+    /**
+     * @var array
+     */
+    protected $errors = array();
 
-    private $errors;
+    /**
+     * @var bool
+     */
+    protected $enabled = false;
 
     /**
      * Constructor
      *
-     * @param unknown_type $subject
-     * @param unknown_type $config
+     * @param JEventDispatcher $subject
+     * @param array            $config
      */
     public function __construct(&$subject, $config)
     {
         parent::__construct($subject, $config);
-        $this->errors = array();
-        $this->app    = JFactory::getApplication();
-        $this->loadLanguage('plg_system_jinboundsalesforce.sys', JPATH_ADMINISTRATOR);
+
+        $this->loadLanguage('plg_system_jinboundsalesforce.sys');
+
+        $this->enabled = is_dir(JPATH_ADMINISTRATOR . '/components/com_jinbound');
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function onAfterInitialise()
     {
-        if (JFactory::getApplication()->isSite() || !PLG_SYSTEM_JINBOUNDSALESFORCE) {
+        $app = JFactory::getApplication();
+
+        if ($app->isClient('site') || !$this->enabled) {
             return;
         }
-        $option = array_key_exists('option', $_REQUEST) ? $_REQUEST['option'] : '';
-        $view   = array_key_exists('view', $_REQUEST) ? $_REQUEST['view'] : '';
-        if ('plg_system_jinboundsalesforce' !== $option) {
+
+        $option = $app->input->getCmd('option');
+        if ($option != 'plg_system_jinboundsalesforce') {
             return;
         }
+
+        $view   = $app->input->getCmd('view');
         $method = 'execTask' . ucwords($view);
         if (method_exists($this, $method)) {
             $this->$method();
@@ -70,26 +71,34 @@ class plgSystemJInboundsalesforce extends JPlugin
         jexit();
     }
 
+    /**
+     * @param JForm $form
+     *
+     * @return bool
+     */
     public function onContentPrepareForm($form)
     {
-        if (!PLG_SYSTEM_JINBOUNDSALESFORCE) {
+        if (!$this->enabled) {
             return true;
         }
-        if (!($form instanceof JForm)) {
+
+        if (!$form instanceof JForm) {
             $this->_subject->setError('JERROR_NOT_A_FORM');
             return false;
         }
-        switch ($form->getName()) {
-            case 'com_jinbound.field':
-                $file = 'jinboundsalesforce';
-                break;
-            default:
-                return true;
+
+        if ($form->getName() == 'com_jinbound.field') {
+            $file = 'jinboundsalesforce';
+
+            JForm::addFormPath(dirname(__FILE__) . '/form');
+            JForm::addFieldPath(dirname(__FILE__) . '/field');
+
+            $result = $form->loadFile($file, false);
+
+            return $result;
         }
-        JForm::addFormPath(dirname(__FILE__) . '/form');
-        JForm::addFieldPath(dirname(__FILE__) . '/field');
-        $result = $form->loadFile($file, false);
-        return $result;
+
+        return true;
     }
 
     public function onContentAfterSave($context, $conversion, $isNew)
@@ -220,32 +229,35 @@ class plgSystemJInboundsalesforce extends JPlugin
         $session->set('jinboundsalesforce.id', $this->client->getSessionId());
     }
 
-    public function onJInboundSalesforceFields(&$options)
+    /**
+     * @return array
+     */
+    public function onJInboundSalesforceFields()
     {
-        // check that this plugin can be run
-        if (!PLG_SYSTEM_JINBOUNDSALESFORCE) {
-            return;
+        if ($this->enabled) {
+            return array();
         }
-        // get the client
-        $client = $this->getClient();
-        // ensure there is a client
-        if (!(is_object($client) && method_exists($client, 'describeSObject'))) {
-            return;
-        }
-        // get the contact
-        $contact = $client->describeSObject('Contact');
-        // check the contact object
-        if (!(is_object($contact) && property_exists($contact, 'fields')
-            && is_array($contact->fields) && !empty($contact->fields))) {
-            return;
-        }
-        foreach ($contact->fields as $field) {
-            // only show fields that can be created
-            if (!$field->createable || $field->deprecatedAndHidden) {
-                continue;
+
+        $options = array();
+        $client  = $this->getClient();
+
+        if (is_object($client) && method_exists($client, 'describeSObject')) {
+            $contact = $client->describeSObject('Contact');
+
+            if (is_object($contact) && property_exists($contact, 'fields')
+                && is_array($contact->fields) && !empty($contact->fields)
+            ) {
+                foreach ($contact->fields as $field) {
+                    // only show fields that can be created
+                    if (!$field->createable || $field->deprecatedAndHidden) {
+                        continue;
+                    }
+                    $options[] = JHtml::_('select.option', $field->name, $field->label);
+                }
             }
-            $options[] = JHtml::_('select.option', $field->name, $field->label);
         }
+
+        return $options;
     }
 
     private function execTaskClose($file = null)

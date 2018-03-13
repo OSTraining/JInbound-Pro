@@ -19,47 +19,45 @@ defined('JPATH_PLATFORM') or die;
 
 class plgSystemJinboundsalesforceInstallerScript
 {
+    /**
+     * @var string
+     */
+    protected $wsdlLegacy = '/wsdl';
+
+    /**
+     * @var string
+     */
+    protected $wsdl = '/library/wsdl';
+
+    /**
+     * @param string            $type
+     * @param JInstallerAdapter $parent
+     *
+     * @return bool
+     */
+    public function preflight($type, $parent)
+    {
+        if ($type == 'update') {
+            $path = $parent->getParent()->getPath('extension_root');
+
+            if (is_dir($path . $this->wsdlLegacy)) {
+                JFolder::move($path . $this->wsdlLegacy, $path . $this->wsdl);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string            $type
+     * @param JInstallerAdapter $parent
+     */
     public function postflight($type, $parent)
     {
-        $app = JFactory::getApplication();
-        $db  = JFactory::getDbo();
+        $path = $parent->getParent()->getPath('extension_root');
 
-        // find this plugin in the database, if possible...
-        $db->setQuery($db->getQuery(true)
-            ->select('extension_id')
-            ->from('#__extensions')
-            ->where($db->quoteName('element') . ' = ' . $db->quote('jinboundsalesforce'))
-            ->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
-            ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
-        );
-
-        try {
-            $eid = $db->loadResult();
-            if (!$eid) {
-                throw new Exception('Could not enable plugin! ' . __METHOD__);
-            }
-        } catch (Exception $e) {
-            if (defined('JDEBUG') && JDEBUG) {
-                $app->enqueueMessage(htmlspecialchars($e->getMessage()));
-            }
-            return;
+        if (!is_dir($path . $this->wsdl)) {
+            JFolder::create($path . $this->wsdl);
         }
-
-        // force-enable this plugin
-        $db->setQuery($db->getQuery(true)
-            ->update('#__extensions')
-            ->set($db->quoteName('enabled') . ' = 1')
-            ->where($db->quoteName('extension_id') . ' = ' . (int)$eid)
-        );
-
-        try {
-            $db->query();
-        } catch (Exception $e) {
-            if (defined('JDEBUG') && JDEBUG) {
-                $app->enqueueMessage(htmlspecialchars($e->getMessage()));
-            }
-            return;
-        }
-
     }
 }
