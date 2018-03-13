@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="3.7" type="plugin" group="system" method="upgrade">
-    <name>plg_system_jinboundsalesforce</name>
+    <name>PLG_SYSTEM_JINBOUNDSALESFORCE</name>
     <creationDate>March 13 2018</creationDate>
     <author>Joomlashack</author>
     <authorEmail>help@joomlashack.com</authorEmail>
