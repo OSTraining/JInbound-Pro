@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
 
 abstract class JInboundHelperContact
 {
-    static public function getContactEmails($contact_id)
+    public static function getContactEmails($contact_id)
     {
         $db = JFactory::getDbo();
         try {
@@ -43,7 +43,7 @@ abstract class JInboundHelperContact
      *
      * @param unknown_type $contact_id
      */
-    static public function getContactConversions($contact_id)
+    public static function getContactConversions($contact_id)
     {
         $db = JFactory::getDbo();
         try {
@@ -77,7 +77,7 @@ abstract class JInboundHelperContact
      * @param int  $contact_id
      * @param bool $previous
      */
-    static public function getContactCampaigns($contact_id, $previous = false)
+    public static function getContactCampaigns($contact_id, $previous = false)
     {
         $db    = JFactory::getDbo();
         $query = $db->getQuery(true)
@@ -118,7 +118,7 @@ abstract class JInboundHelperContact
         return $campaigns;
     }
 
-    static public function getContactStatuses($contact_id)
+    public static function getContactStatuses($contact_id)
     {
         $db = JFactory::getDbo();
         try {
@@ -149,7 +149,7 @@ abstract class JInboundHelperContact
         return $list;
     }
 
-    static public function getContactPriorities($contact_id)
+    public static function getContactPriorities($contact_id)
     {
         $db = JFactory::getDbo();
         try {

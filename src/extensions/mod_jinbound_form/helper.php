@@ -29,7 +29,7 @@ jimport('joomla.application.module.helper');
 
 abstract class modJinboundFormHelper
 {
-    static public function getFormAjax()
+    public static function getFormAjax()
     {
         // reset the document
         $doc               = JFactory::getDocument();
@@ -111,12 +111,12 @@ abstract class modJinboundFormHelper
      * @throws UnexpectedValueException
      * @deprecated
      */
-    static public function getModuleObject($module_id = null)
+    public static function getModuleObject($module_id = null)
     {
         return JInboundHelperModule::getModuleObject($module_id);
     }
 
-    static public function getFormData(&$module, &$params)
+    public static function getFormData(&$module, &$params)
     {
         // initialise
         $campaign_id = (int)$params->get('campaignid', 0);
@@ -137,7 +137,7 @@ abstract class modJinboundFormHelper
         );
     }
 
-    static public function getForm(&$module, &$params)
+    public static function getForm(&$module, &$params)
     {
         return JInboundHelperForm::getJinboundForm((int)$params->get('formid', 0),
             array('control' => 'mod_jinbound_form_' . $module->id));

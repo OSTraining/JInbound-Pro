@@ -29,7 +29,7 @@ abstract class JInboundHelperAccess
         'core.delete'
     );
 
-    static public function saveRulesWithRedirect($name)
+    public static function saveRulesWithRedirect($name)
     {
         JInbound::registerHelper('url');
         JInbound::registerLibrary('JInboundInflector', 'inflector');
@@ -49,7 +49,7 @@ abstract class JInboundHelperAccess
         jexit();
     }
 
-    static public function saveRules($name, $rules = null, $checktoken = true)
+    public static function saveRules($name, $rules = null, $checktoken = true)
     {
         if ($checktoken) {
             JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
@@ -90,7 +90,7 @@ abstract class JInboundHelperAccess
         return true;
     }
 
-    static public function sanitizeRules($rules)
+    public static function sanitizeRules($rules)
     {
         $saferules = array();
         // sanitize the rules
@@ -117,7 +117,7 @@ abstract class JInboundHelperAccess
      *
      * @return object
      */
-    static public function getParent($name = '')
+    public static function getParent($name = '')
     {
         $db = JFactory::getDbo();
         return $db->setQuery($db->getQuery(true)
@@ -134,7 +134,7 @@ abstract class JInboundHelperAccess
      *
      * @throws Exception
      */
-    static public function saveAsset($bind)
+    public static function saveAsset($bind)
     {
         $asset = JTable::getInstance('Asset');
         $bind  = (array)$bind;

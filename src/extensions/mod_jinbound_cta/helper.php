@@ -43,7 +43,7 @@ abstract class ModJInboundCTAHelper
      *
      * @var bool
      */
-    static public $running = false;
+    public static $running = false;
 
     /**
      * Array of adapter instances
@@ -67,7 +67,7 @@ abstract class ModJInboundCTAHelper
      * to be overly complicated for some reason unbeknownst to me.
      *
      */
-    static public function getDefaultEmptyFields($input_value = null)
+    public static function getDefaultEmptyFields($input_value = null)
     {
         $buttons = static::getButtonData();
         if (is_object($input_value)) {
@@ -241,7 +241,7 @@ abstract class ModJInboundCTAHelper
      *
      * @return object
      */
-    static public function getFieldAjax($variables = array())
+    public static function getFieldAjax($variables = array())
     {
         // init
         jimport('joomla.form.form');
@@ -331,7 +331,7 @@ abstract class ModJInboundCTAHelper
      * @return ModJInboundCTAAdapter
      * @throws RuntimeException
      */
-    static public function getAdapter(JRegistry $params, $cached = true)
+    public static function getAdapter(JRegistry $params, $cached = true)
     {
         // init
         $app    = JFactory::getApplication();
@@ -369,7 +369,7 @@ abstract class ModJInboundCTAHelper
         return self::$adapters[$name] = $adapter;
     }
 
-    static protected function findAdapterType(JRegistry $params)
+    protected static function findAdapterType(JRegistry $params)
     {
         // init
         $app  = JFactory::getApplication();
@@ -392,7 +392,7 @@ abstract class ModJInboundCTAHelper
         return $type;
     }
 
-    static protected function loadContactData()
+    protected static function loadContactData()
     {
         // init
         $cookie            = filter_input(INPUT_COOKIE, '__jib__');
@@ -414,7 +414,7 @@ abstract class ModJInboundCTAHelper
         return $contact;
     }
 
-    static protected function getContactId()
+    protected static function getContactId()
     {
         $cookie = plgSystemJInbound::getCookieValue();
         $db     = JFactory::getDbo();
@@ -424,7 +424,7 @@ abstract class ModJInboundCTAHelper
         )->loadResult();
     }
 
-    static protected function checkData($data, JRegistry $params, $pfx)
+    protected static function checkData($data, JRegistry $params, $pfx)
     {
         // init
         $app     = JFactory::getApplication();

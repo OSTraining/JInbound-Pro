@@ -28,7 +28,7 @@ JInboundBaseModel::addIncludePath(JInboundHelperPath::admin('models'));
 
 abstract class JInboundHelperForm
 {
-    static public function getJinboundForm($form_id, $form_options = array())
+    public static function getJinboundForm($form_id, $form_options = array())
     {
         // initialise
         if (empty($form_id)) {
@@ -167,7 +167,7 @@ abstract class JInboundHelperForm
      *
      * @return boolean
      */
-    static public function needsMigration()
+    public static function needsMigration()
     {
         // access db
         $db = JFactory::getDbo();
@@ -189,19 +189,19 @@ abstract class JInboundHelperForm
         return !empty($old) && empty($new);
     }
 
-    static public function getMigrationWarning()
+    public static function getMigrationWarning()
     {
         return JText::sprintf('COM_JINBOUND_NEEDS_FORM_MIGRATION', JInboundHelperUrl::task('forms.migrate', false));
     }
 
-    static public function needsDefaultFields()
+    public static function needsDefaultFields()
     {
         $fields = JInboundHelperForm::getDefaultFields();
         // if there's a result, an upgrade is needed
         return count($fields) < 3;
     }
 
-    static public function getDefaultFields()
+    public static function getDefaultFields()
     {
         // access db
         $db = JFactory::getDbo();
@@ -214,7 +214,7 @@ abstract class JInboundHelperForm
         )->loadObjectList();
     }
 
-    static public function installDefaultForms()
+    public static function installDefaultForms()
     {
         $db       = JFactory::getDbo();
         $existing = JInboundBaseModel::getInstance('Forms', 'JInboundModel')->getItems();
@@ -242,7 +242,7 @@ abstract class JInboundHelperForm
         }
     }
 
-    static public function installDefaultFields()
+    public static function installDefaultFields()
     {
         $db = JFactory::getDbo();
         // load any existing fields by name
@@ -327,7 +327,7 @@ abstract class JInboundHelperForm
         }
     }
 
-    static public function getAllFields()
+    public static function getAllFields()
     {
         // access db
         $db = JFactory::getDbo();

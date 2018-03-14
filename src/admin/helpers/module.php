@@ -28,7 +28,7 @@ abstract class JInboundHelperModule
      * @return stdClass
      * @throws UnexpectedValueException
      */
-    static public function getModuleObject($module_id = null)
+    public static function getModuleObject($module_id = null)
     {
         // init
         $input  = JFactory::getApplication()->input;

@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
 
 abstract class JInboundHelperStatus
 {
-    static public function getDefaultStatus()
+    public static function getDefaultStatus()
     {
         static $default;
 
@@ -41,7 +41,7 @@ abstract class JInboundHelperStatus
         return $default;
     }
 
-    static public function getFinalStatus()
+    public static function getFinalStatus()
     {
         static $final;
 
@@ -63,7 +63,7 @@ abstract class JInboundHelperStatus
         return $final;
     }
 
-    static public function setContactStatusForCampaign($status_id, $contact_id, $campaign_id, $user_id = null)
+    public static function setContactStatusForCampaign($status_id, $contact_id, $campaign_id, $user_id = null)
     {
         $dispatcher = JDispatcher::getInstance();
         $db         = JFactory::getDbo();
@@ -117,7 +117,7 @@ abstract class JInboundHelperStatus
         return $value;
     }
 
-    static public function getSelectOptions($final = false)
+    public static function getSelectOptions($final = false)
     {
         $db = JFactory::getDbo();
 

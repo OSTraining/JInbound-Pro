@@ -26,7 +26,7 @@ abstract class JInboundHelperPath
      *
      * @return string
      */
-    static public function media($file = '')
+    public static function media($file = '')
     {
         return self::_buildPath(JPATH_ROOT . '/media/jinbound', $file);
     }
@@ -41,7 +41,7 @@ abstract class JInboundHelperPath
      *
      * @return string
      */
-    static public function site($file = '')
+    public static function site($file = '')
     {
         return self::_buildPath(JPATH_ROOT . '/components/' . JInbound::COM, $file);
     }
@@ -51,7 +51,7 @@ abstract class JInboundHelperPath
      *
      * @return string
      */
-    static public function helper($helper = null)
+    public static function helper($helper = null)
     {
         static $base;
 
@@ -73,7 +73,7 @@ abstract class JInboundHelperPath
      *
      * @return string
      */
-    static public function admin($file = '')
+    public static function admin($file = '')
     {
         return self::_buildPath(JPATH_ADMINISTRATOR . '/components/' . JInbound::COM, $file);
     }
@@ -83,7 +83,7 @@ abstract class JInboundHelperPath
      *
      * @return string
      */
-    static public function library($file = '')
+    public static function library($file = '')
     {
         return self::_buildPath(self::admin('libraries'), $file);
     }

@@ -27,7 +27,7 @@ abstract class modJinboundPopupHelper
 {
     static $assets_set = false;
 
-    static public function getFormData(&$module, &$params)
+    public static function getFormData(&$module, &$params)
     {
         // initialise
         $campaign_id = (int)$params->get('campaignid', 0);
@@ -48,13 +48,13 @@ abstract class modJinboundPopupHelper
         );
     }
 
-    static public function getForm(&$module, &$params)
+    public static function getForm(&$module, &$params)
     {
         return JInboundHelperForm::getJinboundForm((int)$params->get('formid', 0),
             array('control' => 'mod_jinbound_popup_' . $module->id));
     }
 
-    static public function addHtmlAssets()
+    public static function addHtmlAssets()
     {
         if (!static::$assets_set) {
             $document = JFactory::getDocument();
@@ -69,7 +69,7 @@ abstract class modJinboundPopupHelper
         }
     }
 
-    static public function showForm()
+    public static function showForm()
     {
         $show = false;
         if (class_exists('plgSystemJinbound')) {

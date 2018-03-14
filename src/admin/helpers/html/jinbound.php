@@ -29,7 +29,7 @@ JInbound::registerHelper('url');
  */
 abstract class JHtmlJInbound
 {
-    static public function priority($id, $priority_id, $campaign_id, $prefix, $canChange)
+    public static function priority($id, $priority_id, $campaign_id, $prefix, $canChange)
     {
         static $options;
 
@@ -68,7 +68,7 @@ abstract class JHtmlJInbound
             $value);
     }
 
-    static public function status($id, $status_id, $campaign_id, $prefix, $canChange)
+    public static function status($id, $status_id, $campaign_id, $prefix, $canChange)
     {
         static $options;
 
@@ -96,7 +96,7 @@ abstract class JHtmlJInbound
         echo JHtmlJInbound::_stateSelect('status', $id, $campaign_id, $status_id, $options, $canChange);
     }
 
-    static public function leadupdate()
+    public static function leadupdate()
     {
         static $loaded;
 
@@ -107,7 +107,7 @@ abstract class JHtmlJInbound
         }
     }
 
-    static public function formdata($id, $formname, $formdata, $script = true)
+    public static function formdata($id, $formname, $formdata, $script = true)
     {
         if (!is_a($formdata, 'JRegistry')) {
             $registry = new JRegistry();
@@ -196,7 +196,7 @@ EOF;
         $doc->addScriptDeclaration($source);
     }
 
-    static public function leadnotes($id)
+    public static function leadnotes($id)
     {
         static $notes;
 
@@ -273,7 +273,7 @@ EOF;
 
     }
 
-    static public function startSlider($selector = 'myAccordian', $params = array())
+    public static function startSlider($selector = 'myAccordian', $params = array())
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             JHtml::_('bootstrap.framework');
@@ -283,7 +283,7 @@ EOF;
         }
     }
 
-    static public function endSlider()
+    public static function endSlider()
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             return JHtml::_('bootstrap.endTabSet');
@@ -292,7 +292,7 @@ EOF;
         }
     }
 
-    static public function addSlide($selector, $text, $id, $class = '')
+    public static function addSlide($selector, $text, $id, $class = '')
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             return JHtml::_('bootstrap.addSlide', $selector, $text, $id, $class);
@@ -301,7 +301,7 @@ EOF;
         }
     }
 
-    static public function endSlide()
+    public static function endSlide()
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             return JHtml::_('bootstrap.endSlide');
@@ -310,7 +310,7 @@ EOF;
         }
     }
 
-    static public function startTabSet($tabSetName, $options = array())
+    public static function startTabSet($tabSetName, $options = array())
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             JHtml::_('bootstrap.framework');
@@ -320,7 +320,7 @@ EOF;
         }
     }
 
-    static public function addTab($tabSetName, $tabName, $tabLabel)
+    public static function addTab($tabSetName, $tabName, $tabLabel)
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             return JHtml::_('bootstrap.addTab', $tabSetName, $tabName, $tabLabel);
@@ -329,7 +329,7 @@ EOF;
         }
     }
 
-    static public function endTab()
+    public static function endTab()
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             return JHtml::_('bootstrap.endTab');
@@ -338,7 +338,7 @@ EOF;
         }
     }
 
-    static public function endTabSet()
+    public static function endTabSet()
     {
         if (JInbound::version()->isCompatible('3.1.0')) {
             return JHtml::_('bootstrap.endTabSet');
@@ -347,7 +347,7 @@ EOF;
         }
     }
 
-    static public function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
+    public static function isfinal($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
     {
         $states = array(
             1 => array(
@@ -364,7 +364,7 @@ EOF;
         return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
     }
 
-    static public function isactive($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
+    public static function isactive($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
     {
         $states = array(
             1 => array(

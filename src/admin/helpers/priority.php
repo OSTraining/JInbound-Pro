@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
 
 abstract class JInboundHelperPriority
 {
-    static public function getDefaultPriority()
+    public static function getDefaultPriority()
     {
         static $default;
 
@@ -40,7 +40,7 @@ abstract class JInboundHelperPriority
         return $default;
     }
 
-    static public function setContactPriorityForCampaign($priority_id, $contact_id, $campaign_id, $user_id = null)
+    public static function setContactPriorityForCampaign($priority_id, $contact_id, $campaign_id, $user_id = null)
     {
         $db   = JFactory::getDbo();
         $date = JFactory::getDate()->toSql();
@@ -67,7 +67,7 @@ abstract class JInboundHelperPriority
         )->query();
     }
 
-    static public function getSelectOptions()
+    public static function getSelectOptions()
     {
         $db = JFactory::getDbo();
 
