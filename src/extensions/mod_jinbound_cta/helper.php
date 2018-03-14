@@ -87,18 +87,9 @@ abstract class ModJInboundCTAHelper
                 }
             }
         }
-        //index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json&type=jinboundcampaignlist&group=c1_conditions&label=MOD_JINBOUND_CTA_CAMPAIGN_LABEL&desc=MOD_JINBOUND_CTA_CAMPAIGN_DESC&name=campaign&options[0][text]=MOD_JINBOUND_CTA_CAMPAIGN_SELECT&options[0][value]=
-        $option = 'com_ajax';
-        if (!JInbound::version()->isCompatible('3.0.0')) {
-            $option = 'com_jinbound&task=ajax';
-        }
-        $url = JURI::root(false) . 'index.php?option=' . $option . '&module=jinbound_cta&method=getField&format=json';
-        // type
-        // group
-        // label
-        // desc
-        // name
-        // options
+
+        $url = JURI::root(false) . 'index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json';
+
         $data = array();
         // TODO read from jform or something, this is gross
         foreach (array('c1_', 'c2_', 'c3_') as $i) {

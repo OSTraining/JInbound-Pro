@@ -85,11 +85,7 @@ class JFormFieldModJInboundCTACondition extends JFormField
             $mod_jinbound_cta_css_loaded = true;
         }
         if (is_null($mod_jinbound_cta_url_set)) {
-            $option = 'com_ajax';
-            if (!JInbound::version()->isCompatible('3.0.0')) {
-                $option = 'com_jinbound&task=ajax';
-            }
-            $url = JURI::root(false) . 'index.php?option=' . $option . '&module=jinbound_cta&method=getField&format=json';
+            $url = JURI::root(false) . 'index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json';
             $doc->addScriptDeclaration("window.ModJInboundCTAConditionURL = '$url';");
             JFactory::getLanguage()->load('com_ajax', JPATH_ROOT);
             JText::script('COM_AJAX_MODULE_NOT_ACCESSIBLE');
