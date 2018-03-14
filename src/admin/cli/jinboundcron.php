@@ -72,7 +72,7 @@ class JInboundCron extends JApplicationCli
         echo "Starting jInbound cron task ...\n";
 
         JFactory::$application = $this;
-        JFactory::getLanguage()->load('com_jinbound', JPATH_ADMINISTRATOR);
+        JFactory::getLanguage()->load('com_jinbound', JPATH_ADMINISTRATOR . '/components/com_jinbound');
 
         if (jimport('joomla.application.component.controller')) {
             $controller = JController::getInstance('JInbound');

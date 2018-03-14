@@ -148,38 +148,6 @@ abstract class JInbound
     }
 
     /**
-     * loads language files, english first then configured language
-     *
-     * @param string $name
-     * @param mixed  $client
-     */
-    public static function language($name, $client = null)
-    {
-        // force client
-        if (is_null($client) || !is_string($client)) {
-            $client = JPATH_ROOT;
-        }
-        // we really only want to load once each asset
-        static $langs;
-        // initialize our static list
-        if (!is_array($langs)) {
-            $langs = array();
-        }
-        // create our key
-        $key = md5($name . $client);
-        // set the list item if it's not been set
-        if (!array_key_exists($key, $langs)) {
-            // what language should we try?
-            $user        = JFactory::getUser();
-            $ulang       = $user->getParam('language', $user->getParam('admin_language'));
-            $lang        = JFactory::getLanguage();
-            $langs[$key] = $lang->load($name, $client, $ulang, true) || $lang->load($name, $client, 'en-GB');
-        }
-        // return the value :)
-        return $langs[$key];
-    }
-
-    /**
      * static method to keep track of debug info
      *
      * @param  string $name

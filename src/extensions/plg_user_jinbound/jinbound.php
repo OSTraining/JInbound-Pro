@@ -15,48 +15,60 @@
  * may be added to this header as long as no information is deleted.
  */
 
-defined('JPATH_PLATFORM') or die;
+use Joomla\Utilities\ArrayHelper;
 
-jimport('joomla.filesystem.file');
-jimport('joomla.plugin.plugin');
-// we HAVE to force-load the helper here to prevent fatal errors!
-$helper = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
-if (JFile::exists($helper)) {
-    require_once $helper;
-}
+defined('JPATH_PLATFORM') or die;
 
 class plgUserJInbound extends JPlugin
 {
     /**
+     * @var bool
+     */
+    protected static $enabled = false;
+
+    /**
+     * @var string[]
+     */
+    protected $contexts = array(
+        'com_users.profile',
+        'com_users.user',
+        'com_users.registration',
+        'com_admin.profile'
+    );
+
+    /**
      * Constructor
      *
-     * @param unknown_type $subject
-     * @param unknown_type $config
+     * @param JEventDispatcher $subject
+     * @param array            $config
+     *
+     * @return void
+     * @throws Exception
      */
     public function __construct(&$subject, $config)
     {
-        // if something happens & the helper class can't be found, we don't want a fatal error here
-        if (class_exists('JInbound')) {
-            JInbound::language('plg_user_jinbound.sys', JPATH_ADMINISTRATOR);
-        } else {
-            JFactory::getLanguage()->load('plg_user_jinbound.sys', JPATH_ADMINISTRATOR);
+        parent::__construct($subject, $config);
+
+        $jinbound = JPATH_ADMINISTRATOR . '/components/com_jinbound';
+
+        static::$enabled = is_dir($jinbound);
+
+        $this->loadLanguage('plg_user_jinbound.sys');
+
+        if (!static::$enabled) {
             JFactory::getApplication()->enqueueMessage(JText::_('PLG_USER_JINBOUND_COMPONENT_NOT_INSTALLED'));
         }
-        parent::__construct($subject, $config);
     }
 
     /**
-     * @param    string $context The context for the data
-     * @param    int    $data    The user id
-     * @param    object
+     * @param string $context The context for the data
+     * @param object $data    user data
      *
-     * @return    boolean
+     * @return    bool
      */
-    function onContentPrepareData($context, $data)
+    public function onContentPrepareData($context, $data)
     {
-        // Check we are manipulating a valid form.
-        if (!in_array($context,
-            array('com_users.profile', 'com_users.user', 'com_users.registration', 'com_admin.profile'))) {
+        if (!in_array($context, $this->contexts)) {
             return true;
         }
 
@@ -67,11 +79,18 @@ class plgUserJInbound extends JPlugin
                 // Load the profile data from the database.
                 $db = JFactory::getDbo();
                 $db->setQuery(
-                    'SELECT profile_key, profile_value FROM #__user_profiles' .
-                    ' WHERE user_id = ' . (int)$userId . " AND profile_key LIKE 'jinbound.%'" .
-                    ' ORDER BY ordering'
+                    $db->getQuery(true)
+                        ->select('profile_key, profile_value')
+                        ->from('#__user_profiles')
+                        ->where(
+                            array(
+                                'user_id = ' . (int)$userId,
+                                'profile_key LIKE ' . $db->quote('jinbound.%')
+                            )
+                        )
+                        ->order('ordering ASC')
                 );
-                $results = $db->loadRowList();
+                $profiles = $db->loadObjectList();
 
                 // Check for a database error.
                 if ($db->getErrorNum()) {
@@ -79,44 +98,14 @@ class plgUserJInbound extends JPlugin
                     return false;
                 }
 
-                // Merge the profile data.
                 $data->jinbound = array();
+                foreach ($profiles as $profile) {
+                    $key = str_replace('jinbound.', '', $profile->user_id);
 
-                foreach ($results as $v) {
-                    $k                  = str_replace('jinbound.', '', $v[0]);
-                    $data->jinbound[$k] = $v[1];
+                    $data->jinbound[$key] = $profile->profile_key;
                 }
             }
         }
-
-        return true;
-    }
-
-    /**
-     * Adds the necessary fields to the user profile
-     *
-     * @param JForm $form
-     *
-     * @deprecated form code will be removed/changed in the future
-     */
-    public function onContentPrepareForm($form)
-    {
-
-        return true;
-
-        // make sure form is a JForm
-        if (!($form instanceof JForm)) {
-            $this->_subject->setError('JERROR_NOT_A_FORM');
-            return false;
-        }
-        // Check we are manipulating a valid form.
-        if (!in_array($form->getName(),
-            array('com_admin.profile', 'com_users.user', 'com_users.registration', 'com_users.profile'))) {
-            return true;
-        }
-        // Add the email fields to the form.
-        JForm::addFormPath(dirname(__FILE__) . '/forms');
-        $form->loadFile('jinbound_lead', false);
 
         return true;
     }
@@ -124,47 +113,58 @@ class plgUserJInbound extends JPlugin
     /**
      * Saves the user data to the profiles table
      *
-     * @param $data
-     * @param $isNew
-     * @param $result
-     * @param $error
+     * @param array  $data
+     * @param bool   $isNew
+     * @param bool   $result
+     * @param string $error
+     *
+     * @return void
+     * @throws Exception
      */
-    function onUserAfterSave($data, $isNew, $result, $error)
+    public function onUserAfterSave($data, $isNew, $result, $error)
     {
-        $userId = JArrayHelper::getValue($data, 'id', 0, 'int');
+        $userId = ArrayHelper::getValue($data, 'id', 0, 'int');
 
-        if ($userId && $result && isset($data['jinbound']) && (count($data['jinbound']))) {
+        if ($userId && $result && !empty($data['jinbound'])) {
             try {
                 $db = JFactory::getDbo();
                 $db->setQuery(
-                    'DELETE FROM #__user_profiles WHERE user_id = ' . $userId .
-                    " AND profile_key LIKE 'jinbound.%'"
+                    $db->getQuery(true)
+                        ->delete('#__user_profiles')
+                        ->where(
+                            array(
+                                'user_id = ' . (int)$userId,
+                                'profile_key LIKE ' . $db->quote('jinbound.%')
+                            )
+                        )
                 );
 
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     throw new Exception($db->getErrorMsg());
                 }
 
                 $tuples = array();
                 $order  = 1;
-
                 foreach ($data['jinbound'] as $k => $v) {
-                    $tuples[] = '(' . $userId . ', ' . $db->quote('jinbound.' . $k) . ', ' . $db->quote($v) . ', ' . $order++ . ')';
+                    $tuples[] = sprintf(
+                        '(%s, %s, %s, %s)',
+                        $userId,
+                        $db->quote('jinbound.' . $k),
+                        $db->quote($v),
+                        $order++
+                    );
                 }
 
                 $db->setQuery('INSERT INTO #__user_profiles VALUES ' . implode(', ', $tuples));
 
-                if (!$db->query()) {
+                if (!$db->execute()) {
                     throw new Exception($db->getErrorMsg());
                 }
 
-            } catch (JException $e) {
+            } catch (Exception $e) {
                 $this->_subject->setError($e->getMessage());
-                return false;
             }
         }
-
-        return true;
     }
 
     /**
@@ -172,35 +172,37 @@ class plgUserJInbound extends JPlugin
      *
      * Method is called after user data is deleted from the database
      *
-     * @param    array   $user    Holds the user data
-     * @param    boolean $success True if user was succesfully stored in the database
-     * @param    string  $msg     Message
+     * @param array  $user    Holds the user data
+     * @param bool   $success True if user was succesfully stored in the database
+     * @param string $msg     Message
+     *
+     * @return void
      */
-    function onUserAfterDelete($user, $success, $msg)
+    public function onUserAfterDelete($user, $success, $msg)
     {
-        if (!$success) {
-            return false;
-        }
+        if ($success) {
+            $userId = ArrayHelper::getValue($user, 'id', 0, 'int');
+            if ($userId) {
+                try {
+                    $db = JFactory::getDbo();
+                    $db->setQuery(
+                        $db->getQuery(true)
+                            ->delete('#__user_profiles')
+                            ->where(
+                                array(
+                                    'user_id = ' . $userId,
+                                    'profile_key LIKE ' . $db->quote('jinbound.%')
+                                )
+                            )
+                    );
 
-        $userId = JArrayHelper::getValue($user, 'id', 0, 'int');
-
-        if ($userId) {
-            try {
-                $db = JFactory::getDbo();
-                $db->setQuery(
-                    'DELETE FROM #__user_profiles WHERE user_id = ' . $userId .
-                    " AND profile_key LIKE 'jinbound.%'"
-                );
-
-                if (!$db->query()) {
-                    throw new Exception($db->getErrorMsg());
+                    if (!$db->execute()) {
+                        throw new Exception($db->getErrorMsg());
+                    }
+                } catch (Exception $e) {
+                    $this->_subject->setError($e->getMessage());
                 }
-            } catch (JException $e) {
-                $this->_subject->setError($e->getMessage());
-                return false;
             }
         }
-
-        return true;
     }
 }

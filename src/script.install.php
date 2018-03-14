@@ -133,8 +133,8 @@ class com_JInboundInstallerScript extends AbstractScript
         $lang = JFactory::getLanguage();
         $root = $parent->getParent()->getPath('source');
 
-        $lang->load('com_jinbound', $root) || $lang->load('com_jinbound', JPATH_ADMINISTRATOR);
-        $lang->load('com_jinbound.sys', $root) || $lang->load('com_jinbound.sys', JPATH_ADMINISTRATOR);
+        $lang->load('com_jinbound', $root);
+        $lang->load('com_jinbound.sys', $root);
 
         switch ($type) {
             case 'install':
