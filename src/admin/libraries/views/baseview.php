@@ -35,24 +35,8 @@ jimport('joomla.filesystem.folder');
 // we have to always load the language file for com_categories
 JInbound::language('com_categories', JPATH_ADMINISTRATOR);
 
-// create an intermediary dummy class
-if (jimport('joomla.application.component.view')) {
-    class JInboundBaseCompatView extends JView
-    {
 
-    }
-} else {
-    if (!class_exists('JViewLegacy', false)) {
-        jimport('cms.view.legacy') or jimport('legacy.view.legacy');
-    }
-
-    class JInboundBaseCompatView extends JViewLegacy
-    {
-
-    }
-}
-
-class JInboundBaseView extends JInboundBaseCompatView
+class JInboundBaseView extends JViewLegacy
 {
     public $sortFunction;
 

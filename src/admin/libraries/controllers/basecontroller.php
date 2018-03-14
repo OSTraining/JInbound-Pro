@@ -17,20 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-if (jimport('joomla.application.component.controller')) {
-    class JInboundCompatBaseController extends JController
-    {
-
-    }
-} else {
-    jimport('legacy.controller.legacy');
-
-    class JInboundCompatBaseController extends JControllerLegacy
-    {
-
-    }
-}
-
-class JInboundBaseController extends JInboundCompatBaseController
+class JInboundBaseController extends JControllerLegacy
 {
 }
