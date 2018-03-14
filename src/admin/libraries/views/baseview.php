@@ -24,23 +24,24 @@ JInbound::registerHelper('path');
 JInbound::registerHelper('toolbar');
 JInbound::registerHelper('url');
 JInbound::registerLibrary('JInboundInflector', 'inflector');
-// include the html helper here
-jimport('joomla.html.html');
-JHtml::addIncludePath(JInboundHelperPath::admin() . '/helpers/html');
-// include core libs
-jimport('joomla.error.profiler');
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
-// include other helpers
-// we have to always load the language file for com_categories
-JInbound::language('com_categories', JPATH_ADMINISTRATOR);
 
+JHtml::addIncludePath(JInboundHelperPath::admin() . '/helpers/html');
+
+JFactory::getLanguage()->load('com_categories', JPATH_ADMINISTRATOR);
 
 class JInboundBaseView extends JViewLegacy
 {
     public $sortFunction;
 
-    function __construct($config = array())
+    /**
+     * JInboundBaseView constructor.
+     *
+     * @param array $config
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function __construct($config = array())
     {
         parent::__construct($config);
 
@@ -64,11 +65,8 @@ class JInboundBaseView extends JViewLegacy
         $this->sortFunction = JInbound::version()->isCompatible('3.0.0') ? 'searchtools.sort' : 'grid.sort';
     }
 
-    /**
-     * overload this with an extra param to choose layout
+    /*
      *
-     * (non-PHPdoc)
-     * @see JView::loadTemplate()
      */
     public function loadTemplate($tpl = null, $layout = null)
     {

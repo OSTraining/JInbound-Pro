@@ -15,6 +15,8 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die;
 
 // NOTE repeated here as it is needed for com_ajax/com_jinbound
@@ -239,86 +241,91 @@ abstract class ModJInboundCTAHelper
     /**
      * option=com_ajax&module=jinbound_cta&method=getField&type={field type}&format={format}
      *
+     * @param string[] $variables
+     *
      * @return object
+     * @throws Exception
      */
     public static function getFieldAjax($variables = array())
     {
-        // init
-        jimport('joomla.form.form');
-        jimport('joomla.form.field');
         JForm::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/fields');
-        JFactory::getLanguage()->load('mod_jinbound_cta.sys', JPATH_ROOT);
-        $app     = JFactory::getApplication();
-        $format  = $app->input->getWord('format');
-        $type    = $app->input->getWord('type');
-        $group   = $app->input->getCmd('group', null);
-        $control = $app->input->getWord('control', 'jform');
-        $name    = $app->input->getCmd('name');
-        $default = $app->input->getString('default', '');
-        $label   = $app->input->getString('label', '');
-        $desc    = $app->input->getString('desc', '');
-        $class   = $app->input->getString('class', '');
-        $options = $app->input->get('options', array(), 'raw');
-        // allow overrides
-        if (!empty($variables)) {
-            foreach ($variables as $variable => $value) {
-                if ('app' === $variable) {
-                    continue;
-                }
-                $$variable = $value;
-            }
-        }
+        JFactory::getLanguage()->load('mod_jinbound_cta.sys', JPATH_SITE . '/modules/mod_jinbound_cta');
+
+        $app = JFactory::getApplication();
+
+        $variables = array_merge(
+            array(
+                'format'  => $app->input->getWord('format'),
+                'type'    => $app->input->getWord('type'),
+                'group'   => $app->input->getCmd('group'),
+                'control' => $app->input->getWord('control', 'jform'),
+                'name'    => $app->input->getCmd('name'),
+                'default' => $app->input->getString('default'),
+                'label'   => $app->input->getString('label'),
+                'desc'    => $app->input->getString('desc'),
+                'class'   => $app->input->getString('class'),
+                'options' => $app->input->get('options', array(), 'array')
+            ),
+            $variables
+        );
+
         // validate
-        if (empty($type)) {
+        if (!$variables['type']) {
             throw new LogicException('Field type required', 500);
         }
-        if (empty($name)) {
+        if (!$variables['name']) {
             throw new LogicException('Field name required', 500);
         }
-        // start building form
-        $form   = JForm::getInstance('jinbound_form_module', '<form><!-- --></form>', array('control' => $control));
-        $xml    = new JXMLElement('<form></form>');
+
+        $form = JForm::getInstance(
+            'jinbound_form_module',
+            '<form><!-- --></form>',
+            array('control' => $variables['control'])
+        );
+        $xml  = new SimpleXMLElement('<form/>');
+
         $params = $xml->addChild('fields');
         $params->addAttribute('name', 'params');
-        if (is_null($group) || empty($group)) {
-            $group    = null;
+        if (empty($variables['group'])) {
             $fieldset = $params->addChild('fieldset');
+
         } else {
             $fields = $params->addChild('fields');
-            $fields->addAttribute('name', $group);
+            $fields->addAttribute('name', $variables['group']);
             $fieldset = $fields->addChild('fieldset');
         }
+
         $field = $fieldset->addChild('field');
         // configure field
-        $field->addAttribute('name', $name);
-        $field->addAttribute('type', $type);
-        $field->addAttribute('default', $default);
-        $field->addAttribute('class', $class);
-        $field->addAttribute('label', JText::_($label));
-        $field->addAttribute('description', JText::_($desc));
-        // add options, if needed
-        if (is_array($options) && !empty($options)) {
-            foreach ($options as $option) {
-                if (!(is_array($option) && array_key_exists('value', $option) && array_key_exists('text', $option))) {
-                    continue;
-                }
+        $field->addAttribute('name', $variables['name']);
+        $field->addAttribute('type', $variables['type']);
+        $field->addAttribute('default', $variables['default']);
+        $field->addAttribute('class', $variables['class']);
+        $field->addAttribute('label', JText::_($variables['label']));
+        $field->addAttribute('description', JText::_($variables['desc']));
+
+        foreach ($variables['options'] as $option) {
+            if (is_array($option)
+                && !empty($option['value'])
+                && !empty($option['text'])
+            ) {
                 $opt = $field->addChild('option', JText::_($option['text']));
                 $opt->addAttribute('value', $option['value']);
             }
         }
-        // build the result
+
         $form->load($xml, false);
-        $obj    = $form->getField($name, "params.$group");
+        $obj    = $form->getField($variables['name'], "params.{$variables['group']}");
         $result = (object)array(
             'field' => (object)array(
-                'label' => $obj->label
-            ,
+                'label' => $obj->label,
                 'field' => $obj->input
             )
         );
-        if ('json' === $format || 'debug' === $format) {
+        if (in_array($variables['format'], array('json', 'debug'))) {
             return $result;
         }
+
         return $result->field;
     }
 
@@ -329,72 +336,86 @@ abstract class ModJInboundCTAHelper
      * @param bool      $cached
      *
      * @return ModJInboundCTAAdapter
-     * @throws RuntimeException
+     * @throws Exception
      */
     public static function getAdapter(JRegistry $params, $cached = true)
     {
-        // init
         $app    = JFactory::getApplication();
         $filter = JFilterInput::getInstance();
-        // in order to load the correct adapter, conditions need to be checked
-        // get the correct adapter parameter name
-        // should return one of: '', 'c1_', 'c2_', 'c3_'
-        $pfx = $filter->clean(static::findAdapterType($params), 'cmd');
-        // determine which adapter to use
+
+        /*
+         * in order to load the correct adapter, conditions need to be checked
+         * get the correct adapter parameter name
+         * should return one of: '', 'c1_', 'c2_', 'c3_'
+         */
+        $pfx  = $filter->clean(static::findAdapterType($params), 'cmd');
         $name = $filter->clean($params->get($pfx . 'mode', 'module'), 'cmd');
-        // if this adapter exists, send it along
-        if (array_key_exists($name, self::$adapters) && $cached) {
+
+        if (!empty(static::$adapters[$name]) && $cached) {
             if (JDEBUG) {
                 $app->enqueueMessage("Found pre-existing adapter '$name' ...");
             }
-            return self::$adapters[$name];
-        }
-        // try to load the adapter class
-        if (!class_exists($class = 'ModJInboundCTA' . ucfirst($name) . 'Adapter')) {
-            if (!file_exists($require = dirname(__FILE__) . '/adapters/' . $name . '.php')) {
-                throw new RuntimeException('Adapter not found', 404);
+
+        } else {
+            if (!class_exists($class = 'ModJInboundCTA' . ucfirst($name) . 'Adapter')) {
+                if (!file_exists($require = dirname(__FILE__) . '/adapters/' . $name . '.php')) {
+                    throw new RuntimeException('Adapter not found', 404);
+                }
+
+                require_once $require;
+                if (!class_exists($class)) {
+                    throw new RuntimeException('Adapter file not found', 404);
+                }
             }
-            require_once $require;
-            if (!class_exists($class)) {
-                throw new RuntimeException('Adapter file not found', 404);
+
+            if (JDEBUG) {
+                $app->enqueueMessage("Creating new adapter instance '{$class}' with pfx '{$pfx}' ...");
             }
+
+            $adapter = new $class($params);
+
+            $adapter->pfx = $pfx;
+
+            static::$adapters[$name] = $adapter;
         }
-        if (JDEBUG) {
-            $app->enqueueMessage("Creating new adapter instance '$class' with pfx '$pfx' ...");
-        }
-        $adapter = new $class($params);
-        // set the adapter prefix
-        $adapter->pfx = $pfx;
-        // set the adapter and return it
-        return self::$adapters[$name] = $adapter;
+
+        return static::$adapters[$name];
     }
 
+    /**
+     * @param JRegistry $params
+     *
+     * @return string
+     * @throws Exception
+     */
     protected static function findAdapterType(JRegistry $params)
     {
-        // init
         $app  = JFactory::getApplication();
         $pfxs = array('c1_', 'c2_', 'c3_');
         $data = static::loadContactData();
         $type = '';
         if (JDEBUG) {
-            $app->enqueueMessage("Checking against this user data:<pre>" . htmlspecialchars(print_r($data,
-                    1)) . "</pre>");
+            $app->enqueueMessage(
+                sprintf('Checking against this user data:<pre>%s</pre>', htmlspecialchars(print_r($data, 1)))
+            );
         }
+
         foreach ($pfxs as $pfx) {
             if (static::checkData($data, $params, $pfx)) {
                 $type = $pfx;
                 break;
             }
         }
+
         if (JDEBUG) {
-            $app->enqueueMessage("Found adapter type '$type' ...");
+            $app->enqueueMessage("Found adapter type '{$type}' ...");
         }
+
         return $type;
     }
 
     protected static function loadContactData()
     {
-        // init
         $cookie            = filter_input(INPUT_COOKIE, '__jib__');
         $contact_id        = static::getContactId();
         $contact           = new stdClass();
@@ -403,14 +424,14 @@ abstract class ModJInboundCTAHelper
         $contact->campaign = array();
         $contact->priority = array();
         $contact->status   = array();
-        // validate
+
         if (!empty($contact_id)) {
-            // use the component helper class to load relevant info
             JInbound::registerHelper('contact');
             $contact->campaign = JInboundHelperContact::getContactCampaigns($contact_id);
             $contact->priority = JInboundHelperContact::getContactPriorities($contact_id);
             $contact->status   = JInboundHelperContact::getContactStatuses($contact_id);
         }
+
         return $contact;
     }
 

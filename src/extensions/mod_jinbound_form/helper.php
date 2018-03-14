@@ -70,7 +70,7 @@ abstract class modJinboundFormHelper
         }
         $attribs = array('style' => 'none');
         $form    = JModuleHelper::renderModule($module, $attribs);
-        // get module-specific scripts 
+        // get module-specific scripts
         $corescripts = $doc->_scripts;
         $corescript  = $doc->_script;
         $corestyles  = $doc->_styleSheets;

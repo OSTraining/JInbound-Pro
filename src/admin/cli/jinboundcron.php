@@ -65,7 +65,8 @@ class JInboundCron extends JApplicationCli
     /**
      * Entry point for the script
      *
-     * @return  void
+     * @return void
+     * @throws Exception
      */
     public function doExecute()
     {
@@ -74,14 +75,7 @@ class JInboundCron extends JApplicationCli
         JFactory::$application = $this;
         JFactory::getLanguage()->load('com_jinbound', JPATH_ADMINISTRATOR . '/components/com_jinbound');
 
-        if (jimport('joomla.application.component.controller')) {
-            $controller = JController::getInstance('JInbound');
-        } else {
-            jimport('legacy.controllers.legacy');
-            $controller = JControllerLegacy::getInstance('JInbound');
-        }
-
-        // exec task
+        $controller = JControllerLegacy::getInstance('JInbound');
         $controller->execute('cron');
     }
 
