@@ -25,8 +25,7 @@ JInbound::registerLibrary('JInboundTable', 'table');
 
 class JInboundTableStage extends JInboundTable
 {
-
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_stages', 'id', $db);
     }
@@ -41,12 +40,14 @@ class JInboundTableStage extends JInboundTable
     }
 
     /**
-     * We provide our global ACL as parent
+     * @param JTable|null $table
+     * @param null        $id
      *
-     * @see JTable::_getAssetParentId()
+     * @return int
      */
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    protected function _getAssetParentId(JTable $table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
         $asset->loadByName('com_jinbound');
         return $asset->id;

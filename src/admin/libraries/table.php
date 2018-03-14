@@ -39,11 +39,12 @@ class JInboundTable extends JTable
         $user = JFactory::getUser();
 
         if ($this->id) {
-            // Existing item
-            $this->modified    = $date->toSql();
-            $this->modified_by = $user->get('id');
-        } else {
-            // New item
+            if (property_exists($this, 'modified')) {
+                $this->modified    = $date->toSql();
+                $this->modified_by = $user->get('id');
+            }
+
+        } elseif (property_exists($this, 'created')) {
             if (empty($this->created)) {
                 $this->created = $date->toSql();
             }

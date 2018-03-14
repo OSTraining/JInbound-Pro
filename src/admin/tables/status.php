@@ -18,18 +18,17 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JInboundTable', 'table');
 
-class JInboundTableStatus extends JInboundAssetTable
+class JInboundTableStatus extends JInboundTable
 {
-
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_lead_statuses', 'id', $db);
     }
 
     /**
-     * Redefined asset name, as we support action control
+     * @return string
      */
     protected function _getAssetName()
     {
@@ -38,14 +37,17 @@ class JInboundTableStatus extends JInboundAssetTable
     }
 
     /**
-     * We provide our global ACL as parent
+     * @param JTable|null $table
+     * @param null        $id
      *
-     * @see JTable::_getAssetParentId()
+     * @return int
      */
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    protected function _getAssetParentId(JTable $table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
-        $asset->loadByName('com_jinbound.status');
+        $asset->loadByName('com_jinbound.statuses');
+
         return $asset->id;
     }
 }

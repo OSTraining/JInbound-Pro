@@ -18,9 +18,9 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JinboundTable', 'table');
 
-class JInboundTableContact extends JInboundAssetTable
+class JInboundTableContact extends JInboundTable
 {
     public function __construct(&$db)
     {
@@ -68,19 +68,16 @@ class JInboundTableContact extends JInboundAssetTable
     }
 
     /**
-     * We provide our global ACL as parent
-     *
-     * @param JTableAsset $table
-     * @param int         $id
+     * @param JTable $table
+     * @param null   $id
      *
      * @return int
-     * @throws Exception
      */
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    protected function _getAssetParentId(JTable $table = null, $id = null)
     {
         /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
-        $asset->loadByName('com_jinbound.contact');
+        $asset->loadByName('com_jinbound.contacts');
         return $asset->id;
     }
 }

@@ -18,16 +18,21 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JInboundTable', 'table');
 
-class JInboundTableEmail extends JInboundAssetTable
+class JInboundTableEmail extends JInboundTable
 {
-
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_emails', 'id', $db);
     }
 
+    /**
+     * @param mixed $keys
+     * @param bool  $reset
+     *
+     * @return bool
+     */
     public function load($keys = null, $reset = true)
     {
         // load
@@ -46,6 +51,7 @@ class JInboundTableEmail extends JInboundAssetTable
             }
         }
         $this->params = $registry;
+
         return $load;
     }
 
@@ -58,22 +64,19 @@ class JInboundTableEmail extends JInboundAssetTable
             } else {
                 if (is_string($array['params'])) {
                     $registry->loadString($array['params']);
-                } else {
-                    if (is_object($array['params'])) {
-
-                    }
                 }
             }
             $array['params'] = (string)$registry;
         }
+
         return parent::bind($array, $ignore);
     }
 
     /**
-     * override to save versions
+     * @param bool $updateNulls
      *
-     * (non-PHPdoc)
-     * @see JInboundTable::store()
+     * @return bool
+     * @throws Exception
      */
     public function store($updateNulls = false)
     {
@@ -84,51 +87,75 @@ class JInboundTableEmail extends JInboundAssetTable
         if ($isNew) {
             // save this email first
             $store = parent::store($updateNulls);
-            // now run a query to insert the values from this email into the versions table
-            $this->_db->setQuery('INSERT INTO #__jinbound_emails_versions (email_id, subject, htmlbody, plainbody) SELECT id, subject, htmlbody, plainbody FROM #__jinbound_emails WHERE id = ' . $this->id);
+            $this->_db->setQuery(
+                'INSERT INTO #__jinbound_emails_versions'
+                . ' (email_id, subject, htmlbody, plainbody)'
+                . ' SELECT id, subject, htmlbody, plainbody FROM #__jinbound_emails WHERE id = ' . $this->id
+            );
+
             try {
-                $this->_db->query();
+                $this->_db->execute();
+
             } catch (Exception $e) {
-                $app->enqueueMessage($e->getMassage(), 'error');
+                $app->enqueueMessage($e->getMessage(), 'error');
+
                 return $store;
             }
-            // now return the store result
+
             return $store;
-        } // if it isn't new, we have to pull the previous version and check the texts
-        else {
+
+        } else {
             // if any of the texts in this version of the email differ
             // we have to insert a new version of the email
 
             // pull the original from the database
-            $this->_db->setQuery('SELECT subject, htmlbody, plainbody FROM #__jinbound_emails WHERE id = ' . $this->id);
+            $this->_db->setQuery(
+                $this->_db->getQuery(true)
+                    ->select('subject, htmlbody, plainbody')
+                    ->from('#__jinbound_emails')
+                    ->where('id = ' . $this->id)
+            );
+
             try {
                 $original = $this->_db->loadObject();
+
             } catch (Exception $e) {
-                $app->enqueueMessage($e->getMassage(), 'error');
+                $app->enqueueMessage($e->getMessage(), 'error');
+
                 return parent::store($updateNulls);
             }
-            // go ahead and store the new, then update versions to reflect
+
             $store = parent::store($updateNulls);
+
             // compare the original to the new
             // if the old matches, just store & bail
-            if ($original->subject == $this->subject && $original->htmlbody == $this->htmlbody && $original->plainbody == $this->plainbody) {
+            if ($original->subject == $this->subject
+                && $original->htmlbody == $this->htmlbody
+                && $original->plainbody == $this->plainbody
+            ) {
                 return $store;
             }
+
             // there is a difference - insert a new version record before store
-            $this->_db->setQuery('INSERT INTO #__jinbound_emails_versions (email_id, subject, htmlbody, plainbody) SELECT id, subject, htmlbody, plainbody FROM #__jinbound_emails WHERE id = ' . $this->id);
+            $this->_db->setQuery(
+                'INSERT INTO #__jinbound_emails_versions'
+                . ' (email_id, subject, htmlbody, plainbody)'
+                . ' SELECT id, subject, htmlbody, plainbody FROM #__jinbound_emails WHERE id = ' . $this->id
+            );
+
             try {
-                $this->_db->query();
+                $this->_db->execute();
             } catch (Exception $e) {
-                $app->enqueueMessage($e->getMassage(), 'error');
+                $app->enqueueMessage($e->getMessage(), 'error');
                 return $store;
             }
-            // now return the store result
+
             return $store;
         }
     }
 
     /**
-     * Redefined asset name, as we support action control
+     * @return string
      */
     protected function _getAssetName()
     {
@@ -137,14 +164,16 @@ class JInboundTableEmail extends JInboundAssetTable
     }
 
     /**
-     * We provide our global ACL as parent
+     * @param JTable|null $table
+     * @param null        $id
      *
-     * @see JTable::_getAssetParentId()
+     * @return int
      */
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    protected function _getAssetParentId(JTable $table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
-        $asset->loadByName('com_jinbound.email');
+        $asset->loadByName('com_jinbound.emails');
         return $asset->id;
     }
 }

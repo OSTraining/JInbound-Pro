@@ -18,45 +18,51 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JInboundTable', 'table');
 
-class JInboundTablePage extends JInboundAssetTable
+class JInboundTablePage extends JInboundTable
 {
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_pages', 'id', $db);
     }
 
-    function check()
+    public function check()
     {
-        // Check for valid names.
         if (trim($this->name) == '') {
             $this->setError(JText::_('COM_JINBOUND_WARNING_PROVIDE_VALID_NAME'));
+
             return false;
         }
 
         // prevent duplicates of the name
         try {
-            $dupes = $this->_db->setQuery($this->_db->getQuery(true)
-                ->select('id')
-                ->from($this->_tbl)
-                ->where($this->_db->quoteName('name') . ' = ' . $this->_db->quote($this->name))
-                ->where($this->_db->quoteName('id') . ' <> ' . intval($this->id))
-            )->loadColumn();
+            $dupes = $this->_db->setQuery(
+                $this->_db->getQuery(true)
+                    ->select('id')
+                    ->from($this->_tbl)
+                    ->where($this->_db->quoteName('name') . ' = ' . $this->_db->quote($this->name))
+                    ->where($this->_db->quoteName('id') . ' <> ' . intval($this->id))
+            )
+                ->loadColumn();
+
         } catch (Exception $e) {
             $this->setError($e->getMessage());
+
             return false;
         }
 
         if (!empty($dupes)) {
             $this->setError(JText::_('COM_JINBOUND_WARNING_DUPLICATE_NAMES'));
+
             return false;
         }
 
         if (empty($this->alias)) {
             $this->alias = $this->name;
         }
-        $this->alias = JApplication::stringURLSafe($this->alias);
+        $this->alias = JApplicationHelper::stringURLSafe($this->alias);
+
         if (trim(str_replace('-', '', $this->alias)) == '') {
             $this->alias = JFactory::getDate()->format("Y-m-d-H-i-s");
         }
@@ -68,20 +74,21 @@ class JInboundTablePage extends JInboundAssetTable
     {
         // Verify that the alias is unique
         $table = JTable::getInstance('Page', 'JInboundTable');
-        if ($table->load(array('alias'    => $this->alias,
-                               'category' => $this->category
-            )) && ($table->id != $this->id || $this->id == 0)) {
+        if ($table->load(array('alias' => $this->alias, 'category' => $this->category))
+            && ($table->id != $this->id || $this->id == 0)
+        ) {
             $this->setError(JText::_('COM_JINBOUND_ERROR_UNIQUE_ALIAS'));
+
             return false;
         }
-        // Attempt to store the user data.
+
         return parent::store($updateNulls);
     }
 
     /**
      * overload hit for tracking hits per day
      *
-     * @param type $pk
+     * @param int $pk
      *
      * @return boolean
      */
@@ -93,17 +100,21 @@ class JInboundTablePage extends JInboundAssetTable
         }
         $date = JFactory::getDate()->format('Y-m-d');
         try {
-            $record = $this->_db->setQuery($this->_db->getQuery(true)
-                ->select('day')->select('hits')
-                ->from('#__jinbound_landing_pages_hits')
-                ->where('day = ' . $this->_db->quote($date))
-                ->where('page_id = ' . $this->_db->quote($id))
-            )->loadObject();
+            $record = $this->_db->setQuery(
+                $this->_db->getQuery(true)
+                    ->select('day')->select('hits')
+                    ->from('#__jinbound_landing_pages_hits')
+                    ->where('day = ' . $this->_db->quote($date))
+                    ->where('page_id = ' . $this->_db->quote($id))
+            )
+                ->loadObject();
+
             if (empty($record)) {
                 $query = $this->_db->getQuery(true)
                     ->insert('#__jinbound_landing_pages_hits')
                     ->columns(array('day', 'page_id', 'hits'))
                     ->values($this->_db->quote($date) . ', ' . $id . ', 1');
+
             } else {
                 $query = $this->_db->getQuery(true)
                     ->update('#__jinbound_landing_pages_hits')
@@ -111,16 +122,19 @@ class JInboundTablePage extends JInboundAssetTable
                     ->where('day = ' . $this->_db->quote($date))
                     ->where('page_id = ' . $this->_db->quote($id));
             }
-            $this->_db->setQuery($query)->query();
+            $this->_db->setQuery($query)->execute();
+
         } catch (Exception $e) {
             $this->setError($e->getMessage());
+
             return false;
         }
+
         return parent::hit($pk);
     }
 
     /**
-     * Redefined asset name, as we support action control
+     * @return string
      */
     protected function _getAssetName()
     {
@@ -129,14 +143,16 @@ class JInboundTablePage extends JInboundAssetTable
     }
 
     /**
-     * We provide our global ACL as parent
+     * @param JTable|null $table
+     * @param null        $id
      *
-     * @see JTable::_getAssetParentId()
+     * @return int
      */
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    protected function _getAssetParentId(JTable $table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
-        $asset->loadByName('com_jinbound.page');
+        $asset->loadByName('com_jinbound.pages');
         return $asset->id;
     }
 }

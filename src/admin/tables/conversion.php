@@ -22,16 +22,16 @@ JInbound::registerLibrary('JInboundTable', 'table');
 
 class JInboundTableConversion extends JInboundTable
 {
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_conversions', 'id', $db);
     }
 
     /**
-     * Override to handle formdata
+     * @param mixed $keys
+     * @param bool  $reset
      *
-     * (non-PHPdoc)
-     * @see JTable::load()
+     * @return bool
      */
     public function load($keys = null, $reset = true)
     {
@@ -51,14 +51,15 @@ class JInboundTableConversion extends JInboundTable
             }
         }
         $this->formdata = $registry;
+
         return $load;
     }
 
     /**
-     * Override to handle formdata
+     * @param array|object $array
+     * @param string       $ignore
      *
-     * (non-PHPdoc)
-     * @see JTable::bind()
+     * @return bool
      */
     public function bind($array, $ignore = '')
     {
@@ -69,14 +70,30 @@ class JInboundTableConversion extends JInboundTable
             } else {
                 if (is_string($array['formdata'])) {
                     $registry->loadString($array['formdata']);
-                } else {
-                    if (is_object($array['formdata'])) {
-
-                    }
                 }
             }
             $array['formdata'] = (string)$registry;
         }
+
         return parent::bind($array, $ignore);
+    }
+
+    /**
+     * Redefined asset name, as we support action control
+     *
+     * @return string
+     */
+    protected function _getAssetName()
+    {
+        $k = $this->_tbl_key;
+        return 'com_jinbound.conversion.' . (int)$this->$k;
+    }
+
+    protected function _getAssetParentId(JTable $table = null, $id = null)
+    {
+        /** @var JTableAsset $asset */
+        $asset = JTable::getInstance('Asset');
+        $asset->loadByName('com_jinbound.conversions');
+        return $asset->id;
     }
 }

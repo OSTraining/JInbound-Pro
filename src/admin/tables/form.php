@@ -15,96 +15,90 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Joomla\Utilities\ArrayHelper;
+
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JInboundTable', 'table');
 
-class JInboundTableForm extends JInboundAssetTable
+class JInboundTableForm extends JInboundTable
 {
-    private $_formfields = null;
+    protected $formFieldsCache = null;
 
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_forms', 'id', $db);
     }
 
     /**
-     * Overload the store method for the JInbound Fields table.
+     * @param bool $updateNulls
      *
-     * @param       boolean Toggle whether null values should be updated.
-     *
-     * @return      boolean True on success, false on failure.
+     * @return bool
+     * @throws Exception
      */
     public function store($updateNulls = false)
     {
-        $date = JFactory::getDate();
-        $user = JFactory::getUser();
-        if ($this->id) {
-            // Existing item
-            $this->modified    = $date->toSql();
-            $this->modified_by = $user->get('id');
-        } else {
-            // New field
-            $this->created    = $date->toSql();
-            $this->created_by = $user->get('id');
-        }
-
-        // force formfields
         if (property_exists($this, 'formfields')) {
-            $this->_formfields = $this->formfields;
+            $this->formFieldsCache = $this->formfields;
             unset($this->formfields);
         }
 
-        // go ahead and store now, as we'll need it later
         $store = parent::store($updateNulls);
+
         // handle xref but only if we have an id already ;)
         // if store was successful, there should now be an assigned id
         if ($store) {
-            if (empty($this->_formfields)) {
-                // go ahead and fetch these from the request
-                // we currently have no need to get this data from anywhere else
-                // but eventually we may need to
-                // unfortunately, we have to extract this data from JForm, so we have to fetch via JForm array
+            if (empty($this->formFieldsCache)) {
+                /*
+                 * fetch these from the request
+                 * we currently have no need to get this data from anywhere else
+                 * but eventually we may need to
+                 * unfortunately, we have to extract this data from JForm, so we have to fetch via JForm array
+                 */
                 $jform = JFactory::getApplication()->input->get('jform', array(), null);
                 // if for some dumb reason jform isn't an array we should account for this
                 // as well, this variable may not be set
                 if (is_array($jform) && array_key_exists('formfields', $jform)) {
                     // we may receive an array from the request
                     // this is doubtful, but let's go ahead and account for it anyways
-                    $this->_formfields = $jform['formfields'];
+                    $this->formFieldsCache = $jform['formfields'];
+
                 } else {
                     return $store;
                 }
             }
-            // we want the formfields value to be a string
-            if (is_array($this->_formfields)) {
-                $this->_formfields = implode('|', $this->_formfields);
-            }
-            // account for non-string variables by making it empty,
-            // but only if the passed variable cannot be converted to a string
-            else {
-                if (!is_string($this->_formfields)) {
+
+            if (is_array($this->formFieldsCache)) {
+                $this->formFieldsCache = implode('|', $this->formFieldsCache);
+            } else {
+                // account for non-string variables by making it empty,
+                // but only if the passed variable cannot be converted to a string
+                if (!is_string($this->formFieldsCache)) {
                     try {
-                        $this->_formfields = (string)$this->_formfields;
+                        $this->formFieldsCache = (string)$this->formFieldsCache;
+
                     } catch (Exception $e) {
                         // ouch, failed converting to string - just make it blank
-                        $this->_formfields = '';
+                        $this->formFieldsCache = '';
                     }
                 }
             }
+
             // now we need to convert our string back into an array and inject the records
-            $formfields = explode('|', $this->_formfields);
+            $formfields = explode('|', $this->formFieldsCache);
             if (!empty($formfields)) {
                 // go ahead and purge the existing records
-                $this->_db->setQuery($this->_db->getQuery(true)
-                    ->delete('#__jinbound_form_fields')
-                    ->where('form_id=' . intval($this->id))
-                )->query();
-                // go ahead & force our fields to be integers, unique, and only values
-                JArrayHelper::toInteger($formfields);
-                $formfields = array_unique($formfields);
-                $formfields = array_values($formfields);
+                $this->_db->setQuery(
+                    $this->_db->getQuery(true)
+                        ->delete('#__jinbound_form_fields')
+                        ->where('form_id=' . intval($this->id))
+                )
+                    ->execute();
+
+                // force our fields to be integers, unique, and only values
+                ArrayHelper::toInteger($formfields);
+                $formfields = array_unique(array_values($formfields));
                 $insert     = $this->_db->getQuery(true)
                     ->insert('#__jinbound_form_fields')
                     ->columns(array('form_id', 'field_id', 'ordering'));
@@ -117,11 +111,11 @@ class JInboundTableForm extends JInboundAssetTable
                 }
                 if ($query) {
                     // inject the new records
-                    $this->_db->setQuery($insert)->query();
+                    $this->_db->setQuery($insert)->execute();
                 }
             }
         }
-        // return the store value
+
         return $store;
     }
 
@@ -129,33 +123,41 @@ class JInboundTableForm extends JInboundAssetTable
     {
         // make sure fields get set
         if (array_key_exists('formfields', $array)) {
-            $this->_formfields = $array['formfields'];
+            $this->formFieldsCache = $array['formfields'];
             unset($array['formfields']);
         }
         return parent::bind($array, $ignore);
     }
 
+    /**
+     * @return string
+     */
     protected function _getAssetName()
     {
         $k = $this->_tbl_key;
         return 'com_jinbound.form.' . (int)$this->$k;
     }
 
+    /**
+     * @return string
+     */
     protected function _getAssetTitle()
     {
         return $this->title;
     }
 
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    /**
+     * @param JTable|null $table
+     * @param null        $id
+     *
+     * @return int
+     */
+    protected function _getAssetParentId(JTable $table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
         $asset->loadByName('com_jinbound.forms');
-        if (empty($asset->id)) {
-            JInbound::registerHelper('access');
-            JInboundHelperAccess::saveRules('forms', array('core.dummy' => array()), false);
-            $asset->loadByName('com_jinbound.forms');
-        }
+
         return $asset->id;
     }
-
 }

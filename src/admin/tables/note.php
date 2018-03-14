@@ -18,29 +18,17 @@
 defined('JPATH_PLATFORM') or die;
 
 JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
-JInbound::registerLibrary('JInboundAssetTable', 'tables/asset');
+JInbound::registerLibrary('JInboundTable', 'table');
 
-class JInboundTableNote extends JInboundAssetTable
+class JInboundTableNote extends JInboundTable
 {
-    var $id; // Primary Key
-    var $asset_id; // Key for assets table
-    var $lead_id; // Key for leads table
-    var $text; // note text
-    var $published; // publication status of record - 0 is Unpublished, 1 is Published, -2 is Trashed
-    var $created; // when record was created, in UTC
-    var $created_by; // User id of record creator
-    var $modified; // when record was last modified in UTC
-    var $modified_by; // User id of last modifier
-    var $checked_out; // Locking column to prevent simultaneous updates
-    var $checked_out_time; // Date and Time record was checked out
-
-    function __construct(&$db)
+    public function __construct(&$db)
     {
         parent::__construct('#__jinbound_notes', 'id', $db);
     }
 
     /**
-     * Redefined asset name, as we support action control
+     * @return string
      */
     protected function _getAssetName()
     {
@@ -49,14 +37,17 @@ class JInboundTableNote extends JInboundAssetTable
     }
 
     /**
-     * We provide our global ACL as parent
+     * @param JTable|null $table
+     * @param null        $id
      *
-     * @see JTable::_getAssetParentId()
+     * @return int
      */
-    protected function _compat_getAssetParentId($table = null, $id = null)
+    protected function _getAssetParentId(JTable$table = null, $id = null)
     {
+        /** @var JTableAsset $asset */
         $asset = JTable::getInstance('Asset');
         $asset->loadByName('com_jinbound');
+
         return $asset->id;
     }
 }
