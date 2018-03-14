@@ -10,7 +10,7 @@
         "name"           : "JInbound Pro",
         "client"         : "administrator",
         "package-license": "pro",
-        "target-platform": "3.*"
+        "target-platform": "3.[78]"
     },
     "authors"          : [
         {
