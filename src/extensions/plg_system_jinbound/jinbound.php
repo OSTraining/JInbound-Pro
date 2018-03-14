@@ -32,7 +32,7 @@ class plgSystemJInbound extends JPlugin
     /**
      * @var JApplicationCms
      */
-    protected static $app = null;
+    private static $app = null;
 
     /**
      * @var bool
