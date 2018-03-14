@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          plg_system_jinboundanalytics
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          com_jinbound
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************
@@ -23,7 +23,7 @@ JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/he
 /**
  * Base list model class
  *
- * @package        JInbound
+ * @package        jInbound
  * @subpackage     com_jinbound
  */
 class JInboundListModel extends JModelList

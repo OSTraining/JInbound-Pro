@@ -87,7 +87,7 @@
 
     <alledia>
         <element>jinbound</element>
-        <namespace>JInbound</namespace>
+        <namespace>jInbound</namespace>
         <license>free</license>
         <targetplatform>3.7</targetplatform>
         <phpminimum>5.6</phpminimum>
@@ -205,6 +205,6 @@
     <updateservers>
         <server type="extension"
                 priority="1"
-                name="JInbound Pro"><![CDATA[https://deploy.ostraining.com/client/update/pro/stable/com_jinbound]]></server>
+                name="jInbound Pro"><![CDATA[https://deploy.ostraining.com/client/update/pro/stable/com_jinbound]]></server>
     </updateservers>
 </extension>

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          com_jinbound
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************
@@ -23,7 +23,7 @@ jimport('joomla.application.component.helper');
 jimport('joomla.application.categories');
 
 /**
- * JInbound Component Category Tree
+ * jInbound Component Category Tree
  *
  */
 class JinboundCategories extends JCategories

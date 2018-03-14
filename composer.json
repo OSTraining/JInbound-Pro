@@ -1,13 +1,13 @@
 {
     "name"             : "joomlashack/jinbound-pro",
-    "description"      : "JInbound Pro",
+    "description"      : "jInbound Pro",
     "minimum-stability": "stable",
     "license"          : "GPL-2+",
     "type"             : "joomla.component",
     "extra"            : {
         "element"        : "com_jinbound",
         "element-short"  : "jinbound",
-        "name"           : "JInbound Pro",
+        "name"           : "jInbound Pro",
         "client"         : "administrator",
         "package-license": "pro",
         "target-platform": "3.[78]"

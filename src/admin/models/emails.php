@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          com_jinbound
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************
@@ -23,7 +23,7 @@ JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
 /**
  * This models supports retrieving lists of emails.
  *
- * @package        JInbound
+ * @package        jInbound
  * @subpackage     com_jinbound
  */
 class JInboundModelEmails extends JInboundListModel

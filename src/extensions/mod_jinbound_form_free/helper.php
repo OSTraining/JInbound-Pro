@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          mod_jinbound_form_free
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************

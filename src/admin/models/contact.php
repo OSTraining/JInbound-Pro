@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          com_jinbound
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************
@@ -28,7 +28,7 @@ JPluginHelper::importPlugin('jinbound');
 /**
  * This models supports retrieving a contact.
  *
- * @package        JInbound
+ * @package        jInbound
  * @subpackage     com_jinbound
  */
 class JInboundModelContact extends JInboundAdminModel

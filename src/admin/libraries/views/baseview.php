@@ -1,9 +1,9 @@
 <?php
 /**
- * @package             JInbound
+ * @package             jInbound
  * @subpackage          com_jinbound
  **********************************************
- * JInbound
+ * jInbound
  * Copyright (c) 2013 Anything-Digital.com
  * Copyright (c) 2018 Open Source Training, LLC
  **********************************************
@@ -34,7 +34,7 @@ class JInboundBaseView extends JViewLegacy
     public $sortFunction;
 
     /**
-     * JInboundBaseView constructor.
+     * jInboundBaseView constructor.
      *
      * @param array $config
      *
