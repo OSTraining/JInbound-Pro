@@ -173,9 +173,6 @@ class JInboundView extends JInboundBaseView
         }
 
         JToolBarHelper::divider();
-        // help!!!
-        //JToolBarHelper::help('COM_JINBOUND_HELP', false, JInboundHelperUrl::help());
-
     }
 
     public function addMenuBar()
