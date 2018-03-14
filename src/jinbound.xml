@@ -69,6 +69,7 @@
         <files folder="admin">
             <folder>cli</folder>
             <folder>controllers</folder>
+            <folder>form</folder>
             <folder>helpers</folder>
             <folder>language</folder>
             <folder>libraries</folder>
@@ -90,6 +91,8 @@
         <license>free</license>
         <targetplatform>3.7</targetplatform>
         <phpminimum>5.6</phpminimum>
+
+        <include>AllediaFreeDefaultFiles</include>
 
         <relatedExtensions downgrade="true">
             <extension type="module"

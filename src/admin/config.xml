@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config addfieldpath="/administrator/components/com_jinbound/models/fields">
+    <field type="customfooter"
+           name="customfooter"
+           media="jinbound"
+           showgoproad="0"
+           jedurl="https://extensions.joomla.org/extension/jinbound"/>
+
     <fieldset name="general"
               label="COM_JINBOUND_CONFIG_FIELDSET_GENERAL">
         <field name="unsubscribe"
