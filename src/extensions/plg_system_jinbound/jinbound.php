@@ -494,23 +494,4 @@ class plgSystemJInbound extends JPlugin
 
         return (int)$ids[0];
     }
-
-    public function onInstallerBeforePackageDownload(&$url, &$headers)
-    {
-        if (!static::$enabled || false === strpos($url, 'jinbound.com')) {
-            return;
-        }
-
-        $component = JComponentHelper::getComponent('com_jinbound');
-
-        $dlid = $component->params->get('downloadid', '');
-        if (empty($dlid)) {
-            if (static::$app->isClient('administrator')) {
-                static::$app->enqueueMessage(JText::_('PLG_SYSTEM_JINBOUND_EMPTY_DLID'));
-            }
-
-        } else {
-            $url .= (false === strpos($url, '?') ? '?' : '&') . 'dlid=' . $dlid;
-        }
-    }
 }
