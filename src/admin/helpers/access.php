@@ -31,8 +31,6 @@ abstract class JInboundHelperAccess
 
     public static function saveRulesWithRedirect($name)
     {
-        JInbound::registerHelper('url');
-        JInbound::registerLibrary('JInboundInflector', 'inflector');
         $plural = JInboundInflector::pluralize($name);
         $app    = JFactory::getApplication();
         $url    = JInboundHelperUrl::view($plural, false);
