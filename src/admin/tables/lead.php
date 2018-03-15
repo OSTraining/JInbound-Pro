@@ -20,8 +20,6 @@ defined('JPATH_PLATFORM') or die;
 $e = new Exception(__FILE__);
 JLog::add('JInboundTableLead is deprecated. ' . $e->getTraceAsString(), JLog::WARNING, 'deprecated');
 
-JInbound::registerLibrary('JInboundTable', 'table');
-
 /**
  * As of 1.1.0 this is no longer used
  *

@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundTable', 'table');
-
 class JInboundTableStatus extends JInboundTable
 {
     public function __construct(&$db)

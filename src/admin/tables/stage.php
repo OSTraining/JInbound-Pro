@@ -20,8 +20,6 @@ defined('JPATH_PLATFORM') or die;
 $e = new Exception(__FILE__);
 JLog::add('JInboundTableStage is deprecated. ' . $e->getTraceAsString(), JLog::WARNING, 'deprecated');
 
-JInbound::registerLibrary('JInboundTable', 'table');
-
 class JInboundTableStage extends JInboundTable
 {
     public function __construct(&$db)

@@ -19,8 +19,6 @@ use Joomla\Utilities\ArrayHelper;
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundTable', 'table');
-
 class JInboundTableForm extends JInboundTable
 {
     protected $formFieldsCache = null;
