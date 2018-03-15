@@ -109,7 +109,6 @@ class com_JInboundInstallerScript extends AbstractScript
             }
 
             if ($ids) {
-                jimport('joomla.database.table');
                 JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_contact/tables');
 
                 foreach ($ids as $id) {
@@ -182,7 +181,7 @@ class com_JInboundInstallerScript extends AbstractScript
                     $this->migrateOldData($root);
                     $this->checkContactCategory();
                     $this->checkInboundCategory();
-                    $this->checkCampaigns($root);
+                    $this->checkCampaigns();
                     $this->checkContactSubscriptions();
                     $this->checkDefaultPriorities();
                     $this->checkDefaultStatuses();
@@ -387,18 +386,17 @@ class com_JInboundInstallerScript extends AbstractScript
         if ($id) {
             $data['id'] = $id;
         }
-        $admin = JPATH_ADMINISTRATOR . '/components/com_jinbound';
-        if (!class_exists('JInboundBaseModel')) {
-            if (is_file($modelfile = "$admin/libraries/models/basemodel.php")) {
-                require_once $modelfile;
-            }
-            JTable::addIncludePath("$admin/tables");
-        }
-        if (class_exists('JInboundBaseModel')) {
-            JInboundBaseModel::addIncludePath("$admin/models", 'JInboundModel');
+
+        try {
             $save = JInboundBaseModel::getInstance('Email', 'JInboundModel')->save($data);
             $app->enqueueMessage('Save ' . ($save ? '' : 'not ') . 'successful', $save ? 'message' : 'error');
+
             return;
+
+        } catch (Exception $e) {
+            // ignore
+        } catch (Throwable $e) {
+            // ignore
         }
 
         $app->enqueueMessage('Could not save default emails', 'error');
@@ -809,14 +807,11 @@ class com_JInboundInstallerScript extends AbstractScript
     }
 
     /**
-     * @param string $sourcepath
-     *
      * @return void
      * @throws Exception
      */
-    protected function checkCampaigns($sourcepath)
+    protected function checkCampaigns()
     {
-        JTable::addIncludePath($sourcepath . '/admin/tables');
         $db = JFactory::getDbo();
 
         try {
@@ -925,8 +920,6 @@ class com_JInboundInstallerScript extends AbstractScript
             return;
         }
 
-        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
-
         /** @var JInboundTablePriority $priority */
         foreach (array('COLD', 'WARM', 'HOT', 'ON_FIRE') as $i => $p) {
             $priority     = JTable::getInstance('Priority', 'JInboundTable');
@@ -973,8 +966,6 @@ class com_JInboundInstallerScript extends AbstractScript
             $app->enqueueMessage(JText::_('COM_JINBOUND_STATUSES_FOUND'));
             return;
         }
-
-        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
 
         $leads   = array('NEW_LEAD', 'NOT_INTERESTED', 'EMAIL', 'VOICEMAIL', 'GOAL_COMPLETED');
         $default = 0;
