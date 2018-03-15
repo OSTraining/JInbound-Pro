@@ -17,15 +17,12 @@
 
 defined('_JEXEC') or die;
 
-// load required classes
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/jinbound.php');
-JInbound::registerHelper('form');
-JInbound::registerHelper('module');
-JInbound::registerHelper('url');
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
-jimport('joomla.form.form');
-jimport('joomla.application.module.helper');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
 
 abstract class modJinboundFormFreeHelper
 {

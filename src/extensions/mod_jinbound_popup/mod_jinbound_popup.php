@@ -25,11 +25,6 @@ if (filter_input(INPUT_COOKIE, 'mod_' . $module->id)) {
 // get helper class
 require_once dirname(__FILE__) . '/helper.php';
 
-if (version_compare(JInbound::VERSION, '2.1.6', '<=')) {
-    echo JText::_('MOD_JINBOUND_POPUP_REQUIRES_JINBOUND_2_1_6');
-    return;
-}
-
 modJinboundPopupHelper::addHtmlAssets();
 
 // initialise

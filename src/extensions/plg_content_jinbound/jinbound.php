@@ -39,7 +39,13 @@ class plgContentJInbound extends JPlugin
     {
         parent::__construct($subject, $config);
 
-        static::$enabled = is_dir(JPATH_ADMINISTRATOR . '/components/com_jinbound');
+        if (!defined('JINP_LOADED')) {
+            $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+            if (is_file($path)) {
+                require_once $path;
+            }
+        }
+        static::$enabled = defined('JINP_LOADED');
 
         if (static::$enabled) {
             JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
@@ -181,7 +187,6 @@ class plgContentJInbound extends JPlugin
         if ($context == 'com_jinbound.email') {
             $regex = '#(?P<attr>src|href)\=(?P<qte>\"|\\\')(?P<url>.*?)(?P=qte)#Di';
             if (preg_match_all($regex, $table->htmlbody, $matches, PREG_SET_ORDER)) {
-                JInbound::registerHelper('url');
                 foreach ($matches as $match) {
                     $table->htmlbody = str_replace(
                         $match[0],

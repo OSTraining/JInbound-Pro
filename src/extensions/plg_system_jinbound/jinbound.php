@@ -63,15 +63,18 @@ class plgSystemJInbound extends JPlugin
         parent::__construct($subject, $config);
         $this->loadLanguage();
 
+        if (!defined('JINP_LOADED')) {
+            $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+            if (is_file($path)) {
+                require_once $path;
+            }
+        }
+
         if (static::$app === null) {
-            static::$app = JFactory::getApplication();
-
-            $jinbound = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
-
-            static::$enabled = is_file($jinbound);
+            static::$app     = JFactory::getApplication();
+            static::$enabled = defined('JINP_LOADED');
 
             if (static::$enabled) {
-                JLoader::register('JInbound', $jinbound);
                 JFactory::getLanguage()->load('com_jinbound', JPATH_ADMINISTRATOR . '/components/com_jinbound');
 
             } else {
@@ -202,7 +205,6 @@ class plgSystemJInbound extends JPlugin
                 break;
 
             case 'com_menus':
-                JInbound::registerHelper('url');
                 if (static::$app->input->get('layout') == 'edit' && 'item' == static::$app->input->get('view')) {
                     JText::script('COM_JINBOUND_MENU_NOT_SET_TO_USE_JINBOUND_TEMPLATE');
                     JFactory::getDocument()->addScript(JInboundHelperUrl::media() . '/js/admin.menu.js');
@@ -218,27 +220,18 @@ class plgSystemJInbound extends JPlugin
     protected function onAfterDispatchAdminCategories()
     {
         // we want to add some extras to com_categories
-        if (class_exists('JInbound') && JInbound::COM == static::$app->input->get('extension', '', 'cmd')) {
+        if (static::$enabled && static::$app->input->getCmd('extension') == 'com_jinbound') {
             // add css
             $doc = JFactory::getDocument();
             if (method_exists($doc, 'addStyleSheet')) {
-                JInbound::registerHelper('url');
                 $doc->addStyleSheet(JInboundHelperUrl::media() . '/css/admin.categories.css');
             }
-            // joomla 3 handles this via helper
-            if (JInbound::version()->isCompatible('3.0.0')) {
-                return;
             }
-            // add submenu to categories
-            JInbound::registerLibrary('JInboundView', 'views/baseview');
-            $comView = new JInboundView();
-            $comView->addMenuBar();
-        }
     }
 
     public function onAfterRoute()
     {
-        if (!static::$enabled || static::$app->isAdmin()) {
+        if (!static::$enabled || static::$app->isClient('administrator')) {
             return;
         }
         static::profile('BeforeRoute');
@@ -283,7 +276,6 @@ class plgSystemJInbound extends JPlugin
             return;
         }
 
-        JInbound::registerHelper('status');
         $status_id = JInboundHelperStatus::getFinalStatus();
 
         $processed = array();
@@ -378,8 +370,6 @@ class plgSystemJInbound extends JPlugin
         }
 
         static::profile('BeforeRender');
-        JInbound::registerHelper('filter');
-        JInbound::registerHelper('url');
 
         $body = static::$app->getBody();
 

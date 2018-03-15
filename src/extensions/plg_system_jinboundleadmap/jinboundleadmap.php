@@ -17,6 +17,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
 require_once dirname(__FILE__) . '/lib/geoip2.phar';
 
 use GeoIp2\Database\Reader;
@@ -127,14 +133,13 @@ class PlgSystemJinboundleadmap extends JPlugin
 
     protected function getUrl($plugin = 'jinboundleadmapview', $params = array(), $sef = true, $escape = true)
     {
-        $parts = array('group' => 'system', 'format' => 'html', 'plugin' => $plugin);
-        if (JInbound::version()->isCompatible('3.0.0')) {
-            $parts['option'] = 'com_ajax';
-        } else {
-            $parts['option'] = 'com_jinbound';
-            $parts['task']   = 'ajax';
-        }
-        $url = 'index.php?' . http_build_query(array_merge($parts, $params));
+        $parts = array(
+            'option' => 'com_ajax',
+            'group'  => 'system',
+            'format' => 'html',
+            'plugin' => $plugin
+        );
+        $url   = 'index.php?' . http_build_query(array_merge($parts, $params));
         if ($sef) {
             $url = JRoute::_($url, $escape);
         }
@@ -144,25 +149,19 @@ class PlgSystemJinboundleadmap extends JPlugin
     /**
      * Adds menu item to submenu
      *
-     * @param type $view
+     * @param JViewLegacy $view
      */
-    public function onJinboundBeforeMenuBar(&$view)
+    public function onJinboundBeforeMenuBar($view)
     {
         // init
-        $input = JFactory::getApplication()->input;
-        $url   = $this->getUrl();
-        if (JInbound::version()->isCompatible('3.0.0')) {
-            $active = 'jinboundleadmapview' == $input->get('plugin')
-                && 'html' == $input->get('format')
-                && 'com_ajax' == $input->get('option');
-        } else {
-            $active = 'jinboundleadmapview' == $input->get('plugin')
-                && 'html' == $input->get('format')
-                && 'com_jinbound' == $input->get('option')
-                && 'ajax' == $input->get('task');
-        }
+        $input  = JFactory::getApplication()->input;
+        $url    = $this->getUrl();
+        $active = 'jinboundleadmapview' == $input->getCmd('plugin')
+            && 'html' == $input->getCmd('format')
+            && 'com_ajax' == $input->getCmd('option');
+
         $label = JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_VIEW_TITLE');
-        // instead of just adding, we want to custom-place the menu item
+
         $newSidebar = array();
         foreach ($view->sidebarItems as $sidebarItem) {
             $newSidebar[] = $sidebarItem;
@@ -177,12 +176,10 @@ class PlgSystemJinboundleadmap extends JPlugin
      * Display lead map view
      *
      * @return mixed
-     * @throws RuntimeException
+     * @throws Exception
      */
     public function onAjaxJinboundleadmapview()
     {
-        JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-        JInbound::registerHelper('form');
         $app = JFactory::getApplication();
         $doc = JFactory::getDocument();
         // only allow in admin

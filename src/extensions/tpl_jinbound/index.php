@@ -27,13 +27,15 @@ if (JFile::exists($template_override)) {
     include $template_override;
 }
 
-$helper = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
-if (!JFile::exists($helper)) {
-    die('JInbound not installed!!!');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    } else {
+        throw new Exception('jInbound not installed');
+    }
 }
-require_once $helper;
 
-JInbound::registerHelper('url');
 $document = JFactory::getDocument();
 $document->addStyleSheet(JUri::root() . 'templates/jinbound/css/jinbound.css');
 $document->addStyleSheet(JUri::root() . 'media/system/css/system.css');

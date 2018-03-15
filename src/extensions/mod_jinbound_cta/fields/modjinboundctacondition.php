@@ -17,8 +17,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.form.formfield');
-jimport('joomla.form.helper');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
 
 if (!class_exists('ModJInboundCTAHelper')) {
     if (!file_exists($helper = JPATH_ROOT . '/modules/mod_jinbound_cta/helper.php')) {
@@ -26,10 +30,6 @@ if (!class_exists('ModJInboundCTAHelper')) {
     }
     require_once $helper;
 }
-
-// load required classes
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/jinbound.php');
-JInbound::registerHelper('url');
 
 class JFormFieldModJInboundCTACondition extends JFormField
 {
@@ -73,10 +73,7 @@ class JFormFieldModJInboundCTACondition extends JFormField
         }
         // only add main script once
         if (is_null($mod_jinbound_cta_script_loaded)) {
-            if (!JInbound::version()->isCompatible('3.0.0')) {
-                // force jQuery
-                $doc->addScript(JInboundHelperUrl::media() . '/js/jquery-1.9.1.min.js');
-            }
+            JHtml::_('jquery.framework');
             $doc->addScript(JUri::root() . 'media/mod_jinbound_cta/js/admin.js');
             $mod_jinbound_cta_script_loaded = true;
         }

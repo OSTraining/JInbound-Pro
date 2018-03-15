@@ -19,12 +19,11 @@ use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
 
-// NOTE repeated here as it is needed for com_ajax/com_jinbound
-
-// check that jinbound is installed
-$jinbound_base = JPATH_ADMINISTRATOR . '/components/com_jinbound';
-if (!is_dir($jinbound_base)) {
-    return false;
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
 }
 
 // load required classes
@@ -426,7 +425,6 @@ abstract class ModJInboundCTAHelper
         $contact->status   = array();
 
         if (!empty($contact_id)) {
-            JInbound::registerHelper('contact');
             $contact->campaign = JInboundHelperContact::getContactCampaigns($contact_id);
             $contact->priority = JInboundHelperContact::getContactPriorities($contact_id);
             $contact->status   = JInboundHelperContact::getContactStatuses($contact_id);

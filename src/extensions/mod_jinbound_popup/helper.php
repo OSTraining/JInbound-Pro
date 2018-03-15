@@ -17,11 +17,12 @@
 
 defined('_JEXEC') or die;
 
-// load required classes
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/jinbound.php');
-JInbound::registerHelper('form');
-JInbound::registerHelper('module');
-JInbound::registerHelper('url');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
 
 abstract class modJinboundPopupHelper
 {
@@ -59,9 +60,6 @@ abstract class modJinboundPopupHelper
         if (!static::$assets_set) {
             $document = JFactory::getDocument();
             $script   = 'popup.js';
-            if (!JInbound::version()->isCompatible('3.0.0')) {
-                $script = 'popup.legacy.js';
-            }
             if (method_exists($document, 'addScript')) {
                 $document->addScript(JUri::root() . 'media/mod_jinbound_popup/js/' . $script);
             }
