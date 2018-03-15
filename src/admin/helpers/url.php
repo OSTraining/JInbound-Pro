@@ -278,7 +278,6 @@ abstract class JInboundHelperUrl
         // we're going to store the event slugs here so we only load once
         static $slugs;
         if (!is_array($slugs)) {
-            JTable::addIncludePath(JInboundHelperPath::admin('tables'));
             $slugs = array();
         }
         if (!array_key_exists($view, $slugs)) {
