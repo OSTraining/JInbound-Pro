@@ -20,32 +20,40 @@ defined('JPATH_PLATFORM') or die;
 class JInboundItemView extends JInboundView
 {
     /**
+     * @var object
+     */
+    protected $item = null;
+
+    /**
+     * @var JForm
+     */
+    protected $form = null;
+
+    /**
      * @param string $tpl
      * @param bool   $safeparams
      *
      * @return bool|void
      * @throws Exception
      */
-    public function display($tpl = null, $safeparams = false)
+    public function display($tpl = null)
     {
-        $form = $this->get('Form');
-        $item = $this->get('Item');
+        $this->form = $this->get('Form');
+        $this->item = $this->get('Item');
         if (count($errors = $this->get('Errors'))) {
             throw new Exception(implode('<br />', $errors), 500);
-            return false;
         }
-        // quickfix
-        if (is_object($item) && !property_exists($item, 'id')) {
-            $item->id = 0;
+
+        if ($this->item && !property_exists($this->item, 'id')) {
+            $this->item->id = 0;
         }
-        // Assign the Data
-        $this->form  = $form;
-        $this->item  = $item;
+
         $this->canDo = JInbound::getActions();
 
         $this->prepareItem();
 
-        parent::display($tpl, $safeparams);
+        parent::display($tpl);
+
         $this->setDocument();
     }
 

@@ -19,42 +19,48 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundViewPage extends JInboundItemView
 {
-    function display($tpl = null, $echo = true)
+    /**
+     * @param string $tpl
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function display($tpl = null)
     {
-        // display the item
-        $display = parent::display($tpl, $echo);
-        // if we don't have an item, it's a 404
-        if (0 == $this->item->id || 1 != (int)$this->item->published) {
+        parent::display($tpl);
+
+        if ($this->item->id == 0 || (int)$this->item->published != 1) {
             throw new Exception(JText::_('COM_JINBOUND_NOT_FOUND'), 404);
         }
+
         // increase the hit count
         if (!method_exists($this->item, 'hit')) {
             $table = JTable::getInstance('Page', 'JInboundTable');
             $table->load($this->item->id);
             $table->hit();
+
         } else {
             $this->item->hit();
         }
-        // set the document title
+
         $doc = JFactory::getDocument();
-        if (method_exists($doc, 'setTitle')) {
+
+        if (!empty($this->item->metatitle)) {
             $doc->setTitle($this->item->metatitle);
         }
-        if (method_exists($doc, 'setDescription')) {
+
+        if (!empty($this->item->metadescription)) {
             $doc->setDescription($this->item->metadescription);
         }
-        if (method_exists($doc, 'addStyleDeclaration')) {
-            // add image constraints
-            $this->addImageConstraint('large');
-            $this->addImageConstraint('medium', 800);
-            $this->addImageConstraint('small', 320);
-            // add custom css
-            if (!empty($this->item->css)) {
-                $doc->addStyleDeclaration($this->item->css);
-            }
+
+        if (!empty($this->item->css)) {
+            $doc->addStyleDeclaration($this->item->css);
         }
 
-        return $display;
+        // add image constraints
+        $this->addImageConstraint('large');
+        $this->addImageConstraint('medium', 800);
+        $this->addImageConstraint('small', 320);
     }
 
     protected function addImageConstraint($size, $screen = 0, $selector = '#jinbound_component .jinbound_image')
