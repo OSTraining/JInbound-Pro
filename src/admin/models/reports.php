@@ -17,14 +17,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
-
-JInbound::registerHelper('filter');
-JInbound::registerHelper('path');
-JInbound::registerHelper('url');
-
-jimport('joomla.form.form');
 
 require_once dirname(__FILE__) . '/contacts.php';
 require_once dirname(__FILE__) . '/emails.php';

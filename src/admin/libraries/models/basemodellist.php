@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.application.component.modellist') or jimport('legacy.model.list');
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-
 /**
  * Base list model class
  *

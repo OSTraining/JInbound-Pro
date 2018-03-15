@@ -17,10 +17,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundHelperPath', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/path.php');
-
 abstract class JInbound
 {
+    /**
+     * @deprecated v3.0.0
+     */
     const COM = 'com_jinbound';
 
     const VERSION = '@ant_version_number@';
@@ -120,6 +121,7 @@ abstract class JInbound
      * static method to register a helper
      *
      * @param string $helper
+     * @deprecated v3.0.0 Helper classes autoloaded now
      */
     public static function registerHelper($helper)
     {

@@ -17,9 +17,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
 JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-JInbound::registerHelper('form');
 
 class JInboundViewForms extends JInboundListView
 {

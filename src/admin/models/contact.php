@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('contact');
-JInbound::registerHelper('status');
 JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
 
 JPluginHelper::importPlugin('content');

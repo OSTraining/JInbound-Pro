@@ -17,8 +17,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundAdminModel',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/models/basemodeladmin.php');
+JLoader::register(
+    'JInboundAdminModel',
+    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/models/basemodeladmin.php'
+);
 
 /**
  * This models supports retrieving a note

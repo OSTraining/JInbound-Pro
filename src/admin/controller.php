@@ -17,9 +17,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundBaseController',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/controllers/basecontroller.php');
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
+JLoader::register(
+    'JInboundBaseController',
+    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/controllers/basecontroller.php'
+);
 
 class JInboundController extends JInboundBaseController
 {

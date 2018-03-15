@@ -17,7 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
 
 /**
@@ -50,7 +49,7 @@ class JInboundModelForm extends JInboundAdminModel
         if ($item) {
             // initialize the database object
             $db = JFactory::getDbo();
-            // load the data from the xref table from the database 
+            // load the data from the xref table from the database
             $db->setQuery('SELECT CAST(GROUP_CONCAT(field_id ORDER BY ordering ASC SEPARATOR "|") AS CHAR) AS fields FROM #__jinbound_form_fields WHERE form_id = ' . intval($item->id) . ' GROUP BY form_id');
             $fields = $db->loadResult();
             if (empty($fields)) {

@@ -17,13 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.application.component.modeladmin') or jimport('legacy.model.admin');
-jimport('joomla.form.form');
-jimport('joomla.form.helper');
-
-JLoader::register('JInboundHelperPath', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/path.php');
-JLoader::register('JInbound', JInboundHelperPath::helper('jinbound'));
-
 JForm::addFormPath(JInboundHelperPath::admin('models/forms'));
 JForm::addFieldPath(JInboundHelperPath::admin('models/fields'));
 

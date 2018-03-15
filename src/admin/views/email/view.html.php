@@ -17,10 +17,8 @@
 
 defined('_JEXEC') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
 JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
 JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-JInbound::registerHelper('filter');
 
 class JInboundViewEmail extends JInboundItemView
 {

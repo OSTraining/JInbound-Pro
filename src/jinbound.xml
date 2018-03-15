@@ -82,6 +82,7 @@
             <filename>jinbound.php</filename>
             <filename>config.xml</filename>
             <filename>controller.php</filename>
+            <filename>include.php</filename>
         </files>
     </administration>
 

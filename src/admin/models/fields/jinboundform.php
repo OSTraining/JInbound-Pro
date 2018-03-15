@@ -17,13 +17,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.form.formfield');
-jimport('joomla.form.helper');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
+JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 JFormHelper::loadFieldClass('list');
-
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 class JFormFieldJInboundForm extends JFormFieldList
 {

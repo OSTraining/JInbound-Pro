@@ -17,8 +17,16 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('editor');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
+
 JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php');
+
+JFormHelper::loadFieldClass('editor');
 
 class JFormFieldJinboundEditor extends JFormFieldEditor
 {

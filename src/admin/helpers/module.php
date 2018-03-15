@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-jimport('joomla.application.module.helper');
-
 abstract class JInboundHelperModule
 {
     /**

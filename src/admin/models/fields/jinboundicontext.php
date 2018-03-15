@@ -17,11 +17,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('text');
-
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('url');
+if (!defined('JINP_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
 JInbound::registerLibrary('JInboundFieldView', 'views/fieldview');
+
+JFormHelper::loadFieldClass('text');
 
 class JFormFieldJinboundIconText extends JFormFieldText
 {

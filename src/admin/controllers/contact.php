@@ -17,10 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('contact');
-JInbound::registerHelper('status');
-JInbound::registerHelper('priority');
 JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerform');
 
 class JInboundControllerContact extends JInboundFormController

@@ -17,21 +17,21 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$app   = JFactory::getApplication();
-$input = $app->input;
-
 if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound')) {
-    return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('form');
-JInbound::registerHelper('url');
+require_once JPATH_COMPONENT . '/include.php';
+
+$app = JFactory::getApplication();
 
 if (JInboundHelperForm::needsMigration()) {
-    if ('json' !== $input->get('format') && 'forms.migrate' !== $input->get('task')) {
-        $app->enqueueMessage(JInboundHelperForm::getMigrationWarning(), 'warning');
+    if ($app->input->getCmd('format') !== 'json'
+        && $app->input->getCmd('task') !== 'forms.migrate'
+    ) {
+        JFactory::getApplication()->enqueueMessage(JInboundHelperForm::getMigrationWarning(), 'warning');
     }
+
 } else {
     if (JInboundHelperForm::needsDefaultFields()) {
         JInboundHelperForm::installDefaultFields();
@@ -39,13 +39,6 @@ if (JInboundHelperForm::needsMigration()) {
     }
 }
 
-if (jimport('joomla.application.component.controller')) {
-    $controller = JController::getInstance('JInbound');
-} else {
-    jimport('legacy.controllers.legacy');
-    $controller = JControllerLegacy::getInstance('JInbound');
-}
-
-// exec task
-$controller->execute($input->get('task'));
+$controller = JControllerLegacy::getInstance('JInbound');
+$controller->execute(JFactory::getApplication()->input->getCmd('task'));
 $controller->redirect();

@@ -17,10 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.application.component.controlleradmin');
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('url');
-
 class JInboundControllerReports extends JControllerAdmin
 {
     public function permissions()

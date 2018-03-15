@@ -17,7 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
 JInbound::registerLibrary('JInboundInflector', 'inflector');
 JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
 JLoader::register('JInboundModelPages', JPATH_ADMINISTRATOR . '/components/com_jinbound/models/pages.php');

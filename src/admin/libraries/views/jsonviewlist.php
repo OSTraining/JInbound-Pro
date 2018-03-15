@@ -17,10 +17,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.html.pane');
-
-JLoader::register('JInboundListView',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseviewlist.php');
+JLoader::register(
+    'JInboundListView',
+    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseviewlist.php'
+);
 
 class JInboundJsonListView extends JInboundListView
 {

@@ -17,12 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-// include the helpers
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('filter');
-JInbound::registerHelper('path');
-JInbound::registerHelper('toolbar');
-JInbound::registerHelper('url');
 JInbound::registerLibrary('JInboundInflector', 'inflector');
 
 JHtml::addIncludePath(JInboundHelperPath::admin() . '/helpers/html');

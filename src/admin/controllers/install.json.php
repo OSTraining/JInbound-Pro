@@ -17,17 +17,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.filesystem.file');
-jimport('joomla.installer.packagemanifest');
-jimport('cms.installer.manifest');
-jimport('cms.installer.manifest.package');
-
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
 JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller');
 JInbound::registerLibrary('JInboundBaseView', 'views/baseview');
 JInbound::registerLibrary('JInboundJsonView', 'views/jsonview');
-JInbound::registerHelper('form');
-JInbound::registerHelper('url');
 
 class JInboundControllerInstall extends JInboundBaseController
 {

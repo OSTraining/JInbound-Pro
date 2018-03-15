@@ -17,7 +17,6 @@
 
 defined('_JEXEC') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . "/components/com_jinbound/helpers/jinbound.php");
 JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
 
 class JInboundViewField extends JInboundItemView

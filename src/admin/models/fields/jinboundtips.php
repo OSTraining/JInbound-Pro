@@ -17,9 +17,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('hidden');
-
 JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php');
+
+JFormHelper::loadFieldClass('hidden');
 
 class JFormFieldJinboundTips extends JFormFieldHidden
 {

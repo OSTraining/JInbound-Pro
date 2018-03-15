@@ -19,10 +19,6 @@ defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.form.form');
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('path');
-JInbound::registerHelper('url');
-
 JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 JInboundBaseModel::addIncludePath(JInboundHelperPath::admin('models'));
 
