@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundInflector', 'inflector');
-
 $trashed  = (-2 == $this->state->get('filter.published'));
 $itemName = JInboundInflector::singularize($this->getName());
 $listName = JInboundInflector::pluralize($this->getName());
