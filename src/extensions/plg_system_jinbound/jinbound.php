@@ -19,14 +19,6 @@ use Joomla\Utilities\ArrayHelper;
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.filesystem.file');
-jimport('joomla.plugin.plugin');
-// we HAVE to force-load the helper here to prevent fatal errors!
-$helper = JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php';
-if (JFile::exists($helper)) {
-    require_once $helper;
-}
-
 class plgSystemJInbound extends JPlugin
 {
     /**
@@ -63,7 +55,7 @@ class plgSystemJInbound extends JPlugin
         parent::__construct($subject, $config);
         $this->loadLanguage();
 
-        if (!defined('JINP_LOADED')) {
+        if (!defined('JINB_LOADED')) {
             $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
             if (is_file($path)) {
                 require_once $path;
@@ -72,7 +64,7 @@ class plgSystemJInbound extends JPlugin
 
         if (static::$app === null) {
             static::$app     = JFactory::getApplication();
-            static::$enabled = defined('JINP_LOADED');
+            static::$enabled = defined('JINB_LOADED');
 
             if (static::$enabled) {
                 JFactory::getLanguage()->load('com_jinbound', JPATH_ADMINISTRATOR . '/components/com_jinbound');

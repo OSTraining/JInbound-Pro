@@ -39,13 +39,13 @@ class plgContentJInbound extends JPlugin
     {
         parent::__construct($subject, $config);
 
-        if (!defined('JINP_LOADED')) {
+        if (!defined('JINB_LOADED')) {
             $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
             if (is_file($path)) {
                 require_once $path;
             }
         }
-        static::$enabled = defined('JINP_LOADED');
+        static::$enabled = defined('JINB_LOADED');
 
         if (static::$enabled) {
             JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');

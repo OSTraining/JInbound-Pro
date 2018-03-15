@@ -19,7 +19,7 @@ use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
 
-if (!defined('JINP_LOADED')) {
+if (!defined('JINB_LOADED')) {
     $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
     if (is_file($path)) {
         require_once $path;
