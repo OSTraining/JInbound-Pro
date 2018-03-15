@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundView', 'views/baseview');
-
 class JInboundViewUtilities extends JInboundView
 {
     function display($tpl = null, $safeparams = false)

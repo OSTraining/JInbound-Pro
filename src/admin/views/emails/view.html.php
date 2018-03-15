@@ -17,9 +17,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundInflector', 'inflector');
-JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-JLoader::register('JInboundModelPages', JPATH_ADMINISTRATOR . '/components/com_jinbound/models/pages.php');
+require_once JINB_ADMIN . '/models/pages.php';
 
 class JInboundViewEmails extends JInboundListView
 {

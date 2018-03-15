@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-
 class JInboundViewCampaigns extends JInboundListView
 {
     /**
@@ -29,10 +27,8 @@ class JInboundViewCampaigns extends JInboundListView
     protected function getSortFields()
     {
         return array(
-            'Campaign.name'      => JText::_('COM_JINBOUND_CAMPAIGN_NAME')
-        ,
-            'Campaign.published' => JText::_('JPUBLISHED')
-        ,
+            'Campaign.name'      => JText::_('COM_JINBOUND_CAMPAIGN_NAME'),
+            'Campaign.published' => JText::_('JPUBLISHED'),
             'Campaign.created'   => JText::_('JGLOBAL_CREATED')
         );
     }

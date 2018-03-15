@@ -17,9 +17,6 @@
 
 defined('_JEXEC') or die;
 
-JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-
 class JInboundViewEmail extends JInboundItemView
 {
     function display($tpl = null, $safeparams = false)

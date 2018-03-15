@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundInflector', 'inflector');
-JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-
 class JInboundViewPages extends JInboundListView
 {
     function display($tpl = null, $safeparams = false)

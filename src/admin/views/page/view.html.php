@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-
 class JInboundViewPage extends JInboundItemView
 {
     function display($tpl = null, $safeparams = false)

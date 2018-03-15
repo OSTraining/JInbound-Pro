@@ -17,13 +17,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundView', 'views/baseview');
+require_once JINB_ADMIN . '/views/reports/view.html.php';
 
 class JInboundViewDashboard extends JInboundView
 {
     protected $feeds = array(
-        'feed' => array('url' => 'https://jinbound.com/blog/feed/rss.html', 'showDescription' => false)
-    ,
+        'feed' => array('url' => 'https://jinbound.com/blog/feed/rss.html', 'showDescription' => false),
         'news' => array('url' => 'https://jinbound.com/news/?format=feed', 'showDescription' => false)
     );
 
@@ -31,8 +30,6 @@ class JInboundViewDashboard extends JInboundView
     {
         $app = JFactory::getApplication();
 
-        JInbound::registerHelper('path');
-        JLoader::register('JInboundViewReports', JInboundHelperPath::admin('views/reports/view.html.php'));
         // get original data for layout and template
         $tmpl   = $app->input->get('tmpl');
         $layout = $app->input->get('layout');
@@ -53,27 +50,6 @@ class JInboundViewDashboard extends JInboundView
         // instead of loading the RSS initially, allow the urls to be loaded via ajax
         $this->feed = (object)$this->feeds['feed'];
         $this->news = (object)$this->feeds['news'];
-        /*
-        JInbound::registerLibrary('JInboundRSSView', 'views/rssview');
-        $app->input->set('layout', 'rss');
-        foreach ($this->feeds as $var => $feed)
-        {
-            // get RSS view and display its contents
-            try
-            {
-                $rss = new JInboundRSSView();
-                $rss->showDetails = array_key_exists('showDetails', $feed) ? $feed['showDetails'] : false;
-                $rss->showDescription = array_key_exists('showDescription', $feed) ? $feed['showDescription'] : true;
-                $rss->url = $feed['url'];
-                $rss->getFeed($feed['url']);
-                $this->$var = $rss->loadTemplate(null, 'rss');
-            }
-            catch (Exception $e)
-            {
-                $this->$var = $e->getMessage();
-            }
-        }
-        */
 
         // reset template and layout data
         $app->input->set('tmpl', $tmpl);

@@ -20,8 +20,6 @@ defined('JPATH_PLATFORM') or die;
 $e = new Exception(__FILE__);
 JLog::add('JInboundViewLeads is deprecated. ' . $e->getTraceAsString(), JLog::WARNING, 'deprecated');
 
-JInbound::registerLibrary('JInboundJsonListView', 'views/jsonviewlist');
-
 class JInboundViewLeads extends JInboundJsonListView
 {
     public function display($tpl = null, $safeparams = null)

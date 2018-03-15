@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
-
 class JInboundViewStage extends JInboundItemView
 {
 

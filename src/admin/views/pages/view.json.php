@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundJsonListView', 'views/jsonviewlist');
-
 class JInboundViewPages extends JInboundJsonListView
 {
     public function display($tpl = null, $safeparams = null)

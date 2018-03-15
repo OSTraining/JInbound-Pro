@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-
 class JInboundViewFields extends JInboundListView
 {
     /**

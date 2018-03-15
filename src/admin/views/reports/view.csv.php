@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundCsvView', 'views/csvview');
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-
 class JInboundViewReports extends JInboundCsvView
 {
     public function display($tpl = null, $safeparams = null)

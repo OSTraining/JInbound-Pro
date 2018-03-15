@@ -17,8 +17,6 @@
 
 defined('_JEXEC') or die;
 
-JInbound::registerLibrary('JInboundItemView', 'views/baseviewitem');
-
 class JInboundViewField extends JInboundItemView
 {
 }

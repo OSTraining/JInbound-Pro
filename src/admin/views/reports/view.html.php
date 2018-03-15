@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-
 class JInboundViewReports extends JInboundListView
 {
 
@@ -108,7 +105,6 @@ class JInboundViewReports extends JInboundListView
 
     public function getPriorityFilter()
     {
-        JInbound::registerHelper('priority');
         $options = JInboundHelperPriority::getSelectOptions();
         array_unshift($options, (object)array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PRIORITY')));
         return JHtml::_('select.genericlist', $options, 'filter_priority', array(
@@ -122,7 +118,6 @@ class JInboundViewReports extends JInboundListView
 
     public function getStatusFilter()
     {
-        JInbound::registerHelper('status');
         $options = JInboundHelperStatus::getSelectOptions();
         array_unshift($options, (object)array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_STATUS')));
         return JHtml::_('select.genericlist', $options, 'filter_status', array(

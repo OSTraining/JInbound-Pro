@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListView', 'views/baseviewlist');
-
 class JInboundViewForms extends JInboundListView
 {
     /**
@@ -36,16 +34,11 @@ class JInboundViewForms extends JInboundListView
     protected function getSortFields()
     {
         return array(
-            'Form.title'      => JText::_('COM_JINBOUND_TITLE')
-        ,
-            'Form.type'       => JText::_('COM_JINBOUND_FORM_TYPE_LABEL')
-        ,
-            'FormFieldCount'  => JText::_('COM_JINBOUND_FIELD_COUNT')
-        ,
-            'Form.created_by' => JText::_('COM_JINBOUND_CREATED_BY')
-        ,
-            'Form.published'  => JText::_('COM_JINBOUND_PUBLISHED')
-        ,
+            'Form.title'      => JText::_('COM_JINBOUND_TITLE'),
+            'Form.type'       => JText::_('COM_JINBOUND_FORM_TYPE_LABEL'),
+            'FormFieldCount'  => JText::_('COM_JINBOUND_FIELD_COUNT'),
+            'Form.created_by' => JText::_('COM_JINBOUND_CREATED_BY'),
+            'Form.published'  => JText::_('COM_JINBOUND_PUBLISHED'),
             'Form.default'    => JText::_('COM_JINBOUND_DEFAULT')
         );
     }
