@@ -95,6 +95,24 @@
         <include>AllediaFreeDefaultFiles</include>
 
         <relatedExtensions downgrade="true">
+            <extension type="library"
+                       element="allediaframework"
+                       downgrade="false">AllediaFramework</extension>
+
+            <extension type="plugin"
+                       group="system"
+                       element="ossystem"
+                       publish="true"
+                       downgrade="false"
+                       ordering="first">OSSystem</extension>
+
+            <extension type="plugin"
+                       group="system"
+                       element="osmylicensesmanager"
+                       publish="true"
+                       downgrade="false"
+                       ordering="last">OSMyLicensesManager</extension>
+
             <extension type="module"
                        element="jinbound_cta"
                        uninstall="true"
