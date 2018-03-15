@@ -15,17 +15,14 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die;
 
 jimport('fof.include');
 
 class JinboundMailchimp
 {
-    /**
-     * @var bool
-     */
-    protected static $enabled = false;
-
     protected $customFields       = array();
     protected $addMCGroups        = array();
     protected $removeMCGroups     = array();
@@ -35,6 +32,7 @@ class JinboundMailchimp
     private   $name               = 'mailchimp';
     private   $mcApi;
     private   $delete_member      = false;
+
     // MC groups
     private $send_goodbye = true;
     private $send_notify  = true;
@@ -44,26 +42,21 @@ class JinboundMailchimp
 
     public function __construct($config = array())
     {
-        if (!defined('JINB_LOADED')) {
-            $includePath = JPATH_ADMINISTRATOR . '/components/com_jinbound/incdlue.php';
-            if (is_file($includePath)) {
-                require_once $includePath;
-            }
-        }
+        $configParams = new Registry(empty($config['params']) ? null : $config['params']);
 
-        if (static::$enabled = defined('JINB_LOADED')) {
+        $apiKey = $configParams->get('mailchimp_key');
+        if ($apiKey) {
             // Load the MailChimp library
             require_once dirname(__FILE__) . '/MCAPI.class.php';
 
-            $configParams        = @json_decode($config['params']);
-            $apiKey              = $configParams->mailchimp_key;
-            $this->mcApi         = new MCAPI($apiKey);
-            $this->delete_member = $configParams->delete_member;
-            $this->send_goodbye  = $configParams->send_goodbye;
-            $this->send_notify   = $configParams->send_notify;
-            $this->email_type    = $configParams->email_type;
-            $this->double_optin  = $configParams->double_optin;
-            $this->send_welcome  = $configParams->send_welcome;
+            $this->delete_member = $configParams->get('delete_member');
+            $this->send_goodbye  = $configParams->get('send_goodbye');
+            $this->send_notify   = $configParams->get('send_notify');
+            $this->email_type    = $configParams->get('email_type');
+            $this->double_optin  = $configParams->get('double_optin');
+            $this->send_welcome  = $configParams->get('send_welcome');
+
+            $this->mcApi = new MCAPI($apiKey);
 
             $this->addGroups    = array();
             $this->removeGroups = array();
@@ -78,7 +71,7 @@ class JinboundMailchimp
 
     protected function loadCustomFieldsAssignments()
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return;
         }
 
@@ -105,7 +98,7 @@ class JinboundMailchimp
 
     protected function loadMCGroupAssignments()
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return;
         }
 
@@ -137,7 +130,7 @@ class JinboundMailchimp
 
     public function onJinboundSetStatus($status, $campaign_id, $contact_id)
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return;
         }
 
@@ -466,7 +459,7 @@ class JinboundMailchimp
 
     private function initMCGroups()
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             $addLevels          = array_keys($this->addMCGroups);
             $removeLevels       = array_keys($this->removeMCGroups);
             $addAndRemoveLevels = array_merge($addLevels, $removeLevels);
@@ -479,7 +472,7 @@ class JinboundMailchimp
 
     private function getMCGroups($levelId)
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return null;
         }
 
@@ -532,7 +525,7 @@ class JinboundMailchimp
 
     protected function getGroups()
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return array();
         }
 
@@ -571,7 +564,7 @@ class JinboundMailchimp
 
     public function getEmailLists($email)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             return $this->mcApi->listsForEmail($email);
         }
 
@@ -584,7 +577,7 @@ class JinboundMailchimp
 
     private function removeMCGroup($userEmail, $listId, $groupingId, $groupName)
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return;
         }
 
@@ -626,7 +619,7 @@ class JinboundMailchimp
 
     private function mcGroupsToArray($groupsString)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             $groupsArray           = array();
             $groupStringToBeParsed = $groupsString;
             while (true) {
@@ -657,7 +650,7 @@ class JinboundMailchimp
 
     private function addMCGroup($userEmail, $listId, $groupingId, $groupName)
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return;
         }
 
@@ -696,7 +689,7 @@ class JinboundMailchimp
 
     public function getEmailListDetails($email)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             $lists = $this->mcApi->listsForEmail($email);
             if ($lists) {
                 $details = array();
@@ -716,7 +709,7 @@ class JinboundMailchimp
 
     public function getMCGroupSelectOptions($level)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             // Put groups in select field
             $this->addGroups = array($level => $this->getGroups());
             $groups          = $this->getMCGroups($level);
@@ -738,7 +731,7 @@ class JinboundMailchimp
 
     public function getMCListSelectOptions($level)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             // Put groups in select field
             $groups    = $this->getGroups($level);
             $options   = array();
@@ -758,7 +751,7 @@ class JinboundMailchimp
      */
     public function getMCMergeFieldsSelectOptions($level, $shownone = false)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             $lists   = $this->mcApi->lists();
             $options = array();
             if ($shownone) {
@@ -790,7 +783,7 @@ class JinboundMailchimp
      */
     protected function upgradeSettings($config = array())
     {
-        if (!static::$enabled) {
+        if (!$this->mcApi) {
             return;
         }
 
@@ -852,7 +845,7 @@ class JinboundMailchimp
 
     protected function getMergeTagSelectField($level)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             $customFields = $this->getCustomFields($level->akeebasubs_level_id);
             $options      = array();
             $options[]    = JHTML::_(
@@ -884,7 +877,7 @@ class JinboundMailchimp
 
     protected function getCustomFields($levelId)
     {
-        if (static::$enabled) {
+        if ($this->mcApi) {
             static $customFields = array();
 
             if (empty($customFields[$levelId])) {

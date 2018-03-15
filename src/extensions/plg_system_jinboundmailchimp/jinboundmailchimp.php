@@ -52,7 +52,8 @@ class plgSystemJInboundmailchimp extends JPlugin
                 require_once $includePath;
             }
         }
-        $this->enabled = defined('JINB_LOADED');
+
+        $this->enabled = defined('JINB_LOADED') && $this->params->get('mailchimp_key');
     }
 
     public function onContentPrepareForm($form)
