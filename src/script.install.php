@@ -32,6 +32,33 @@ jimport('joomla.form.form');
 class com_JInboundInstallerScript extends AbstractScript
 {
     /**
+     * @param JInstallerAdapter $parent
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function install($parent)
+    {
+        try {
+            return parent::install($parent);
+
+        } catch (Exception $e) {
+            JFactory::getApplication()->enqueueMessage(
+                $e->getFile() . ':' . $e->getLine() . '<br/>' . $e->getMessage(),
+                'error'
+            );
+
+        } catch (Throwable $e) {
+            JFactory::getApplication()->enqueueMessage(
+                $e->getFile() . ':' . $e->getLine() . '<br/>' . $e->getMessage(),
+                'error'
+            );
+        }
+
+        return false;
+    }
+
+    /**
      * @TODO: remove contacts added with jinbound, including category (must remove contacts first)
      *
      * @param JInstallerAdapter $parent
@@ -128,38 +155,55 @@ class com_JInboundInstallerScript extends AbstractScript
      */
     public function postflight($type, $parent)
     {
-        parent::postFlight($type, $parent);
+        try {
+            parent::postFlight($type, $parent);
 
-        $lang = JFactory::getLanguage();
-        $root = $parent->getParent()->getPath('source');
+            require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
 
-        $lang->load('com_jinbound', $root);
-        $lang->load('com_jinbound.sys', $root);
+            $lang = JFactory::getLanguage();
+            $root = $parent->getParent()->getPath('source');
 
-        switch ($type) {
-            case 'install':
-            case 'discover_install':
-                $this->saveDefaults($parent);
-            // Fall through
+            $lang->load('com_jinbound', $root);
+            $lang->load('com_jinbound.sys', $root);
 
-            case 'update':
-                $this->removePackage();
-                $this->checkAssets();
-                $this->triggerMenu();
-                $this->fixGenericFormFields();
-                $this->checkDefaultReportEmails();
-                $this->forceReportEmailOption($parent);
-                $this->migrateOldData($root);
-                $this->checkContactCategory();
-                $this->checkInboundCategory();
-                $this->checkCampaigns($root);
-                $this->checkContactSubscriptions();
-                $this->checkDefaultPriorities();
-                $this->checkDefaultStatuses();
-                $this->checkEmailVersions();
-                $this->fixMissingLanguageDefaults();
-                $this->cleanupMissingRecords();
-                break;
+            switch ($type) {
+                case 'install':
+                case 'discover_install':
+                    $this->saveDefaults($parent);
+                    // Fall through
+
+                case 'update':
+                    $this->removePackage();
+                    $this->checkAssets();
+                    $this->triggerMenu();
+                    $this->fixGenericFormFields();
+                    $this->checkDefaultReportEmails();
+                    $this->forceReportEmailOption($parent);
+                    $this->migrateOldData($root);
+                    $this->checkContactCategory();
+                    $this->checkInboundCategory();
+                    $this->checkCampaigns($root);
+                    $this->checkContactSubscriptions();
+                    $this->checkDefaultPriorities();
+                    $this->checkDefaultStatuses();
+                    $this->checkEmailVersions();
+                    $this->fixMissingLanguageDefaults();
+                    $this->cleanupMissingRecords();
+                    break;
+            }
+
+        } catch (Exception $e) {
+            JFactory::getApplication()->enqueueMessage(
+                'postflight():' . __LINE__ . '<br/>'
+                . $e->getFile() . ':' . $e->getLine() . '<br/>' . $e->getMessage(),
+                'error'
+            );
+        } catch (Throwable $e) {
+            JFactory::getApplication()->enqueueMessage(
+                'postflight:' . __LINE__ . '<br/>'
+                . $e->getFile() . ':' . $e->getLine() . '<br/>' . $e->getMessage(),
+                'error'
+            );
         }
     }
 
