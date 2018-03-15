@@ -17,79 +17,98 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.filesystem.file');
-jimport('joomla.plugin.plugin');
-
-$db      = JFactory::getDbo();
-$plugins = $db->setQuery($db->getQuery(true)
-    ->select('extension_id')->from('#__extensions')
-    ->where($db->qn('element') . ' = ' . $db->q('com_jinbound'))
-    ->where($db->qn('enabled') . ' = 1')
-)->loadColumn();
-defined('PLG_SYSTEM_JINBOUNDMAILCHIMP') or define('PLG_SYSTEM_JINBOUNDMAILCHIMP', 1 === count($plugins));
-
 class plgSystemJInboundmailchimp extends JPlugin
 {
-    protected $app;
+    /**
+     * @var JApplicationCms
+     */
+    protected $app = null;
+
+    /**
+     * @var bool
+     */
+    protected $enabled = null;
 
     /**
      * Constructor
      *
-     * @param unknown_type $subject
-     * @param unknown_type $config
+     * @param JEventDispatcher $subject
+     * @param array            $config
+     *
+     * @return void
+     * @throws Exception
      */
     public function __construct(&$subject, $config)
     {
         parent::__construct($subject, $config);
+
         $this->app = JFactory::getApplication();
-        $this->loadLanguage('plg_system_jinboundmailchimp', JPATH_ADMINISTRATOR);
-        $this->loadLanguage('plg_system_jinboundmailchimp.sys', JPATH_ADMINISTRATOR);
+        $this->loadLanguage('plg_system_jinboundmailchimp');
+        $this->loadLanguage('plg_system_jinboundmailchimp.sys');
+
+        if (!defined('JINB_LOADED')) {
+            $includePath = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+            if (is_file($includePath)) {
+                require_once $includePath;
+            }
+        }
+        $this->enabled = defined('JINB_LOADED');
     }
 
     public function onContentPrepareForm($form)
     {
-        if (!PLG_SYSTEM_JINBOUNDMAILCHIMP) {
+        if (!$this->enabled) {
             return true;
         }
+
         if (JDEBUG) {
             $this->app->enqueueMessage(__METHOD__);
         }
-        if (!($form instanceof JForm)) {
+        if (!$form instanceof JForm) {
             $this->_subject->setError('JERROR_NOT_A_FORM');
             return false;
         }
+
         switch ($form->getName()) {
             case 'com_jinbound.campaign':
                 $file = 'jinboundmailchimp';
                 break;
+
             case 'com_jinbound.field':
                 $file = 'jinboundmailchimpfield';
                 break;
+
             case 'com_jinbound.contact':
-                if ($this->app->isSite()) {
+                if ($this->app->isClient('site')) {
                     return true;
                 }
                 $file = 'jinboundmailchimpcontact';
                 break;
+
             default:
                 return true;
         }
+
         JForm::addFormPath(dirname(__FILE__) . '/form');
         JForm::addFieldPath(dirname(__FILE__) . '/field');
         $result = $form->loadFile($file, false);
+
         return $result;
     }
 
     public function onJInboundChangeState($context, $campaign_id, $contacts, $status_id)
     {
-        if ('com_jinbound.contact.status' !== $context || !PLG_SYSTEM_JINBOUNDMAILCHIMP) {
+        if (!$this->enabled || $context !== 'com_jinbound.contact.status') {
             return;
         }
+
         if (JDEBUG) {
             $this->app->enqueueMessage(__METHOD__);
         }
+
         require_once realpath(dirname(__FILE__) . '/library/helper.php');
         $helper = new JinboundMailchimp(array('params' => $this->params));
+
         foreach ($contacts as $contact_id) {
             $helper->onJinboundSetStatus($status_id, $campaign_id, $contact_id);
         }
