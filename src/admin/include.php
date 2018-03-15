@@ -80,13 +80,15 @@ if (!defined('JINB_LOADED')) {
         JLoader::register($className, $file);
     }
 
+    // Tables and forms used front and back
+    JTable::addIncludePath(JINB_ADMIN . '/tables');
+    JForm::addFormPath(JINB_ADMIN . '/models/forms');
+    JForm::addFieldPath(JINB_ADMIN . '/models/fields');
+
     switch (JFactory::getApplication()->getName()) {
         case 'administrator':
             // Add standard model paths
             JModelLegacy::addIncludePath(JINB_ADMIN . '/models', 'JInboundModel');
-            JTable::addIncludePath(JINB_ADMIN . '/tables');
-            JForm::addFormPath(JINB_ADMIN . '/models/forms');
-            JForm::addFieldPath(JINB_ADMIN . '/models/fields');
 
             // Additional helper/core requirements for admin
             JHtml::addIncludePath(JINB_ADMIN . '/helpers/html');
@@ -97,7 +99,6 @@ if (!defined('JINB_LOADED')) {
         case 'site':
             // Add standard model paths
             JModelLegacy::addIncludePath(JINB_SITE . '/models', 'JInboundModel');
-            JTable::addIncludePath(JINB_ADMIN . '/tables');
 
             JFactory::getLanguage()->load('com_jinbound', JINB_ADMIN);
             break;
