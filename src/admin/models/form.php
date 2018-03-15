@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
-
 /**
  * This models supports retrieving lists of forms.
  *

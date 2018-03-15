@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundAdminModel', 'models/basemodeladmin');
-
 JPluginHelper::importPlugin('content');
 JPluginHelper::importPlugin('jinbound');
 

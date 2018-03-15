@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
-
 /**
  * This models supports retrieving lists of pages.
  *

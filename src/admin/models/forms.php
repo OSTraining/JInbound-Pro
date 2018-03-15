@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
-
 /**
  * This model supports retrieving lists of forms.
  *

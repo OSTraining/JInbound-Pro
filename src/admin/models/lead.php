@@ -20,11 +20,6 @@ defined('JPATH_PLATFORM') or die;
 $e = new Exception(__FILE__);
 JLog::add('JInboundModelLead is deprecated. ' . $e->getTraceAsString(), JLog::WARNING, 'deprecated');
 
-JLoader::register(
-    'JInboundAdminModel',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/models/basemodeladmin.php'
-);
-
 /**
  * This models supports retrieving a lead.
  *

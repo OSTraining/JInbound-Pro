@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
-
 require_once dirname(__FILE__) . '/contacts.php';
 require_once dirname(__FILE__) . '/emails.php';
 require_once dirname(__FILE__) . '/pages.php';

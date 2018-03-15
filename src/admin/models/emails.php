@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundListModel', 'models/basemodellist');
-
 /**
  * This models supports retrieving lists of emails.
  *
@@ -74,7 +72,6 @@ class JInboundModelEmails extends JInboundListModel
 
     public function sendCampaignEmails()
     {
-        JInbound::registerHelper('url');
         JPluginHelper::importPlugin('content');
 
         $db         = $this->getDbo();
