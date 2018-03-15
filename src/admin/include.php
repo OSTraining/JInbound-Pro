@@ -95,6 +95,9 @@ if (!defined('JINB_LOADED')) {
             break;
 
         case 'site':
+            // Add standard model paths
+            JModelLegacy::addIncludePath(JINB_SITE . '/models', 'JInboundModel');
+            
             JFactory::getLanguage()->load('com_jinbound', JINB_ADMIN);
             break;
     }
