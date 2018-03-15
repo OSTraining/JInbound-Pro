@@ -430,10 +430,10 @@ class plgSystemJInbound extends JPlugin
         }
 
         static::profile('BeforeInsertUserTrack');
-        if ($detecteduser === 0 && (int)$track['current_user_id']) {
+        if ($detecteduser === 0 && (int)$track->current_user_id) {
             $userTrack = (object)array(
-                'user_id' => $track['current_user_id'],
-                'cookie'  => $track['cookie']
+                'user_id' => $track->current_user_id,
+                'cookie'  => $track->cookie
             );
             try {
                 $db->insertObject('#__jinbound_users_tracks', $userTrack);

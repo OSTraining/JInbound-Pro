@@ -15,6 +15,8 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Joomla\Utilities\ArrayHelper;
+
 defined('JPATH_PLATFORM') or die;
 
 class JInboundControllerStatuses extends JControllerAdmin
@@ -24,6 +26,10 @@ class JInboundControllerStatuses extends JControllerAdmin
         JInboundHelperAccess::saveRulesWithRedirect('status');
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function setDefault()
     {
         // Check for request forgeries
@@ -37,7 +43,7 @@ class JInboundControllerStatuses extends JControllerAdmin
                 throw new Exception(JText::_('COM_JINBOUND_NO_STATUS_SELECTED'));
             }
 
-            JArrayHelper::toInteger($pks);
+            ArrayHelper::toInteger($pks);
 
             // Pop off the first element.
             $id    = array_shift($pks);
@@ -46,7 +52,7 @@ class JInboundControllerStatuses extends JControllerAdmin
             $this->setMessage(JText::_('COM_JINBOUND_SUCCESS_DEFAULT_STATUS_SET'));
 
         } catch (Exception $e) {
-            JError::raiseWarning(500, $e->getMessage());
+            throw new Exception($e->getMessage(), 500);
         }
 
         $this->setRedirect('index.php?option=com_jinbound&view=statuses');
@@ -63,6 +69,10 @@ class JInboundControllerStatuses extends JControllerAdmin
         $this->setRedirect('index.php?option=com_jinbound&view=statuses');
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function setFinal()
     {
         // Check for request forgeries
@@ -76,7 +86,7 @@ class JInboundControllerStatuses extends JControllerAdmin
                 throw new Exception(JText::_('COM_JINBOUND_NO_STATUS_SELECTED'));
             }
 
-            JArrayHelper::toInteger($pks);
+            ArrayHelper::toInteger($pks);
 
             // Pop off the first element.
             $id    = array_shift($pks);
@@ -85,7 +95,7 @@ class JInboundControllerStatuses extends JControllerAdmin
             $this->setMessage(JText::_('COM_JINBOUND_SUCCESS_FINAL_STATUS_SET'));
 
         } catch (Exception $e) {
-            JError::raiseWarning(500, $e->getMessage());
+            throw new Exception($e->getMessage(), 500);
         }
 
         $this->setRedirect('index.php?option=com_jinbound&view=statuses');
@@ -97,6 +107,10 @@ class JInboundControllerStatuses extends JControllerAdmin
         $this->setRedirect('index.php?option=com_jinbound&view=statuses');
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function setActive()
     {
         // Check for request forgeries
@@ -110,7 +124,7 @@ class JInboundControllerStatuses extends JControllerAdmin
                 throw new Exception(JText::_('COM_JINBOUND_NO_STATUS_SELECTED'));
             }
 
-            JArrayHelper::toInteger($pks);
+            ArrayHelper::toInteger($pks);
 
             // Pop off the first element.
             $id    = array_shift($pks);
@@ -119,7 +133,7 @@ class JInboundControllerStatuses extends JControllerAdmin
             $this->setMessage(JText::_('COM_JINBOUND_SUCCESS_ACTIVE_STATUS_SET'));
 
         } catch (Exception $e) {
-            JError::raiseWarning(500, $e->getMessage());
+            throw new Exception($e->getMessage(), 500);
         }
 
         $this->setRedirect('index.php?option=com_jinbound&view=statuses');
@@ -138,7 +152,7 @@ class JInboundControllerStatuses extends JControllerAdmin
                 throw new Exception(JText::_('COM_JINBOUND_NO_STATUS_SELECTED'));
             }
 
-            JArrayHelper::toInteger($pks);
+            ArrayHelper::toInteger($pks);
 
             // Pop off the first element.
             $id    = array_shift($pks);
@@ -147,7 +161,7 @@ class JInboundControllerStatuses extends JControllerAdmin
             $this->setMessage(JText::_('COM_JINBOUND_SUCCESS_ACTIVE_STATUS_SET'));
 
         } catch (Exception $e) {
-            JError::raiseWarning(500, $e->getMessage());
+            throw new Exception($e->getMessage(), 500);
         }
 
         $this->setRedirect('index.php?option=com_jinbound&view=statuses');

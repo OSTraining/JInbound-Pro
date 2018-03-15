@@ -19,12 +19,23 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundViewReports extends JInboundListView
 {
-
-    function display($tpl = null, $safeparams = false)
+    /**
+     * @param string $tpl
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function display($tpl = null)
     {
         if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.report')) {
-            return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
         }
+
+        ob_start();
+        parent::display($tpl);
+        $display = ob_get_contents();
+        ob_end_clean();
+
         $this->state              = $this->get('State');
         $this->permissions        = $this->get('Permissions');
         $this->filter_change_code = $this->getReportFormFilterChangeCode();
@@ -32,11 +43,11 @@ class JInboundViewReports extends JInboundListView
         $this->page_filter        = $this->getPageFilter();
         $this->priority_filter    = $this->getPriorityFilter();
         $this->status_filter      = $this->getStatusFilter();
-        $display                  = parent::display($tpl, $safeparams);
         $min                      = defined('JDEBUG') && JDEBUG ? '' : '.min';
         $js                       = $min . '.js';
         $css                      = $min . '.css';
         $document                 = JFactory::getDocument();
+
         if (method_exists($document, 'addScript')) {
             $document->addScript('../media/jinbound/jqplot/excanvas' . $js);
             $document->addScript('../media/jinbound/jqplot/jquery.jqplot' . $js);
@@ -50,6 +61,7 @@ class JInboundViewReports extends JInboundListView
         if (method_exists($document, 'addStyleSheet')) {
             $document->addStyleSheet('../media/jinbound/jqplot/jquery.jqplot' . $css);
         }
+
         return $display;
     }
 
@@ -70,63 +82,87 @@ class JInboundViewReports extends JInboundListView
     public function getCampaignFilter()
     {
         $db      = JFactory::getDbo();
-        $options = $db->setQuery($db->getQuery(true)
-            ->select('id AS value, name AS text')
-            ->from('#__jinbound_campaigns')
-            ->order('name ASC')
-        )->loadObjectList();
+        $options = $db->setQuery(
+            $db->getQuery(true)
+                ->select('id AS value, name AS text')
+                ->from('#__jinbound_campaigns')
+                ->order('name ASC')
+        )
+            ->loadObjectList();
         array_unshift($options, (object)array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_CAMPAIGN')));
-        return JHtml::_('select.genericlist', $options, 'filter_campaign', array(
-            'list.attr'   => array(
-                'onchange' => $this->filter_change_code
+
+        return JHtml::_(
+            'select.genericlist',
+            $options,
+            'filter_campaign',
+            array(
+                'list.attr'   => array(
+                    'onchange' => $this->filter_change_code
+                ),
+                'list.select' => $this->state->get('filter.campaign')
             )
-        ,
-            'list.select' => $this->state->get('filter.campaign')
-        ));
+        );
     }
 
     public function getPageFilter()
     {
         $db      = JFactory::getDbo();
-        $options = $db->setQuery($db->getQuery(true)
-            ->select('id AS value, name AS text')
-            ->from('#__jinbound_pages')
-            ->order('name ASC')
-        )->loadObjectList();
+        $options = $db->setQuery(
+            $db->getQuery(true)
+                ->select('id AS value, name AS text')
+                ->from('#__jinbound_pages')
+                ->order('name ASC')
+        )
+            ->loadObjectList();
         array_unshift($options, (object)array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PAGE')));
-        return JHtml::_('select.genericlist', $options, 'filter_page', array(
-            'list.attr'   => array(
-                'onchange' => $this->filter_change_code
+
+        return JHtml::_(
+            'select.genericlist',
+            $options,
+            'filter_page',
+            array(
+                'list.attr'   => array(
+                    'onchange' => $this->filter_change_code
+                ),
+                'list.select' => $this->state->get('filter.page')
             )
-        ,
-            'list.select' => $this->state->get('filter.page')
-        ));
+        );
     }
 
     public function getPriorityFilter()
     {
         $options = JInboundHelperPriority::getSelectOptions();
         array_unshift($options, (object)array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_PRIORITY')));
-        return JHtml::_('select.genericlist', $options, 'filter_priority', array(
-            'list.attr'   => array(
-                'onchange' => $this->filter_change_code
+
+        return JHtml::_(
+            'select.genericlist',
+            $options,
+            'filter_priority',
+            array(
+                'list.attr'   => array(
+                    'onchange' => $this->filter_change_code
+                ),
+                'list.select' => $this->state->get('filter.priority')
             )
-        ,
-            'list.select' => $this->state->get('filter.priority')
-        ));
+        );
     }
 
     public function getStatusFilter()
     {
         $options = JInboundHelperStatus::getSelectOptions();
         array_unshift($options, (object)array('value' => '', 'text' => JText::_('COM_JINBOUND_SELECT_STATUS')));
-        return JHtml::_('select.genericlist', $options, 'filter_status', array(
-            'list.attr'   => array(
-                'onchange' => $this->filter_change_code
+
+        return JHtml::_(
+            'select.genericlist',
+            $options,
+            'filter_status',
+            array(
+                'list.attr'   => array(
+                    'onchange' => $this->filter_change_code
+                ),
+                'list.select' => $this->state->get('filter.status')
             )
-        ,
-            'list.select' => $this->state->get('filter.status')
-        ));
+        );
     }
 
     public function getRecentLeads()
@@ -143,6 +179,7 @@ class JInboundViewReports extends JInboundListView
                 $model->setState($key, $value);
             }
         }
+
         return $model->$method();
     }
 
@@ -159,19 +196,16 @@ class JInboundViewReports extends JInboundListView
     public function getLeadCount()
     {
         return $this->_callModelMethod('getContactsCount');
-        //return $this->_callModelMethod('getLeadCount');
     }
 
     public function getTopLandingPages()
     {
         return $this->_callModelMethod('getTopPages');
-        //return $this->_callModelMethod('getTopLandingPages');
     }
 
     public function getConversionCount()
     {
         return $this->_callModelMethod('getConversionsCount');
-        //return $this->_callModelMethod('getConversionCount');
     }
 
     public function getConversionRate()
@@ -183,7 +217,7 @@ class JInboundViewReports extends JInboundListView
     {
         $app = JFactory::getApplication();
         // only fire in administrator, and only once
-        if (!$app->isAdmin()) {
+        if (!$app->isClient('administrator')) {
             return;
         }
 

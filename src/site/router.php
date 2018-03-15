@@ -63,19 +63,20 @@ function JinboundBuildRoute(&$query)
         $pid = (int)$pid;
         if ($pid) {
             $db = JFactory::getDbo();
-            $db->setQuery($db->getQuery(true)
-                ->select($db->quoteName('category'))
-                ->select($db->quoteName('name'))
-                ->select($db->quoteName('alias'))
-                ->from('#__jinbound_pages')
-                ->where($db->quoteName('id') . ' = ' . $pid)
+            $db->setQuery(
+                $db->getQuery(true)
+                    ->select(
+                        array(
+                            $db->quoteName('category'),
+                            $db->quoteName('name'),
+                            $db->quoteName('alias')
+                        )
+                    )
+                    ->from('#__jinbound_pages')
+                    ->where($db->quoteName('id') . ' = ' . $pid)
             );
-            try {
-                $record = $db->loadObject();
-            } catch (Exception $e) {
-                JError::raiseError('500', $e->getMessage());
-                jexit();
-            }
+            $record = $db->loadObject();
+
             if (empty($tmp)) {
                 $id .= ':' . (empty($record->alias) ? JApplication::stringURLSafe($record->name) : $record->alias);
             }

@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundCsvView extends JInboundBaseView
 {
-    public function display($tpl = null, $safeparams = null)
+    public function display($tpl = null)
     {
         $data = array();
         if (property_exists($this, 'data')) {

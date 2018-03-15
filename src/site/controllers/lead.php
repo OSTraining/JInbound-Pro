@@ -128,7 +128,7 @@ class JInboundControllerLead extends JInboundBaseController
             }
             $redirect = JRoute::_('index.php?option=com_jinbound&id=' . $page->id);
             if (!$page || empty($page->id)) {
-                JError::raiseError(404, JText::_('COM_JINBOUND_NO_PAGE_FOUND'));
+                throw new Exception(JText::_('COM_JINBOUND_NO_PAGE_FOUND'), 404);
                 jexit();
             }
             // fetch the fields for this form

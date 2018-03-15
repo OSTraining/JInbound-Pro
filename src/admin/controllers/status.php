@@ -21,10 +21,17 @@ class JInboundControllerStatus extends JInboundFormController
 {
     protected $view_list = 'statuses';
 
+    /**
+     * @param string $key
+     * @param string $urlVar
+     *
+     * @return bool
+     * @throws Exception
+     */
     public function edit($key = 'id', $urlVar = 'id')
     {
         if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.status')) {
-            return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
         }
         return parent::edit($key, $urlVar);
     }

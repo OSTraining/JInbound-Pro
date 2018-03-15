@@ -32,8 +32,7 @@ class JInboundViewContacts extends JInboundListView
         $statuses   = JInboundHelperStatus::getSelectOptions();
         $priorities = JInboundHelperPriority::getSelectOptions();
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode('<br />', $errors));
-            return false;
+            throw new Exception(implode('<br />', $errors), 500);
         }
         if (1 >= count($campaigns)) {
             $this->app->enqueueMessage(JText::_('COM_JINBOUND_NO_CAMPAIGNS_YET'), 'warning');

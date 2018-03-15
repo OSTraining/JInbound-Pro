@@ -47,15 +47,23 @@ abstract class JInboundHelperAccess
         jexit();
     }
 
+    /**
+     * @param string $name
+     * @param array  $rules
+     * @param bool   $checktoken
+     *
+     * @return bool
+     * @throws Exception
+     */
     public static function saveRules($name, $rules = null, $checktoken = true)
     {
         if ($checktoken) {
             JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
         }
         if (!JFactory::getUser()->authorise('core.admin', JInbound::COM)) {
-            JError::raiseError(403, JText::_('COM_JINBOUND_PERMISSIONS_SAVE_NOT_AUTH'));
-            jexit();
+            throw new Exception(JText::_('COM_JINBOUND_PERMISSIONS_SAVE_NOT_AUTH'), 403);
         }
+
         // pull rules from request if needed
         if (is_null($rules)) {
             $rules = JFactory::getApplication()->input->post->get('rules', array(), 'array');

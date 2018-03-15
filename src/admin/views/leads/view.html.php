@@ -22,28 +22,49 @@ JLog::add('JInboundViewLeads is deprecated. ' . $e->getTraceAsString(), JLog::WA
 
 class JInboundViewLeads extends JInboundListView
 {
-    function display($tpl = null, $safeparams = false)
+    /**
+     * @param string $tpl
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function display($tpl = null)
     {
 
         $state = $this->get('State');
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode('<br />', $errors));
-            return false;
+            throw new Exception(implode('<br />', $errors), 500);
         }
 
-        $this->addFilter(JText::_('COM_JINBOUND_SELECT_PRIORITY'), 'filter_priority', $this->get('PriorityOptions'),
-            $state->get('filter.priority'));
-        $this->addFilter(JText::_('COM_JINBOUND_SELECT_LEAD_STATUS'), 'filter_status', $this->get('StatusOptions'),
-            $state->get('filter.status'));
+        $this->addFilter(
+            JText::_('COM_JINBOUND_SELECT_PRIORITY'),
+            'filter_priority',
+            $this->get('PriorityOptions'),
+            $state->get('filter.priority')
+        );
+        $this->addFilter(
+            JText::_('COM_JINBOUND_SELECT_LEAD_STATUS'),
+            'filter_status',
+            $this->get('StatusOptions'),
+            $state->get('filter.status')
+        );
 
-        return parent::display($tpl, $safeparams);
+        parent::display($tpl);
     }
 
+    /**
+     * @throws Exception
+     */
     public function addToolBar()
     {
-        // export icon
-        JToolBarHelper::custom('reports.exportleads', 'export.png', 'export_f2.png', 'COM_JINBOUND_EXPORT_LEADS',
-            false);
+        JToolBarHelper::custom(
+            'reports.exportleads',
+            'export.png',
+            'export_f2.png',
+            'COM_JINBOUND_EXPORT_LEADS',
+            false
+        );
+
         parent::addToolBar();
     }
 
@@ -55,18 +76,12 @@ class JInboundViewLeads extends JInboundListView
     protected function getSortFields()
     {
         return array(
-            'User.name'      => JText::_('COM_JINBOUND_NAME')
-        ,
-            'Lead.published' => JText::_('COM_JINBOUND_PUBLISHED')
-        ,
-            'Lead.created'   => JText::_('COM_JINBOUND_LEAD_DATE')
-        ,
-            'Page.formname'  => JText::_('COM_JINBOUND_LEAD_CONVERTED')
-        ,
-            'Priority.name'  => JText::_('COM_JINBOUND_LEAD_PRIORITY')
-        ,
-            'Status.name'    => JText::_('COM_JINBOUND_LEAD_STATUS')
-        ,
+            'User.name'      => JText::_('COM_JINBOUND_NAME'),
+            'Lead.published' => JText::_('COM_JINBOUND_PUBLISHED'),
+            'Lead.created'   => JText::_('COM_JINBOUND_LEAD_DATE'),
+            'Page.formname'  => JText::_('COM_JINBOUND_LEAD_CONVERTED'),
+            'Priority.name'  => JText::_('COM_JINBOUND_LEAD_PRIORITY'),
+            'Status.name'    => JText::_('COM_JINBOUND_LEAD_STATUS'),
             'Lead.note'      => JText::_('COM_JINBOUND_LEAD_NOTE')
         );
     }

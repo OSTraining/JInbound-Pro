@@ -703,31 +703,32 @@ class JInboundModelReports extends JInboundListModel
 
             // #641 if one recipient succeeds, the whole thing should succeed
             foreach ($sendto as $recipient) {
-                $mailer->ClearAllRecipients();
-                $mailer->addRecipient($recipient);
-                $send_response = $mailer->send();
-                if (false !== $send_response && !($send_response instanceof JError) && !($send_response instanceof Exception)) {
-                    $query = $db->getQuery(true)
-                        ->insert('#__jinbound_reports_emails')
-                        ->columns(array('email', 'email_id', 'created'))
-                        ->values($db->quote($recipient) . ', ' . intval($emailrecord->id) . ', NOW()');
-                    try {
-                        $db->setQuery($query)->query();
-                    } catch (Exception $e) {
-                        if ($out) {
-                            echo "<p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
-                        }
-                        return;
-                    }
-                } else {
-                    if (false === $send_response && $out) {
-                        echo "<p>Unspecified error sending mail!</p>";
+                try {
+                    $mailer->ClearAllRecipients();
+                    $mailer->addRecipient($recipient);
+                    $send_response = $mailer->send();
+                    if ($send_response === false) {
+                        throw new Exception('Unspecified error sending mail!', 500);
+
+                    } elseif ($send_response instanceof JError) {
+                        throw new Exception($send_response->getMessage(), 500);
+
                     } else {
-                        if ($send_response instanceof Exception && $out) {
-                            echo "<p>" . $e->getMessage() . "</p>";
-                        }
+                        $query = $db->getQuery(true)
+                            ->insert('#__jinbound_reports_emails')
+                            ->columns(array('email', 'email_id', 'created'))
+                            ->values($db->quote($recipient) . ', ' . intval($emailrecord->id) . ', NOW()');
+
+                        $db->setQuery($query)->execute();
                     }
+
+                } catch (Exception $e) {
+                    if ($out) {
+                        echo "<p>" . $e->getMessage() . "</p><pre>" . $e->getTraceAsString() . "</pre>";
+                    }
+                    return;
                 }
+
             }
         }
     }

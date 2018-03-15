@@ -19,12 +19,19 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundItemView extends JInboundView
 {
+    /**
+     * @param string $tpl
+     * @param bool   $safeparams
+     *
+     * @return bool|void
+     * @throws Exception
+     */
     public function display($tpl = null, $safeparams = false)
     {
         $form = $this->get('Form');
         $item = $this->get('Item');
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode('<br />', $errors));
+            throw new Exception(implode('<br />', $errors), 500);
             return false;
         }
         // quickfix

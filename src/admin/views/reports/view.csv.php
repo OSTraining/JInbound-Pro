@@ -19,11 +19,19 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundViewReports extends JInboundCsvView
 {
-    public function display($tpl = null, $safeparams = null)
+    /**
+     * @param string $tpl
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function display($tpl = null)
     {
         if (!JFactory::getUser()->authorise('core.create', 'com_jinbound.report')) {
-            return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
         }
+
+        /** @var JInboundModelReports $model */
         $model = JInboundBaseModel::getInstance('Reports', 'JInboundModel');
         $state = $this->get('State');
         if (is_array($state) && !empty($state)) {
@@ -33,7 +41,7 @@ class JInboundViewReports extends JInboundCsvView
         }
         switch ($this->getLayout()) {
             case 'leads':
-                $leads = $model->getRecentContacts(); //$model->getRecentLeads();
+                $leads = $model->getRecentContacts();
                 $data  = array();
                 $extra = array();
                 if (!empty($leads)) {
@@ -41,22 +49,30 @@ class JInboundViewReports extends JInboundCsvView
                         $formdata = new JRegistry();
                         $formdata->loadString($lead->formdata);
                         $leads[$idx]->formdata = $formdata->toArray();
-                        if (array_key_exists('lead', $lead->formdata) && is_array($lead->formdata['lead'])) {
-                            $extra = array_values(array_unique(array_merge($extra,
-                                array_keys($lead->formdata['lead']))));
+                        if (array_key_exists('lead', $lead->formdata)
+                            && is_array($lead->formdata['lead'])
+                        ) {
+                            $extra = array_values(
+                                array_unique(
+                                    array_merge($extra, array_keys($lead->formdata['lead']))
+                                )
+                            );
                         }
                     }
                     if (!empty($extra)) {
                         foreach ($leads as $idx => $lead) {
                             foreach ($extra as $col) {
                                 $value = '';
-                                if (array_key_exists('lead',
-                                        $lead->formdata) && is_array($lead->formdata['lead']) && array_key_exists($col,
-                                        $lead->formdata['lead'])) {
+                                if (array_key_exists('lead', $lead->formdata)
+                                    && is_array($lead->formdata['lead'])
+                                    && array_key_exists($col, $lead->formdata['lead'])
+                                ) {
                                     $value = $lead->formdata['lead'][$col];
                                 }
+
                                 $leads[$idx]->$col = $value;
                             }
+
                             unset($leads[$idx]->formdata);
                             $data[] = $lead;
                         }
@@ -64,15 +80,16 @@ class JInboundViewReports extends JInboundCsvView
                 }
                 $this->data = $data;
                 break;
+
             case 'pages':
-                $this->data = $model->getTopPages(); // $model->getTopLandingPages();
+                $this->data = $model->getTopPages();
                 break;
+
             default:
-                JError::raiseError(400, JText::_('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND'));
-                jexit();
+                throw new Exception(JText::_('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND'), 400);
         }
         $this->filename = $this->getLayout() . '-report';
 
-        parent::display($tpl, $safeparams);
+        parent::display($tpl);
     }
 }

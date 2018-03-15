@@ -19,6 +19,9 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundControllerEmail extends JInboundFormController
 {
+    /**
+     * @throws Exception
+     */
     public function test()
     {
         JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
@@ -169,19 +172,35 @@ class JInboundControllerEmail extends JInboundFormController
         jexit();
     }
 
+    /**
+     * @param string $key
+     * @param string $urlVar
+     *
+     * @return bool
+     * @throws Exception
+     */
     public function edit($key = 'id', $urlVar = 'id')
     {
         if (!JFactory::getUser()->authorise('core.manage', 'com_jinbound.email')) {
-            return JError::raiseWarning(404, JText::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
         }
+
         return parent::edit($key, $urlVar);
     }
 
+    /**
+     * @param string $recordId
+     * @param string $urlVar
+     *
+     * @return string
+     * @throws Exception
+     */
     protected function getRedirectToItemAppend($recordId = null, $urlVar = 'set')
     {
         $set    = JFactory::getApplication()->input->get('set', 'a', 'cmd');
         $append = parent::getRedirectToItemAppend($recordId, $urlVar);
         $append .= '&set=' . $set;
+
         return $append;
     }
 }
