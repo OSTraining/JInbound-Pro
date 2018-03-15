@@ -17,7 +17,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php');
+if (!defined('JINB_LOADED')) {
+    $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+    if (is_file($path)) {
+        require_once $path;
+    }
+}
 
 JFormHelper::loadFieldClass('hidden');
 

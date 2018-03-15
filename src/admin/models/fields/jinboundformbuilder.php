@@ -23,7 +23,6 @@ if (!defined('JINB_LOADED')) {
         require_once $path;
     }
 }
-JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php');
 
 class JFormFieldJinboundFormBuilder extends JFormField
 {

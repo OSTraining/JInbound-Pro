@@ -23,7 +23,6 @@ if (!defined('JINB_LOADED')) {
         require_once $path;
     }
 }
-JInbound::registerLibrary('JInboundFieldView', 'views/fieldview');
 
 JFormHelper::loadFieldClass('text');
 

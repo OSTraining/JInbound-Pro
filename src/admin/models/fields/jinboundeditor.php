@@ -24,8 +24,6 @@ if (!defined('JINB_LOADED')) {
     }
 }
 
-JLoader::register('JInboundFieldView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/fieldview.php');
-
 JFormHelper::loadFieldClass('editor');
 
 class JFormFieldJinboundEditor extends JFormFieldEditor

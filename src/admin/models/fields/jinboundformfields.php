@@ -23,7 +23,6 @@ if (!defined('JINB_LOADED')) {
         require_once $path;
     }
 }
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 class JFormFieldJInboundFormFields extends JFormField
 {
@@ -38,7 +37,6 @@ class JFormFieldJInboundFormFields extends JFormField
         // this is just some defensive coding, really - there's a slim to none chance this code will EVER be accessed!
         $this->prepareValue();
         // load the published fields - we'll sort them into two groups later
-        JInboundBaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models', 'JInboundModel');
         $model = JInboundBaseModel::getInstance('Fields', 'JInboundModel');
         // TODO: why does setState not work?!
         $model->setState('filter.published', '1');

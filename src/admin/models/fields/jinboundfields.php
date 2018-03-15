@@ -24,9 +24,6 @@ if (!defined('JINB_LOADED')) {
     }
 }
 
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-JInbound::registerLibrary('JInboundFieldView', 'views/fieldview');
-
 class JFormFieldJInboundFields extends JFormField
 {
     public $type = 'Jinboundfields';

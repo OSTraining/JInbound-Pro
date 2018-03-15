@@ -23,7 +23,6 @@ if (!defined('JINB_LOADED')) {
         require_once $path;
     }
 }
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
 
 JFormHelper::loadFieldClass('list');
 
@@ -34,7 +33,6 @@ class JFormFieldJInboundForm extends JFormFieldList
     protected function getOptions()
     {
         // get our form model
-        JInboundBaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models');
         $model = JInboundBaseModel::getInstance('Forms', 'JInboundModel');
         // fetch the list of available, published forms from the model
         $model->getState('filter.published');
