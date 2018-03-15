@@ -45,6 +45,7 @@ if (!defined('JINB_LOADED')) {
 
     switch (JFactory::getApplication()->getName()) {
         case 'administrator':
+            // Register all helpers for autoloading
             $helpers = glob(JINB_HELPERS . '/*.php');
             foreach ($helpers as $file) {
                 $baseName = basename($file, '.php');
@@ -55,6 +56,44 @@ if (!defined('JINB_LOADED')) {
                 }
                 JLoader::register($className, $file);
             }
+
+            // Register all library classes for autoloading
+            $libraryClasses = array(
+                'JInboundAdminModel'     => JINB_LIBRARY . '/models/basemodeladmin.php',
+                'JInboundBaseController' => JINB_LIBRARY . '/controllers/basecontroller.php',
+                'JInboundBasemodel'      => JINB_LIBRARY . '/models/basemodel.php',
+                'JInboundBaseView'       => JINB_LIBRARY . '/views/baseview.php',
+                'JInboundView'           => JINB_LIBRARY . '/views/baseview.php',
+                'JInboundCsvView'        => JINB_LIBRARY . '/views/csvview.php',
+                'JInboundFieldView'      => JINB_LIBRARY . '/views/fieldview.php',
+                'JInboundFormController' => JINB_LIBRARY . '/controllers/basecontrollerform.php',
+                'JInboundInflector'      => JINB_LIBRARY . '/inflector.php',
+                'JInboundItemView'       => JINB_LIBRARY . '/views/baseviewitem.php',
+                'JInboundJsonListView'   => JINB_LIBRARY . '/views/jsonviewlist.php',
+                'JInboundJsonView'       => JINB_LIBRARY . '/views/jsonview.php',
+                'JInboundListModel'      => JINB_LIBRARY . '/models/basemodellist.php',
+                'JInboundListView'       => JINB_LIBRARY . '/views/baseviewlist.php',
+                'JInboundPageController' => JINB_LIBRARY . '/controllers/basecontrollerpage.php',
+                'JInboundPluginView'     => JINB_LIBRARY . '/views/pluginview.php',
+                'JInboundRssView'        => JINB_LIBRARY . '/views/rssview.php',
+                'JInboundTable'          => JINB_LIBRARY . '/table.php',
+                'JResponseJson'          => JINB_LIBRARY . '/compat/response/json.php'
+            );
+
+            foreach ($libraryClasses as $className => $file) {
+                JLoader::register($className, $file);
+            }
+
+            // Add standard model paths
+            JModelLegacy::addIncludePath(JINB_ADMIN . '/models', 'JInboundModel');
+            JTable::addIncludePath(JINB_ADMIN . '/tables');
+            JForm::addFormPath(JINB_ADMIN . '/models/forms');
+            JForm::addFieldPath(JINB_ADMIN . '/models/fields');
+
+            // Additional helper/core requirements for admin
+            JHtml::addIncludePath(JINB_ADMIN . '/helpers/html');
+            JFactory::getLanguage()->load('com_categories', JPATH_ADMINISTRATOR);
+
             break;
 
         case 'site':
