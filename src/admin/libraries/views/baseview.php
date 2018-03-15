@@ -15,16 +15,23 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Alledia\Framework\Factory;
+
 defined('JPATH_PLATFORM') or die;
 
 JInbound::registerLibrary('JInboundInflector', 'inflector');
-
 JHtml::addIncludePath(JInboundHelperPath::admin() . '/helpers/html');
-
 JFactory::getLanguage()->load('com_categories', JPATH_ADMINISTRATOR);
 
 class JInboundBaseView extends JViewLegacy
 {
+    /**
+     * @var JApplicationCms
+     */
+    public $app = null;
+
+    protected $extension = null;
+
     public $sortFunction;
 
     /**
@@ -39,10 +46,8 @@ class JInboundBaseView extends JViewLegacy
     {
         parent::__construct($config);
 
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.folder');
-
-        $this->app = JFactory::getApplication();
+        $this->app       = JFactory::getApplication();
+        $this->extension = Factory::getExtension('com_jinbound', 'component');
 
         // set the layout paths, in order of importance
         $root            = $this->app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
@@ -59,8 +64,12 @@ class JInboundBaseView extends JViewLegacy
         $this->sortFunction = JInbound::version()->isCompatible('3.0.0') ? 'searchtools.sort' : 'grid.sort';
     }
 
-    /*
+    /**
+     * @param string $tpl
+     * @param string $layout
      *
+     * @return string
+     * @throws Exception
      */
     public function loadTemplate($tpl = null, $layout = null)
     {
@@ -75,13 +84,12 @@ class JInboundBaseView extends JViewLegacy
 
 }
 
-
 class JInboundView extends JInboundBaseView
 {
     public static $option = 'com_jinbound';
 
-    public $viewItemName = '';
-    public $sidebarItems;
+    public    $viewItemName = '';
+    public    $sidebarItems;
     protected $_filters;
 
     function display($tpl = null, $safeparams = false)

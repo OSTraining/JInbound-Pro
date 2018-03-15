@@ -19,5 +19,5 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 <div class="jinbound_footer center">
-    <?php echo JText::sprintf('COM_JINBOUND_VERSION', JInbound::VERSION); ?>
+    <?php echo $this->extension->getFooterMarkup(); ?>
 </div>
