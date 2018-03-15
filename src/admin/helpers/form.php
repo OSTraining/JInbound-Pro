@@ -17,11 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.form.form');
-
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-JInboundBaseModel::addIncludePath(JInboundHelperPath::admin('models'));
-
 abstract class JInboundHelperForm
 {
     public static function getJinboundForm($form_id, $form_options = array())
@@ -287,31 +282,21 @@ abstract class JInboundHelperForm
                 continue;
             }
             $data = array_merge(array(
-                'title'       => JText::_('COM_JINBOUND_PAGE_FIELD_' . strtoupper($fieldname))
-            ,
-                'name'        => $fieldname
-            ,
-                'type'        => 'text'
-            ,
-                'description' => ''
-            ,
-                'published'   => 1
-            ,
+                'title'       => JText::_('COM_JINBOUND_PAGE_FIELD_' . strtoupper($fieldname)),
+                'name'        => $fieldname,
+                'type'        => 'text',
+                'description' => '',
+                'published'   => 1,
                 'params'      => array(
                     'attrs'     => array(
-                        'key'   => array()
-                    ,
+                        'key'   => array(),
                         'value' => array()
-                    )
-                ,
+                    ),
                     'opts'      => array(
-                        'key'   => array()
-                    ,
+                        'key'   => array(),
                         'value' => array()
-                    )
-                ,
-                    'required'  => (int)in_array($fieldname, $required)
-                ,
+                    ),
+                    'required'  => (int)in_array($fieldname, $required),
                     'classname' => 'input-block-level'
                 )
             ), $extra);
@@ -319,6 +304,7 @@ abstract class JInboundHelperForm
                 $data['params']['attrs']['key'][]   = 'validate';
                 $data['params']['attrs']['value'][] = 'email';
             }
+
             JInboundBaseModel::getInstance('Field', 'JInboundModel')->save($data);
         }
     }
