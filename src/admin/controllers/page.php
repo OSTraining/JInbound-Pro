@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundInflector', 'inflector');
-JInbound::registerLibrary('JInboundPageController', 'controllers/basecontrollerpage');
-
 class JInboundControllerPage extends JInboundPageController
 {
     public function edit($key = 'id', $urlVar = 'id')

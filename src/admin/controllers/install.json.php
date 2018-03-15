@@ -17,10 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller');
-JInbound::registerLibrary('JInboundBaseView', 'views/baseview');
-JInbound::registerLibrary('JInboundJsonView', 'views/jsonview');
-
 class JInboundControllerInstall extends JInboundBaseController
 {
     public function status()

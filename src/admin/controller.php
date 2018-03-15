@@ -17,14 +17,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register(
-    'JInboundBaseController',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/controllers/basecontroller.php'
-);
-
 class JInboundController extends JInboundBaseController
 {
-    function display($cachable = false, $urlparams = false)
+    public function display($cachable = false, $urlparams = false)
     {
         $app        = JFactory::getApplication();
         $view       = $app->input->get('view', 'Dashboard', 'cmd');
@@ -45,45 +40,37 @@ class JInboundController extends JInboundBaseController
         parent::display($cachable);
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function reset()
     {
         JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
         if (!JFactory::getUser()->authorise('core.admin', 'com_jinbound')) {
-            JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 403);
         }
-        JInbound::registerHelper('url');
+
         $db      = JFactory::getDbo();
         $app     = JFactory::getApplication();
         $errors  = array();
         $queries = array(
-            'TRUNCATE TABLE #__jinbound_contacts'
-        ,
-            'TRUNCATE TABLE #__jinbound_contacts_campaigns'
-        ,
-            'TRUNCATE TABLE #__jinbound_contacts_priorities'
-        ,
-            'TRUNCATE TABLE #__jinbound_contacts_statuses'
-        ,
-            'TRUNCATE TABLE #__jinbound_conversions'
-        ,
-            'TRUNCATE TABLE #__jinbound_emails_records'
-        ,
-            'TRUNCATE TABLE #__jinbound_emails_versions'
-        ,
-            'TRUNCATE TABLE #__jinbound_landing_pages_hits'
-        ,
-            'TRUNCATE TABLE #__jinbound_leads'
-        ,
-            'TRUNCATE TABLE #__jinbound_notes'
-        ,
-            'TRUNCATE TABLE #__jinbound_subscriptions'
-        ,
-            'TRUNCATE TABLE #__jinbound_tracks'
-        ,
-            'TRUNCATE TABLE #__jinbound_users_tracks'
-        ,
+            'TRUNCATE TABLE #__jinbound_contacts',
+            'TRUNCATE TABLE #__jinbound_contacts_campaigns',
+            'TRUNCATE TABLE #__jinbound_contacts_priorities',
+            'TRUNCATE TABLE #__jinbound_contacts_statuses',
+            'TRUNCATE TABLE #__jinbound_conversions',
+            'TRUNCATE TABLE #__jinbound_emails_records',
+            'TRUNCATE TABLE #__jinbound_emails_versions',
+            'TRUNCATE TABLE #__jinbound_landing_pages_hits',
+            'TRUNCATE TABLE #__jinbound_leads',
+            'TRUNCATE TABLE #__jinbound_notes',
+            'TRUNCATE TABLE #__jinbound_subscriptions',
+            'TRUNCATE TABLE #__jinbound_tracks',
+            'TRUNCATE TABLE #__jinbound_users_tracks',
             'UPDATE #__jinbound_pages SET hits = 0 WHERE 1'
         );
+
         foreach ($queries as $query) {
             try {
                 $db->setQuery($query)->query();
@@ -118,8 +105,6 @@ class JInboundController extends JInboundBaseController
             $app->close();
         }
         $feed = $feeds[$var];
-        // load rss
-        JInbound::registerLibrary('JInboundRSSView', 'views/rssview');
         $app->input->set('layout', 'rss');
         // get RSS view and display its contents
         try {

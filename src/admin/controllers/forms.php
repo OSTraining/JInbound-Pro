@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundBaseModel', 'models/basemodel');
-
 class JInboundControllerForms extends JControllerAdmin
 {
     public function getModel($name = 'Form', $prefix = 'JInboundModel', $config = array())

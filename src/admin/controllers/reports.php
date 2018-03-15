@@ -21,7 +21,6 @@ class JInboundControllerReports extends JControllerAdmin
 {
     public function permissions()
     {
-        JInbound::registerHelper('access');
         JInboundHelperAccess::saveRulesWithRedirect('report');
     }
 

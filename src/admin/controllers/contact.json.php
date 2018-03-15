@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller');
-
 class JInboundControllerContact extends JInboundBaseController
 {
     public function status()

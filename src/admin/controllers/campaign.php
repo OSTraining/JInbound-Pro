@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerform');
-
 class JInboundControllerCampaign extends JInboundFormController
 {
     public function edit($key = 'id', $urlVar = 'id')

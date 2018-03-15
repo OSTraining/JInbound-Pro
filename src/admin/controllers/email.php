@@ -17,14 +17,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundFormController', 'controllers/basecontrollerform');
-
 class JInboundControllerEmail extends JInboundFormController
 {
     public function test()
     {
         JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-        JInbound::registerHelper('path');
         require_once JInboundHelperPath::admin('models/emails.php');
         // init
         $dispatcher = JDispatcher::getInstance();

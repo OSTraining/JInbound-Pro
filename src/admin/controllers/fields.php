@@ -26,7 +26,6 @@ class JInboundControllerFields extends JControllerAdmin
 
     public function permissions()
     {
-        JInbound::registerHelper('access');
         JInboundHelperAccess::saveRulesWithRedirect('field');
     }
 }
