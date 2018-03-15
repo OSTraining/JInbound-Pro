@@ -21,51 +21,67 @@ jimport('fof.include');
 
 class JinboundMailchimp
 {
-    protected $customFields  = array();
+    /**
+     * @var bool
+     */
+    protected static $enabled = false;
+
+    protected $customFields       = array();
     protected $addMCGroups        = array();
     protected $removeMCGroups     = array();
     protected $groupingsGroupMap  = array();
     protected $groupingsListMap   = array();
     protected $groupingsGroupName = array();
-    private   $name          = 'mailchimp';
+    private   $name               = 'mailchimp';
     private   $mcApi;
-    private   $delete_member = false;
+    private   $delete_member      = false;
     // MC groups
-    private   $send_goodbye  = true;
-    private   $send_notify   = true;
-    private   $email_type    = 'html';
-    private   $double_optin  = true;
-    private   $send_welcome  = false;
+    private $send_goodbye = true;
+    private $send_notify  = true;
+    private $email_type   = 'html';
+    private $double_optin = true;
+    private $send_welcome = false;
 
     public function __construct($config = array())
     {
-        // Load the MailChimp library
-        require_once dirname(__FILE__) . '/MCAPI.class.php';
+        if (!defined('JINB_LOADED')) {
+            $includePath = JPATH_ADMINISTRATOR . '/components/com_jinbound/incdlue.php';
+            if (is_file($includePath)) {
+                require_once $includePath;
+            }
+        }
 
-        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
+        if (static::$enabled = defined('JINB_LOADED')) {
+            // Load the MailChimp library
+            require_once dirname(__FILE__) . '/MCAPI.class.php';
 
-        $configParams        = @json_decode($config['params']);
-        $apiKey              = $configParams->mailchimp_key;
-        $this->mcApi         = new MCAPI($apiKey);
-        $this->delete_member = $configParams->delete_member;
-        $this->send_goodbye  = $configParams->send_goodbye;
-        $this->send_notify   = $configParams->send_notify;
-        $this->email_type    = $configParams->email_type;
-        $this->double_optin  = $configParams->double_optin;
-        $this->send_welcome  = $configParams->send_welcome;
+            $configParams        = @json_decode($config['params']);
+            $apiKey              = $configParams->mailchimp_key;
+            $this->mcApi         = new MCAPI($apiKey);
+            $this->delete_member = $configParams->delete_member;
+            $this->send_goodbye  = $configParams->send_goodbye;
+            $this->send_notify   = $configParams->send_notify;
+            $this->email_type    = $configParams->email_type;
+            $this->double_optin  = $configParams->double_optin;
+            $this->send_welcome  = $configParams->send_welcome;
 
-        $this->addGroups    = array();
-        $this->removeGroups = array();
+            $this->addGroups    = array();
+            $this->removeGroups = array();
 
-        // Load custom fields
-        $this->loadCustomFieldsAssignments();
+            // Load custom fields
+            $this->loadCustomFieldsAssignments();
 
-        // Load MC group assignments
-        $this->loadMCGroupAssignments();
+            // Load MC group assignments
+            $this->loadMCGroupAssignments();
+        }
     }
 
     protected function loadCustomFieldsAssignments()
     {
+        if (!static::$enabled) {
+            return;
+        }
+
         $this->customFields = array();
         $db                 = JFactory::getDbo();
         $levels             = $db->setQuery('SELECT id, params FROM #__jinbound_campaigns')->loadObjectList();
@@ -89,6 +105,10 @@ class JinboundMailchimp
 
     protected function loadMCGroupAssignments()
     {
+        if (!static::$enabled) {
+            return;
+        }
+
         $this->addMCGroups    = array();
         $this->removeMCGroups = array();
         $db                   = JFactory::getDbo();
@@ -115,8 +135,12 @@ class JinboundMailchimp
         }
     }
 
-    public function onJinboundSetStatus($status_id, $campaign_id, $contact_id)
+    public function onJinboundSetStatus($status, $campaign_id, $contact_id)
     {
+        if (!static::$enabled) {
+            return;
+        }
+
         // load campaign, status, contact
         $app = JFactory::getApplication();
         $db  = JFactory::getDbo();
@@ -180,7 +204,6 @@ class JinboundMailchimp
         }
         $this->addMCGroups    = array($campaign->id => $addMCGroups);
         $this->removeMCGroups = array($campaign->id => $removeMCGroups);
-        //$this->loadUserGroups($user_id, $addMCGroups, $removeMCGroups, 'addMCGroups', 'removeMCGroups');
         $this->initMCGroups();
 
         if (!$status->final) {
@@ -231,7 +254,7 @@ class JinboundMailchimp
             // what we can do is load the fields related to the pages with the same
             // form and campaign, then check the user's conversions for that page
             // this should give us the conversion data, including the fields
-            // 
+            //
             // get form field params from db first
             $fieldData = $db->setQuery($db->getQuery(true)
                 ->select('Field.name')
@@ -443,17 +466,23 @@ class JinboundMailchimp
 
     private function initMCGroups()
     {
-        $addLevels          = array_keys($this->addMCGroups);
-        $removeLevels       = array_keys($this->removeMCGroups);
-        $addAndRemoveLevels = array_merge($addLevels, $removeLevels);
-        $allLevels          = array_unique($addAndRemoveLevels);
-        foreach ($allLevels as $levelId) {
-            $this->getMCGroups($levelId);
+        if (static::$enabled) {
+            $addLevels          = array_keys($this->addMCGroups);
+            $removeLevels       = array_keys($this->removeMCGroups);
+            $addAndRemoveLevels = array_merge($addLevels, $removeLevels);
+            $allLevels          = array_unique($addAndRemoveLevels);
+            foreach ($allLevels as $levelId) {
+                $this->getMCGroups($levelId);
+            }
         }
     }
 
     private function getMCGroups($levelId)
     {
+        if (!static::$enabled) {
+            return null;
+        }
+
         static $mcGroups = array();
 
         if (!array_key_exists($levelId, $mcGroups)) {
@@ -503,6 +532,10 @@ class JinboundMailchimp
 
     protected function getGroups()
     {
+        if (!static::$enabled) {
+            return array();
+        }
+
         static $groups = null;
 
         if (is_null($groups)) {
@@ -538,7 +571,11 @@ class JinboundMailchimp
 
     public function getEmailLists($email)
     {
-        return $this->mcApi->listsForEmail($email);
+        if (static::$enabled) {
+            return $this->mcApi->listsForEmail($email);
+        }
+
+        return null;
     }
 
     /*
@@ -547,6 +584,10 @@ class JinboundMailchimp
 
     private function removeMCGroup($userEmail, $listId, $groupingId, $groupName)
     {
+        if (!static::$enabled) {
+            return;
+        }
+
         $userMCInfo    = $this->mcApi->listMemberInfo($listId, $userEmail);
         $userMCData    = $userMCInfo['data'][0];
         $userMergeVars = $userMCData['merges'];
@@ -585,24 +626,29 @@ class JinboundMailchimp
 
     private function mcGroupsToArray($groupsString)
     {
-        $groupsArray           = array();
-        $groupStringToBeParsed = $groupsString;
-        while (true) {
-            $pos = strpos($groupStringToBeParsed, ',');
-            if (!$pos) {
-                break;
+        if (static::$enabled) {
+            $groupsArray           = array();
+            $groupStringToBeParsed = $groupsString;
+            while (true) {
+                $pos = strpos($groupStringToBeParsed, ',');
+                if (!$pos) {
+                    break;
+                }
+                $charBeforeComma = substr($groupStringToBeParsed, ($pos - 1), 1);
+                // Check for '\,'
+                if ($charBeforeComma != '\\') {
+                    $groupsArray[]         = trim(substr($groupStringToBeParsed, 0, $pos));
+                    $groupStringToBeParsed = trim(substr($groupStringToBeParsed, ($pos + 1)));
+                }
             }
-            $charBeforeComma = substr($groupStringToBeParsed, ($pos - 1), 1);
-            // Check for '\,'
-            if ($charBeforeComma != '\\') {
-                $groupsArray[]         = trim(substr($groupStringToBeParsed, 0, $pos));
-                $groupStringToBeParsed = trim(substr($groupStringToBeParsed, ($pos + 1)));
+            if (!empty($groupStringToBeParsed)) {
+                $groupsArray[] = $groupStringToBeParsed;
             }
+
+            return $groupsArray;
         }
-        if (!empty($groupStringToBeParsed)) {
-            $groupsArray[] = $groupStringToBeParsed;
-        }
-        return $groupsArray;
+
+        return array();
     }
 
     /*
@@ -611,6 +657,10 @@ class JinboundMailchimp
 
     private function addMCGroup($userEmail, $listId, $groupingId, $groupName)
     {
+        if (!static::$enabled) {
+            return;
+        }
+
         $userMCInfo    = $this->mcApi->listMemberInfo($listId, $userEmail);
         $userMCData    = $userMCInfo['data'][0];
         $userMergeVars = $userMCData['merges'];
@@ -646,15 +696,18 @@ class JinboundMailchimp
 
     public function getEmailListDetails($email)
     {
-        $lists = $this->mcApi->listsForEmail($email);
-        if (empty($lists)) {
-            return array();
+        if (static::$enabled) {
+            $lists = $this->mcApi->listsForEmail($email);
+            if ($lists) {
+                $details = array();
+                foreach ($lists as $id) {
+                    $details[$id] = $this->mcApi->listMemberInfo($id, $email);
+                }
+                return $details;
+            }
         }
-        $details = array();
-        foreach ($lists as $id) {
-            $details[$id] = $this->mcApi->listMemberInfo($id, $email);
-        }
-        return $details;
+
+        return array();
     }
 
     /*
@@ -663,15 +716,20 @@ class JinboundMailchimp
 
     public function getMCGroupSelectOptions($level)
     {
-        // Put groups in select field
-        $this->addGroups = array($level => $this->getGroups());
-        $groups          = $this->getMCGroups($level);
-        $options         = array();
-        $options[]       = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
-        foreach ($groups as $title => $id) {
-            $options[] = JHTML::_('select.option', $id, $title);
+        if (static::$enabled) {
+            // Put groups in select field
+            $this->addGroups = array($level => $this->getGroups());
+            $groups          = $this->getMCGroups($level);
+            $options         = array();
+            $options[]       = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
+            foreach ($groups as $title => $id) {
+                $options[] = JHTML::_('select.option', $id, $title);
+            }
+
+            return $options;
         }
-        return $options;
+
+        return array();
     }
 
     /*
@@ -680,37 +738,46 @@ class JinboundMailchimp
 
     public function getMCListSelectOptions($level)
     {
-        // Put groups in select field
-        $groups    = $this->getGroups($level);
-        $options   = array();
-        $options[] = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
-        foreach ($groups as $title => $id) {
-            $options[] = JHTML::_('select.option', $id, $title);
+        if (static::$enabled) {
+            // Put groups in select field
+            $groups    = $this->getGroups($level);
+            $options   = array();
+            $options[] = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
+            foreach ($groups as $title => $id) {
+                $options[] = JHTML::_('select.option', $id, $title);
+            }
+
+            return $options;
         }
-        return $options;
+
+        return array();
     }
 
     /*
      * Return the custom fields as a HTML select field.
      */
-
     public function getMCMergeFieldsSelectOptions($level, $shownone = false)
     {
-        $lists   = $this->mcApi->lists();
-        $options = array();
-        if ($shownone) {
-            $options[] = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
-        }
-        foreach ($lists['data'] as $list) {
-            // TODO upgrade to 3.x syntax
-            $options[] = JHTML::_('select.optgroup', $list['name']);
-            $vars      = $this->mcApi->listMergeVars($list['id']);
-            foreach ($vars as $var) {
-                $options[] = JHTML::_('select.option', $var['tag'], $var['name']);
+        if (static::$enabled) {
+            $lists   = $this->mcApi->lists();
+            $options = array();
+            if ($shownone) {
+                $options[] = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
             }
-            $options[] = JHTML::_('select.optgroup', $list['name']);
+            foreach ($lists['data'] as $list) {
+                // TODO upgrade to 3.x syntax
+                $options[] = JHTML::_('select.optgroup', $list['name']);
+                $vars      = $this->mcApi->listMergeVars($list['id']);
+                foreach ($vars as $var) {
+                    $options[] = JHTML::_('select.option', $var['tag'], $var['name']);
+                }
+                $options[] = JHTML::_('select.optgroup', $list['name']);
+            }
+
+            return $options;
         }
-        return $options;
+
+        return array();
     }
 
     /*
@@ -723,7 +790,10 @@ class JinboundMailchimp
      */
     protected function upgradeSettings($config = array())
     {
-        //$model = FOFModel::getTmpInstance('Levels','AkeebasubsModel');
+        if (!static::$enabled) {
+            return;
+        }
+
         $levels          = array();//$model->getList(true);
         $addgroupsKey    = strtolower($this->name) . '_addgroups';
         $removegroupsKey = strtolower($this->name) . '_removegroups';
@@ -782,41 +852,58 @@ class JinboundMailchimp
 
     protected function getMergeTagSelectField($level)
     {
-        $customFields = $this->getCustomFields($level->akeebasubs_level_id);
-        $options      = array();
-        $options[]    = JHTML::_('select.option', '', JText::_('PLG_AKEEBASUBS_' . strtoupper($this->name) . '_NONE'));
-        foreach ($customFields as $title => $id) {
-            $options[] = JHTML::_('select.option', $id, $title);
+        if (static::$enabled) {
+            $customFields = $this->getCustomFields($level->akeebasubs_level_id);
+            $options      = array();
+            $options[]    = JHTML::_(
+                'select.option',
+                '',
+                JText::_('PLG_AKEEBASUBS_' . strtoupper($this->name) . '_NONE')
+            );
+            foreach ($customFields as $title => $id) {
+                $options[] = JHTML::_('select.option', $id, $title);
+            }
+            // Set pre-selected values
+            $selected = array();
+            if (!empty($this->customFields[$level->akeebasubs_level_id])) {
+                $selected = $this->customFields[$level->akeebasubs_level_id];
+            }
+            // Create the select field
+            return JHtmlSelect::genericlist(
+                $options,
+                'params[' . strtolower($this->name) . '_customfields][]',
+                'multiple="multiple" size="8" class="input-large"',
+                'value',
+                'text',
+                $selected
+            );
         }
-        // Set pre-selected values
-        $selected = array();
-        if (!empty($this->customFields[$level->akeebasubs_level_id])) {
-            $selected = $this->customFields[$level->akeebasubs_level_id];
-        }
-        // Create the select field
-        return JHtmlSelect::genericlist($options, 'params[' . strtolower($this->name) . '_customfields][]',
-            'multiple="multiple" size="8" class="input-large"', 'value', 'text', $selected);
+
+        return null;
     }
 
     protected function getCustomFields($levelId)
     {
-        static $customFields = array();
+        if (static::$enabled) {
+            static $customFields = array();
 
-        if (empty($customFields[$levelId])) {
-            $customFields[$levelId] = array();
-            $items                  = FOFModel::getTmpInstance('Customfields', 'AkeebasubsModel')
-                ->enabled(1)
-                ->getItemList(true);
+            if (empty($customFields[$levelId])) {
+                $customFields[$levelId] = array();
+                $items                  = FOFModel::getTmpInstance('Customfields', 'AkeebasubsModel')
+                    ->enabled(1)
+                    ->getItemList(true);
 
-            // Loop through the items
-            foreach ($items as $item) {
-                if ($item->show == 'all' || $item->akeebasubs_level_id == $levelId) {
-                    $customFields[$levelId][$item->title] = $item->akeebasubs_customfield_id;
+                // Loop through the items
+                foreach ($items as $item) {
+                    if ($item->show == 'all' || $item->akeebasubs_level_id == $levelId) {
+                        $customFields[$levelId][$item->title] = $item->akeebasubs_customfield_id;
+                    }
                 }
             }
+
+            return $customFields[$levelId];
         }
 
-        return $customFields[$levelId];
+        return null;
     }
-
 }
