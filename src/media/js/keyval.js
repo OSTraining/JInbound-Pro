@@ -1,9 +1,3 @@
-/**
- * @package        JInbound
- * @subpackage    com_jinbound
- @ant_xml_copyright@
- */
-
 (function($) {
     var resetButtons, addF, subF, upF, downF, moveF;
     // we have to have a function to reset the buttons

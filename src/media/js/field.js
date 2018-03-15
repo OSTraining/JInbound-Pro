@@ -1,9 +1,3 @@
-/**
- * @package        JInbound
- * @subpackage    com_jinbound
- @ant_xml_copyright@
- */
-
 (function($) {
     var fixButtons = function(parent) {
         var els = $(parent).find('.jinboundfields_ordering .btn'), i = 0;
