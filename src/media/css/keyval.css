@@ -4,7 +4,6 @@
 }
 
 .jinboundkeyval input {
-    float: none;
     float: none !important;
     margin: 5px 0;
 }
