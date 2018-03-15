@@ -17,10 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundBaseController',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/controllers/basecontroller.php');
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-
 class JInboundController extends JInboundBaseController
 {
     function display($cachable = false, $urlparams = false)
@@ -153,7 +149,6 @@ class JInboundController extends JInboundBaseController
         $id   = JFactory::getApplication()->input->get('id', array(), 'array');
         $data = array('links' => array());
         if (!empty($id)) {
-            JInbound::registerHelper('url');
             if (!is_array($id)) {
                 $id = array($id);
             }

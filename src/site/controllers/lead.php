@@ -17,14 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInbound', JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/jinbound.php');
-JInbound::registerHelper('form');
-JInbound::registerHelper('module');
-JInbound::registerHelper('path');
-JInbound::registerHelper('priority');
-JInbound::registerHelper('status');
-JInbound::registerLibrary('JInboundBaseController', 'controllers/basecontroller');
-
 class JInboundControllerLead extends JInboundBaseController
 {
     public    $_context = 'com_jinbound.page';
@@ -224,7 +216,6 @@ class JInboundControllerLead extends JInboundBaseController
         $jinbound_contact_id = (int)$db->setQuery($query)->loadResult();
 
         // fetch a JTable instance for the jinbound contact and optionally load the existing record
-        JTable::addIncludePath(JInboundHelperPath::admin('tables'));
         $contact = JTable::getInstance('Contact', 'JInboundTable');
         if (empty($contact)) {
             throw new RuntimeException('Class not found');
