@@ -29,14 +29,16 @@ abstract class JInboundHelperForm
         JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/forms');
         try {
             $options = array_merge(array('control' => 'jform'), $form_options);
-            $form    = JForm::getInstance('jinbound_form_module_' . md5(serialize($options)), '<form><!-- --></form>',
-                $options);
+            $form    = JForm::getInstance(
+                'jinbound_form_module_' . md5(serialize($options)),
+                '<form><!-- --></form>',
+                $options
+            );
         } catch (Exception $e) {
             return false;
         }
 
         // get the model
-        JModelLegacy::addIncludePath(JPATH_ROOT . '/components/com_jinbound/models', 'JInboundModel');
         $model = JModelLegacy::getInstance('Page', 'JInboundModel');
 
         // add fields to form
