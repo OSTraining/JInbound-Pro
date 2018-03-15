@@ -19,10 +19,6 @@ use Alledia\Framework\Factory;
 
 defined('JPATH_PLATFORM') or die;
 
-JInbound::registerLibrary('JInboundInflector', 'inflector');
-JHtml::addIncludePath(JInboundHelperPath::admin() . '/helpers/html');
-JFactory::getLanguage()->load('com_categories', JPATH_ADMINISTRATOR);
-
 class JInboundBaseView extends JViewLegacy
 {
     /**
@@ -88,11 +84,16 @@ class JInboundView extends JInboundBaseView
 {
     public static $option = 'com_jinbound';
 
-    public    $viewItemName = '';
-    public    $sidebarItems;
-    protected $_filters;
+    public $viewItemName = '';
 
-    function display($tpl = null, $safeparams = false)
+    public $sidebarItems;
+
+    /**
+     * @param string $tpl
+     *
+     * @return void
+     */
+    public function display($tpl = null)
     {
         $profiler = JProfiler::getInstance('Application');
         $profiler->mark('onJInboundViewDisplayStart');
@@ -153,7 +154,7 @@ class JInboundView extends JInboundBaseView
 
         $profiler->mark('onJInboundViewDisplayEnd');
 
-        return parent::display($tpl, $safeparams);
+        parent::display($tpl);
     }
 
     /**
@@ -166,7 +167,7 @@ class JInboundView extends JInboundBaseView
         JToolBarHelper::title(JText::_(strtoupper(JInbound::COM . '_' . $name)), 'jinbound-' . strtolower($name));
 
         // only fire in administrator
-        if (!$this->app->isAdmin()) {
+        if (!$this->app->isClient('administrator')) {
             return;
         }
 
@@ -181,7 +182,7 @@ class JInboundView extends JInboundBaseView
     {
 
         // only fire in administrator
-        if (!$this->app->isAdmin()) {
+        if (!$this->app->isClient('administrator')) {
             return;
         }
 
@@ -195,9 +196,12 @@ class JInboundView extends JInboundBaseView
 
         $vName = strtolower($vName);
         // Dashboard
-        $this->addSubMenuEntry(JText::_(strtoupper(JInbound::COM) . '_DASHBOARD'), JInboundHelperUrl::_(),
-            $option == JInbound::COM && in_array($vName, array('', 'dashboard')) && '' == $task);
-        // the rest
+        $this->addSubMenuEntry(
+            JText::_('COM_JINBOUND_DASHBOARD'),
+            JInboundHelperUrl::_(),
+            $option == 'com_jinbound' && in_array($vName, array('', 'dashboard')) && '' == $task
+        );
+
         $subMenuItems = array(
             'campaigns'  => 'CAMPAIGNS_MANAGER',
             'emails'     => 'LEAD_NURTURING_MANAGER',
@@ -226,21 +230,24 @@ class JInboundView extends JInboundBaseView
                 if (JInbound::version()->isCompatible('3.0.0')) {
                     $this->addSubMenuEntry('<hr style="padding:0;margin:0"/>', 'javascript:', false);
                 }
-                $this->addSubMenuEntry(JText::_('JCATEGORIES'), JInboundHelperUrl::_(array(
-                    'option'    => 'com_categories'
-                ,
-                    'view'      => 'categories'
-                ,
-                    'extension' => JInbound::COM
-                )), ('categories' == $vName && 'com_categories' == $option));
+                $this->addSubMenuEntry(
+                    JText::_('JCATEGORIES'),
+                    JInboundHelperUrl::_(
+                        array(
+                            'option'    => 'com_categories',
+                            'view'      => 'categories',
+                            'extension' => 'com_jinbound'
+                        )
+                    ),
+                    ('categories' == $vName && 'com_categories' == $option)
+                );
             }
             $this->addSubMenuEntry($label, $href, $active);
         }
 
         // trigger a plugin event to allow other extensions to add their own views
-        JDispatcher::getInstance()->trigger('onJinboundBeforeMenuBar', array(&$this));
+        JEventDispatcher::getInstance()->trigger('onJinboundBeforeMenuBar', array(&$this));
 
-        // render the sidebar
         $this->renderSidebar();
     }
 
@@ -283,7 +290,7 @@ class JInboundView extends JInboundBaseView
         // we don't want to run this whole function in admin,
         // but there's still a bit we need - specifically, styles for header icons
         // if we're in admin, just load the stylesheet and bail
-        if ($this->app->isAdmin()) {
+        if ($this->app->isClient('administrator')) {
             if ($canAdd) {
                 $doc->addStyleSheet(JInboundHelperUrl::media() . '/css/admin.stylesheet.css');
             }
@@ -295,7 +302,6 @@ class JInboundView extends JInboundBaseView
         $menus   = $this->app->getMenu();
         $pathway = $this->app->getPathway();
         $title   = null;
-        $layout  = $this->app->input->get('layout', '', 'cmd');
 
         // Because the application sets a default page title,
         // we need to get it from the menu item itself
@@ -307,11 +313,11 @@ class JInboundView extends JInboundBaseView
         }
         $title = $this->params->get('page_title', '');
         if (empty($title)) {
-            $title = $this->app->getCfg('sitename');
-        } elseif ($this->app->getCfg('sitename_pagetitles', 0) == 1) {
-            $title = JText::sprintf('JPAGETITLE', $this->app->getCfg('sitename'), $title);
-        } elseif ($this->app->getCfg('sitename_pagetitles', 0) == 2) {
-            $title = JText::sprintf('JPAGETITLE', $title, $this->app->getCfg('sitename'));
+            $title = $this->app->get('sitename');
+        } elseif ($this->app->get('sitename_pagetitles', 0) == 1) {
+            $title = JText::sprintf('JPAGETITLE', $this->app->get('sitename'), $title);
+        } elseif ($this->app->get('sitename_pagetitles', 0) == 2) {
+            $title = JText::sprintf('JPAGETITLE', $title, $this->app->get('sitename'));
         }
         $this->document->setTitle($title);
 
@@ -323,23 +329,6 @@ class JInboundView extends JInboundBaseView
                 $pathway->addItem($item['title'], $item['url']);
             }
         }
-
-        /*
-        if ($this->params->get('menu-meta_description'))
-        {
-            $this->document->setDescription($this->params->get('menu-meta_description'));
-        }
-
-        if ($this->params->get('menu-meta_keywords'))
-        {
-            $this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
-        }
-
-        if ($this->params->get('robots'))
-        {
-            $this->document->setMetadata('robots', $this->params->get('robots'));
-        }
-        */
     }
 
     /**
@@ -354,12 +343,21 @@ class JInboundView extends JInboundBaseView
         return array();
     }
 
+    /**
+     * @return string
+     */
     public function renderFilters()
     {
         // STUB
         return '';
     }
 
+    /**
+     * @param string $title
+     * @param string $url
+     *
+     * @return array
+     */
     public function getCrumb($title, $url = '')
     {
         return array('title' => $title, 'url' => $url);

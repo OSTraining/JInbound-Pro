@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseview.php');
-
 class JInboundPluginView extends JInboundView
 {
 

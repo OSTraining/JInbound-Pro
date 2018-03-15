@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundBaseView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseview.php');
-
 class JInboundRSSView extends JInboundBaseView
 {
     public $url;
@@ -30,7 +28,7 @@ class JInboundRSSView extends JInboundBaseView
     public $feedLimit       = 5;
     public $wordLimit       = 140;
 
-    function display($tpl = null, $safeparams = false)
+    public function display($tpl = null, $safeparams = false)
     {
         $this->feed = $this->getFeed($this->url);
         return parent::display($tpl, $safeparams);

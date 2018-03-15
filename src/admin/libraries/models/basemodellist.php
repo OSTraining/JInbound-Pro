@@ -195,8 +195,7 @@ class JInboundListModel extends JModelList
         $id     = $db->setQuery($db->getQuery(true)
             ->select('id')->from('#__assets')->where('name = ' . $db->quote(JInbound::COM . '.' . $single))
         )->loadResult();
-        JInbound::registerHelper('path');
-        jimport('joomla.form.form');
+
         $modelpath = JInboundHelperPath::admin('models');
         $formname  = $single . '_rules';
         if (!file_exists("$modelpath/forms/$formname.xml")) {

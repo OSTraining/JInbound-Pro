@@ -17,11 +17,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseview.php');
-
 class JInboundItemView extends JInboundView
 {
-    function display($tpl = null, $safeparams = false)
+    public function display($tpl = null, $safeparams = false)
     {
         $form = $this->get('Form');
         $item = $this->get('Item');

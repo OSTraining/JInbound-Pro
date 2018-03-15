@@ -17,9 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JForm::addFormPath(JInboundHelperPath::admin('models/forms'));
-JForm::addFieldPath(JInboundHelperPath::admin('models/fields'));
-
 class JInboundAdminModel extends JModelAdmin
 {
     public $option = JInbound::COM;

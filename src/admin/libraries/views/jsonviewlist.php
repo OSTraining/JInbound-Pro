@@ -17,13 +17,30 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register(
-    'JInboundListView',
-    JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseviewlist.php'
-);
-
 class JInboundJsonListView extends JInboundListView
 {
+    /**
+     * @var object
+     */
+    protected $items = null;
+
+    /**
+     * @var JPagination
+     */
+    protected $pagination = null;
+
+    /**
+     * @var JObject
+     */
+    protected $state = null;
+
+    /**
+     * @param string $tpl
+     * @param null $safeparams
+     *
+     * @return bool|mixed
+     * @throws Exception
+     */
     public function display($tpl = null, $safeparams = null)
     {
         $data = array();
@@ -35,7 +52,7 @@ class JInboundJsonListView extends JInboundListView
             }
         }
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode('<br />', $errors));
+            throw new Exception(implode('<br />', $errors), 500);
             return false;
         }
         $data['items']      = $items;

@@ -17,8 +17,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundBaseView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseview.php');
-
 class JInboundCsvView extends JInboundBaseView
 {
     public function display($tpl = null, $safeparams = null)

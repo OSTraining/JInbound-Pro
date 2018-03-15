@@ -17,41 +17,68 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JLoader::register('JInboundView', JPATH_ADMINISTRATOR . '/components/com_jinbound/libraries/views/baseview.php');
-
 class JInboundListView extends JInboundView
 {
+    /**
+     * @var object
+     */
     protected $items;
+
+    /**
+     * @var JPagination
+     */
     protected $pagination;
+
+    /**
+     * @var JObject
+     */
     protected $state;
 
-    function display($tpl = null, $safeparams = false)
+    protected $ordering = null;
+
+    protected $permissions = null;
+
+    /**
+     * @var array
+     */
+    protected $filters = array();
+
+    /**
+     * @var string
+     */
+    protected $currentFilter = null;
+
+    public $filterForm = null;
+
+    public $activeFilters = null;
+
+    /**
+     * @param string $tpl
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function display($tpl = null)
     {
         if (!JFactory::getUser()
             ->authorise('core.manage', 'com_jinbound.' . strtolower(JInboundInflector::singularize($this->_name)))) {
-            JError::raiseWarning(403, JText::_('JERROR_ALERTNOAUTHOR'));
-            return false;
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 403);
         }
-        $items         = $this->get('Items');
-        $pagination    = $this->get('Pagination');
-        $state         = $this->get('State');
-        $permissions   = $this->get('Permissions');
-        $filterForm    = $this->get('FilterForm');
-        $activeFilters = $this->get('ActiveFilters');
+
+        $this->items         = $this->get('Items');
+        $this->pagination    = $this->get('Pagination');
+        $this->state         = $this->get('State');
+        $this->permissions   = $this->get('Permissions');
+        $this->filterForm    = $this->get('FilterForm');
+        $this->activeFilters = $this->get('ActiveFilters');
+
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode('<br />', $errors));
-            return false;
+            throw new Exception(implode('<br />', $errors), 500);
         }
-        $this->items         = $items;
-        $this->pagination    = $pagination;
-        $this->state         = $state;
-        $this->permissions   = $permissions;
-        $this->filterForm    = $filterForm;
-        $this->activeFilters = $activeFilters;
 
         $this->ordering = array(0 => array());
-        if (!empty($items)) {
-            foreach ($items as $item) {
+        if (!empty($this->items)) {
+            foreach ($this->items as $item) {
                 if (!(property_exists($item, 'ordering') || property_exists($item, 'lft'))) {
                     break;
                 }
@@ -61,34 +88,43 @@ class JInboundListView extends JInboundView
 
         $publishedOptions = $this->get('PublishedStatus');
         if (!empty($publishedOptions)) {
-            $this->addFilter(JText::_('COM_JINBOUND_SELECT_PUBLISHED'), 'filter[published]', $publishedOptions,
-                $state->get('filter.published'));
+            $this->addFilter(
+                JText::_('COM_JINBOUND_SELECT_PUBLISHED'),
+                'filter[published]',
+                $publishedOptions,
+                $this->state->get('filter.published')
+            );
         }
 
-        return parent::display($tpl, $safeparams);
+        parent::display($tpl);
     }
 
     public function addFilter($label, $name, $options, $default, $trim = true)
     {
-        $filter          = new stdClass;
-        $filter->label   = $label;
-        $filter->name    = $name;
-        $filter->options = $options;
-        $filter->default = $default;
-        $filter->trim    = $trim;
-        if (!is_array($this->_filters)) {
-            $this->_filters = array();
-        }
-        return $this->_filters[] = $filter;
+        $filter = (object)array(
+            'label'   => $label,
+            'name'    => $name,
+            'options' => $options,
+            'default' => $default,
+            'trim'    => $trim
+        );
+
+        $this->filters[] = $filter;
+
+        return $this->filters;
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     */
     public function renderFilters()
     {
-        if (empty($this->_filters)) {
-            return;
+        if (empty($this->filters)) {
+            return '';
         }
         if (class_exists('JHtmlSidebar')) {
-            foreach ($this->_filters as $filter) {
+            foreach ($this->filters as $filter) {
                 if (empty($filter->options)) {
                     continue;
                 }
@@ -98,21 +134,34 @@ class JInboundListView extends JInboundView
                 $options = JHtml::_('select.options', $filter->options, 'value', 'text', $filter->default, true);
                 JHtmlSidebar::addFilter($filter->label, $filter->name, $options);
             }
-            return;
+            return '';
         }
+
         $html = array();
-        foreach ($this->_filters as $filter) {
+        foreach ($this->filters as $filter) {
             if (empty($filter->options)) {
                 continue;
             }
-            $this->currentFilter = JHtml::_('select.genericlist', $filter->options, $filter->name,
-                sprintf('id="%s" class="listbox" onchange="this.form.submit()"', $filter->name), 'value', 'text',
-                $filter->default);
-            $html[]              = $this->loadTemplate('filter', 'default');
+
+            $this->currentFilter = JHtml::_(
+                'select.genericlist',
+                $filter->options,
+                $filter->name,
+                sprintf('id="%s" class="listbox" onchange="this.form.submit()"', $filter->name),
+                'value',
+                'text',
+                $filter->default
+            );
+
+            $html[] = $this->loadTemplate('filter', 'default');
         }
+
         return implode("\n", $html);
     }
 
+    /**
+     * @throws Exception
+     */
     public function addToolBar()
     {
         // only fire in administrator, and only once

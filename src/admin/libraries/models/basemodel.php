@@ -17,26 +17,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-if (jimport('joomla.application.component.model')) {
-    class JInboundBaseModelCommon extends JModel
-    {
-        public static function addIncludePath($path = '', $prefix = '')
-        {
-            return parent::addIncludePath($path, $prefix);
-        }
-    }
-} else {
-    jimport('legacy.model.legacy');
-
-    class JInboundBaseModelCommon extends JModelLegacy
-    {
-        public static function addIncludePath($path = '', $prefix = '')
-        {
-            return parent::addIncludePath($path, $prefix);
-        }
-    }
-}
-
-class JInboundBaseModel extends JInboundBaseModelCommon
+class JInboundBaseModel extends JModelLegacy
 {
+    public static function addIncludePath($path = '', $prefix = '')
+    {
+        return parent::addIncludePath($path, $prefix);
+    }
 }
