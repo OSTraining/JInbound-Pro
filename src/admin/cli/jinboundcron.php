@@ -44,17 +44,11 @@ if (file_exists(JPATH_LIBRARIES . '/import.legacy.php')) {
 // Bootstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
 
-// Force library to be in JError legacy mode, if possible
-if (class_exists('JError')) {
-    JError::$legacy = true;
-}
-
-// load plugins so system plugins (e.g., Mandrill) can do their thing
-// TODO
-
 // force jInbound
 define('JPATH_COMPONENT', JPATH_ROOT . '/components/com_jinbound');
 define('JPATH_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/com_jinbound');
+
+require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
 
 /**
  * Cron jobs for jInbound
