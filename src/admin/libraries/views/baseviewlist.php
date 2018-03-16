@@ -29,8 +29,14 @@ class JInboundListView extends JInboundView
      */
     protected $pagination;
 
+    /**
+     * @var string
+     */
     protected $ordering = null;
 
+    /**
+     * @var JForm
+     */
     protected $permissions = null;
 
     /**
@@ -43,8 +49,14 @@ class JInboundListView extends JInboundView
      */
     protected $currentFilter = null;
 
+    /**
+     * @var JForm
+     */
     public $filterForm = null;
 
+    /**
+     * @var array
+     */
     public $activeFilters = null;
 
     /**
