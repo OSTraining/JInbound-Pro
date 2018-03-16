@@ -69,13 +69,14 @@ class plgSystemJinboundleadmapInstallerScript
         )
             ->loadResult();
 
+        /** @var JTableMenu $table */
+        $table = JTable::getInstance('menu');
+
         if ($existing) {
             if (JDEBUG) {
                 $app->enqueueMessage('[' . __METHOD__ . '] Removing existing menu item ' . $existing);
             }
 
-            /** @var JTableMenu $table */
-            $table = JTable::getInstance('menu');
             if (!$table->delete((int)$existing)) {
                 $app->enqueueMessage($table->getError(), 'error');
             }
