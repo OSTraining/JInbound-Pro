@@ -15,35 +15,43 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Joomla\Utilities\ArrayHelper;
+
 defined('JPATH_PLATFORM') or die;
 
 JHtml::_('behavior.tooltip');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
+
+$permissions = $this->loadTemplate('permissions');
+$useTabs     = true; //$permissions && JFactory::getUser()->authorise('core.admin', 'com_jinbound');
 ?>
-<div id="jinbound_component" class="row-fluid <?php echo $this->viewClass; ?>">
-    <?php
-    if (!empty($this->sidebar)) :
-    ?>
-    <div id="j-sidebar-container" class="span2">
-        <?php echo $this->sidebar; ?>
-    </div>
-    <div id="j-main-container" class="span10">
+    <div id="jinbound_component" class="row-fluid <?php echo $this->viewClass; ?>">
         <?php
-        else :
-        ?>
-        <div id="j-main-container">
-            <?php
-            endif;
+        $mainAttributes = array(
+            'id' => 'j-main-container'
+        );
+        if (!empty($this->sidebar)) :
+            $mainAttributes['class'] = 'span10';
             ?>
-            <?php echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab')); ?>
+            <div id="j-sidebar-container" class="span2">
+                <?php echo $this->sidebar; ?>
+            </div>
+        <?php
+        endif;
+        ?>
+        <div <?php echo ArrayHelper::toString($mainAttributes); ?>>
             <?php
-            echo JHtml::_(
-                'jinbound.addTab',
-                'jinbound_default_tabs',
-                'content_tab',
-                JText::_('JTOOLBAR_EDIT', true)
-            );
+            if ($useTabs) :
+                echo JHtml::_('jinbound.startTabSet', 'jinbound_default_tabs', array('active' => 'content_tab'));
+
+                echo JHtml::_(
+                    'jinbound.addTab',
+                    'jinbound_default_tabs',
+                    'content_tab',
+                    JText::_('JTOOLBAR_EDIT', true)
+                );
+            endif;
             ?>
             <form action="<?php echo JInboundHelperUrl::view($this->viewName); ?>"
                   method="post"
@@ -52,17 +60,12 @@ $listDirn  = $this->state->get('list.direction');
                 <?php echo $this->loadTemplate('list_top'); ?>
                 <div class="row-fluid">
                     <?php
-                    if (class_exists('JLayoutHelper')) :
-                        echo JLayoutHelper::render(
-                            'joomla.searchtools.default',
-                            array('view' => $this),
-                            null,
-                            array('debug' => false)
-                        );
-
-                    else :
-                        echo $this->loadTemplate('filters');
-                    endif;
+                    echo JLayoutHelper::render(
+                        'joomla.searchtools.default',
+                        array('view' => $this),
+                        null,
+                        array('debug' => false)
+                    );
 
                     if (empty($this->items)) :
                         echo $this->loadTemplate('empty');
@@ -84,61 +87,34 @@ $listDirn  = $this->state->get('list.direction');
                     </div>
                 </div>
             </form>
-            <?php echo JHtml::_('jinbound.endTab'); ?>
             <?php
-            if ($this->permissions && JFactory::getUser()->authorise('core.admin', 'com_jinbound')) :
+            if ($useTabs) :
+                echo JHtml::_('jinbound.endTab');
                 echo JHtml::_(
                     'jinbound.addTab',
                     'jinbound_default_tabs',
                     'permissions_tab',
                     JText::_('JCONFIG_PERMISSIONS_LABEL', true)
                 );
-                ?>
-                <div class="row-fluid">
-                    <form
-                        action="<?php echo JRoute::_('index.php?option=com_jinbound&task=' . $this->viewName . '.permissions'); ?>"
-                        method="post">
-                        <?php
-                        foreach ($this->permissions->getFieldsets() as $fieldset) :
-                            $fields = $this->permissions->getFieldset($fieldset->name);
-                            ?>
-                            <fieldset>
-                                <legend><?php echo JText::_($fieldset->label); ?></legend>
-                                <?php
-                                foreach ($fields as $field) :
-                                    echo $field->input;
-                                endforeach;
-                                ?>
-                            </fieldset>
-                        <?php
-                        endforeach;
 
-                        echo JHtml::_('form.token');
-                        ?>
-                        <button type="submit"
-                                class="btn btn-primary">
-                            <i class="icon-save"></i>
-                            <?php echo JText::_('JTOOLBAR_APPLY'); ?>
-                        </button>
-                    </form>
-                </div>
-                <?php echo JHtml::_('jinbound.endTab'); ?>
-            <?php
+                echo $permissions;
+                echo JHtml::_('jinbound.endTab');
+
+                echo JHtml::_('jinbound.endTabSet');
             endif;
 
-            echo JHtml::_('jinbound.endTabSet');
             echo $this->loadTemplate('footer');
             ?>
         </div>
     </div>
-    <?php
-    if (JInbound::config("debug", 0)) :
-        ?>
-        <div class="row-fluid">
-            <h3>State</h3>
-            <pre><?php echo $this->escape(print_r($this->state, 1)); ?></pre>
-            <h3>Items</h3>
-            <pre><?php echo $this->escape(print_r($this->items, 1)); ?></pre>
-        </div>
-    <?php
-    endif;
+<?php
+if (JInbound::config("debug", 0)) :
+    ?>
+    <div class="row-fluid">
+        <h3>State</h3>
+        <pre><?php echo $this->escape(print_r($this->state, 1)); ?></pre>
+        <h3>Items</h3>
+        <pre><?php echo $this->escape(print_r($this->items, 1)); ?></pre>
+    </div>
+<?php
+endif;

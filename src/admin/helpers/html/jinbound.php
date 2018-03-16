@@ -377,4 +377,33 @@ EOF;
         );
         return JHtml::_('jgrid.state', $states, $value, $i, $prefix, $enabled, true, $checkbox);
     }
+
+    /**
+     * Render a customized permissions field
+     * This allows us to create any general permissions tab
+     * using an ajax form submission
+     *
+     * @param JFormFieldRules $field
+     *
+     * @return string
+     */
+    public static function permissions(JFormFieldRules $field)
+    {
+        JHtml::_('jquery.framework');
+        JHtml::_('script', 'jinbound/permissions.min.js', array('relative' => true));
+
+        $name = $field->name;
+
+        $jscript = array(
+            "jQuery(document).ready(function() {",
+            "    jQuery('[name^={$name}]')",
+            "        .attr('onchange', null)",
+            "        .permissions()",
+            "    });"
+        );
+
+        JFactory::getDocument()->addScriptDeclaration(join("\n", $jscript));
+
+        return $field->input;
+    }
 }

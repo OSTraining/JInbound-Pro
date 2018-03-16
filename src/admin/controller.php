@@ -119,4 +119,47 @@ class JInboundController extends JInboundBaseController
         }
         $app->close();
     }
+
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function saverules()
+    {
+        try {
+            if (!JSession::checkToken('get')) {
+                throw new Exception(JText::_('JINVALID_TOKEN'));
+            }
+
+            $app = JFactory::getApplication();
+
+            /** @var ConfigModelApplication $model */
+            JLoader::registerPrefix('Config', JPATH_COMPONENT);
+            JLoader::registerPrefix('Config', JPATH_ROOT . '/components/com_config');
+            JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_config/model', 'ConfigModel');
+
+            $model = JModelLegacy::getInstance('Application', 'ConfigModel');
+
+            $permission = array(
+                'component' => $app->input->getCmd('comp'),
+                'action'    => $app->input->get('action'),
+                'rule'      => $app->input->get('rule'),
+                'value'     => $app->input->get('value'),
+                'title'     => $app->input->get('title', '', 'RAW')
+            );
+
+            $result = new JResponseJson($model->storePermissions($permission));
+
+        } catch (Exception $e) {
+            JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+        }
+
+        if (empty($result)) {
+            $result = new JResponseJson();
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        jexit();
+    }
 }

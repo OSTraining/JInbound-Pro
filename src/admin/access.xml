@@ -18,7 +18,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_CATEGORIES_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="campaign">
+    <section name="campaigns">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_CAMPAIGN_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_CAMPAIGN_ACCESS_DELETE_DESC"/>
@@ -27,7 +27,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_CAMPAIGN_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="contact">
+    <section name="contacts">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_CONTACT_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_CONTACT_ACCESS_DELETE_DESC"/>
@@ -36,7 +36,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_CONTACT_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="email">
+    <section name="emails">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_EMAIL_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_EMAIL_ACCESS_DELETE_DESC"/>
@@ -45,7 +45,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_EMAIL_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="page">
+    <section name="pages">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_PAGE_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_PAGE_ACCESS_DELETE_DESC"/>
@@ -54,7 +54,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_PAGE_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="priority">
+    <section name="priorities">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_PRIORITY_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_PRIORITY_ACCESS_DELETE_DESC"/>
@@ -63,7 +63,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_PRIORITY_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="status">
+    <section name="statuses">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_STATUS_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_STATUS_ACCESS_DELETE_DESC"/>
@@ -72,7 +72,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_STATUS_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="form">
+    <section name="forms">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_FORMS_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_FORMS_ACCESS_DELETE_DESC"/>
@@ -81,7 +81,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_FORMS_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="field">
+    <section name="fields">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_FIELDS_ACCESS_CREATE_DESC"/>
         <action name="core.delete" title="JACTION_DELETE" description="COM_JINBOUND_FIELDS_ACCESS_DELETE_DESC"/>
@@ -90,7 +90,7 @@
         <action name="core.edit.own" title="JACTION_EDITOWN" description="COM_JINBOUND_FIELDS_ACCESS_EDITOWN_DESC"/>
     </section>
 
-    <section name="report">
+    <section name="reports">
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC"/>
         <action name="core.create" title="JACTION_CREATE" description="COM_JINBOUND_REPORT_ACCESS_CREATE_DESC"/>
     </section>

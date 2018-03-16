@@ -188,28 +188,44 @@ class JInboundListModel extends JModelList
         }
     }
 
-    public function getPermissions()
+    /**
+     * @param string $formName
+     * @param string $dataFile
+     * @param bool   $asset
+     *
+     * @return JForm
+     * @throws Exception
+     */
+    public function getPermissions($formName = null, $dataFile = null, $asset = true)
     {
-        $single = JInboundInflector::singularize($this->name);
-        $db     = JFactory::getDbo();
-        $id     = $db->setQuery($db->getQuery(true)
-            ->select('id')->from('#__assets')->where('name = ' . $db->quote(JInbound::COM . '.' . $single))
-        )->loadResult();
+        $dataFile = $dataFile ?: $this->getName();
+        $formName = $formName ?: 'com_jinbound.' . $dataFile;
 
-        $modelpath = JInboundHelperPath::admin('models');
-        $formname  = $single . '_rules';
-        if (!file_exists("$modelpath/forms/$formname.xml")) {
-            return false;
+        try {
+            $form = JForm::getInstance($formName, $dataFile);
+            if ($form instanceof JForm) {
+                if ($asset) {
+                    $asset = is_string($asset) ? $asset : $formName;
+
+                    $db = JFactory::getDbo();
+                    $db->setQuery(
+                        $db->getQuery(true)
+                            ->select('id, rules')
+                            ->from('#__assets')
+                            ->where('name = ' . $db->quote($asset))
+                    );
+                    $rules = $db->loadObject();
+                    if (!empty($rules)) {
+                        $form->bind(array('asset_id' => $rules->id, 'rules' => $rules->rules));
+                    }
+                }
+            }
+            return $form;
+
+        } catch (Exception $e) {
         }
-        JForm::addFormPath("$modelpath/forms");
-        JForm::addFieldPath("$modelpath/fields");
-        $form = $this->loadForm(JInbound::COM . '.' . $formname, $formname,
-            array('control' => '', 'load_data' => false));
-        if (empty($form)) {
-            return false;
-        }
-        $form->bind(array('asset_id' => $id));
-        return $form;
+
+        return null;
     }
 
     /**
