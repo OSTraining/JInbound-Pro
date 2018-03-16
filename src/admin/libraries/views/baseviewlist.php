@@ -65,12 +65,14 @@ class JInboundListView extends JInboundView
             throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
-        $this->items         = $this->get('Items');
-        $this->pagination    = $this->get('Pagination');
-        $this->state         = $this->get('State');
-        $this->permissions   = $this->get('Permissions');
-        $this->filterForm    = $this->get('FilterForm');
-        $this->activeFilters = $this->get('ActiveFilters');
+        $model = $this->getModel();
+
+        $this->items         = $model->getItems();
+        $this->pagination    = $model->getPagination();
+        $this->state         = $model->getState();
+        $this->permissions   = $model->getPermissions();
+        $this->filterForm    = $model->getFilterForm();
+        $this->activeFilters = $model->getActiveFilters();
 
         if (count($errors = $this->get('Errors'))) {
             throw new Exception(implode('<br />', $errors), 500);
