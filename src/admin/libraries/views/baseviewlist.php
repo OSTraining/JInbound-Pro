@@ -29,11 +29,6 @@ class JInboundListView extends JInboundView
      */
     protected $pagination;
 
-    /**
-     * @var JObject
-     */
-    protected $state;
-
     protected $ordering = null;
 
     protected $permissions = null;

@@ -19,5 +19,48 @@ defined('JPATH_PLATFORM') or die;
 
 class JInboundPluginView extends JInboundView
 {
+    /**
+     * @var JForm
+     */
+    public $filterForm = null;
 
+    /**
+     * @var object
+     */
+    public $data = null;
+
+    /**
+     * @var string
+     */
+    public $download_url = null;
+
+    /**
+     * @param string $property
+     * @param mixed  $default
+     *
+     * @return JObject|mixed
+     */
+    public function getState($property = null, $default = null)
+    {
+        if (!$this->state) {
+            $this->state = new JObject();
+        }
+
+        if ($property) {
+            return $this->state->get($property, $default);
+        }
+
+        return $this->state;
+    }
+
+    /**
+     * @param string $property
+     * @param mixed  $value
+     *
+     * @return mixed
+     */
+    public function setState($property, $value)
+    {
+        return $this->getState()->set($property, $value);
+    }
 }

@@ -16,6 +16,8 @@
  */
 
 use Alledia\Framework\Factory;
+use Alledia\Framework\Joomla\Extension\Licensed;
+use Joomla\Registry\Registry;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -26,9 +28,15 @@ class JInboundBaseView extends JViewLegacy
      */
     public $app = null;
 
+    /**
+     * @var Licensed
+     */
     protected $extension = null;
 
-    public $sortFunction;
+    /**
+     * @var string
+     */
+    public $sortFunction = null;
 
     /**
      * jInboundBaseView constructor.
@@ -49,15 +57,18 @@ class JInboundBaseView extends JViewLegacy
         $root            = $this->app->isAdmin() ? JInboundHelperPath::admin() : JInboundHelperPath::site();
         $layout_override = JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/com_jinbound/' . $this->getName();
         $common_override = JPATH_THEMES . '/' . $this->app->getTemplate() . '/html/com_jinbound/_common';
+
         $this->addTemplatePath($root . '/views/_common');
         $this->addTemplatePath($root . '/views/' . $this->getName() . '/tmpl');
-        if (JFolder::exists($layout_override)) {
+
+        if (is_dir($layout_override)) {
             $this->addTemplatePath($layout_override);
         }
-        if (JFolder::exists($common_override)) {
+        if (is_dir($common_override)) {
             $this->addTemplatePath($common_override);
         }
-        $this->sortFunction = JInbound::version()->isCompatible('3.0.0') ? 'searchtools.sort' : 'grid.sort';
+
+        $this->sortFunction = 'searchtools.sort';
     }
 
     /**
@@ -69,15 +80,16 @@ class JInboundBaseView extends JViewLegacy
      */
     public function loadTemplate($tpl = null, $layout = null)
     {
-        $oldLayout = $this->_layout;
-        if (!is_null($layout)) {
-            $this->_layout = $layout;
+        $oldLayout = $this->getLayout();
+        if ($layout) {
+            $this->setLayout($layout);
         }
-        $return        = parent::loadTemplate($tpl);
-        $this->_layout = $oldLayout;
+
+        $return = parent::loadTemplate($tpl);
+        $this->setLayout($oldLayout);
+
         return $return;
     }
-
 }
 
 class JInboundView extends JInboundBaseView
@@ -86,12 +98,63 @@ class JInboundView extends JInboundBaseView
 
     public $viewItemName = '';
 
-    public $sidebarItems;
+    public $sidebarItems = null;
+
+    /**
+     * @var string
+     */
+    public $viewClass = null;
+
+    /**
+     * @var string
+     */
+    public $viewName = null;
+
+    /**
+     * @var string
+     */
+    public $tpl = null;
+
+    /**
+     * @var JObject
+     */
+    protected $state = null;
+
+    /**
+     * @var string
+     */
+    public $context = null;
+
+    /**
+     * @var Registry
+     */
+    public $params = null;
+
+    /**
+     * @var bool
+     */
+    public $raw = false;
+
+    /**
+     * @var Registry
+     */
+    public $cparams = null;
+
+    /**
+     * @var string
+     */
+    public $pageclass_sfx = null;
+
+    /**
+     * @var bool
+     */
+    public $show_page_heading = false;
 
     /**
      * @param string $tpl
      *
      * @return void
+     * @throws Exception
      */
     public function display($tpl = null)
     {
@@ -106,50 +169,32 @@ class JInboundView extends JInboundBaseView
         }
         // add the view as a class as well
         $this->viewClass .= ' jinbound_view_' . JInboundHelperFilter::escape($this->_name);
-        $this->viewName  = $this->_name;
+        $this->viewName  = $this->getName();
 
         // are we in component view?
-        $this->tpl = 'component' == $this->app->input->get('tmpl', '', 'cmd');
-
-        if ($this->app->isAdmin()) {
+        $this->tpl = 'component' == $this->app->input->getCmd('tmpl');
+        if ($this->app->isClient('administrator')) {
             $this->addToolbar();
             $this->addMenuBar();
-        } // not in admin
-        else {
-            // Initialise variables
-            $state   = $this->get('State');
-            $context = $this->get('Context');
-            // these are page params only... ?
-            if (is_object($state) && property_exists($state, 'params')) {
-                $params = $state->params;
-            } else {
-                $params = new JRegistry();
-            }
-            // are we in a raw view?
-            $this->raw = ('raw' == $this->app->input->get('format', '', 'cmd'));
-            // component params
-            $cparams = JComponentHelper::getParams(JInbound::COM);
-            // Escape strings for HTML output
-            $this->pageclass_sfx = JInboundHelperFilter::escape($params->get('pageclass_sfx'));
+        } else {
+            // Not admin, Initialise variables
+            $model = $this->getModel();
 
-            // assign variables to the view
-            $this->cparams = $cparams;
-            $this->params  = $params;
-            $this->state   = $state;
-            $this->context = $context;
+            $this->state         = $model->getState();
+            $this->context       = $this->get('Context');
+            $this->params        = $this->state->get('params') ?: new Registry(); // these are page params only... ?
+            $this->raw           = ($this->app->input->getCmd('format') == 'raw');
+            $this->cparams       = JComponentHelper::getParams('com_jinbound');
+            $this->pageclass_sfx = $this->escape($this->params->get('pageclass_sfx'));
 
             // show heading?
-            $this->show_page_heading = false;
-            if (is_object($this->state) && method_exists($this->state, 'get')) {
-                $menuparams = $this->state->get('parameters.menu');
-                if (is_object($menuparams) && method_exists($menuparams, 'get')) {
-                    $this->show_page_heading = $this->state->get('parameters.menu')->get('show_page_heading');
-                } else {
-                    $this->show_page_heading = $this->state->get('show_page_heading');
-                }
+            if ($menuparams = $this->state->get('parameters.menu')) {
+                $this->show_page_heading = $menuparams->get('show_page_heading');
+            } else {
+                $this->show_page_heading = $this->state->get('show_page_heading');
             }
         }
-        // prepare the document and display
+
         $this->_prepareDocument();
 
         $profiler->mark('onJInboundViewDisplayEnd');

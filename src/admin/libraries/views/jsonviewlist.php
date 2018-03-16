@@ -30,11 +30,6 @@ class JInboundJsonListView extends JInboundListView
     protected $pagination = null;
 
     /**
-     * @var JObject
-     */
-    protected $state = null;
-
-    /**
      * @param string $tpl
      * @param null $safeparams
      *
