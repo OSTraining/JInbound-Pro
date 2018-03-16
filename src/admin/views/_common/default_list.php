@@ -72,7 +72,7 @@ $useTabs     = $permissions && JFactory::getUser()->authorise('core.admin', 'com
 
                     else :
                         ?>
-                        <table class="adminlist table table-striped">
+                        <table id="adminlist" class="adminlist table table-striped">
                             <thead><?php echo $this->loadTemplate('head'); ?></thead>
                             <tfoot><?php echo $this->loadTemplate('foot'); ?></tfoot>
                             <tbody><?php echo $this->loadTemplate('body'); ?></tbody>

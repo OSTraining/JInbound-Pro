@@ -22,28 +22,27 @@ $listDirn  = $this->state->get('list.direction');
 $saveOrder = ($listOrder == 'Priority.ordering');
 ?>
 <tr>
-    <th width="1%" class="nowrap hidden-phone">
-        <?php echo JText::_('COM_JINBOUND_ID'); ?>
+    <th width="1%" class="hidden-phone">
+        <?php echo JHtml::_('searchtools.sort', '', 'Priority.ordering', $listDirn, $listOrder,
+            null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
     </th>
-    <th width="1%" class="nowrap hidden-phone">
-        <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);"/>
+    <th width="1%" class="hidden-phone">
+        <?php echo JHtml::_('grid.checkall'); ?>
     </th>
-    <th>
-        <?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_NAME', 'Priority.name', $listDirn, $listOrder); ?>
-    </th>
-    <th width="1%">
-        <?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_PUBLISHED', 'Priority.published', $listDirn,
+    <th width="1%" class="nowrap center">
+        <?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'Priority.published', $listDirn,
             $listOrder); ?>
     </th>
-    <th width="12%">
-        <?php echo JHtml::_($this->sortFunction, 'JGRID_HEADING_ORDERING', 'Priority.ordering', $listDirn,
+    <th class="title">
+        <?php echo JHtml::_('searchtools.sort', 'COM_JINBOUND_NAME', 'Priority.name', $listDirn,
             $listOrder); ?>
-        <?php if ($saveOrder) : ?>
-            <?php echo JHtml::_('grid.order', $this->items, 'filesave.png', 'priorities.saveorder'); ?>
-        <?php endif; ?>
     </th>
-    <th>
-        <?php echo JHtml::_($this->sortFunction, 'COM_JINBOUND_DESCRIPTION', 'Priority.description', $listDirn,
+    <th width="25%" class="hidden-phone">
+        <?php echo JHtml::_('searchtools.sort', 'COM_JINBOUND_DESCRIPTION',
+            'Priority.description', $listDirn, $listOrder); ?>
+    </th>
+    <th width="1%" class="nowrap hidden-phone">
+        <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ID', 'Priority.id', $listDirn,
             $listOrder); ?>
     </th>
 </tr>
