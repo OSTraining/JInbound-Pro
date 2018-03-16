@@ -45,6 +45,11 @@ class JInboundViewReports extends JInboundListView
     protected $status_filter = null;
 
     /**
+     * @var bool
+     */
+    protected static $setToolbar = true;
+
+    /**
      * @param string $tpl
      *
      * @return void
@@ -84,6 +89,9 @@ class JInboundViewReports extends JInboundListView
         echo $display;
     }
 
+    /**
+     * @return string
+     */
     public function getReportFormFilterChangeCode()
     {
         return "window.fetchReports("
@@ -98,6 +106,9 @@ class JInboundViewReports extends JInboundListView
             . ");";
     }
 
+    /**
+     * @return string
+     */
     public function getCampaignFilter()
     {
         $db      = JFactory::getDbo();
@@ -123,6 +134,9 @@ class JInboundViewReports extends JInboundListView
         );
     }
 
+    /**
+     * @return string
+     */
     public function getPageFilter()
     {
         $db      = JFactory::getDbo();
@@ -148,6 +162,9 @@ class JInboundViewReports extends JInboundListView
         );
     }
 
+    /**
+     * @return string
+     */
     public function getPriorityFilter()
     {
         $options = JInboundHelperPriority::getSelectOptions();
@@ -166,6 +183,9 @@ class JInboundViewReports extends JInboundListView
         );
     }
 
+    /**
+     * @return string
+     */
     public function getStatusFilter()
     {
         $options = JInboundHelperStatus::getSelectOptions();
@@ -184,82 +204,128 @@ class JInboundViewReports extends JInboundListView
         );
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getRecentLeads()
     {
-        return $this->_callModelMethod('getRecentContacts');
+        return $this->callModelMethod('getRecentContacts');
     }
 
-    private function _callModelMethod($method, $state = null)
+    /**
+     * @param string $method
+     * @param array  $state
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    protected function callModelMethod($method, array $state = array())
     {
         $model = JInboundBaseModel::getInstance('Reports', 'JInboundModel');
-        $model->getState('init.state');
-        if (is_array($state) && !empty($state)) {
+
+        if (method_exists($model, $method)) {
+            $model->getState('init.state');
             foreach ($state as $key => $value) {
                 $model->setState($key, $value);
             }
+
+            return $model->$method();
         }
 
-        return $model->$method();
+        JFactory::getApplication()->enqueueMessage('Unknown method - ' . $method, 'error');
+        return null;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getVisitCount()
     {
-        return $this->_callModelMethod('getVisitCount');
+        return $this->callModelMethod('getVisitCount');
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getViewsToLeads()
     {
-        return $this->_callModelMethod('getViewsToLeads');
+        return $this->callModelMethod('getViewsToLeads');
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getLeadCount()
     {
-        return $this->_callModelMethod('getContactsCount');
+        return $this->callModelMethod('getContactsCount');
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getTopLandingPages()
     {
-        return $this->_callModelMethod('getTopPages');
+        return $this->callModelMethod('getTopPages');
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getConversionCount()
     {
-        return $this->_callModelMethod('getConversionsCount');
+        return $this->callModelMethod('getConversionsCount');
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getConversionRate()
     {
-        return $this->_callModelMethod('getConversionRate');
+        return $this->callModelMethod('getConversionRate');
     }
 
+    /**
+     * @throws Exception
+     */
     public function addToolBar()
     {
         $app = JFactory::getApplication();
-        // only fire in administrator, and only once
-        if (!$app->isClient('administrator')) {
-            return;
-        }
+        if ($app->isClient('administrator') && static::$setToolbar) {
+            $layout = $app->input->get('layout');
 
-        $layout = $app->input->get('layout');
+            if ($layout != 'chart') {
+                $icon = 'export';
+                if (JInbound::version()->isCompatible('3.0.0')) {
+                    $icon = 'download';
+                }
 
-        static $set;
+                if (JFactory::getUser()->authorise('core.create', 'com_jinbound.report')) {
+                    JToolBarHelper::custom(
+                        $this->_name . '.exportleads',
+                        "{$icon}.png",
+                        "{$icon}_f2.png",
+                        'COM_JINBOUND_EXPORT_LEADS',
+                        false
+                    );
+                }
 
-        if (is_null($set) && 'chart' != $layout) {
-            $icon = 'export';
-            if (JInbound::version()->isCompatible('3.0.0')) {
-                $icon = 'download';
+                // skip parent and go to grandparent so we don't have the normal list view icons like "new" and "save"
+                // @TODO: This indicates questionable inheritance structure
+                $gpview = new JInboundView(array());
+                $gpview->addToolbar();
             }
-            // export icons
-            if (JFactory::getUser()->authorise('core.create', JInbound::COM . '.report')) {
-                JToolBarHelper::custom($this->_name . '.exportleads', "{$icon}.png", "{$icon}_f2.png",
-                    'COM_JINBOUND_EXPORT_LEADS', false);
-            }
-            // skip parent and go to grandparent so we don't have the normal list view icons like "new" and "save"
-            $gpview = new JInboundView(array());
-            $gpview->addToolbar();
+
+            static::$setToolbar = false;
+
+            // set the title (because we're skipping the list view's addToolBar later)
+            JToolBarHelper::title(JText::_('COM_JINBOUND_REPORTS'), 'jinbound-reports');
         }
-        $set = true;
-        // set the title (because we're skipping the list view's addToolBar later)
-        JToolBarHelper::title(JText::_(strtoupper(JInbound::COM . '_REPORTS')), 'jinbound-' . strtolower($this->_name));
     }
 }
