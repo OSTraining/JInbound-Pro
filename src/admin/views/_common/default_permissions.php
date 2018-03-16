@@ -26,10 +26,13 @@ defined('_JEXEC') or die();
 $action    = sprintf('index.php?%s=1', JSession::getFormToken());
 $assetName = $this->getName();
 
-?>
-<div id="<?php echo $assetName . '-permissions-form'; ?>">
-    <form action="<?php echo $action; ?>" method="post">
-        <?php echo JHtml::_('jinbound.permissions', $this->permissions->getField('rules')); ?>
-        <input type="hidden" name="asset" value="<?php echo $assetName; ?>"/>
-    </form>
-</div>
+if (!empty($this->permissions)) :
+    ?>
+    <div id="<?php echo $assetName . '-permissions-form'; ?>">
+        <form action="<?php echo $action; ?>" method="post">
+            <?php echo JHtml::_('jinbound.permissions', $this->permissions->getField('rules')); ?>
+            <input type="hidden" name="asset" value="<?php echo $assetName; ?>"/>
+        </form>
+    </div>
+<?php
+endif;

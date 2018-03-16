@@ -24,7 +24,7 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 
 $permissions = $this->loadTemplate('permissions');
-$useTabs     = true; //$permissions && JFactory::getUser()->authorise('core.admin', 'com_jinbound');
+$useTabs     = $permissions && JFactory::getUser()->authorise('core.admin', 'com_jinbound');
 ?>
     <div id="jinbound_component" class="row-fluid <?php echo $this->viewClass; ?>">
         <?php
