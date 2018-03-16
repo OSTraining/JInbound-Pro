@@ -20,9 +20,34 @@ defined('JPATH_PLATFORM') or die;
 class JInboundViewReports extends JInboundListView
 {
     /**
+     * @var string
+     */
+    protected $filter_change_code = null;
+
+    /**
+     * @var string
+     */
+    protected $campaign_filter = null;
+
+    /**
+     * @var string
+     */
+    protected $page_filter = null;
+
+    /**
+     * @var string
+     */
+    protected $priority_filter = null;
+
+    /**
+     * @var string
+     */
+    protected $status_filter = null;
+
+    /**
      * @param string $tpl
      *
-     * @return string
+     * @return void
      * @throws Exception
      */
     public function display($tpl = null)
@@ -31,38 +56,32 @@ class JInboundViewReports extends JInboundListView
             throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'), 404);
         }
 
-        ob_start();
-        parent::display($tpl);
-        $display = ob_get_contents();
-        ob_end_clean();
+        // Need to init state before parent method gets around to it
+        $this->state = $this->getModel()->getState();
 
-        $this->state              = $this->get('State');
-        $this->permissions        = $this->get('Permissions');
         $this->filter_change_code = $this->getReportFormFilterChangeCode();
         $this->campaign_filter    = $this->getCampaignFilter();
         $this->page_filter        = $this->getPageFilter();
         $this->priority_filter    = $this->getPriorityFilter();
         $this->status_filter      = $this->getStatusFilter();
-        $min                      = defined('JDEBUG') && JDEBUG ? '' : '.min';
-        $js                       = $min . '.js';
-        $css                      = $min . '.css';
-        $document                 = JFactory::getDocument();
 
-        if (method_exists($document, 'addScript')) {
-            $document->addScript('../media/jinbound/jqplot/excanvas' . $js);
-            $document->addScript('../media/jinbound/jqplot/jquery.jqplot' . $js);
-            $document->addScript('../media/jinbound/jqplot/plugins/jqplot.dateAxisRenderer' . $js);
-            $document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasTextRenderer' . $js);
-            $document->addScript('../media/jinbound/jqplot/plugins/jqplot.canvasAxisTickRenderer' . $js);
-            $document->addScript('../media/jinbound/jqplot/plugins/jqplot.categoryAxisRenderer' . $js);
-            $document->addScript('../media/jinbound/jqplot/plugins/jqplot.barRenderer' . $js);
-            $document->addScript('../media/jinbound/jqplot/plugins/jqplot.highlighter' . $js);
-        }
-        if (method_exists($document, 'addStyleSheet')) {
-            $document->addStyleSheet('../media/jinbound/jqplot/jquery.jqplot' . $css);
-        }
+        // @TODO: This is odd - what's really happening here?
+        ob_start();
+        parent::display($tpl);
+        $display = ob_get_contents();
+        ob_end_clean();
 
-        return $display;
+        JHtml::_('script', 'media/jinbound/jqplot/excanvas.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/jquery.jqplot.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/plugins/jqplot.dateAxisRenderer.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/plugins/jqplot.canvasTextRenderer.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/plugins/jqplot.categoryAxisRenderer.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/plugins/jqplot.barRenderer.min.js');
+        JHtml::_('script', 'media/jinbound/jqplot/plugins/jqplot.highlighter.min.js');
+        JHtml::_('stylesheet', 'media/jinbound/jqplot/jquery.jqplot.min.css');
+
+        echo $display;
     }
 
     public function getReportFormFilterChangeCode()
