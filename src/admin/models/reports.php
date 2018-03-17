@@ -1117,28 +1117,6 @@ class JInboundModelReports extends JInboundListModel
         return $tags;
     }
 
-    public function getPermissions()
-    {
-        $db        = JFactory::getDbo();
-        $id        = $db->setQuery($db->getQuery(true)
-            ->select('id')->from('#__assets')->where('name = ' . $db->quote(JInbound::COM . '.report'))
-        )->loadResult();
-        $modelpath = JInboundHelperPath::admin('models');
-        $formname  = 'report_rules';
-        if (!file_exists("$modelpath/forms/$formname.xml")) {
-            return false;
-        }
-        JForm::addFormPath("$modelpath/forms");
-        JForm::addFieldPath("$modelpath/fields");
-        $form = $this->loadForm(JInbound::COM . '.' . $formname, $formname,
-            array('control' => '', 'load_data' => false));
-        if (empty($form)) {
-            return false;
-        }
-        $form->bind(array('asset_id' => $id));
-        return $form;
-    }
-
     public function getTickString($start = null, $end = null)
     {
         $dates = $this->_getDateRanges($start, $end);
