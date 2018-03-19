@@ -7,7 +7,7 @@
     "extra"            : {
         "element"        : "com_jinbound",
         "element-short"  : "jinbound",
-        "name"           : "jInbound Pro",
+        "name"           : "jInbound",
         "client"         : "administrator",
         "package-license": "pro",
         "target-platform": "3.[78]"
