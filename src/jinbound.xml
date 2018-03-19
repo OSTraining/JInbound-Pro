@@ -195,10 +195,11 @@
                        uninstall="true"
                        element="jinbound">plg_user_jinbound</extension>
 
-            <extension type="template"
+            <!-- @TODO: Recognize templates in builder -->
+            <!--extension type="template"
                        publish="true"
                        uninstall="true"
-                        element="jinbound">tpl_jinbound</extension>
+                        element="jinbound">tpl_jinbound</extension-->
         </relatedExtensions>
 
         <obsolete>
