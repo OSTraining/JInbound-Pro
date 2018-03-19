@@ -6,3 +6,4 @@ project.AllediaFreeDefaultFiles.path=/path/to/AllediaFreeDefaultFiles
 project.OSMyLicensesManager.path=/path/to/OSMyLicensesManager
 project.OSSystem.path=/path/to/OSSystem
 
+project.jInbound.path=/path/to/jInbound
