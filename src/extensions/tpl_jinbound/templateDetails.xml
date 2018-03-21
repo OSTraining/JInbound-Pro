@@ -10,9 +10,13 @@
     <version>3.0.2b1</version>
     <description>TPL_JINBOUND_DESCRIPTION</description>
 
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.tpl_jinbound.ini</language>
+        <language tag="en-GB">language/en-GB/en-GB.tpl_jinbound.sys.ini</language>
+    </languages>
+
     <files>
         <folder>css</folder>
-        <folder>language</folder>
         <filename>index.php</filename>
     </files>
 </extension>
