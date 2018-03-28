@@ -29,119 +29,125 @@ class plgSystemJinboundleadmapInstallerScript
     public function postflight($type, $parent)
     {
         $app = JFactory::getApplication();
-        $db  = JFactory::getDbo();
 
         if (JDEBUG) {
             $app->enqueueMessage(sprintf('[%s] Type "%s"', __METHOD__, $type));
         }
 
-        // load the parent menu item
-        $parentId = $db->setQuery(
-            $db->getQuery(true)
-                ->select('m.id')
-                ->from('#__menu AS m')
-                ->leftJoin('#__extensions AS e ON m.component_id = e.extension_id')
-                ->where(
-                    array(
-                        'm.parent_id = 1',
-                        'm.client_id = 1',
-                        'e.element = ' . $db->quote('com_jinbound')
-                    )
-                )
-        )
-            ->loadResult();
+        $this->checkMenu();
+    }
 
-        if (!$parentId) {
-            return;
-        }
+    public function uninstall()
+    {
+        $this->removeMenu();
+    }
 
-        $existing = $db->setQuery(
-            $db->getQuery(true)
-                ->select('m.id')
-                ->from('#__menu AS m')
-                ->where(
-                    array(
-                        'm.parent_id = ' . (int)$parentId,
-                        'm.client_id = 1',
-                        'link LIKE ' . $db->quote('%jinboundleadmap%')
-                    )
-                )
-        )
-            ->loadResult();
-
-        /** @var JTableMenu $table */
-        $table = JTable::getInstance('menu');
-
-        if ($existing) {
-            if (JDEBUG) {
-                $app->enqueueMessage('[' . __METHOD__ . '] Removing existing menu item ' . $existing);
-            }
-
-            if (!$table->delete((int)$existing)) {
-                $app->enqueueMessage($table->getError(), 'error');
-            }
-
-            $table->rebuild();
-        }
+    /**
+     * Check that the menu item for this plugin is installed
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function checkMenu()
+    {
+        $app = JFactory::getApplication();
 
         if (JDEBUG) {
             $app->enqueueMessage('[' . __METHOD__ . '] Adding menu item');
         }
-        $component = $db->setQuery(
-            $db->getQuery(true)
-                ->select('e.extension_id')
-                ->from('#__extensions AS e')
-                ->where('e.element = ' . $db->quote('com_jinbound'))
-        )
-            ->loadResult();
-        $data      = array(
-            'menutype'     => 'main',
-            'client_id'    => 1,
-            'title'        => 'plg_system_jinboundleadmap_view_title',
-            'alias'        => 'plg_system_jinboundleadmap_view_title',
-            'type'         => 'component',
-            'published'    => 0,
-            'parent_id'    => $parentId,
-            'component_id' => $component,
-            'home'         => 0,
-            'link'         => 'index.php?option=com_ajax&group=system&plugin=jinboundleadmapview&format=html'
-        );
 
         try {
-            // find the "leads" link in the existing menu
-            $leadId = $db->setQuery(
-                $db->getQuery(true)
-                    ->select('id')
-                    ->from('#__menu')
-                    ->where(
-                        array(
-                            'client_id = 1',
-                            'parent_id = ' . (int)$parentId,
-                            'title = ' . $db->quote('COM_JINBOUND_LEADS')
-                        )
+            $jinbound = JComponentHelper::getComponent('com_jinbound');
+            if ($jinbound->id) {
+                /** @var JTableMenu $parent */
+                $parent = JTable::getInstance('Menu');
+                $parent->load(
+                    array(
+                        'component_id' => $jinbound->id,
+                        'level'        => 1,
+                        'client_id'    => 1
                     )
-            )
-                ->loadResult();
-
-            if ($leadId) {
-                $table->setLocation($leadId, 'after');
-            }
-
-            if (!$table->bind($data) || !$table->check() || !$table->store()) {
-                throw new Exception(
-                    JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_ERROR_INSTALLING_MENU_ITEM', $table->getError()),
-                    500
                 );
-            }
 
-            $table->rebuild();
+                /** @var JTableMenu $leads */
+                $leads = JTable::getInstance('Menu');
+                $leads->load(
+                    array(
+                        'component_id' => $jinbound->id,
+                        'title'        => 'COM_JINBOUND_LEADS',
+                        'level'        => 2,
+                        'client_id'    => 1
+                    )
+                );
+
+                /** @var JTableMenu $leadmap */
+                $leadmap = JTable::getInstance('Menu');
+                $leadmap->load(
+                    array(
+                        'component_id' => $jinbound->id,
+                        'title'        => 'plg_system_jinboundleadmap_view_title',
+                        'level'        => 2,
+                        'client_id'    => 1
+                    )
+                );
+
+                if ($parent->id && $leads->id && !$leadmap->id) {
+                    $newMenu = array(
+                        'parent_id'    => $parent->id,
+                        'level'        => 2,
+                        'menutype'     => $leads->menutype,
+                        'title'        => 'plg_system_jinboundleadmap_view_title',
+                        'link'         => 'index.php?option=com_ajax&group=system&plugin=jinboundleadmapview&format=html',
+                        'type'         => 'component',
+                        'published'    => 1,
+                        'component_id' => $jinbound->id,
+                        'access'       => $leads->access,
+                        'client_id'    => $parent->client_id
+                    );
+
+                    if ($leadmap->bind($newMenu) && $leadmap->check()) {
+                        $leadmap->setLocation($leads->id, 'after');
+                        if (!$leadmap->store()) {
+                            throw new Exception($leadmap->getError());
+                        }
+
+                    } else {
+                        throw new Exception($leadmap->getError());
+                    }
+                }
+            }
 
         } catch (Exception $e) {
             $app->enqueueMessage(
                 JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_ERROR_INSTALLING_MENU_ITEM', $e->getMessage()),
                 'error'
             );
-            return;
+
+        }
+    }
+
+    /**
+     * Removes the admin menu item we originally installed here
+     */
+    protected function removeMenu()
+    {
+        $jinbound = JComponentHelper::getComponent('com_jinbound');
+
+        if ($jinbound->id) {
+            /** @var JTableMenu $leadmap */
+            $leadmap = JTable::getInstance('Menu');
+            $leadmap->load(
+                array(
+                    'component_id' => $jinbound->id,
+                    'title'        => 'plg_system_jinboundleadmap_view_title',
+                    'level'        => 2,
+                    'client_id'    => 1
+                )
+            );
+
+            if ($leadmap->id) {
+                $leadmap->delete();
+            }
         }
     }
 }
