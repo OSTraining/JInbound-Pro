@@ -15,9 +15,9 @@
  * may be added to this header as long as no information is deleted.
  */
 
-defined('JPATH_PLATFORM') or die;
+use MaxMind\Db\Reader;
 
-use GeoIp2\Database\Reader;
+defined('JPATH_PLATFORM') or die;
 
 class PlgSystemJinboundleadmap extends JPlugin
 {
@@ -29,7 +29,7 @@ class PlgSystemJinboundleadmap extends JPlugin
     /**
      * @var null
      */
-    protected $maxmindDB = '/lib/GeoLite2-City.mmdb';
+    protected $maxmindDB = '/assets/GeoLite2-City.mmdb';
 
     /**
      * @var bool
@@ -74,12 +74,15 @@ class PlgSystemJinboundleadmap extends JPlugin
                 $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
                 if (is_file($path)) {
                     require_once $path;
-
-                    require_once __DIR__ . '/lib/geoip2.phar';
                 }
             }
 
-            static::$enabled = defined('JINB_LOADED');
+            $path = __DIR__ . '/vendor/autoload.php';
+            if (is_file($path)) {
+                require_once $path;
+
+                static::$enabled = defined('JINB_LOADED');
+            }
         }
 
         return static::$enabled;
@@ -350,6 +353,12 @@ class PlgSystemJinboundleadmap extends JPlugin
     protected function getData()
     {
         $app  = JFactory::getApplication();
+
+        if (!$this->isEnabled()) {
+            $app->enqueueMessage('Problem loading lead map', 'error');
+            $app->redirect('index.php');
+        }
+
         $data = (object)array(
             'locations' => array(),
             'url'       => $this->getUrl()

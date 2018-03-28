@@ -13,10 +13,12 @@
     <scriptfile>jinboundleadmap.install.php</scriptfile>
 
     <files>
+        <folder>assets</folder>
         <folder>forms</folder>
         <folder>language</folder>
-        <folder>lib</folder>
         <folder>tmpl</folder>
+        <folder>vendor</folder>
+
         <filename plugin="jinboundleadmap">jinboundleadmap.php</filename>
     </files>
 
