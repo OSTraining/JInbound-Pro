@@ -352,7 +352,7 @@ class PlgSystemJinboundleadmap extends JPlugin
      */
     protected function getData()
     {
-        $app  = JFactory::getApplication();
+        $app = JFactory::getApplication();
 
         if (!$this->isEnabled()) {
             $app->enqueueMessage('Problem loading lead map', 'error');
@@ -368,7 +368,9 @@ class PlgSystemJinboundleadmap extends JPlugin
             return new Exception(
                 JText::sprintf(
                     'PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB',
-                    $this->getUrl('jinboundleadmapdownload')
+                    $this->getUrl('jinboundleadmapdownload'),
+                    $this->maxmindDBUrl,
+                    str_replace(JPATH_ROOT, '', $this->maxmindDB)
                 )
             );
         }
