@@ -65,6 +65,17 @@ defined('JPATH_PLATFORM') or die;
                 <div id="legend-container"><h3><?php echo JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_LEGEND'); ?></h3>
                 </div>
             </div>
+
+            <div class="alert alert-success">
+                <p>
+                    <?php
+                    echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $this->download_url);
+                    ?>
+                </p>
+                <p>This product includes GeoLite2 data created by MaxMind, available from
+                    <a href="http://www.maxmind.com">http://www.maxmind.com</a>.</p>
+            </div>
+
             <script type="text/javascript">
                 function mapReady(f) {
                     /in/.test(document.readyState) ? setTimeout('mapReady(' + f + ')', 9) : f()
@@ -115,14 +126,5 @@ defined('JPATH_PLATFORM') or die;
         <?php
         endif;
         ?>
-        <div class="alert alert-success">
-            <p>
-                <?php
-                echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $this->download_url);
-                ?>
-            </p>
-            <p>This product includes GeoLite2 data created by MaxMind, available from
-                <a href="http://www.maxmind.com">http://www.maxmind.com</a>.</p>
-        </div>
     </div>
 </div>
