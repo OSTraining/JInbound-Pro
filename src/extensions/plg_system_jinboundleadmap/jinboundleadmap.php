@@ -21,7 +21,16 @@ use GeoIp2\Database\Reader;
 
 class PlgSystemJinboundleadmap extends JPlugin
 {
-    protected $maxmindDB = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz';
+    /**
+     * @var string
+     */
+    protected $maxmindDBUrl = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz';
+
+    /**
+     * @var null
+     */
+    protected $maxmindDB = '/lib/GeoLite2-City.mmdb';
+
     /**
      * @var bool
      */
@@ -44,6 +53,8 @@ class PlgSystemJinboundleadmap extends JPlugin
             $this->loadLanguage('com_jinbound', JPATH_ADMINISTRATOR);
             $this->loadLanguage('plg_system_jinboundleadmap.sys', JPATH_ROOT);
         }
+
+        $this->maxmindDB = __DIR__ . $this->maxmindDB;
     }
 
     /**
@@ -339,28 +350,21 @@ class PlgSystemJinboundleadmap extends JPlugin
     protected function getData()
     {
         $app  = JFactory::getApplication();
-        $mmdb = $this->getMaxmindDbFileName();
-
         $data = (object)array(
             'locations' => array(),
             'url'       => $this->getUrl()
         );
 
-        if (!file_exists($mmdb)) {
-            $mmdbPath = dirname($mmdb);
-            $mmdbFile = strtolower(basename($mmdb));
-
-            if (!file_exists($mmdb = $mmdbPath . '/' . $mmdbFile)) {
-                return new Exception(
-                    JText::sprintf(
-                        'PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB',
-                        $this->getUrl('jinboundleadmapdownload')
-                    )
-                );
-            }
+        if (!file_exists($this->maxmindDB)) {
+            return new Exception(
+                JText::sprintf(
+                    'PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB',
+                    $this->getUrl('jinboundleadmapdownload')
+                )
+            );
         }
 
-        $reader   = new Reader($mmdb);
+        $reader   = new Reader($this->maxmindDB);
         $patterns = array('/^127\.0\.0\.1$/', '/^10\./', '/^192\.168\./');
         $filter   = $app->input->get('filter', array(), 'array');
 
@@ -500,11 +504,6 @@ class PlgSystemJinboundleadmap extends JPlugin
         return $data;
     }
 
-    protected function getMaxmindDbFileName()
-    {
-        return __DIR__ . '/lib/GeoLite2-City.mmdb';
-    }
-
     /**
      * Get view class instance
      *
@@ -526,44 +525,28 @@ class PlgSystemJinboundleadmap extends JPlugin
      */
     public function onAjaxJinboundleadmapdownload()
     {
-        $app   = JFactory::getApplication();
-        $parts = parse_url($this->maxmindDB);
-
-        $options = array(
-            'http' => array(
-                'method'          => 'GET',
-                'request_fulluri' => true,
-                'header'          => array(
-                    "Host: {$parts['host']}",
-                    "Connection: keep-alive",
-                    "Cache-Control: max-age=0",
-                    "User-Agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)",
-                    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                    "Referer: {$parts['scheme']}://{$parts['host']}",
-                    "Accept-Language: en",
-                    "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7"
-                )
-            )
-        );
-
-        // try to kill the time limit
-        @ini_set('max_execution_time', 0);
-        @set_time_limit(0);
-
-        $context  = stream_context_create($options);
-        $response = file_get_contents($this->maxmindDB, false, $context);
+        $app = JFactory::getApplication();
 
         $tmpFolder = $app->get('tmp_path');
-        $destfile  = $this->getMaxmindDbFileName();
-        $tmpfile   = sprintf('%s/%s.gz', rtrim($tmpFolder, '/'), basename($destfile));
+        $tmpfile   = sprintf('%s/%s.gz', rtrim($tmpFolder, '/'), basename($this->maxmindDB));
 
-        file_put_contents($tmpfile, $response);
+        copy($this->maxmindDBUrl, $tmpfile);
 
-        @set_time_limit(0);
-        JArchive::extract($tmpfile, dirname($destfile));
+        $tmpfh  = gzopen($tmpfile, 'r');
+        $destfh = fopen($this->maxmindDB, 'w');
+        while ($buffer = gzread($tmpfh, 8192)) {
+            fwrite($destfh, $buffer);
+        }
+        gzclose($tmpfh);
+        fclose($destfh);
 
         unlink($tmpfile);
 
         $app->redirect($this->getUrl('jinboundleadmapview', array(), false));
+    }
+
+    protected function loadmaxmindDBUrl($source = null)
+    {
+
     }
 }
