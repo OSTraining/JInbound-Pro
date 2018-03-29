@@ -15,7 +15,7 @@
  * may be added to this header as long as no information is deleted.
  */
 
-use MaxMind\Db\Reader;
+use GeoIp2\Database\Reader;
 
 defined('JPATH_PLATFORM') or die;
 
