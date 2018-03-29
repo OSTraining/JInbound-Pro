@@ -555,9 +555,4 @@ class PlgSystemJinboundleadmap extends JPlugin
 
         $app->redirect($this->getUrl('jinboundleadmapview', array(), false));
     }
-
-    protected function loadmaxmindDBUrl($source = null)
-    {
-
-    }
 }
