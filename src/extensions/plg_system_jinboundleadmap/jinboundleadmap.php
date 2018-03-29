@@ -498,11 +498,11 @@ class PlgSystemJinboundleadmap extends JPlugin
                 }
 
                 try {
-                    $record            = $reader->city($record->ip);
+                    $location          = $reader->city($record->ip);
                     $data->locations[] = (object)array(
-                        'latitude'  => $record->location->latitude,
-                        'longitude' => $record->location->longitude,
-                        'city'      => $record->city->name,
+                        'latitude'  => $location->location->latitude,
+                        'longitude' => $location->location->longitude,
+                        'city'      => $location->city->name,
                         'lead'      => $islead
                     );
 
