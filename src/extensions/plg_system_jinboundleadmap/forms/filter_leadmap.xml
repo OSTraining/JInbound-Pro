@@ -27,7 +27,7 @@
             description="PLG_SYSTEM_JINBOUNDLEADMAP_FILTER_ISNEW_DESC"
             onchange="this.form.submit();"
         >
-			<option value="">PLG_SUSYEM_JINBOUNDLEADMAP_FILTER_ISNEW_OPTION_SELECT</option>
+			<option value="">PLG_SYSTEM_JINBOUNDLEADMAP_FILTER_ISNEW_OPTION_SELECT</option>
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>

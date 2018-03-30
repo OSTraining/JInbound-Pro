@@ -27,7 +27,7 @@ class PlgSystemJinboundleadmap extends JPlugin
     protected $maxmindDBUrl = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz';
 
     /**
-     * @var null
+     * @var string
      */
     protected $maxmindDB = '/assets/GeoLite2-City.mmdb';
 

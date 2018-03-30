@@ -53,7 +53,7 @@ defined('JPATH_PLATFORM') or die;
         elseif (empty($this->data->locations)) :
         ?>
             <div class="alert alert-error">
-                <?php echo JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_NO_LOCATIONS_FOUND'); ?>
+                <?php echo JText::_('PLG_SYSTEM_JINBOUNDLEADMAP_LOCATIONS_NOT_FOUND'); ?>
             </div>
         <?php
         echo $this->loadTemplate('filterbar');
@@ -69,11 +69,22 @@ defined('JPATH_PLATFORM') or die;
             <div class="alert alert-success">
                 <p>
                     <?php
-                    echo JText::sprintf('PLG_SYSTEM_JINBOUNDLEADMAP_UPDATE_MAXMIND_DB', $this->download_url);
+                    echo JText::sprintf(
+                        'PLG_SYSTEM_JINBOUNDLEADMAP_MAXMIND_UPDATE_DB',
+                        $this->maxmindDownloadUrl,
+                        $this->maxmindDBUrl,
+                        str_replace(JPATH_ROOT, '', $this->maxmindDB)
+                    );
                     ?>
                 </p>
-                <p>This product includes GeoLite2 data created by MaxMind, available from
-                    <a href="http://www.maxmind.com">http://www.maxmind.com</a>.</p>
+                <p>
+                    <?php
+                    echo JText::sprintf(
+                        'PLG_SYSTEM_JINBOUNDLEADMAP_MAXMIND_CREDITS',
+                        'http://www.maxmind.com'
+                    );
+                    ?>
+                </p>
             </div>
 
             <script type="text/javascript">
