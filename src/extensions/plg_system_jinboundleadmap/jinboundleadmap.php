@@ -32,6 +32,11 @@ class PlgSystemJinboundleadmap extends JPlugin
     protected $maxmindDB = '/assets/GeoLite2-City.mmdb';
 
     /**
+     * @var string
+     */
+    protected $maxmindDownloadUrl = null;
+
+    /**
      * @var bool
      */
     protected static $enabled = null;
@@ -54,7 +59,8 @@ class PlgSystemJinboundleadmap extends JPlugin
             $this->loadLanguage('plg_system_jinboundleadmap.sys', JPATH_ROOT);
         }
 
-        $this->maxmindDB = __DIR__ . $this->maxmindDB;
+        $this->maxmindDB          = __DIR__ . $this->maxmindDB;
+        $this->maxmindDownloadUrl = $this->getUrl('jinboundleadmapdownload');
     }
 
     /**
@@ -308,10 +314,7 @@ class PlgSystemJinboundleadmap extends JPlugin
 
             JForm::addFormPath(dirname(__FILE__) . '/forms');
 
-            $view               = $this->getView();
-            $view->data         = $data;
-            $view->download_url = $this->getUrl('jinboundleadmapdownload');
-
+            $view = $this->getView($data);
             try {
                 $filters = $app->input->get('filter', array(), 'array');
 
@@ -367,8 +370,8 @@ class PlgSystemJinboundleadmap extends JPlugin
         if (!file_exists($this->maxmindDB)) {
             return new Exception(
                 JText::sprintf(
-                    'PLG_SYSTEM_JINBOUNDLEADMAP_NO_MAXMIND_DB',
-                    $this->getUrl('jinboundleadmapdownload'),
+                    'PLG_SYSTEM_JINBOUNDLEADMAP_MAXMIND_NO_DB',
+                    $this->maxmindDownloadUrl,
                     $this->maxmindDBUrl,
                     str_replace(JPATH_ROOT, '', $this->maxmindDB)
                 )
@@ -518,12 +521,20 @@ class PlgSystemJinboundleadmap extends JPlugin
     /**
      * Get view class instance
      *
+     * @param object $data
+     *
      * @return \JInboundPluginView
      * @throws Exception
      */
-    protected function getView()
+    protected function getView($data)
     {
-        $viewConfig = array('template_path' => __DIR__ . '/tmpl');
+        $viewConfig = array(
+            'template_path'      => __DIR__ . '/tmpl',
+            'maxmindDBUrl'       => $this->maxmindDBUrl,
+            'maxmindDB'          => $this->maxmindDB,
+            'maxmindDownloadUrl' => $this->maxmindDownloadUrl,
+            'data'               => $data
+        );
 
         $view = new JInboundPluginView($viewConfig);
 
