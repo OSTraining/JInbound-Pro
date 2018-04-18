@@ -17,88 +17,140 @@
 
 defined('JPATH_PLATFORM') or die;
 
-jimport('joomla.filesystem.file');
-jimport('joomla.plugin.plugin');
-
-$db      = JFactory::getDbo();
-$plugins = $db->setQuery($db->getQuery(true)
-    ->select('extension_id')->from('#__extensions')
-    ->where('('
-        . $db->qn('element') . ' = ' . $db->q('com_acymailing')
-        . ' OR '
-        . $db->qn('element') . ' = ' . $db->q('com_jinbound')
-        . ')')
-    ->where($db->qn('enabled') . ' = 1')
-)->loadColumn();
-defined('PLG_SYSTEM_JINBOUNDACYMAILING') or define('PLG_SYSTEM_JINBOUNDACYMAILING', 2 === count($plugins));
-
 class plgSystemJInboundacymailing extends JPlugin
 {
     /**
+     * @var bool
+     */
+    protected static $enabled = null;
+
+    /**
      * Constructor
      *
-     * @param unknown_type $subject
-     * @param unknown_type $config
+     * @param JEventDispatcher $subject
+     * @param array            $config
      */
     public function __construct(&$subject, $config)
     {
         parent::__construct($subject, $config);
-        $this->loadLanguage('plg_system_jinboundacymailing.sys', JPATH_ADMINISTRATOR);
+
+        $this->loadLanguage('plg_system_jinboundacymailing.sys');
+
+        JLoader::register('JinboundAcymailing', __DIR__ . '/helper/helper.php');
     }
 
+    /**
+     * @param JForm $form
+     *
+     * @return bool
+     * @throws Exception
+     */
     public function onContentPrepareForm($form)
     {
-        if (!PLG_SYSTEM_JINBOUNDACYMAILING) {
-            return true;
+        if ($this->isEnabled() && $form instanceof JForm) {
+            switch ($form->getName()) {
+                case 'com_jinbound.campaign':
+                    $file = 'jinboundacymailing';
+                    break;
+
+                case 'com_jinbound.contact':
+                    if (JFactory::getApplication()->isClient('administrator')) {
+                        $file = 'jinboundacymailingcontact';
+                    }
+                    break;
+
+            }
+
+            if (!empty($file)) {
+                JForm::addFormPath(dirname(__FILE__) . '/form');
+                JForm::addFieldPath(dirname(__FILE__) . '/field');
+                $result = $form->loadFile($file, false);
+
+                return $result;
+            }
         }
-        if (!($form instanceof JForm)) {
-            $this->_subject->setError('JERROR_NOT_A_FORM');
-            return false;
-        }
-        switch ($form->getName()) {
-            case 'com_jinbound.campaign':
-                $file = 'jinboundacymailing';
-                break;
-            case 'com_jinbound.contact':
-                if (JFactory::getApplication()->isSite()) {
-                    return true;
-                }
-                $file = 'jinboundacymailingcontact';
-                break;
-            default:
-                return true;
-        }
-        JForm::addFormPath(dirname(__FILE__) . '/form');
-        JForm::addFieldPath(dirname(__FILE__) . '/field');
-        $result = $form->loadFile($file, false);
-        return $result;
+
+        return true;
     }
 
+    /**
+     * @param string $context
+     * @param int    $campaign_id
+     * @param int[]  $contacts
+     * @param int    $status_id
+     *
+     * @return void
+     */
     public function onJInboundChangeState($context, $campaign_id, $contacts, $status_id)
     {
-        if ('com_jinbound.contact.status' !== $context || !PLG_SYSTEM_JINBOUNDACYMAILING) {
-            return;
-        }
-        require_once realpath(dirname(__FILE__) . '/helper/helper.php');
-        $helper = new JinboundAcymailing(array('params' => $this->params));
-        foreach ($contacts as $contact_id) {
-            $helper->onJinboundSetStatus($status_id, $campaign_id, $contact_id);
+        if ($context === 'com_jinbound.contact.status' && $this->isEnabled()) {
+            $helper = new JinboundAcymailing(array('params' => $this->params));
+
+            foreach ($contacts as $contact_id) {
+                $helper->onJinboundSetStatus($status_id, $campaign_id, $contact_id);
+            }
         }
     }
 
+    /**
+     * @param string $how
+     * @param int    $contact_id
+     * @param int    $campaign_id
+     * @param int    $value
+     * @param bool   $result
+     *
+     * @return array
+     */
     public function onJInboundAfterJsonChangeState($how, $contact_id, $campaign_id, $value, $result)
     {
-        if (!$result || 'status' !== $how || !PLG_SYSTEM_JINBOUNDACYMAILING) {
-            return;
+        if ($result && $how === 'status' && $this->isEnabled()) {
+            $db    = JFactory::getDbo();
+            $email = $db->setQuery(
+                $db->getQuery(true)
+                    ->select('email')
+                    ->from('#__jinbound_contacts')
+                    ->where('id = ' . intval($contact_id))
+            )->loadResult();
+
+            $helper = new JinboundAcymailing(array('params' => $this->params));
+
+            return array(
+                'acymailing' => $helper->getListTable($email, 'jform_acymailing_table')
+            );
         }
-        $db    = JFactory::getDbo();
-        $email = $db->setQuery($db->getQuery(true)
-            ->select('email')
-            ->from('#__jinbound_contacts')
-            ->where('id = ' . intval($contact_id))
-        )->loadResult();
-        require_once realpath(dirname(__FILE__) . '/helper/helper.php');
-        $helper = new JinboundAcymailing(array('params' => $this->params));
-        return array('acymailing' => $helper->getListTable($email, 'jform_acymailing_table'));
+
+        return null;
+    }
+
+    /**
+     * This plugin requires both jInbound and acymailing to be installed and enabled
+     *
+     * @return bool
+     */
+    protected function isEnabled()
+    {
+        if (static::$enabled === null) {
+            $db         = JFactory::getDbo();
+            $components = $db->setQuery(
+                $db->getQuery(true)
+                    ->select('COUNT(*)')
+                    ->from('#__extensions')
+                    ->where(
+                        array(
+                            sprintf(
+                                '%s IN (%s, %s)',
+                                $db->quoteName('element'),
+                                $db->quote('com_acymailing'),
+                                $db->quote('com_jinbound')
+                            ),
+                            $db->quoteName('enabled') . ' = 1'
+                        )
+                    )
+            )->loadResult();
+
+            static::$enabled = ($components == 2);
+        }
+
+        return static::$enabled;
     }
 }
