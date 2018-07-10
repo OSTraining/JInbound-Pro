@@ -62,8 +62,8 @@ class plgSystemJInboundacymailing extends JPlugin
             }
 
             if (!empty($file)) {
-                JForm::addFormPath(dirname(__FILE__) . '/form');
-                JForm::addFieldPath(dirname(__FILE__) . '/field');
+                JForm::addFormPath(__DIR__ . '/form');
+                JForm::addFieldPath(__DIR__ . '/field');
                 $result = $form->loadFile($file, false);
 
                 return $result;
