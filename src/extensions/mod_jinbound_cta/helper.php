@@ -435,7 +435,7 @@ abstract class ModJInboundCTAHelper
 
     protected static function getContactId()
     {
-        $cookie = plgSystemJInbound::getCookieValue();
+        $cookie = plgSystemJInboundHelper::getCookieValue();
         $db     = JFactory::getDbo();
         return (int)$db->setQuery($db->getQuery(true)
             ->select($db->quoteName('id'))->from('#__jinbound_contacts')

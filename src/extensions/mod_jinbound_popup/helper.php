@@ -71,7 +71,7 @@ abstract class modJinboundPopupHelper
     {
         $show = false;
         if (class_exists('plgSystemJinbound')) {
-            $cookie = plgSystemJinbound::getCookieUser();
+            $cookie = plgSystemJInboundHelper::getCookieUser();
 
         }
         return $show;
