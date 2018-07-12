@@ -15,6 +15,8 @@
  * may be added to this header as long as no information is deleted.
  */
 
+use Joomla\Registry\Registry;
+
 defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.filesystem.file');
@@ -106,15 +108,18 @@ class JinboundAcymailing
 
     protected function getComponentItem($type, $id)
     {
-        $class = 'JInboundTable' . ucwords($type);
         require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/tables/' . $type . '.php';
+
+        $class = 'JInboundTable' . ucwords($type);
+
+        /** @var JInboundTable $obj */
         $obj = new $class($this->db);
         $obj->load($id);
-        if (property_exists($obj, 'params') && !is_a($obj->params, 'JRegistry')) {
-            $reg = new JRegistry();
-            $reg->loadString($obj->params);
-            $obj->params = $reg;
+
+        if (property_exists($obj, 'params') && !$obj->params instanceof Registry) {
+            $obj->params = new Registry($obj->params);
         }
+
         return $obj;
     }
 
