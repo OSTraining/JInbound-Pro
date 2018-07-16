@@ -3,7 +3,6 @@
     <field type="customfooter"
            name="customfooter"
            media="jinbound"
-           showgoproad="0"
            jedurl="https://extensions.joomla.org/extension/jinbound"/>
 
     <fieldset name="general"
