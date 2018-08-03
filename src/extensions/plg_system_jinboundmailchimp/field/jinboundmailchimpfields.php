@@ -17,19 +17,46 @@
 
 defined('_JEXEC') or die;
 
-JFormHelper::loadFieldClass('list');
+JFormHelper::loadFieldClass('GroupedList');
 
-class JFormFieldJinboundMailchimpfields extends JFormFieldList
+class JFormFieldJinboundMailchimpfields extends JFormFieldGroupedList
 {
     protected $type = 'JinboundMailchimpfields';
 
-    protected function getOptions()
+    /**
+     * @var object[]
+     */
+    protected static $fields = null;
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    protected function getGroups()
     {
-        $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
-        require_once realpath(dirname(__FILE__) . '/../library/helper.php');
-        $helper = new JinboundMailchimp(array('params' => $plugin->params));
-        // Put fields in select field
-        $options = $helper->getMCMergeFieldsSelectOptions($this->form->getValue('id'));
-        return array_merge(parent::getOptions(), $options);
+        if (static::$fields === null) {
+            static::$fields = array();
+
+            $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
+
+            require_once realpath(__DIR__ . '/../library/helper.php');
+            $helper = new JinboundMailchimp(array('params' => $plugin->params));
+
+            $lists = $helper->getLists();
+            $fields = $helper->getFields();
+            foreach ($fields as $listId => $listFields) {
+                if (isset($lists[$listId])) {
+                    $listName = $lists[$listId]->name;
+                    static::$fields[$listName] = array(
+                        JHtml::_('select.option', 'email')
+                    );
+                    foreach ($listFields as $field) {
+                        static::$fields[$listName][] = JHtml::_('select.option', $field->tag, $field->name);
+                    }
+                }
+            }
+        }
+
+        return array_merge(parent::getGroups(), static::$fields);
     }
 }

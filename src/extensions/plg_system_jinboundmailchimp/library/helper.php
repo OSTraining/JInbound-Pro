@@ -118,6 +118,11 @@ class JinboundMailchimp
      */
     protected static $groups = array();
 
+    /**
+     * @var object[][]
+     */
+    protected static $fields = null;
+
     public function __construct($config = array())
     {
         $configParams = new Registry(empty($config['params']) ? null : $config['params']);
@@ -825,31 +830,41 @@ class JinboundMailchimp
         return static::$lists;
     }
 
-    /*
-     * Return the custom fields as a HTML select field.
+    /**
+     * @param string|string[] $listIds
+     *
+     * @return object[][]
+     * @throws Exception
      */
-    public function getMCMergeFieldsSelectOptions($level, $shownone = false)
+    public function getFields($listIds = null)
     {
-        if ($this->mcApi) {
-            $lists   = $this->mcApi->lists();
-            $options = array();
-            if ($shownone) {
-                $options[] = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
-            }
-            foreach ($lists['data'] as $list) {
-                // TODO upgrade to 3.x syntax
-                $options[] = JHTML::_('select.optgroup', $list['name']);
-                $vars      = $this->mcApi->listMergeVars($list['id']);
-                foreach ($vars as $var) {
-                    $options[] = JHTML::_('select.option', $var['tag'], $var['name']);
-                }
-                $options[] = JHTML::_('select.optgroup', $list['name']);
-            }
+        if (static::$fields === null) {
+            static::$fields = array();
 
-            return $options;
+            if ($this->mcApi) {
+                $lists = $this->getLists();
+
+                foreach ($lists as $list) {
+                    try {
+                        static::$fields[$list->id] = $this->mcApi->getFields($list->id);
+
+                    } catch (Exception $e) {
+                        JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+                    }
+                }
+            }
         }
 
-        return array();
+        if ($listIds) {
+            if (!is_array($listIds)) {
+                $listIds = array($listIds);
+            }
+            $listIds = array_filter($listIds);
+
+            return array_intersect_key(static::$fields, array_flip($listIds));
+        }
+
+        return static::$fields;
     }
 
     /*

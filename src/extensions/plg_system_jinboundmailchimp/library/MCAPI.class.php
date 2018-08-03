@@ -1372,6 +1372,12 @@ class MCAPI
         return array();
     }
 
+    /**
+     * @param string $listId
+     *
+     * @return array
+     * @throws Exception
+     */
     public function getGroups($listId)
     {
         $categories = $this->getCategories($listId);
@@ -1387,6 +1393,19 @@ class MCAPI
         }
 
         return $groups;
+    }
+
+    /**
+     * @param string $listId
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getFields($listId)
+    {
+        $response = $this->callServer("lists/{$listId}/merge-fields");
+
+        return empty($response->merge_fields) ? array() : $response->merge_fields;
     }
 
     /**
