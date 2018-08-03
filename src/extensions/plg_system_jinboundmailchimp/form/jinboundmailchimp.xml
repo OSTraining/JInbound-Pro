@@ -6,15 +6,13 @@
                    type="jinboundmailchimplists"
                    label="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDLISTS_TITLE"
                    description="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDLISTS_DESC"
-                   multiple="multiple"
-                   size="8"/>
+                   multiple="multiple"/>
 
             <field name="removelists"
                    type="jinboundmailchimplists"
                    label="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVELISTS_TITLE"
                    description="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVELISTS_DESC"
-                   multiple="multiple"
-                   size="8"/>
+                   multiple="multiple"/>
 
             <field name="addgroups"
                    type="jinboundmailchimpgroups"
