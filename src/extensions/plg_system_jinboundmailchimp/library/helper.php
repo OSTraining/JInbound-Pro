@@ -108,6 +108,16 @@ class JinboundMailchimp
      */
     protected static $lists = null;
 
+    /**
+     * @var object[]
+     */
+    protected static $categories = array();
+
+    /**
+     * @var object[][]
+     */
+    protected static $groups = array();
+
     public function __construct($config = array())
     {
         $configParams = new Registry(empty($config['params']) ? null : $config['params']);
@@ -579,48 +589,70 @@ class JinboundMailchimp
     }
 
     /**
-     * =========================================================================
-     * !!! CRUFT WARNING !!!
-     * =========================================================================
+     * @param string|string[] $listIds
      *
-     * The following methods are leftovers from the Olden Days (before 2.4.5).
-     * At some point (most likely 2.6) they will be removed. For now they will
-     * stay here so that we can do a transparent migration.
+     * @return array
+     * @throws Exception
      */
-
-    protected function getGroups()
+    public function getGroups($listIds)
     {
         if (!$this->mcApi) {
             return array();
         }
 
-        static $groups = null;
+        if (!is_array($listIds)) {
+            $listIds = array($listIds);
+        }
+        $listIds = array_filter($listIds);
 
-        if (is_null($groups)) {
-            $groups = array();
+        foreach ($listIds as $listId) {
+            if (!isset(static::$groups[$listId])) {
+                static::$groups[$listId] = array();
 
-            $start   = 0;
-            $limit   = 100;
-            $mcLists = $this->mcApi->lists(array(), $start, $limit);
-            $total   = $mcLists['total'];
-            while (true) {
-                if (is_array($mcLists['data']) && count($mcLists['data'])) {
-                    foreach ($mcLists['data'] as $list) {
-                        $listTitle          = $list['name'];
-                        $listId             = $list['id'];
-                        $groups[$listTitle] = $listId;
-                    }
-                }
-                if (($start + $limit) < $total) {
-                    $start   += $limit;
-                    $mcLists = $this->mcApi->lists(array(), $start, $limit);
-                } else {
-                    break;
+                try {
+                    static::$groups[$listId] = array_merge(
+                        static::$groups[$listId],
+                        $this->mcApi->getGroups($listId)
+                    );
+
+                } catch (Exception $e) {
+                    JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
                 }
             }
         }
 
-        return $groups;
+        return array_intersect_key(static::$groups, array_flip($listIds));
+    }
+
+    /**
+     * @param string|string[] $listIds
+     *
+     * @return object[]
+     * @throws Exception
+     */
+    public function getCategories($listIds)
+    {
+        if (!$this->mcApi) {
+            return array();
+        }
+
+        if (!is_array($listIds)) {
+            $listIds = array($listIds);
+        }
+        $listIds = array_filter($listIds);
+
+        foreach ($listIds as $listId) {
+            if (!isset(static::$categories[$listId])) {
+                try {
+                    static::$categories[$listId] = $this->mcApi->getCategories($listId);
+
+                } catch (Exception $e) {
+                    JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+                }
+            }
+        }
+
+        return array_intersect_key(static::$categories, array_flip($listIds));
     }
 
     /*
@@ -763,28 +795,6 @@ class JinboundMailchimp
                 }
                 return $details;
             }
-        }
-
-        return array();
-    }
-
-    /*
-     * Returns the MailChimp groups that exist at the MC account.
-     */
-
-    public function getMCGroupSelectOptions($level)
-    {
-        if ($this->mcApi) {
-            // Put groups in select field
-            $this->addGroups = array($level => $this->getGroups());
-            $groups          = $this->getMCGroups($level);
-            $options         = array();
-            $options[]       = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
-            foreach ($groups as $title => $id) {
-                $options[] = JHTML::_('select.option', $id, $title);
-            }
-
-            return $options;
         }
 
         return array();

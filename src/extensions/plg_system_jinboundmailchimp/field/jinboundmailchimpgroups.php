@@ -17,20 +17,76 @@
 
 defined('_JEXEC') or die;
 
-JFormHelper::loadFieldClass('list');
+JFormHelper::loadFieldClass('Groupedlist');
 
-class JFormFieldJinboundMailchimpgroups extends JFormFieldList
+class JFormFieldJinboundMailchimpgroups extends JFormFieldGroupedList
 {
     protected $type = 'JinboundMailchimpgroups';
 
-    protected function getOptions()
+    /**
+     * @var JFormFieldJinboundMailchimplists
+     */
+    protected $listField = null;
+
+    /**
+     * @var object[]
+     */
+    protected $mcOptions = null;
+
+    public function setup(\SimpleXMLElement $element, $value, $group = null)
     {
-        $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
-        require_once realpath(dirname(__FILE__) . '/../library/helper.php');
-        $helper = new JinboundMailchimp(array('params' => $plugin->params));
-        // Put groups in select field
-        $options = $helper->getMCGroupSelectOptions($this->form->getValue('id'));
-        return array_merge(parent::getOptions(), $options);
+        if (parent::setup($element, $value, $group)) {
+            if ($fieldName = (string)$element['listfield']) {
+                $this->listField = $this->form->getField($fieldName, $group);
+
+                return $this->listField instanceof JFormFieldJinboundMailchimplists;
+            }
+        }
+
+        return false;
     }
 
+    /**
+     * @return object[]
+     * @throws Exception
+     */
+    protected function getGroups()
+    {
+        $options = array();
+
+        if ($listIds = $this->listField->value) {
+            $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
+            require_once realpath(__DIR__ . '/../library/helper.php');
+
+            $helper = new JinboundMailchimp(array('params' => $plugin->params));
+
+            $lists  = $helper->getLists();
+            $groups = $helper->getGroups($listIds);
+
+            foreach ($groups as $listId => $listGroups) {
+                if (isset($lists[$listId])) {
+                    $listName = $lists[$listId]->name;
+
+                    $options[$listName] = array();
+                    if ($listGroups) {
+                        foreach ($listGroups as $group) {
+                            $options[$listName][] = JHtml::_('select.option', $group->id, $group->name);
+                        }
+
+                    } else {
+                        $options[$listName][] = JHtml::_(
+                            'select.option',
+                            '',
+                            JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'),
+                            'value',
+                            'text',
+                            true
+                        );
+                    }
+                }
+            }
+        }
+
+        return array_merge(parent::getGroups(), $options);
+    }
 }

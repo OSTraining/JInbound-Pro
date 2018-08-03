@@ -19,13 +19,14 @@
                    label="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDGROUPS_TITLE"
                    description="PLG_SYSTEM_JINBOUNDMAILCHIMP_ADDGROUPS_DESC"
                    multiple="multiple"
-                   size="8"/>
+                   listfield="addlists"/>
+
             <field name="removegroups"
                    type="jinboundmailchimpgroups"
                    label="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVEGROUPS_TITLE"
                    description="PLG_SYSTEM_JINBOUNDMAILCHIMP_REMOVEGROUPS_DESC"
                    multiple="multiple"
-                   size="8"/>
+                   listfield="removelists"/>
         </fieldset>
     </fields>
 </form>
