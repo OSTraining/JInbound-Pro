@@ -23,6 +23,9 @@ class JFormFieldJinboundMailchimplists extends JFormFieldList
 {
     protected $type = 'JinboundMailchimplists';
 
+    /**
+     * @var object[]
+     */
     protected $mcOptions = null;
 
     protected function getOptions()
