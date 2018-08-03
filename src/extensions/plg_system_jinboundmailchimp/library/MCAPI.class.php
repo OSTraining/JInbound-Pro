@@ -119,6 +119,18 @@ class MCAPI
 
             } elseif ($response->code < 400) {
                 $error = new Exception('Mailchimp tried to redirect', $response->code);
+
+            } else {
+                $message = json_decode($response->body);
+                $error   = new Exception(
+                    sprintf(
+                        '%s<br/>Mailchimp Responded with (%s) - %s',
+                        $endpoint,
+                        $message->status,
+                        $message->detail
+                    ),
+                    $message->status
+                );
             }
 
         } catch (Exception $error) {
@@ -126,7 +138,7 @@ class MCAPI
             $error = new Exception($throwable->getMessage(), $throwable->getCode());
         }
 
-        if (!$error instanceof Exception) {
+        if (empty($error) || !$error instanceof Exception) {
             $error = new Exception('Unknown error trying to connect to Mailchimp', 500);
         }
 
@@ -1334,14 +1346,47 @@ class MCAPI
      * @return object[]
      * @throws Exception
      */
-    public function lists()
+    public function getLists()
     {
         $response = $this->callServer('lists');
         if (!empty($response->lists)) {
             return $response->lists;
         }
 
-        return null;
+        return array();
+    }
+
+    /**
+     * @param string $listId
+     *
+     * @return object[]
+     * @throws Exception
+     */
+    public function getCategories($listId)
+    {
+        $response = $this->callServer("lists/{$listId}/interest-categories");
+        if (!empty($response->categories)) {
+            return $response->categories;
+        }
+
+        return array();
+    }
+
+    public function getGroups($listId)
+    {
+        $categories = $this->getCategories($listId);
+
+        $groups = array();
+        foreach ($categories as $category) {
+            $categoryId = $category->id;
+
+            $response = $this->callServer("lists/{$listId}/interest-categories/{$categoryId}/interests");
+            if (!empty($response->interests)) {
+                $groups = array_merge($groups, $response->interests);
+            }
+        }
+
+        return $groups;
     }
 
     /**
