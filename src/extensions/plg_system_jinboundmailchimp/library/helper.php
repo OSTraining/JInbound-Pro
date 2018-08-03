@@ -23,22 +23,90 @@ jimport('fof.include');
 
 class JinboundMailchimp
 {
-    protected $customFields       = array();
-    protected $addMCGroups        = array();
-    protected $removeMCGroups     = array();
-    protected $groupingsGroupMap  = array();
-    protected $groupingsListMap   = array();
-    protected $groupingsGroupName = array();
-    private   $name               = 'mailchimp';
-    private   $mcApi;
-    private   $delete_member      = false;
+    /**
+     * @var array
+     */
+    protected $customFields = array();
 
-    // MC groups
-    private $send_goodbye = true;
-    private $send_notify  = true;
-    private $email_type   = 'html';
-    private $double_optin = true;
-    private $send_welcome = false;
+    /**
+     * @var array
+     */
+    protected $addMCGroups = array();
+
+    /**
+     * @var array
+     */
+    protected $removeMCGroups = array();
+
+    /**
+     * @var array
+     */
+    protected $groupingsGroupMap = array();
+
+    /**
+     * @var array
+     */
+    protected $groupingsListMap = array();
+
+    /**
+     * @var array
+     */
+    protected $groupingsGroupName = array();
+
+    /**
+     * @var array
+     */
+    protected $addGroups = array();
+
+    /**
+     * @var array
+     */
+    protected $removeGroups = array();
+
+    /**
+     * @var string
+     */
+    protected $name = 'mailchimp';
+
+    /**
+     * @var MCAPI
+     */
+    protected $mcApi;
+
+    /**
+     * @var bool|mixed
+     */
+    protected $deleteMember = false;
+
+    /**
+     * @var bool|mixed
+     */
+    protected $sendGoodbye = true;
+
+    /**
+     * @var bool
+     */
+    protected $sendNotify = true;
+
+    /**
+     * @var string
+     */
+    protected $emailType = 'html';
+
+    /**
+     * @var bool
+     */
+    protected $doubleOptin = true;
+
+    /**
+     * @var bool
+     */
+    protected $sendWelcome = false;
+
+    /**
+     * @var array()
+     */
+    protected static $lists = null;
 
     public function __construct($config = array())
     {
@@ -47,19 +115,16 @@ class JinboundMailchimp
         $apiKey = $configParams->get('mailchimp_key');
         if ($apiKey) {
             // Load the MailChimp library
-            require_once dirname(__FILE__) . '/MCAPI.class.php';
+            require_once __DIR__ . '/MCAPI.class.php';
 
-            $this->delete_member = $configParams->get('delete_member');
-            $this->send_goodbye  = $configParams->get('send_goodbye');
-            $this->send_notify   = $configParams->get('send_notify');
-            $this->email_type    = $configParams->get('email_type');
-            $this->double_optin  = $configParams->get('double_optin');
-            $this->send_welcome  = $configParams->get('send_welcome');
+            $this->deleteMember = $configParams->get('deleteMember');
+            $this->sendGoodbye  = $configParams->get('sendGoodbye');
+            $this->sendNotify   = $configParams->get('sendNotify');
+            $this->emailType    = $configParams->get('emailType');
+            $this->doubleOptin  = $configParams->get('doubleOptin');
+            $this->sendWelcome  = $configParams->get('sendWelcome');
 
             $this->mcApi = new MCAPI($apiKey);
-
-            $this->addGroups    = array();
-            $this->removeGroups = array();
 
             // Load custom fields
             $this->loadCustomFieldsAssignments();
@@ -230,9 +295,9 @@ class JinboundMailchimp
                     $this->mcApi->listUnsubscribe(
                         $mcListToRemove,
                         $email,
-                        $this->delete_member,
-                        $this->send_goodbye,
-                        $this->send_notify);
+                        $this->deleteMember,
+                        $this->sendGoodbye,
+                        $this->sendNotify);
                 }
                 $mcSubscribeId = $contact_id . ':' . $mcListToRemove;
                 $session->clear('mailchimp.' . $mcSubscribeId, 'plg_system_jinboundmailchimp');
@@ -385,11 +450,11 @@ class JinboundMailchimp
                             $mcListToAdd,
                             $email,
                             $mergeVals,
-                            $this->email_type,
-                            $this->double_optin,
+                            $this->emailType,
+                            $this->doubleOptin,
                             true,
                             false,
-                            $this->send_welcome)) {
+                            $this->sendWelcome)) {
                             // Add new MailChimp subscription to session to avoid that MailChimp sends multiple
                             // emails for one subscription (before subscription is confirmed by the user)
                             $session->set('mailchimp.' . $mcSubscribeId, 'new', 'plg_system_jinboundmailchimp');
@@ -725,25 +790,22 @@ class JinboundMailchimp
         return array();
     }
 
-    /*
-     * Return the custom fields for this subscription level.
+    /**
+     * @return array
      */
-
-    public function getMCListSelectOptions($level)
+    public function getLists()
     {
-        if ($this->mcApi) {
-            // Put groups in select field
-            $groups    = $this->getGroups($level);
-            $options   = array();
-            $options[] = JHTML::_('select.option', '', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'));
-            foreach ($groups as $title => $id) {
-                $options[] = JHTML::_('select.option', $id, $title);
-            }
+        if (static::$lists === null && $this->mcApi) {
+            try {
+                static::$lists = $this->mcApi->lists();
 
-            return $options;
+            } catch (Exception $e) {
+                static::$lists = array();
+                JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+            }
         }
 
-        return array();
+        return static::$lists;
     }
 
     /*

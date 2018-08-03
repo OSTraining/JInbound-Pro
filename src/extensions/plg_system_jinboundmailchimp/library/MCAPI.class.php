@@ -1,4 +1,7 @@
 <?php
+
+use Joomla\Registry\Registry;
+
 /**
  * @package             jInbound
  * @subpackage          plg_system_jinboundmailchimp
@@ -14,75 +17,49 @@
  * This header must not be removed. Additional contributions/changes
  * may be added to this header as long as no information is deleted.
  */
-
-/**
- * Class MCAPI
- *
- * @deprecated v3.0.0 This needs to be reviewed for API v3.0
- */
 class MCAPI
 {
-    public $version = "1.3";
-    public $errorMessage;
-    public $errorCode;
+    protected $apiVersion = '3.0';
 
     /**
-     * Cache the information on the API location on the server
+     * @var string
      */
-    public $apiUrl;
+    protected $apiHost = 'api.mailchimp.com';
 
     /**
-     * Default to a 300 second timeout on server calls
+     * @var int
      */
-    public $timeout = 300;
+    protected $timeout = 300;
 
     /**
-     * Default to a 8K chunk size
+     * @var int
      */
-    public $chunkSize = 8192;
+    protected $chunkSize = 8192;
 
     /**
-     * Cache the user api_key so we only have to log in once per client instantiation
+     * @var string
      */
-    public $api_key;
+    protected $apikey = null;
 
     /**
-     * Cache the user api_key so we only have to log in once per client instantiation
+     * @var JHttp
      */
-    public $secure = false;
+    protected $http = null;
 
     /**
-     * Connect to the MailChimp API for a given list.
-     *
      * @param string $apikey Your MailChimp apikey
-     * @param string $secure Whether or not this should use a secure connection
+     *
+     * @return void
      */
-    public function __construct($apikey, $secure = false)
+    public function __construct($apikey)
     {
-        $this->secure  = $secure;
-        $this->apiUrl  = parse_url("http://api.mailchimp.com/" . $this->version . "/?output=php");
-        $this->api_key = $apikey;
-    }
-
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    public function setTimeout($seconds)
-    {
-        if (is_int($seconds)) {
-            $this->timeout = $seconds;
-            return true;
-        }
-    }
-
-    public function useSecure($val)
-    {
-        if ($val === true) {
-            $this->secure = true;
-        } else {
-            $this->secure = false;
+        if (strpos($apikey, '-') !== false) {
+            $parts = explode('-', $apikey);
+            if ($dataCenter = array_pop($parts)) {
+                $this->apikey   = $apikey;
+                $this->hostName = $dataCenter . '.api.mailchimp.com';
+                $this->http     = new JHttp();
+            }
         }
     }
 
@@ -105,104 +82,56 @@ class MCAPI
     }
 
     /**
-     * Actually connect to the server and call the requested methods, parsing the result
+     * Connect to the server and call the requested methods, parsing the result
      * You should never have to call this function manually
+     *
+     * @param string $task
+     * @param string $method
+     *
+     * @return mixed
+     * @throws Exception
+     * @throws Throwable
      */
-    public function callServer($method, $params)
+    protected function callServer($endpoint, $method = 'get')
     {
-        $dc = "us1";
-        if (strstr($this->api_key, "-")) {
-            list($key, $dc) = explode("-", $this->api_key, 2);
-            if (!$dc) {
-                $dc = "us1";
+        try {
+            if (!$this->apikey) {
+                throw new Exception('No API key');
             }
-        }
-        $host             = $dc . "." . $this->apiUrl["host"];
-        $params["apikey"] = $this->api_key;
 
-        $this->errorMessage = "";
-        $this->errorCode    = "";
-        $sep_changed        = false;
-        //sigh, apparently some distribs change this to &amp; by default
-        if (ini_get("arg_separator.output") != "&") {
-            $sep_changed = true;
-            $orig_sep    = ini_get("arg_separator.output");
-            ini_set("arg_separator.output", "&");
-        }
-        $post_vars = http_build_query($params);
-        if ($sep_changed) {
-            ini_set("arg_separator.output", $orig_sep);
-        }
-
-        $payload = "POST " . $this->apiUrl["path"] . "?" . $this->apiUrl["query"] . "&method=" . $method . " HTTP/1.0\r\n";
-        $payload .= "Host: " . $host . "\r\n";
-        $payload .= "User-Agent: MCAPI/" . $this->version . "\r\n";
-        $payload .= "Content-type: application/x-www-form-urlencoded\r\n";
-        $payload .= "Content-length: " . strlen($post_vars) . "\r\n";
-        $payload .= "Connection: close \r\n\r\n";
-        $payload .= $post_vars;
-
-        ob_start();
-        if ($this->secure) {
-            $sock = fsockopen("ssl://" . $host, 443, $errno, $errstr, 30);
-        } else {
-            $sock = fsockopen($host, 80, $errno, $errstr, 30);
-        }
-        if (!$sock) {
-            $this->errorMessage = "Could not connect (ERR $errno: $errstr)";
-            $this->errorCode    = "-99";
-            ob_end_clean();
-            return false;
-        }
-
-        $response = "";
-        fwrite($sock, $payload);
-        stream_set_timeout($sock, $this->timeout);
-        $info = stream_get_meta_data($sock);
-        while ((!feof($sock)) && (!$info["timed_out"])) {
-            $response .= fread($sock, $this->chunkSize);
-            $info     = stream_get_meta_data($sock);
-        }
-        fclose($sock);
-        ob_end_clean();
-        if ($info["timed_out"]) {
-            $this->errorMessage = "Could not read response (timed out)";
-            $this->errorCode    = -98;
-            return false;
-        }
-
-        list($headers, $response) = explode("\r\n\r\n", $response, 2);
-        $headers = explode("\r\n", $headers);
-        $errored = false;
-        foreach ($headers as $h) {
-            if (substr($h, 0, 26) === "X-MailChimp-API-Error-Code") {
-                $errored    = true;
-                $error_code = trim(substr($h, 27));
-                break;
+            $method = strtolower($method);
+            if (!method_exists($this->http, $method)) {
+                throw new Exception('Invalid method - ' . $method);
             }
+
+            /** @var JHttpResponse $response */
+            $response = call_user_func_array(
+                array($this->http, $method),
+                array(
+                    sprintf('https://%s/%s/%s', $this->hostName, $this->apiVersion, $endpoint),
+                    array(
+                        'Authorization' => 'Basic ' . base64_encode('jInbound:' . $this->apikey)
+                    )
+                )
+            );
+
+            if ($response->code < 300) {
+                return json_decode($response->body);
+
+            } elseif ($response->code < 400) {
+                $error = new Exception('Mailchimp tried to redirect', $response->code);
+            }
+
+        } catch (Exception $error) {
+        } catch (Throwable $throwable) {
+            $error = new Exception($throwable->getMessage(), $throwable->getCode());
         }
 
-        if (ini_get("magic_quotes_runtime")) {
-            $response = stripslashes($response);
+        if (!$error instanceof Exception) {
+            $error = new Exception('Unknown error trying to connect to Mailchimp', 500);
         }
 
-        $serial = unserialize($response);
-        if ($response && $serial === false) {
-            $response = array("error" => "Bad Response.  Got This: " . $response, "code" => "-99");
-        } else {
-            $response = $serial;
-        }
-        if ($errored && is_array($response) && isset($response["error"])) {
-            $this->errorMessage = $response["error"];
-            $this->errorCode    = $response["code"];
-            return false;
-        } elseif ($errored) {
-            $this->errorMessage = "No error message was found";
-            $this->errorCode    = $error_code;
-            return false;
-        }
-
-        return $response;
+        throw $error;
     }
 
     /**
@@ -437,7 +366,18 @@ class MCAPI
      *                             supported - a Google Analytics tags will be added to all links in the campaign with
      *                             this string attached. Others may be added in the future boolean auto_footer optional
      *                             Whether or not we should auto-generate the footer for your content. Mostly useful
-     *                             for content from URLs or Imports boolean inline_css optional Whether or not css should be automatically inlined when this campaign is sent, defaults to false. boolean generate_text optional Whether of not to auto-generate your Text content from the HTML content. Note that this will be ignored if the Text part of the content passed is not empty, defaults to false. boolean auto_tweet optional If set, this campaign will be auto-tweeted when it is sent - defaults to false. Note that if a Twitter account isn't linked, this will be silently ignored. boolean timewarp optional If set, this campaign must be scheduled 24 hours in advance of sending - default to false. Only valid for "regular" campaigns and "absplit" campaigns that split on schedule_time. boolean ecomm360 optional If set, our <a href="http://www.mailchimp.com/blog/ecommerce-tracking-plugin/" target="_blank">Ecommerce360 tracking</a> will be enabled for links in the campaign
+     *                             for content from URLs or Imports boolean inline_css optional Whether or not css
+     *                             should be automatically inlined when this campaign is sent, defaults to false.
+     *                             boolean generate_text optional Whether of not to auto-generate your Text content
+     *                             from the HTML content. Note that this will be ignored if the Text part of the
+     *                             content passed is not empty, defaults to false. boolean auto_tweet optional If set,
+     *                             this campaign will be auto-tweeted when it is sent - defaults to false. Note that if
+     *                             a Twitter account isn't linked, this will be silently ignored. boolean timewarp
+     *                             optional If set, this campaign must be scheduled 24 hours in advance of sending -
+     *                             default to false. Only valid for "regular" campaigns and "absplit" campaigns that
+     *                             split on schedule_time. boolean ecomm360 optional If set, our <a
+     *                             href="http://www.mailchimp.com/blog/ecommerce-tracking-plugin/"
+     *                             target="_blank">Ecommerce360 tracking</a> will be enabled for links in the campaign
      * @param array  $content      the content for this campaign - use a struct with the following keys:
      *                             string html for pasted HTML content
      *                             string text for the plain-text version
@@ -1392,70 +1332,16 @@ class MCAPI
     }
 
     /**
-     * Retrieve all of the lists defined for your user account
-     *
-     * @section List Related
-     * @example mcapi_lists.php
-     * @example xml-rpc_lists.php
-     *
-     * @param array $filters a hash of filters to apply to this query - all are optional:
-     *                       string list_id optional - return a single list using a known list_id. Accepts multiples
-     *                       separated by commas when not using exact matching string list_name optional - only lists
-     *                       that match this name string from_name optional - only lists that have a default from name
-     *                       matching this string from_email optional - only lists that have a default from email
-     *                       matching this string from_subject optional - only lists that have a default from email
-     *                       matching this string created_before optional - only show lists that were created before
-     *                       this date/time (in GMT) - format is YYYY-MM-DD HH:mm:ss (24hr) string created_after
-     *                       optional - only show lists that were created since this date/time (in GMT) - format is
-     *                       YYYY-MM-DD HH:mm:ss (24hr) boolean exact optional - flag for whether to filter on exact
-     *                       values when filtering, or search within content for filter values - defaults to true
-     * @param int   $start   optional - control paging of lists, start results at this list #, defaults to 1st page of
-     *                       data  (page 0)
-     * @param int   $limit   optional - control paging of lists, number of lists to return with each call, defaults to
-     *                       25 (max=100)
-     *
-     * @return array an array with keys listed in Returned Fields below
-     * @returnf int total the total number of lists which matched the provided filters
-     * @returnf array data the lists which matched the provided filters, including the following for
-     * string id The list id for this list. This will be used for all other list management functions.
-     * int web_id The list id used in our web app, allows you to create a link directly to it
-     * string name The name of the list.
-     * string date_created The date that this list was created.
-     * boolean email_type_option Whether or not the List supports multiple formats for emails or just HTML
-     * boolean use_awesomebar Whether or not campaigns for this list use the Awesome Bar in archives by default
-     * string default_from_name Default From Name for campaigns using this list
-     * string default_from_email Default From Email for campaigns using this list
-     * string default_subject Default Subject Line for campaigns using this list
-     * string default_language Default Language for this list's forms
-     * int list_rating An auto-generated activity score for the list (0 - 5)
-     * array stats various stats and counts for the list
-     * int member_count The number of active members in the given list.
-     * int unsubscribe_count The number of members who have unsubscribed from the given list.
-     * int cleaned_count The number of members cleaned from the given list.
-     * int member_count_since_send The number of active members in the given list since the last campaign was sent
-     * int unsubscribe_count_since_send The number of members who have unsubscribed from the given list since the last
-     * campaign was sent int cleaned_count_since_send The number of members cleaned from the given list since the last
-     * campaign was sent int campaign_count The number of campaigns in any status that use this list int grouping_count
-     * The number of Interest Groupings for this list int group_count The number of Interest Groups (regardless of
-     * grouping) for this list int merge_var_count The number of merge vars for this list (not including the required
-     * EMAIL one) int avg_sub_rate the average number of subscribe per month for the list (empty value if we haven't
-     * calculated this yet) int avg_unsub_rate the average number of unsubscribe per month for the list (empty value if
-     * we haven't calculated this yet) int target_sub_rate the target subscription rate for the list to keep it growing
-     * (empty value if we haven't calculated this yet) int open_rate the average open rate per campaign for the list
-     * (empty value if we haven't calculated this yet) int click_rate the average click rate per campaign for the list
-     * (empty value if we haven't calculated this yet) array modules Any list specific modules installed for this list
-     * (example is SocialPro)
+     * @return mixed
      */
-    public function lists(
-        $filters = array(),
-        $start = 0,
-        $limit = 25
-    ) {
-        $params            = array();
-        $params["filters"] = $filters;
-        $params["start"]   = $start;
-        $params["limit"]   = $limit;
-        return $this->callServer("lists", $params);
+    public function lists()
+    {
+        $response = $this->callServer('lists');
+        if (!empty($response->lists)) {
+            return $response->lists;
+        }
+
+        return null;
     }
 
     /**

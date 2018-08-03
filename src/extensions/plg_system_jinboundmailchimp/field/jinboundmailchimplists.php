@@ -23,13 +23,24 @@ class JFormFieldJinboundMailchimplists extends JFormFieldList
 {
     protected $type = 'JinboundMailchimplists';
 
+    protected $mcOptions = null;
+
     protected function getOptions()
     {
         $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
-        require_once realpath(dirname(__FILE__) . '/../library/helper.php');
+        require_once realpath(__DIR__ . '/../library/helper.php');
+
         $helper = new JinboundMailchimp(array('params' => $plugin->params));
-        // Put groups in select field
-        $options = $helper->getMCListSelectOptions($this->form->getValue('id'));
-        return array_merge(parent::getOptions(), $options);
+
+        if ($this->mcOptions === null) {
+            $lists = $helper->getLists();
+
+            $this->mcOptions = array();
+            foreach ($lists as $list) {
+                $this->mcOptions[] = JHtml::_('select.option', $list->id, $list->name);
+            }
+        }
+
+        return array_merge(parent::getOptions(), $this->mcOptions);
     }
 }
