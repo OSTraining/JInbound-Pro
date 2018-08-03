@@ -39,8 +39,8 @@ class JFormFieldJinboundMailchimplists extends JFormFieldList
             $lists = $helper->getLists();
 
             $this->mcOptions = array();
-            foreach ($lists as $list) {
-                $this->mcOptions[] = JHtml::_('select.option', $list->id, $list->name);
+            foreach ($lists as $listId => $list) {
+                $this->mcOptions[] = JHtml::_('select.option', $listId, $list->name);
             }
         }
 

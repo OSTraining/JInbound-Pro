@@ -791,13 +791,20 @@ class JinboundMailchimp
     }
 
     /**
-     * @return array
+     * @return object[]
+     * @throws Exception
      */
     public function getLists()
     {
         if (static::$lists === null && $this->mcApi) {
             try {
-                static::$lists = $this->mcApi->lists();
+                static::$lists = array();
+
+                $lists = $this->mcApi->getLists();
+                foreach ($lists as $list) {
+                    static::$lists[$list->id] = $list;
+                }
+
 
             } catch (Exception $e) {
                 static::$lists = array();
