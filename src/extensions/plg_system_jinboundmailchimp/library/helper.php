@@ -104,7 +104,7 @@ class JinboundMailchimp
     protected $sendWelcome = false;
 
     /**
-     * @var array()
+     * @var object[]
      */
     protected static $lists = null;
 

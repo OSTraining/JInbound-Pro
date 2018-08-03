@@ -90,7 +90,6 @@ class MCAPI
      *
      * @return mixed
      * @throws Exception
-     * @throws Throwable
      */
     protected function callServer($endpoint, $method = 'get')
     {
@@ -1332,7 +1331,8 @@ class MCAPI
     }
 
     /**
-     * @return mixed
+     * @return object[]
+     * @throws Exception
      */
     public function lists()
     {
