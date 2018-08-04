@@ -52,10 +52,16 @@ class plgSystemJInboundmailchimp extends JPlugin
                 require_once $includePath;
             }
         }
+        JLoader::register('JinboundMailchimp', realpath(__DIR__ . '/library/helper.php'));
 
         $this->enabled = defined('JINB_LOADED') && $this->params->get('mailchimp_key');
     }
 
+    /**
+     * @param JForm $form
+     *
+     * @return bool
+     */
     public function onContentPrepareForm($form)
     {
         if (!$this->enabled) {
@@ -97,7 +103,16 @@ class plgSystemJInboundmailchimp extends JPlugin
         return $result;
     }
 
-    public function onJInboundChangeState($context, $campaign_id, $contacts, $status_id)
+    /**
+     * @param string $context
+     * @param int    $campaignId
+     * @param int[]  $contacts
+     * @param int    $statusId
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function onJInboundChangeState($context, $campaignId, $contacts, $statusId)
     {
         if (!$this->enabled || $context !== 'com_jinbound.contact.status') {
             return;
@@ -107,11 +122,10 @@ class plgSystemJInboundmailchimp extends JPlugin
             $this->app->enqueueMessage(__METHOD__);
         }
 
-        require_once realpath(dirname(__FILE__) . '/library/helper.php');
         $helper = new JinboundMailchimp(array('params' => $this->params));
 
-        foreach ($contacts as $contact_id) {
-            $helper->onJinboundSetStatus($status_id, $campaign_id, $contact_id);
+        foreach ($contacts as $contactId) {
+            $helper->onJinboundSetStatus($statusId, $campaignId, $contactId);
         }
     }
 }
