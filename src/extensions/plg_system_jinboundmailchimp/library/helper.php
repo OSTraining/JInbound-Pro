@@ -208,7 +208,15 @@ class JinboundMailchimp
         }
     }
 
-    public function onJinboundSetStatus($status, $campaign_id, $contact_id)
+    /**
+     * @param int $statusId
+     * @param int $campaignId
+     * @param int $contactId
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function onJinboundSetStatus($statusId, $campaignId, $contactId)
     {
         if (!$this->mcApi) {
             return;
@@ -217,87 +225,50 @@ class JinboundMailchimp
         // load campaign, status, contact
         $app = JFactory::getApplication();
         $db  = JFactory::getDbo();
-        foreach (array('campaign', 'status', 'contact') as $var) {
-            $class = 'JInboundTable' . ucwords($var);
-            require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/tables/' . $var . '.php';
-            $$var = new $class($db);
-            $$var->load(${$var . '_id'});
-            if (property_exists($$var, 'params') && !is_a($$var->params, 'JRegistry')) {
-                $reg = new JRegistry();
-                $reg->loadString($$var->params);
-                $$var->params = $reg;
-            }
-        }
 
-        // Load lists
-        $addMCLists    = $campaign->params->get('addlists', array());
-        $removeMCLists = $campaign->params->get('removelists', array());
-        $rem           = array();
-        foreach ($addMCLists as $k => $v) {
-            if (empty($v)) {
-                $rem[] = $k;
-            }
-        }
-        foreach ($rem as $k) {
-            unset($addMCLists[$k]);
-        }
-        $rem = array();
-        foreach ($removeMCLists as $k => $v) {
-            if (empty($v)) {
-                $rem[] = $k;
-            }
-        }
-        foreach ($rem as $k) {
-            unset($removeMCLists[$k]);
-        }
-        $this->addGroups    = array($campaign->id => $addMCLists);
-        $this->removeGroups = array($campaign->id => $removeMCLists);
-        //$this->loadUserGroups($user_id, $addMCLists, $removeMCLists);
+        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
 
-        // Load groups
-        $addMCGroups    = $campaign->params->get('addgroups', array());
-        $removeMCGroups = $campaign->params->get('removegroups', array());
-        $rem            = array();
-        foreach ($addMCGroups as $k => $v) {
-            if (empty($v)) {
-                $rem[] = $k;
-            }
-        }
-        foreach ($rem as $k) {
-            unset($addMCGroups[$k]);
-        }
-        $rem = array();
-        foreach ($removeMCGroups as $k => $v) {
-            if (empty($v)) {
-                $rem[] = $k;
-            }
-        }
-        foreach ($rem as $k) {
-            unset($removeMCGroups[$k]);
-        }
-        $this->addMCGroups    = array($campaign->id => $addMCGroups);
-        $this->removeMCGroups = array($campaign->id => $removeMCGroups);
-        $this->initMCGroups();
+        $campaign = JTable::getInstance('Campaign', 'JinboundTable');
+        $campaign->load($campaignId);
+        $campaign->params = new Joomla\Registry\Registry($campaign->params);
 
-        if (!$status->final) {
-            $removeMCLists        = array();
-            $removeMCGroups       = array();
-            $this->removeGroups   = array();
-            $this->removeMCGroups = array();
-        } else {
-            $addMCLists        = array();
-            $addMCGroups       = array();
-            $this->addGroups   = array();
-            $this->addMCGroups = array();
-        }
+        $status = JTable::getInstance('Status', 'JinboundTable');
+        $status->load($statusId);
 
-        // Get the user's name and email
+        $contact = JTable::getInstance('Contact', 'JinboundTable');
+        $contact->load($contactId);
+
+        $listsAdd = array_filter(
+            array_map('intval', $campaign->params->get('addlists', array()))
+        );
+
+        $listsRemove = array_filter(
+            array_map('intval', $campaign->params->get('removelists', array()))
+        );
+
+        $groupsAdd = array_filter(
+            array_map('intval', $campaign->params->get('addgroups', array()))
+        );
+
+        $groupsRemove = array_filter(
+            array_map('intval', $campaign->params->get('removegroups', array()))
+        );
+
+        // Get the required field names
         $firstName = $contact->first_name;
         $lastName  = $contact->last_name;
         $email     = $contact->email;
 
         // Get the user's MailChimp lists
-        $currentLists = $this->getEmailLists($email);
+
+        try {
+            $lists = $this->mcApi->getListsForEmail($email);
+
+        } catch (Exception $e) {
+            JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+        }
+        return;
+        $currentLists = $this->getMemberships($email);
 
         // Get the session
         $session = JFactory::getSession();
@@ -314,7 +285,7 @@ class JinboundMailchimp
                         $this->sendGoodbye,
                         $this->sendNotify);
                 }
-                $mcSubscribeId = $contact_id . ':' . $mcListToRemove;
+                $mcSubscribeId = $contactId . ':' . $mcListToRemove;
                 $session->clear('mailchimp.' . $mcSubscribeId, 'plg_system_jinboundmailchimp');
             }
         }
@@ -339,7 +310,7 @@ class JinboundMailchimp
                 ->leftJoin('#__jinbound_pages AS Page ON Page.formid = FormField.form_id')
                 ->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.campaign_id = Page.campaign')
                 ->where('Page.id IS NOT NULL')
-                ->where('Page.campaign = ' . (int)$campaign_id)
+                ->where('Page.campaign = ' . (int)$campaignId)
                 ->group('Field.id')
             )->loadObjectList();
             if (JDEBUG) {
@@ -362,7 +333,7 @@ class JinboundMailchimp
             // we have to also check the post data with this request
             // so what we'll do is loop through the fields first, set initial data
             // from the conversions, then override using post data
-            $contactConversions = JInboundHelperContact::getContactConversions($contact_id);
+            $contactConversions = JInboundHelperContact::getContactConversions($contactId);
             $token              = $app->input->get('token', '', 'cmd');
             $rawPostParam       = 'jform';
             if (!empty($token)) {
@@ -410,7 +381,7 @@ class JinboundMailchimp
             // Add subscriber to lists
             foreach ($addMCLists as $mcListToAdd) {
                 if (!(is_array($currentLists) && in_array($mcListToAdd, $currentLists))) {
-                    $mcSubscribeId = $contact_id . ':' . $mcListToAdd;
+                    $mcSubscribeId = $contactId . ':' . $mcListToAdd;
                     if ($session->get('mailchimp.' . $mcSubscribeId, '', 'plg_system_jinboundmailchimp') != 'new') {
                         // Subscribe if email is not already in the MailChimp list and
                         // if the subscription is not already sent for that user (but not confirmed yet)
@@ -480,7 +451,7 @@ class JinboundMailchimp
         }
 
         // Get the user's MailChimp lists
-        $currentLists = $this->getEmailLists($email);
+        $currentLists = $this->getMemberships($email);
 
         // Remove MC group from existing list subscription
         if (!empty($removeMCGroups) && is_array($currentLists)) {
@@ -537,62 +508,6 @@ class JinboundMailchimp
         }
     }
 
-    private function initMCGroups()
-    {
-        if ($this->mcApi) {
-            $addLevels          = array_keys($this->addMCGroups);
-            $removeLevels       = array_keys($this->removeMCGroups);
-            $addAndRemoveLevels = array_merge($addLevels, $removeLevels);
-            $allLevels          = array_unique($addAndRemoveLevels);
-            foreach ($allLevels as $levelId) {
-                $this->getMCGroups($levelId);
-            }
-        }
-    }
-
-    private function getMCGroups($levelId)
-    {
-        if (!$this->mcApi) {
-            return null;
-        }
-
-        static $mcGroups = array();
-
-        if (!array_key_exists($levelId, $mcGroups)) {
-            $mcGroups[$levelId] = array();
-        }
-
-        if (empty($mcGroups[$levelId])) {
-            $mcLists = $this->getGroups();
-            foreach ($mcLists as $listTitle => $listId) {
-                if (array_key_exists($levelId, $this->addGroups) && in_array($listId, $this->addGroups[$levelId])) {
-                    $interestGroupings = $this->mcApi->listInterestGroupings($listId);
-                    if ($interestGroupings) {
-                        foreach ($interestGroupings as $groupings) {
-                            $groupingsId   = $groupings['id'];
-                            $groupingsName = trim($groupings['name']);
-                            // Add to grouping-list map
-                            $this->groupingsListMap[$groupingsId] = $listId;
-                            foreach ($groupings['groups'] as $g) {
-                                $groupName                  = trim($g['name']);
-                                $groupName                  = trim(preg_replace('/<[^>]+>/', "", $groupName));
-                                $title                      = $groupName . ' ( ' . $groupingsName . ' - ' . $listTitle . ' )';
-                                $id                         = md5($title);
-                                $mcGroups[$levelId][$title] = $id;
-                                // Add to grouping-group map
-                                $this->groupingsGroupMap[$id] = $groupingsId;
-                                // Add group name
-                                $this->groupingsGroupName[$id] = $g['name'];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $mcGroups[$levelId];
-    }
-
     /**
      * @param string|string[] $listIds
      *
@@ -615,10 +530,10 @@ class JinboundMailchimp
                 static::$groups[$listId] = array();
 
                 try {
-                    static::$groups[$listId] = array_merge(
-                        static::$groups[$listId],
-                        $this->mcApi->getGroups($listId)
-                    );
+                    $groups = $this->mcApi->getGroups($listId);
+                    foreach ($groups as $group) {
+                        static::$groups[$listId][$group->id] = $group;
+                    }
 
                 } catch (Exception $e) {
                     JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
@@ -649,7 +564,12 @@ class JinboundMailchimp
         foreach ($listIds as $listId) {
             if (!isset(static::$categories[$listId])) {
                 try {
-                    static::$categories[$listId] = $this->mcApi->getCategories($listId);
+                    static::$categories[$listId] = array();
+
+                    $categories = $this->mcApi->getCategories($listId);
+                    foreach ($categories as $category) {
+                        static::$categories[$listId][$category->id] = $category;
+                    }
 
                 } catch (Exception $e) {
                     JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
@@ -660,17 +580,55 @@ class JinboundMailchimp
         return array_intersect_key(static::$categories, array_flip($listIds));
     }
 
-    /*
-     * Removes a MailChimp user to a MailChimp group.
+    /**
+     * @param $email
+     *
+     * @return object[]
+     * @throws Exception
      */
-
-    public function getEmailLists($email)
+    public function getMemberships($email)
     {
         if ($this->mcApi) {
-            return $this->mcApi->listsForEmail($email);
+            try {
+                if ($memberships = $this->mcApi->getListsForEmail($email)) {
+                    $lists = $this->getLists();
+                    foreach ($memberships as $listId => $membership) {
+                        $membership->list = $lists[$listId];
+
+                        $categories = $this->getCategories($listId);
+                        $categories = array_pop($categories);
+
+                        $groups = $this->getGroups($listId);
+                        $groups = array_pop($groups);
+
+                        $interests = array_filter(json_decode(json_encode($membership->interests), true));
+
+                        $mergedGroups = array();
+                        foreach ($interests as $groupId => $true) {
+                            $group = $groups[$groupId];
+                            $categoryId = $group->category_id;
+
+                            if (!isset($mergedGroups[$categoryId])) {
+                                $mergedGroups[$categoryId] = (object)array(
+                                    'category' => clone $categories[$categoryId],
+                                    'groups' => array()
+                                );
+                            }
+                            $mergedGroups[$categoryId]->groups[$groupId] = $group;
+                        }
+
+                        $membership->interests = $mergedGroups;
+                    }
+
+                    return $memberships;
+                }
+
+            } catch (Exception $e) {
+                JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+            }
         }
 
-        return null;
+        return array();
     }
 
     /*
@@ -787,22 +745,6 @@ class JinboundMailchimp
                 }
             }
         }
-    }
-
-    public function getEmailListDetails($email)
-    {
-        if ($this->mcApi) {
-            $lists = $this->mcApi->listsForEmail($email);
-            if ($lists) {
-                $details = array();
-                foreach ($lists as $id) {
-                    $details[$id] = $this->mcApi->listMemberInfo($id, $email);
-                }
-                return $details;
-            }
-        }
-
-        return array();
     }
 
     /**
