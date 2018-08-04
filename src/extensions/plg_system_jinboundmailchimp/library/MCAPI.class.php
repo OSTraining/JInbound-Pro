@@ -86,33 +86,40 @@ class MCAPI
      * You should never have to call this function manually
      *
      * @param string $task
+     * @param array  $params
      * @param string $method
      *
      * @return mixed
      * @throws Exception
      */
-    protected function callServer($endpoint, $method = 'get')
+    protected function callServer($endpoint, array $params = null, $method = 'get')
     {
         try {
             if (!$this->apikey) {
                 throw new Exception('No API key');
             }
 
-            $method = strtolower($method);
-            if (!method_exists($this->http, $method)) {
-                throw new Exception('Invalid method - ' . $method);
-            }
-
-            /** @var JHttpResponse $response */
-            $response = call_user_func_array(
-                array($this->http, $method),
-                array(
-                    sprintf('https://%s/%s/%s', $this->hostName, $this->apiVersion, $endpoint),
-                    array(
-                        'Authorization' => 'Basic ' . base64_encode('jInbound:' . $this->apikey)
-                    )
-                )
+            $url     = sprintf('https://%s/%s/%s', $this->hostName, $this->apiVersion, $endpoint);
+            $headers = array(
+                'Authorization' => 'Basic ' . base64_encode('jInbound.MCAPI:' . $this->apikey)
             );
+
+            switch (strtolower($method)) {
+                case 'get':
+                    $query = $params ? '?' . http_build_query($params) : '';
+                    $response = $this->http->get($url.$query, $headers, $this->timeout);
+                    break;
+
+                case 'post':
+                    $response = $this->http->put($url, $params, $headers, $this->timeout);
+                    break;
+
+                default:
+                    if (!method_exists($this->http, $method)) {
+                        throw new Exception('Invalid method - ' . $method);
+                    }
+                    break;
+            }
 
             if ($response->code < 300) {
                 return json_decode($response->body);
@@ -2767,20 +2774,26 @@ class MCAPI
     }
 
     /**
-     * Retrieve all List Ids a member is subscribed to.
+     * @param string $emailAddress
      *
-     * @section Helper
-     *
-     * @param string $email_address the email address to check OR the email "id" returned from listMemberInfo,
-     *                              Webhooks, and Campaigns
-     *
-     * @return array An array of list_ids the member is subscribed to.
+     * @return object[]
+     * @throws Exception
      */
-    public function listsForEmail($email_address)
+    public function getListsForEmail($emailAddress)
     {
-        $params                  = array();
-        $params["email_address"] = $email_address;
-        return $this->callServer("listsForEmail", $params);
+        $lists = array();
+
+        $query = array(
+            'query' => $emailAddress
+        );
+        $response = $this->callServer('search-members', $query);
+        if (!empty($response->exact_matches->members)) {
+            foreach ($response->exact_matches->members as $member) {
+                $lists[$member->list_id] = $member;
+            }
+        }
+
+        return $lists;
     }
 
     /**
