@@ -605,13 +605,13 @@ class JinboundMailchimp
 
                         $mergedGroups = array();
                         foreach ($interests as $groupId => $true) {
-                            $group = $groups[$groupId];
+                            $group      = $groups[$groupId];
                             $categoryId = $group->category_id;
 
                             if (!isset($mergedGroups[$categoryId])) {
                                 $mergedGroups[$categoryId] = (object)array(
                                     'category' => clone $categories[$categoryId],
-                                    'groups' => array()
+                                    'groups'   => array()
                                 );
                             }
                             $mergedGroups[$categoryId]->groups[$groupId] = $group;
@@ -788,7 +788,10 @@ class JinboundMailchimp
 
                 foreach ($lists as $list) {
                     try {
-                        static::$fields[$list->id] = $this->mcApi->getFields($list->id);
+                        static::$fields[$list->id] = (object)array(
+                            'list'   => $list,
+                            'fields' => $this->mcApi->getFields($list->id)
+                        );
 
                     } catch (Exception $e) {
                         JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');

@@ -42,17 +42,14 @@ class JFormFieldJinboundMailchimpfields extends JFormFieldGroupedList
             require_once realpath(__DIR__ . '/../library/helper.php');
             $helper = new JinboundMailchimp(array('params' => $plugin->params));
 
-            $lists = $helper->getLists();
-            $fields = $helper->getFields();
-            foreach ($fields as $listId => $listFields) {
-                if (isset($lists[$listId])) {
-                    $listName = $lists[$listId]->name;
-                    static::$fields[$listName] = array(
-                        JHtml::_('select.option', 'email')
-                    );
-                    foreach ($listFields as $field) {
-                        static::$fields[$listName][] = JHtml::_('select.option', $field->tag, $field->name);
-                    }
+            $listFields = $helper->getFields();
+            foreach ($listFields as $listId => $fields) {
+                $listName                  = $fields->list->name;
+                static::$fields[$listName] = array(
+                    JHtml::_('select.option', 'email')
+                );
+                foreach ($fields->fields as $field) {
+                    static::$fields[$listName][] = JHtml::_('select.option', $field->tag, $field->name);
                 }
             }
         }
