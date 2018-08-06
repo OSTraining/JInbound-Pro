@@ -513,10 +513,10 @@ class JinboundMailchimp
      *
      * @param string|string[] $listId
      *
-     * @return object|object[]
+     * @return object[]
      * @throws Exception
      */
-    public function getList($listIds = null)
+    public function getLists($listIds = null)
     {
         if (static::$lists === null && $this->mcApi) {
             try {
@@ -536,15 +536,13 @@ class JinboundMailchimp
 
         if ($listIds === null) {
             return static::$lists;
-
-        } elseif (is_array($listIds)) {
-            return array_intersect_key(static::$lists, array_flip($listIds));
-
-        } elseif (!empty(static::$lists[$listIds])) {
-            return static::$lists[$listIds];
         }
 
-        return null;
+        if (!is_array($listIds)) {
+            $listIds = array($listIds);
+        }
+
+        return array_intersect_key(static::$lists, array_flip($listIds));
     }
 
     /**

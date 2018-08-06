@@ -60,7 +60,7 @@ class JFormFieldJinboundMailchimpgroups extends JFormFieldGroupedList
 
             $helper = new JinboundMailchimp(array('params' => $plugin->params));
 
-            $lists  = $helper->getList();
+            $lists  = $helper->getLists();
             $groups = $helper->getGroups($listIds);
 
             foreach ($groups as $listId => $listGroups) {
