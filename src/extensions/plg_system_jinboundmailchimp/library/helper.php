@@ -510,13 +510,13 @@ class JinboundMailchimp
 
     /**
      * Get either a hash for all MC Lists or a single list
-     * 
-     * @param string $listId
+     *
+     * @param string|string[] $listId
      *
      * @return object|object[]
      * @throws Exception
      */
-    public function getList($listId = null)
+    public function getList($listIds = null)
     {
         if (static::$lists === null && $this->mcApi) {
             try {
@@ -534,11 +534,17 @@ class JinboundMailchimp
             }
         }
 
-        if ($listId === null) {
+        if ($listIds === null) {
             return static::$lists;
+
+        } elseif (is_array($listIds)) {
+            return array_intersect_key(static::$lists, array_flip($listIds));
+
+        } elseif (!empty(static::$lists[$listIds])) {
+            return static::$lists[$listIds];
         }
 
-        return empty(static::$lists[$listId]) ? null : static::$lists[$listId];
+        return null;
     }
 
     /**
