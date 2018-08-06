@@ -509,6 +509,39 @@ class JinboundMailchimp
     }
 
     /**
+     * Get either a hash for all MC Lists or a single list
+     * 
+     * @param string $listId
+     *
+     * @return object|object[]
+     * @throws Exception
+     */
+    public function getList($listId = null)
+    {
+        if (static::$lists === null && $this->mcApi) {
+            try {
+                static::$lists = array();
+
+                $lists = $this->mcApi->getLists();
+                foreach ($lists as $list) {
+                    static::$lists[$list->id] = $list;
+                }
+
+
+            } catch (Exception $e) {
+                static::$lists = array();
+                JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+            }
+        }
+
+        if ($listId === null) {
+            return static::$lists;
+        }
+
+        return empty(static::$lists[$listId]) ? null : static::$lists[$listId];
+    }
+
+    /**
      * @param string|string[] $listIds
      *
      * @return array

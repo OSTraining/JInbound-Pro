@@ -36,7 +36,7 @@ class JFormFieldJinboundMailchimplists extends JFormFieldList
         $helper = new JinboundMailchimp(array('params' => $plugin->params));
 
         if ($this->mcOptions === null) {
-            $lists = $helper->getLists();
+            $lists = $helper->getList();
 
             $this->mcOptions = array();
             foreach ($lists as $listId => $list) {
