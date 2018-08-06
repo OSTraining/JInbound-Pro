@@ -28,6 +28,10 @@ class JFormFieldJinboundMailchimplists extends JFormFieldList
      */
     protected $mcOptions = null;
 
+    /**
+     * @return object[]
+     * @throws Exception
+     */
     protected function getOptions()
     {
         $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
