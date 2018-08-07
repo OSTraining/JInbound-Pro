@@ -26,21 +26,6 @@ class JinboundMailchimp
     /**
      * @var array
      */
-    protected $customFields = array();
-
-    /**
-     * @var array
-     */
-    protected $addMCGroups = array();
-
-    /**
-     * @var array
-     */
-    protected $removeMCGroups = array();
-
-    /**
-     * @var array
-     */
     protected $groupingsGroupMap = array();
 
     /**
@@ -140,71 +125,6 @@ class JinboundMailchimp
             $this->sendWelcome  = $configParams->get('sendWelcome');
 
             $this->mcApi = new MCAPI($apiKey);
-
-            // Load custom fields
-            $this->loadCustomFieldsAssignments();
-
-            // Load MC group assignments
-            $this->loadMCGroupAssignments();
-        }
-    }
-
-    protected function loadCustomFieldsAssignments()
-    {
-        if (!$this->mcApi) {
-            return;
-        }
-
-        $this->customFields = array();
-        $db                 = JFactory::getDbo();
-        $levels             = $db->setQuery('SELECT id, params FROM #__jinbound_campaigns')->loadObjectList();
-        $customFieldsKey    = strtolower($this->name) . '_customfields';
-        if (!empty($levels)) {
-            foreach ($levels as $level) {
-                if (is_string($level->params)) {
-                    $level->params = @json_decode($level->params);
-                    if (empty($level->params)) {
-                        $level->params = new stdClass();
-                    }
-                } elseif (empty($level->params)) {
-                    continue;
-                }
-                if (property_exists($level->params, $customFieldsKey)) {
-                    $this->customFields[$level->id] = array_filter($level->params->$customFieldsKey);
-                }
-            }
-        }
-    }
-
-    protected function loadMCGroupAssignments()
-    {
-        if (!$this->mcApi) {
-            return;
-        }
-
-        $this->addMCGroups    = array();
-        $this->removeMCGroups = array();
-        $db                   = JFactory::getDbo();
-        $levels               = $db->setQuery('SELECT id, params FROM #__jinbound_campaigns')->loadObjectList();
-        $addMCGroupsKey       = strtolower($this->name) . '_addmcgroups';
-        $removeMCGroupsKey    = strtolower($this->name) . '_removemcgroups';
-        if (!empty($levels)) {
-            foreach ($levels as $level) {
-                if (is_string($level->params)) {
-                    $level->params = @json_decode($level->params);
-                    if (empty($level->params)) {
-                        $level->params = new stdClass();
-                    }
-                } elseif (empty($level->params)) {
-                    continue;
-                }
-                if (property_exists($level->params, $addMCGroupsKey)) {
-                    $this->addMCGroups[$level->id] = array_filter($level->params->$addMCGroupsKey);
-                }
-                if (property_exists($level->params, $removeMCGroupsKey)) {
-                    $this->removeMCGroups[$level->id] = array_filter($level->params->$removeMCGroupsKey);
-                }
-            }
         }
     }
 
@@ -262,7 +182,7 @@ class JinboundMailchimp
         // Get the user's MailChimp lists
 
         try {
-            $lists = $this->mcApi->getListsForEmail($email);
+            $lists = $this->mcApi->getMemberships($email);
 
         } catch (Exception $e) {
             JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
@@ -736,15 +656,15 @@ class JinboundMailchimp
     {
         if ($this->mcApi) {
             try {
-                if ($memberships = $this->mcApi->getListsForEmail($email)) {
+                if ($memberships = $this->mcApi->getMemberships($email)) {
                     $lists = $this->getLists();
                     foreach ($memberships as $listId => $membership) {
                         $membership->list = $lists[$listId];
 
-                        $categories = $this->getCategories($listId);
+                        $categories = $this->getCategoriesByList($listId);
                         $categories = array_pop($categories);
 
-                        $groups = $this->getGroups($listId);
+                        $groups = $this->getGroupsByList($listId);
                         $groups = array_pop($groups);
 
                         $interests = array_filter(json_decode(json_encode($membership->interests), true));
@@ -957,66 +877,5 @@ class JinboundMailchimp
             $db->setQuery($query);
             $db->execute();
         }
-    }
-
-    /*
-     * Return the MailChimp lists as an array of options
-     */
-
-    protected function getMergeTagSelectField($level)
-    {
-        if ($this->mcApi) {
-            $customFields = $this->getCustomFields($level->akeebasubs_level_id);
-            $options      = array();
-            $options[]    = JHTML::_(
-                'select.option',
-                '',
-                JText::_('PLG_AKEEBASUBS_' . strtoupper($this->name) . '_NONE')
-            );
-            foreach ($customFields as $title => $id) {
-                $options[] = JHTML::_('select.option', $id, $title);
-            }
-            // Set pre-selected values
-            $selected = array();
-            if (!empty($this->customFields[$level->akeebasubs_level_id])) {
-                $selected = $this->customFields[$level->akeebasubs_level_id];
-            }
-            // Create the select field
-            return JHtmlSelect::genericlist(
-                $options,
-                'params[' . strtolower($this->name) . '_customfields][]',
-                'multiple="multiple" size="8" class="input-large"',
-                'value',
-                'text',
-                $selected
-            );
-        }
-
-        return null;
-    }
-
-    protected function getCustomFields($levelId)
-    {
-        if ($this->mcApi) {
-            static $customFields = array();
-
-            if (empty($customFields[$levelId])) {
-                $customFields[$levelId] = array();
-                $items                  = FOFModel::getTmpInstance('Customfields', 'AkeebasubsModel')
-                    ->enabled(1)
-                    ->getItemList(true);
-
-                // Loop through the items
-                foreach ($items as $item) {
-                    if ($item->show == 'all' || $item->akeebasubs_level_id == $levelId) {
-                        $customFields[$levelId][$item->title] = $item->akeebasubs_customfield_id;
-                    }
-                }
-            }
-
-            return $customFields[$levelId];
-        }
-
-        return null;
     }
 }
