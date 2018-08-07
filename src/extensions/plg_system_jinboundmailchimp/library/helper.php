@@ -46,6 +46,11 @@ class JinboundMailchimp
      */
     protected static $fields = null;
 
+    /**
+     * @var object[]
+     */
+    protected static $memberships = array();
+
     public function __construct($config = array())
     {
         $configParams = new Registry(empty($config['params']) ? null : $config['params']);
@@ -592,47 +597,34 @@ class JinboundMailchimp
      */
     public function getMemberships($email)
     {
-        if ($this->mcApi) {
+        if (!$this->mcApi) {
+            return null;
+        }
+
+        $key = md5($email);
+        if (!isset(static::$memberships[$key])) {
+            static::$memberships[$key] = false;
+
             try {
                 if ($memberships = $this->mcApi->getMemberships($email)) {
-                    $lists = $this->getLists();
+                    $lists = $this->getLists(array_keys($memberships));
                     foreach ($memberships as $listId => $membership) {
                         $membership->list = $lists[$listId];
 
-                        $categories = $this->getCategoriesByList($listId);
-                        $categories = array_pop($categories);
+                        $interests = json_decode(json_encode($membership->interests), true);
+                        $interests = array_filter($interests);
 
-                        $groups = $this->getGroupsByList($listId);
-                        $groups = array_pop($groups);
-
-                        $interests = array_filter(json_decode(json_encode($membership->interests), true));
-
-                        $mergedGroups = array();
-                        foreach ($interests as $groupId => $true) {
-                            $group      = $groups[$groupId];
-                            $categoryId = $group->category_id;
-
-                            if (!isset($mergedGroups[$categoryId])) {
-                                $mergedGroups[$categoryId] = (object)array(
-                                    'category' => clone $categories[$categoryId],
-                                    'groups'   => array()
-                                );
-                            }
-                            $mergedGroups[$categoryId]->groups[$groupId] = $group;
-                        }
-
-                        $membership->interests = $mergedGroups;
+                        $membership->interests = $interests ? $this->getGroups(array_keys($interests)) : array();
                     }
-
-                    return $memberships;
                 }
+                static::$memberships[$key] = $memberships;
 
             } catch (Exception $e) {
                 JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
             }
         }
 
-        return array();
+        return static::$memberships[$key];
     }
 
     /*

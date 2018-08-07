@@ -57,17 +57,15 @@ else :
         </thead>
         <tbody>
         <?php
-        foreach ($memberships as $listId => $subscription) :
+        foreach ($memberships as $listId => $membership) :
             $groups = array();
-            $interests = empty($subscription->interests) ? array() : $subscription->interests;
-            foreach ($interests as $categoryId => $interest) {
-                foreach ($interest->groups as $groupId => $group) {
-                    $groups[] = sprintf('%s/%s', $interest->category->title, $group->name);
-                }
+            $interests = empty($membership->interests) ? array() : $membership->interests;
+            foreach ($interests as $groupId => $group) {
+                $groups[] = sprintf('%s/%s', $group->category->title, $group->name);
             }
             ?>
             <tr>
-                <td><h3><?php echo $filter->clean($subscription->list->name); ?></h3></td>
+                <td><h3><?php echo $filter->clean($membership->list->name); ?></h3></td>
                 <td>
                     <?php
                     echo $groups
@@ -75,7 +73,7 @@ else :
                         : JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_GROUPS_NO_MEMBERSHIPS');
                     ?>
                 </td>
-                <td><?php echo $subscription->status; ?></td>
+                <td><?php echo $membership->status; ?></td>
             </tr>
         <?php
         endforeach;
