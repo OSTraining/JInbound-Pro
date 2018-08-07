@@ -528,16 +528,12 @@ class JinboundMailchimp
             }
         }
 
-        if ($listIds === null) {
-            return static::$lists;
-        }
-
-        if (!is_array($listIds)) {
-            $listIds = array($listIds);
-        }
-        $listIds = array_filter($listIds);
-
         if ($listIds) {
+            if (!is_array($listIds)) {
+                $listIds = array($listIds);
+            }
+            $listIds = array_filter($listIds);
+
             return array_intersect_key(static::$lists, array_flip($listIds));
         }
 
@@ -575,12 +571,12 @@ class JinboundMailchimp
             }
         }
 
-        if (!is_array($categoryIds)) {
-            $categoryIds = array($categoryIds);
-        }
-        $categoryIds = array_filter($categoryIds);
-
         if ($categoryIds) {
+            if (!is_array($categoryIds)) {
+                $categoryIds = array($categoryIds);
+            }
+            $categoryIds = array_filter($categoryIds);
+
             return array_intersect_key(static::$categories, array_flip($categoryIds));
         }
 
@@ -643,12 +639,12 @@ class JinboundMailchimp
             }
         }
 
-        if (!is_array($groupIds)) {
-            $groupIds = array($groupIds);
-        }
-        $groupIds = array_filter($groupIds);
+        if (!$groupIds) {
+            if (!is_array($groupIds)) {
+                $groupIds = array($groupIds);
+            }
+            $groupIds = array_filter($groupIds);
 
-        if ($groupIds) {
             return array_intersect_key(static::$groups, array_flip($groupIds));
         }
 
@@ -689,11 +685,15 @@ class JinboundMailchimp
     /**
      * @param string|string[] $listIds
      *
-     * @return object[][]
+     * @return object[]
      * @throws Exception
      */
     public function getFields($listIds = null)
     {
+        if (!$this->mcApi) {
+            return array();
+        }
+
         if (static::$fields === null) {
             static::$fields = array();
 
