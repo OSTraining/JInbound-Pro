@@ -497,7 +497,7 @@ class JinboundMailchimp
             }
         }
 
-        if (!$groupIds) {
+        if ($groupIds) {
             if (!is_array($groupIds)) {
                 $groupIds = array($groupIds);
             }
