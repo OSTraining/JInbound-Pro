@@ -22,69 +22,9 @@ defined('_JEXEC') or die;
 class JinboundMailchimp
 {
     /**
-     * @var array
-     */
-    protected $groupingsGroupMap = array();
-
-    /**
-     * @var array
-     */
-    protected $groupingsListMap = array();
-
-    /**
-     * @var array
-     */
-    protected $groupingsGroupName = array();
-
-    /**
-     * @var array
-     */
-    protected $addGroups = array();
-
-    /**
-     * @var array
-     */
-    protected $removeGroups = array();
-
-    /**
-     * @var string
-     */
-    protected $name = 'mailchimp';
-
-    /**
      * @var MCAPI
      */
     protected $mcApi;
-
-    /**
-     * @var bool|mixed
-     */
-    protected $deleteMember = false;
-
-    /**
-     * @var bool|mixed
-     */
-    protected $sendGoodbye = true;
-
-    /**
-     * @var bool
-     */
-    protected $sendNotify = true;
-
-    /**
-     * @var string
-     */
-    protected $emailType = 'html';
-
-    /**
-     * @var bool
-     */
-    protected $doubleOptin = true;
-
-    /**
-     * @var bool
-     */
-    protected $sendWelcome = false;
 
     /**
      * @var object[]
