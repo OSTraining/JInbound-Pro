@@ -106,8 +106,8 @@ class MCAPI
 
             switch (strtolower($method)) {
                 case 'get':
-                    $query = $params ? '?' . http_build_query($params) : '';
-                    $response = $this->http->get($url.$query, $headers, $this->timeout);
+                    $query    = $params ? '?' . http_build_query($params) : '';
+                    $response = $this->http->get($url . $query, $headers, $this->timeout);
                     break;
 
                 case 'post':
@@ -1356,11 +1356,15 @@ class MCAPI
     public function getLists()
     {
         $response = $this->callServer('lists');
+
+        $lists = array();
         if (!empty($response->lists)) {
-            return $response->lists;
+            foreach ($response->lists as $list) {
+                $lists[$list->id] = $list;
+            }
         }
 
-        return array();
+        return $lists;
     }
 
     /**
@@ -1372,30 +1376,32 @@ class MCAPI
     public function getCategories($listId)
     {
         $response = $this->callServer("lists/{$listId}/interest-categories");
+
+        $categories = array();
         if (!empty($response->categories)) {
-            return $response->categories;
+            foreach ($response->categories as $category) {
+                $categories[$category->id] = $category;
+            }
         }
 
-        return array();
+        return $categories;
     }
 
     /**
      * @param string $listId
+     * @param string $categoryId
      *
      * @return array
      * @throws Exception
      */
-    public function getGroups($listId)
+    public function getGroups($listId, $categoryId)
     {
-        $categories = $this->getCategories($listId);
+        $groups   = array();
+        $response = $this->callServer("lists/{$listId}/interest-categories/{$categoryId}/interests");
 
-        $groups = array();
-        foreach ($categories as $category) {
-            $categoryId = $category->id;
-
-            $response = $this->callServer("lists/{$listId}/interest-categories/{$categoryId}/interests");
-            if (!empty($response->interests)) {
-                $groups = array_merge($groups, $response->interests);
+        if (!empty($response->interests)) {
+            foreach ($response->interests as $group) {
+                $groups[$group->id] = $group;
             }
         }
 
@@ -2783,7 +2789,7 @@ class MCAPI
     {
         $lists = array();
 
-        $query = array(
+        $query    = array(
             'query' => $emailAddress
         );
         $response = $this->callServer('search-members', $query);
