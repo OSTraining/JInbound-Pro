@@ -60,29 +60,35 @@ class JFormFieldJinboundMailchimpgroups extends JFormFieldGroupedList
 
             $helper = new JinboundMailchimp(array('params' => $plugin->params));
 
-            $lists  = $helper->getLists();
-            $groups = $helper->getGroups($listIds);
+            // Create desired groupings
+            $lists = $helper->getLists($listIds);
+            foreach ($lists as $listId => $list) {
+                $options[$list->name] = array();
+            }
 
-            foreach ($groups as $listId => $listGroups) {
-                if (isset($lists[$listId])) {
-                    $listName = $lists[$listId]->name;
+            // Add category groups
+            $groups = $helper->getGroupsByList($listIds);
+            foreach ($groups as $groupId => $group) {
+                $listName = $group->category->list->name;
 
-                    $options[$listName] = array();
-                    if ($listGroups) {
-                        foreach ($listGroups as $group) {
-                            $options[$listName][] = JHtml::_('select.option', $group->id, $group->name);
-                        }
 
-                    } else {
-                        $options[$listName][] = JHtml::_(
-                            'select.option',
-                            '',
-                            JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'),
-                            'value',
-                            'text',
-                            true
-                        );
-                    }
+                $options[$listName][] = JHtml::_(
+                    'select.option',
+                    $group->id,
+                    sprintf('%s/%s', $group->category->title, $group->name)
+                );
+            }
+
+            foreach ($options as $listName => $groups) {
+                if (!$groups) {
+                    $options[$listName][] = JHtml::_(
+                        'select.option',
+                        '',
+                        JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE'),
+                        'value',
+                        'text',
+                        true
+                    );
                 }
             }
         }

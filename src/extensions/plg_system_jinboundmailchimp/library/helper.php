@@ -111,15 +111,15 @@ class JinboundMailchimp
     /**
      * @var object[]
      */
-    protected static $categories = array();
+    protected static $categories = null;
 
     /**
-     * @var object[][]
+     * @var object[]
      */
-    protected static $groups = array();
+    protected static $groups = null;
 
     /**
-     * @var object[][]
+     * @var object[]
      */
     protected static $fields = null;
 
@@ -520,13 +520,7 @@ class JinboundMailchimp
     {
         if (static::$lists === null && $this->mcApi) {
             try {
-                static::$lists = array();
-
-                $lists = $this->mcApi->getLists();
-                foreach ($lists as $list) {
-                    static::$lists[$list->id] = $list;
-                }
-
+                static::$lists = $this->mcApi->getLists();
 
             } catch (Exception $e) {
                 static::$lists = array();
@@ -541,17 +535,65 @@ class JinboundMailchimp
         if (!is_array($listIds)) {
             $listIds = array($listIds);
         }
+        $listIds = array_filter($listIds);
 
-        return array_intersect_key(static::$lists, array_flip($listIds));
+        if ($listIds) {
+            return array_intersect_key(static::$lists, array_flip($listIds));
+        }
+
+        return static::$lists;
     }
 
     /**
-     * @param string|string[] $listIds
+     * @param string|string[] $categoryIds
      *
-     * @return array
+     * @return object[]
      * @throws Exception
      */
-    public function getGroups($listIds)
+    public function getCategories($categoryIds = null)
+    {
+        if (!$this->mcApi) {
+            return array();
+        }
+
+        if (static::$categories === null) {
+            static::$categories = array();
+
+            $lists = $this->getLists();
+            foreach ($lists as $listId => $list) {
+                try {
+                    $categories = $this->mcApi->getCategories($listId);
+                    foreach ($categories as $categoryId => $category) {
+                        $category->list = $lists[$listId];
+
+                        static::$categories[$categoryId] = $category;
+                    }
+
+                } catch (Exception $e) {
+                    JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+                }
+            }
+        }
+
+        if (!is_array($categoryIds)) {
+            $categoryIds = array($categoryIds);
+        }
+        $categoryIds = array_filter($categoryIds);
+
+        if ($categoryIds) {
+            return array_intersect_key(static::$categories, array_flip($categoryIds));
+        }
+
+        return static::$categories;
+    }
+
+    /**
+     * @param string|string{} $listIds
+     *
+     * @return object[]
+     * @throws Exception
+     */
+    public function getCategoriesByList($listIds)
     {
         if (!$this->mcApi) {
             return array();
@@ -562,23 +604,55 @@ class JinboundMailchimp
         }
         $listIds = array_filter($listIds);
 
-        foreach ($listIds as $listId) {
-            if (!isset(static::$groups[$listId])) {
-                static::$groups[$listId] = array();
-
-                try {
-                    $groups = $this->mcApi->getGroups($listId);
-                    foreach ($groups as $group) {
-                        static::$groups[$listId][$group->id] = $group;
-                    }
-
-                } catch (Exception $e) {
-                    JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+        $selectedCategories = array();
+        if ($listIds) {
+            $categories = $this->getCategories();
+            foreach ($categories as $categoryId => $category) {
+                if (in_array($category->list_id, $listIds)) {
+                    $selectedCategories[$categoryId] = $category;
                 }
             }
         }
 
-        return array_intersect_key(static::$groups, array_flip($listIds));
+        return $selectedCategories;
+    }
+
+    /**
+     * @param string|string[] $groupIds
+     *
+     * @return object[]
+     * @throws Exception
+     */
+    public function getGroups($groupIds = null)
+    {
+        if (!$this->mcApi) {
+            return array();
+        }
+
+        if (static::$groups === null) {
+            static::$groups = array();
+
+            $categories = $this->getCategories();
+            foreach ($categories as $categoryId => $category) {
+                $groups = $this->mcApi->getGroups($category->list_id, $category->id);
+                foreach ($groups as $groupId => $group) {
+                    $group->category = $category;
+
+                    static::$groups[$groupId] = $group;
+                }
+            }
+        }
+
+        if (!is_array($groupIds)) {
+            $groupIds = array($groupIds);
+        }
+        $groupIds = array_filter($groupIds);
+
+        if ($groupIds) {
+            return array_intersect_key(static::$groups, array_flip($groupIds));
+        }
+
+        return static::$groups;
     }
 
     /**
@@ -587,7 +661,7 @@ class JinboundMailchimp
      * @return object[]
      * @throws Exception
      */
-    public function getCategories($listIds)
+    public function getGroupsByList($listIds)
     {
         if (!$this->mcApi) {
             return array();
@@ -598,23 +672,58 @@ class JinboundMailchimp
         }
         $listIds = array_filter($listIds);
 
-        foreach ($listIds as $listId) {
-            if (!isset(static::$categories[$listId])) {
-                try {
-                    static::$categories[$listId] = array();
+        $selectedGroups = array();
+        if ($listIds) {
+            $groups = $this->getGroups();
 
-                    $categories = $this->mcApi->getCategories($listId);
-                    foreach ($categories as $category) {
-                        static::$categories[$listId][$category->id] = $category;
-                    }
-
-                } catch (Exception $e) {
-                    JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+            foreach ($groups as $groupId => $group) {
+                if (in_array($group->category->list->id, $listIds)) {
+                    $selectedGroups[$groupId] = $group;
                 }
             }
         }
 
-        return array_intersect_key(static::$categories, array_flip($listIds));
+        return $selectedGroups;
+    }
+
+    /**
+     * @param string|string[] $listIds
+     *
+     * @return object[][]
+     * @throws Exception
+     */
+    public function getFields($listIds = null)
+    {
+        if (static::$fields === null) {
+            static::$fields = array();
+
+            if ($this->mcApi) {
+                $lists = $this->getLists();
+
+                foreach ($lists as $list) {
+                    try {
+                        static::$fields[$list->id] = (object)array(
+                            'list'   => $list,
+                            'fields' => $this->mcApi->getFields($list->id)
+                        );
+
+                    } catch (Exception $e) {
+                        JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+                    }
+                }
+            }
+        }
+
+        if ($listIds) {
+            if (!is_array($listIds)) {
+                $listIds = array($listIds);
+            }
+            $listIds = array_filter($listIds);
+
+            return array_intersect_key(static::$fields, array_flip($listIds));
+        }
+
+        return static::$fields;
     }
 
     /**
@@ -782,71 +891,6 @@ class JinboundMailchimp
                 }
             }
         }
-    }
-
-    /**
-     * @return object[]
-     * @throws Exception
-     */
-    public function getLists()
-    {
-        if (static::$lists === null && $this->mcApi) {
-            try {
-                static::$lists = array();
-
-                $lists = $this->mcApi->getLists();
-                foreach ($lists as $list) {
-                    static::$lists[$list->id] = $list;
-                }
-
-
-            } catch (Exception $e) {
-                static::$lists = array();
-                JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
-            }
-        }
-
-        return static::$lists;
-    }
-
-    /**
-     * @param string|string[] $listIds
-     *
-     * @return object[][]
-     * @throws Exception
-     */
-    public function getFields($listIds = null)
-    {
-        if (static::$fields === null) {
-            static::$fields = array();
-
-            if ($this->mcApi) {
-                $lists = $this->getLists();
-
-                foreach ($lists as $list) {
-                    try {
-                        static::$fields[$list->id] = (object)array(
-                            'list'   => $list,
-                            'fields' => $this->mcApi->getFields($list->id)
-                        );
-
-                    } catch (Exception $e) {
-                        JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
-                    }
-                }
-            }
-        }
-
-        if ($listIds) {
-            if (!is_array($listIds)) {
-                $listIds = array($listIds);
-            }
-            $listIds = array_filter($listIds);
-
-            return array_intersect_key(static::$fields, array_flip($listIds));
-        }
-
-        return static::$fields;
     }
 
     /*
