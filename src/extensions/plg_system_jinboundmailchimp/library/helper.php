@@ -140,7 +140,6 @@ class JinboundMailchimp
                     $params['interests'] = $groupsAdd[$listId];
                 }
 
-                $app->enqueueMessage('<pre>' . print_r($params, 1) . '</pre>');
                 $this->mcApi->subscribe($contact->email, $listId, $params);
             }
         }
