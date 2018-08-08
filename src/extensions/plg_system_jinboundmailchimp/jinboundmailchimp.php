@@ -119,7 +119,7 @@ class plgSystemJInboundmailchimp extends JPlugin
      * @param int[]  $contacts
      * @param int    $statusId
      *
-     * @return void
+     * @return bool
      * @throws Exception
      */
     public function onJInboundChangeState($context, $campaignId, $contacts, $statusId)
@@ -135,7 +135,9 @@ class plgSystemJInboundmailchimp extends JPlugin
         $helper = new JinboundMailchimp(array('params' => $this->params));
 
         foreach ($contacts as $contactId) {
-            $helper->onJinboundSetStatus($statusId, $campaignId, $contactId);
+            $helper->onJinboundSetStatus($campaignId, $contactId);
         }
+
+        return true;
     }
 }

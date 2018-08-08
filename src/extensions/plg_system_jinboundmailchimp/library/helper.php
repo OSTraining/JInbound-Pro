@@ -70,14 +70,13 @@ class JinboundMailchimp
     }
 
     /**
-     * @param int $statusId
      * @param int $campaignId
      * @param int $contactId
      *
      * @return void
      * @throws Exception
      */
-    public function onJinboundSetStatus($statusId, $campaignId, $contactId)
+    public function onJinboundSetStatus($campaignId, $contactId)
     {
         if (!$this->mcApi) {
             return;
