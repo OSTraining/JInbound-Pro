@@ -503,15 +503,16 @@ class JinboundMailchimp
 
         $filter = JFilterInput::getInstance();
         foreach ($campaignFields as $campaignField) {
-            $params       = new Registry($campaignField->params);
-            $mappedFields = (array)$params->get('mailchimp.mapped_field', array());
+            $params            = new Registry($campaignField->params);
+            $mappedFields      = (array)$params->get('mailchimp.mapped_field', array());
+            $campaignFieldName = $campaignField->name;
 
             if ($mappedFields) {
                 foreach ($contactConversions as $contactConversion) {
                     if ($campaignField->page_id == $contactConversion->page_id) {
-                        $value = empty($contactConversion->formdata['lead'][$campaignField->name])
+                        $value = empty($contactConversion->formdata['lead']->$campaignFieldName)
                             ? null
-                            : $contactConversion->formdata['lead'][$campaignField->name];
+                            : $contactConversion->formdata['lead']->$campaignFieldName;
 
                         if ($value) {
                             foreach ($mappedFields as $mappedField) {
@@ -523,7 +524,7 @@ class JinboundMailchimp
 
                 // now override using post data
                 if (!empty($rawPostData['lead'][$campaignField->name])) {
-                    $postValue = $filter->clean($rawPostData['lead'][$campaignField->name]);
+                    $postValue = $filter->clean($rawPostData['lead'][$campaignFieldName]);
 
                     if ($postValue) {
                         foreach ($mappedFields as $mappedField) {
