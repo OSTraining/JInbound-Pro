@@ -8,7 +8,7 @@
                        label="PLG_SYSTEM_JINBOUNDMAILCHIMP_MAPPED_FIELD_TITLE"
                        description="PLG_SYSTEM_JINBOUNDMAILCHIMP_MAPPED_FIELD_DESC"
                        multiple="true"
-                       size="20">
+                       size="40">
                     <option value="">PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE</option>
                 </field>
             </fieldset>
