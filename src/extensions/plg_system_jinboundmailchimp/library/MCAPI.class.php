@@ -233,6 +233,8 @@ class MCAPI
      */
     public function getMemberships($emailAddress)
     {
+        $lists = array();
+
         $query    = array(
             'query' => $emailAddress
         );
