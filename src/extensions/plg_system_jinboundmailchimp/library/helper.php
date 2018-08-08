@@ -543,13 +543,15 @@ class JinboundMailchimp
     protected function verifyGroups(array $groups, $value)
     {
         $result = array();
-        if ($groups = $this->getGroups($groups)) {
-            foreach ($groups as $groupId => $group) {
-                $listId = $group->list_id;
-                if (!isset($result[$listId])) {
-                    $result[$listId] = array();
+        if ($groups) {
+            if ($groups = $this->getGroups($groups)) {
+                foreach ($groups as $groupId => $group) {
+                    $listId = $group->list_id;
+                    if (!isset($result[$listId])) {
+                        $result[$listId] = array();
+                    }
+                    $result[$group->list_id][$groupId] = $value;
                 }
-                $result[$group->list_id][$groupId] = $value;
             }
         }
 
