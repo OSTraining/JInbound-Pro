@@ -130,7 +130,7 @@ class JinboundMailchimp
                 }
 
                 $params = array(
-                    'status_id_new' => $newStatus,
+                    'status_if_new' => $newStatus,
                     'email_type'    => $emailType
                 );
                 if ($mergeFields) {
