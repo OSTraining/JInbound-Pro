@@ -84,7 +84,7 @@ class MCAPI
      * @return mixed
      * @throws Exception
      */
-    protected function callServer($endpoint, array $params = null, $method = 'get')
+    protected function callServer($endpoint, array $params = array(), $method = 'get')
     {
         try {
             if (!$this->apikey) {
