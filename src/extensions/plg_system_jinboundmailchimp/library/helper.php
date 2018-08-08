@@ -95,6 +95,10 @@ class JinboundMailchimp
         $contact = JTable::getInstance('Contact', 'JinboundTable');
         $contact->load($contactId);
 
+        if (!$campaign->id || !$contact->id) {
+            return;
+        }
+
         $listsAdd    = array_filter((array)$campaign->params->get('addlists', array()));
         $listsRemove = array_filter((array)$campaign->params->get('removelists', array()));
 
