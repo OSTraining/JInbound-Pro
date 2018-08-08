@@ -64,6 +64,16 @@ class MCAPI
     }
 
     /**
+     * @param string $email
+     *
+     * @return string
+     */
+    protected function getSubscriberHash($email)
+    {
+        return md5(strtolower($email));
+    }
+
+    /**
      * Connect to the server and call the requested methods, parsing the result
      * You should never have to call this function manually
      *
@@ -86,19 +96,28 @@ class MCAPI
                 'Authorization' => 'Basic ' . base64_encode('jInbound.MCAPI:' . $this->apikey)
             );
 
-            switch (strtolower($method)) {
+            $method = strtolower($method);
+            switch ($method) {
                 case 'get':
                     $query    = $params ? '?' . http_build_query($params) : '';
                     $response = $this->http->get($url . $query, $headers, $this->timeout);
                     break;
 
                 case 'post':
-                    $response = $this->http->put($url, $params, $headers, $this->timeout);
+                case 'patch':
+                case 'put':
+                    $response = $this->http->$method($url, json_encode($params), $headers, $this->timeout);
+                    break;
+
+                case 'delete':
+                    $response = $this->http->delete($url, $headers, $this->timeout);
                     break;
 
                 default:
                     if (!method_exists($this->http, $method)) {
                         throw new Exception('Invalid method - ' . $method);
+                    } else {
+                        throw new Exception('Unimplemented method - ' . $method);
                     }
                     break;
             }
@@ -225,5 +244,89 @@ class MCAPI
         }
 
         return $lists;
+    }
+
+    /**
+     * @param string $email
+     * @param string $listId
+     * @param bool   $delete
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function unsubscribe($email, $listId, $delete = false)
+    {
+        $key = $this->getSubscriberHash($email);
+        $url = "lists/{$listId}/members/{$key}";
+
+        if ($delete) {
+            $this->callServer($url, array(), 'delete');
+
+        } else {
+            $params = array(
+                'status' => 'unsubscribed'
+            );
+            $this->callServer($url, $params, 'patch');
+        }
+    }
+
+    /**
+     * @param string $email
+     * @param string $listId
+     * @param array  $params
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function subscribe($email, $listId, array $params = array())
+    {
+        $params = array_merge(
+            array(
+                'email_address' => $email,
+                'status_if_new' => 'subscribed'
+            ),
+            $params
+        );
+
+        $key = $this->getSubscriberHash($email);
+        $url = "lists/{$listId}/members/{$key}";
+
+        $this->callServer($url, $params, 'put');
+    }
+
+    /**
+     * @param string $email
+     * @param string $listId
+     * @param array  $params
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function update($email, $listId, array $params)
+    {
+        $key = $this->getSubscriberHash($email);
+        $url = "lists/{$listId}/members/{$key}";
+
+        $params = array_intersect_key(
+            $params,
+            array_flip(
+                array(
+                    'email_address',
+                    'email_type',
+                    'status',
+                    'merge_fields',
+                    'interests',
+                    'language',
+                    'vip',
+                    'location',
+                    'ip_signup',
+                    'timestamp_signup',
+                    'ip_opt',
+                    'timestamp_opt'
+                )
+            )
+        );
+
+        $this->callServer($url, $params, 'patch');
     }
 }
