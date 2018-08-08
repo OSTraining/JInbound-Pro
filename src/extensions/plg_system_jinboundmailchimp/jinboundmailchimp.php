@@ -27,7 +27,7 @@ class plgSystemJInboundmailchimp extends JPlugin
     /**
      * @var bool
      */
-    protected $enabled = null;
+    protected static $enabled = null;
 
     /**
      * Constructor
@@ -45,16 +45,26 @@ class plgSystemJInboundmailchimp extends JPlugin
         $this->app = JFactory::getApplication();
         $this->loadLanguage('plg_system_jinboundmailchimp');
         $this->loadLanguage('plg_system_jinboundmailchimp.sys');
+    }
 
-        if (!defined('JINB_LOADED')) {
-            $includePath = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
-            if (is_file($includePath)) {
-                require_once $includePath;
+    /**
+     * @return bool
+     */
+    protected function isEnabled()
+    {
+        if (static::$enabled === null) {
+            if (!defined('JINB_LOADED')) {
+                $includePath = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
+                if (is_file($includePath)) {
+                    require_once $includePath;
+                }
             }
-        }
-        JLoader::register('JinboundMailchimp', realpath(__DIR__ . '/library/helper.php'));
+            JLoader::register('JinboundMailchimp', realpath(__DIR__ . '/library/helper.php'));
 
-        $this->enabled = defined('JINB_LOADED') && $this->params->get('mailchimp_key');
+            static::$enabled = defined('JINB_LOADED') && $this->params->get('mailchimp_key');
+        }
+
+        return static::$enabled;
     }
 
     /**
@@ -64,7 +74,7 @@ class plgSystemJInboundmailchimp extends JPlugin
      */
     public function onContentPrepareForm($form)
     {
-        if (!$this->enabled) {
+        if (!$this->isEnabled()) {
             return true;
         }
 
@@ -114,7 +124,7 @@ class plgSystemJInboundmailchimp extends JPlugin
      */
     public function onJInboundChangeState($context, $campaignId, $contacts, $statusId)
     {
-        if (!$this->enabled || $context !== 'com_jinbound.contact.status') {
+        if ($context !== 'com_jinbound.contact.status' || !$this->isEnabled()) {
             return;
         }
 
