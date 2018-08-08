@@ -27,6 +27,11 @@ class JinboundMailchimp
     protected $mcApi;
 
     /**
+     * @var Registry
+     */
+    protected $params = null;
+
+    /**
      * @var object[]
      */
     protected static $lists = null;
@@ -53,19 +58,12 @@ class JinboundMailchimp
 
     public function __construct($config = array())
     {
-        $configParams = new Registry(empty($config['params']) ? null : $config['params']);
+        $this->params = new Registry(empty($config['params']) ? null : $config['params']);
 
-        $apiKey = $configParams->get('mailchimp_key');
+        $apiKey = $this->params->get('mailchimp_key');
         if ($apiKey) {
             // Load the MailChimp library
             require_once __DIR__ . '/MCAPI.class.php';
-
-            $this->deleteMember = $configParams->get('deleteMember');
-            $this->sendGoodbye  = $configParams->get('sendGoodbye');
-            $this->sendNotify   = $configParams->get('sendNotify');
-            $this->emailType    = $configParams->get('emailType');
-            $this->doubleOptin  = $configParams->get('doubleOptin');
-            $this->sendWelcome  = $configParams->get('sendWelcome');
 
             $this->mcApi = new MCAPI($apiKey);
         }
@@ -85,288 +83,78 @@ class JinboundMailchimp
             return;
         }
 
-        // load campaign, status, contact
         $app = JFactory::getApplication();
-        $db  = JFactory::getDbo();
 
         JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jinbound/tables');
 
+        /** @var JInboundTableCampaign $campaign */
         $campaign = JTable::getInstance('Campaign', 'JinboundTable');
         $campaign->load($campaignId);
-        $campaign->params = new Joomla\Registry\Registry($campaign->params);
+        $campaign->params = new Registry($campaign->params);
 
-        $status = JTable::getInstance('Status', 'JinboundTable');
-        $status->load($statusId);
-
+        /** @var JInboundTableContact $contact */
         $contact = JTable::getInstance('Contact', 'JinboundTable');
         $contact->load($contactId);
 
-        $listsAdd = array_filter(
-            array_map('intval', $campaign->params->get('addlists', array()))
-        );
+        $listsAdd    = array_filter((array)$campaign->params->get('addlists', array()));
+        $listsRemove = array_filter((array)$campaign->params->get('removelists', array()));
 
-        $listsRemove = array_filter(
-            array_map('intval', $campaign->params->get('removelists', array()))
-        );
+        // @TODO: params should be configured to save the list id as part of the group id
+        $groupsAdd    = $this->verifyGroups((array)$campaign->params->get('addgroups', array()), true);
+        $groupsRemove = $this->verifyGroups((array)$campaign->params->get('removegroups', array()), false);
 
-        $groupsAdd = array_filter(
-            array_map('intval', $campaign->params->get('addgroups', array()))
-        );
-
-        $groupsRemove = array_filter(
-            array_map('intval', $campaign->params->get('removegroups', array()))
-        );
-
-        // Get the required field names
-        $firstName = $contact->first_name;
-        $lastName  = $contact->last_name;
-        $email     = $contact->email;
-
-        // Get the user's MailChimp lists
-
-        try {
-            $lists = $this->mcApi->getMemberships($email);
-
-        } catch (Exception $e) {
-            JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
-        }
-        return;
-        $currentLists = $this->getMemberships($email);
-
-        // Get the session
-        $session = JFactory::getSession();
-
-        // Remove from MailChimp list
-        if (!empty($removeMCLists)) {
-            foreach ($removeMCLists as $mcListToRemove) {
-                if (is_array($currentLists) && in_array($mcListToRemove, $currentLists)) {
-                    $mcSubscribeId = $user_id . ':' . $mcListToRemove;
-                    $this->mcApi->listUnsubscribe(
-                        $mcListToRemove,
-                        $email,
-                        $this->deleteMember,
-                        $this->sendGoodbye,
-                        $this->sendNotify);
-                }
-                $mcSubscribeId = $contactId . ':' . $mcListToRemove;
-                $session->clear('mailchimp.' . $mcSubscribeId, 'plg_system_jinboundmailchimp');
+        $currentMemberships = $this->mcApi->getMemberships($contact->email);
+        if ($lists = array_intersect(array_keys($currentMemberships), $listsRemove)) {
+            // Remove from MailChimp lists
+            $deleteMember = (bool)$this->params->get('delete_member', false);
+            foreach ($lists as $listId) {
+                $this->mcApi->unsubscribe($contact->email, $listId, $deleteMember);
             }
         }
 
         // Add to MailChimp list
-        if (!empty($addMCLists)) {
-            // getting the form data to be sent to mailchimp presents a bit of a problem
-            // this method only knows the contact id, the campaign id, and the status id
-            // and everything else must be extrapolated from that
-            // what we can do is load the fields related to the pages with the same
-            // form and campaign, then check the user's conversions for that page
-            // this should give us the conversion data, including the fields
-            //
-            // get form field params from db first
-            $fieldData = $db->setQuery($db->getQuery(true)
-                ->select('Field.name')
-                ->select('Field.params')
-                ->select('Page.id AS page_id')
-                ->select('Page.campaign')
-                ->from('#__jinbound_fields AS Field')
-                ->leftJoin('#__jinbound_form_fields AS FormField ON FormField.field_id = Field.id')
-                ->leftJoin('#__jinbound_pages AS Page ON Page.formid = FormField.form_id')
-                ->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.campaign_id = Page.campaign')
-                ->where('Page.id IS NOT NULL')
-                ->where('Page.campaign = ' . (int)$campaignId)
-                ->group('Field.id')
-            )->loadObjectList();
-            if (JDEBUG) {
-                $app->enqueueMessage('<h3>[' . __METHOD__ . '] Field Data</h3><pre>' . htmlspecialchars(print_r($fieldData,
-                        1), ENT_QUOTES, 'UTF-8') . '</pre>');
-            }
-            // Build subscriber data
-            $baseMergeVals = array(
-                'FNAME' => $firstName
-            ,
-                'LNAME' => $lastName
-            );
-            // get the contact's campaigns
-            if (!class_exists('JInboundHelperContact')) {
-                require_once JPATH_ADMINISTRATOR . '/components/com_jinbound/helpers/contact.php';
-            }
-            // NOTE: during contact save, this ends up triggering BEFORE the conversion
-            // is saved, so having no conversions at all means that it's likely
-            // that this is a new contact - in order to make this work correctly,
-            // we have to also check the post data with this request
-            // so what we'll do is loop through the fields first, set initial data
-            // from the conversions, then override using post data
-            $contactConversions = JInboundHelperContact::getContactConversions($contactId);
-            $token              = $app->input->get('token', '', 'cmd');
-            $rawPostParam       = 'jform';
-            if (!empty($token)) {
-                $rawPostParam = preg_replace('/^(.*?)\.(.*?)\.(.*?)$/', '${1}_${3}', $token);
-            }
-            $rawPostData = $app->input->post->get($rawPostParam, array(), 'array');
-            // loop the fields FIRST
-            if (!empty($fieldData)) {
-                foreach ($fieldData as $row) {
-                    // decode params for this row
-                    $params = new JRegistry();
-                    $params->loadString($row->params);
-                    $mcParams = $params->get('mailchimp', false);
-                    // check mc params for mapped fields
-                    if (!(is_object($mcParams) && property_exists($mcParams, 'mapped_field')
-                        && is_array($mcParams->mapped_field) && !empty($mcParams->mapped_field))) {
-                        continue;
-                    }
-                    // loop the conversions and add those
-                    if (!empty($contactConversions)) {
-                        foreach ($contactConversions as $contactConversion) {
-                            // skip this conversion as the page is not the same
-                            if ($row->page_id != $contactConversion->page_id) {
-                                continue;
-                            }
-                            // this one matches, so confirm that the conversion data contains field data
-                            if (array_key_exists($row->name, $contactConversion->formdata['lead'])) {
-                                foreach ($mcParams->mapped_field as $fieldName) {
-                                    $baseMergeVals[$fieldName] = $contactConversion->formdata['lead'][$row->name];
-                                }
-                            }
-                        }
-                    }
-                    // now override using post data
-                    if (array_key_exists('lead',
-                            $rawPostData) && is_array($rawPostData['lead']) && array_key_exists($row->name,
-                            $rawPostData['lead'])) {
-                        foreach ($mcParams->mapped_field as $fieldName) {
-                            $baseMergeVals[$fieldName] = $rawPostData['lead'][$row->name];
-                        }
-                    }
+        if ($listsAdd) {
+            $mergeFields = $this->getMergeFields($contact, $campaign);
+
+            $newStatus = $this->params->get('doubleOptin', false) ? 'pending' : 'subscribed';
+            $emailType = $this->params->get('emailType', 'html');
+
+            foreach ($listsAdd as $listId) {
+                if (JDEBUG) {
+                    $app->enqueueMessage(
+                        sprintf(
+                            '<h3>[%s] Merge Fields</h3><pre>%s</pre>',
+                            __METHOD__,
+                            htmlspecialchars(print_r($mergeFields, 1), ENT_QUOTES, 'UTF-8')
+                        )
+                    );
                 }
-            }
 
-            // Add subscriber to lists
-            foreach ($addMCLists as $mcListToAdd) {
-                if (!(is_array($currentLists) && in_array($mcListToAdd, $currentLists))) {
-                    $mcSubscribeId = $contactId . ':' . $mcListToAdd;
-                    if ($session->get('mailchimp.' . $mcSubscribeId, '', 'plg_system_jinboundmailchimp') != 'new') {
-                        // Subscribe if email is not already in the MailChimp list and
-                        // if the subscription is not already sent for that user (but not confirmed yet)
-                        $mergeVals = array_merge(array(), $baseMergeVals);
-
-                        if (JDEBUG) {
-                            $app->enqueueMessage('<h3>[' . __METHOD__ . '] Merge Vals</h3><pre>' . htmlspecialchars(print_r($mergeVals,
-                                    1), ENT_QUOTES, 'UTF-8') . '</pre>');
-                        }
-
-                        // Add MC groups to new subscription
-                        $groupings = array();
-                        if (!empty($addMCGroups)) {
-                            foreach ($addMCGroups as $mcGroupId) {
-                                $groupName = str_replace(',', '\,', $this->groupingsGroupName[$mcGroupId]);
-                                // No group name
-                                if (empty($groupName)) {
-                                    continue;
-                                }
-                                $groupingId = $this->groupingsGroupMap[$mcGroupId];
-                                // No correspnding grouping
-                                if (empty($groupingId)) {
-                                    continue;
-                                }
-                                $listId = $this->groupingsListMap[$groupingId];
-                                // No correspnding list
-                                if (empty($listId)) {
-                                    continue;
-                                }
-                                // Group not related to this list
-                                if ($listId != $mcListToAdd) {
-                                    continue;
-                                }
-                                // We passed all checks: Add the group to the array
-                                if (!array_key_exists($groupingId, $groupings)) {
-                                    $groupings[$groupingId] = array();
-                                }
-                                $groupings[$groupingId][] = $groupName;
-                            }
-                        }
-                        // Add the new groups to the $mergeVals
-                        if (!empty($groupings)) {
-                            foreach ($groupings as $groupingId => $newGroups) {
-                                $newGrouping              = array();
-                                $newGrouping['id']        = $groupingId;
-                                $newGrouping['groups']    = implode(",", $newGroups);
-                                $mergeVals['GROUPINGS'][] = $newGrouping;
-                            }
-                        }
-                        // Subscribe to MC list
-                        if ($this->mcApi->listSubscribe(
-                            $mcListToAdd,
-                            $email,
-                            $mergeVals,
-                            $this->emailType,
-                            $this->doubleOptin,
-                            true,
-                            false,
-                            $this->sendWelcome)) {
-                            // Add new MailChimp subscription to session to avoid that MailChimp sends multiple
-                            // emails for one subscription (before subscription is confirmed by the user)
-                            $session->set('mailchimp.' . $mcSubscribeId, 'new', 'plg_system_jinboundmailchimp');
-                        }
-                    }
+                $params = array(
+                    'status_id_new' => $newStatus,
+                    'email_type'    => $emailType
+                );
+                if ($mergeFields) {
+                    $params['merge_fields'] = $mergeFields;
                 }
+                if ($groupsAdd[$listId]) {
+                    $params['interests'] = $groupsAdd[$listId];
+                }
+
+                $app->enqueueMessage('<pre>' . print_r($params, 1) . '</pre>');
+                $this->mcApi->subscribe($contact->email, $listId, $params);
             }
         }
 
-        // Get the user's MailChimp lists
-        $currentLists = $this->getMemberships($email);
+        $currentMemberships = $this->mcApi->getMemberships($contact->email);
 
-        // Remove MC group from existing list subscription
-        if (!empty($removeMCGroups) && is_array($currentLists)) {
-            foreach ($removeMCGroups as $mcGroupId) {
-                $groupName = str_replace(',', '\,', $this->groupingsGroupName[$mcGroupId]);
-                // No group name
-                if (empty($groupName)) {
-                    continue;
-                }
-                $groupingId = $this->groupingsGroupMap[$mcGroupId];
-                // No correspnding grouping
-                if (empty($groupingId)) {
-                    continue;
-                }
-                $listId = $this->groupingsListMap[$groupingId];
-                // No correspnding list
-                if (empty($listId)) {
-                    continue;
-                }
-                // User is not subscribed to this list
-                if (!in_array($listId, $currentLists)) {
-                    continue;
-                }
-                // We passed all checks: Remove the group
-                $this->removeMCGroup($email, $listId, $groupingId, $groupName);
-            }
-        }
+        $listUpdates = array_intersect_key($currentMemberships, $groupsRemove);
+        foreach ($listUpdates as $listId => $list) {
+            try {
+                $this->mcApi->update($contact->email, $listId, array('interests' => $groupsRemove[$listId]));
 
-        // Add MC group to existing list subscription
-        if (!empty($addMCGroups) && is_array($currentLists)) {
-            foreach ($addMCGroups as $mcGroupId) {
-                $groupName = str_replace(',', '\,', $this->groupingsGroupName[$mcGroupId]);
-                // No group name
-                if (empty($groupName)) {
-                    continue;
-                }
-                $groupingId = $this->groupingsGroupMap[$mcGroupId];
-                // No correspnding grouping
-                if (empty($groupingId)) {
-                    continue;
-                }
-                $listId = $this->groupingsListMap[$groupingId];
-                // No correspnding list
-                if (empty($listId)) {
-                    continue;
-                }
-                // User is not subscribed to this list
-                if (!in_array($listId, $currentLists)) {
-                    continue;
-                }
-                // We passed all checks: Add the group
-                $this->addMCGroup($email, $listId, $groupingId, $groupName);
+            } catch (Exception $e) {
+                $app->enqueueMessage($e->getMessage(), 'error');
             }
         }
     }
@@ -611,8 +399,9 @@ class JinboundMailchimp
                     foreach ($memberships as $listId => $membership) {
                         $membership->list = $lists[$listId];
 
-                        $interests = json_decode(json_encode($membership->interests), true);
-                        $interests = array_filter($interests);
+                        $interests = empty($membership->interests)
+                            ? array()
+                            : array_filter(json_decode(json_encode($membership->interests), true));
 
                         $membership->interests = $interests ? $this->getGroups(array_keys($interests)) : array();
                     }
@@ -628,184 +417,143 @@ class JinboundMailchimp
     }
 
     /*
-     * Adds a MailChimp user to a MailChimp group.
-     */
-
-    private function removeMCGroup($userEmail, $listId, $groupingId, $groupName)
-    {
-        if (!$this->mcApi) {
-            return;
-        }
-
-        $userMCInfo    = $this->mcApi->listMemberInfo($listId, $userEmail);
-        $userMCData    = $userMCInfo['data'][0];
-        $userMergeVars = $userMCData['merges'];
-        if (isset($userMergeVars['GROUPINGS']) && is_array($userMergeVars['GROUPINGS'])) {
-            $groupings = $userMergeVars['GROUPINGS'];
-            foreach ($groupings as $key => $grouping) {
-                if ($groupingId == $grouping['id']) {
-                    $newGroups            = array();
-                    $groupsChanged        = false;
-                    $existingGroupsString = $grouping['groups'];
-                    $existingGroupsArray  = $this->mcGroupsToArray($existingGroupsString);
-                    foreach ($existingGroupsArray as $existingGroup) {
-                        $existingGroup = trim($existingGroup);
-                        if ($existingGroup != $groupName) {
-                            // If this is not the group to be removed, add it again
-                            $newGroups[] = $existingGroup;
-                        } else {
-                            // The group that needs to be removed is there
-                            $groupsChanged = true;
-                        }
-                    }
-                    if ($groupsChanged) {
-                        // Update MailChimp using the new groups
-                        if (empty($newGroups)) {
-                            $newGroupsString = '';
-                        } else {
-                            $newGroupsString = implode(",", $newGroups);
-                        }
-                        $userMergeVars['GROUPINGS'][$key]['groups'] = $newGroupsString;
-                        $this->mcApi->listUpdateMember($listId, $userEmail, $userMergeVars);
-                    }
-                }
-            }
-        }
-    }
-
-    private function mcGroupsToArray($groupsString)
-    {
-        if ($this->mcApi) {
-            $groupsArray           = array();
-            $groupStringToBeParsed = $groupsString;
-            while (true) {
-                $pos = strpos($groupStringToBeParsed, ',');
-                if (!$pos) {
-                    break;
-                }
-                $charBeforeComma = substr($groupStringToBeParsed, ($pos - 1), 1);
-                // Check for '\,'
-                if ($charBeforeComma != '\\') {
-                    $groupsArray[]         = trim(substr($groupStringToBeParsed, 0, $pos));
-                    $groupStringToBeParsed = trim(substr($groupStringToBeParsed, ($pos + 1)));
-                }
-            }
-            if (!empty($groupStringToBeParsed)) {
-                $groupsArray[] = $groupStringToBeParsed;
-            }
-
-            return $groupsArray;
-        }
-
-        return array();
-    }
-
-    /*
-     * Returns the MailChimp lists that exist at the MC account.
-     */
-
-    private function addMCGroup($userEmail, $listId, $groupingId, $groupName)
-    {
-        if (!$this->mcApi) {
-            return;
-        }
-
-        $userMCInfo    = $this->mcApi->listMemberInfo($listId, $userEmail);
-        $userMCData    = $userMCInfo['data'][0];
-        $userMergeVars = $userMCData['merges'];
-        if (isset($userMergeVars['GROUPINGS']) && is_array($userMergeVars['GROUPINGS'])) {
-            $groupings = $userMergeVars['GROUPINGS'];
-            foreach ($groupings as $key => $grouping) {
-                if ($groupingId == $grouping['id']) {
-                    $newGroups            = array();
-                    $groupsChanged        = true;
-                    $existingGroupsString = $grouping['groups'];
-                    $existingGroupsArray  = $this->mcGroupsToArray($existingGroupsString);
-                    $newGroups            = $groupsArray;
-                    foreach ($existingGroupsArray as $existingGroup) {
-                        $existingGroup = trim($existingGroup);
-                        if ($existingGroup == $groupName) {
-                            // The group that needs to be added is already there - nothing to do
-                            $groupsChanged = false;
-                            break;
-                        }
-                    }
-                    if ($groupsChanged) {
-                        // Use the existing groups, add the new one, and update MailChimp
-                        $newGroups                                  = $existingGroupsArray;
-                        $newGroups[]                                = $groupName;
-                        $newGroupsString                            = implode(",", $newGroups);
-                        $userMergeVars['GROUPINGS'][$key]['groups'] = $newGroupsString;
-                        $this->mcApi->listUpdateMember($listId, $userEmail, $userMergeVars);
-                    }
-                }
-            }
-        }
-    }
-
-    /*
      * Return the MailChimp groups as an array of options
      */
 
     /**
-     * Moves this plugin's settings from the plugin into each subscription
-     * level's configuration parameters.
+     * @param JInboundTableContact  $contact
+     * @param JInboundTableCampaign $campaign
+     *
+     * @return array
+     * @throws Exception
      */
-    protected function upgradeSettings($config = array())
+    protected function getMergeFields(JInboundTableContact $contact, JInboundTableCampaign $campaign)
     {
-        if (!$this->mcApi) {
-            return;
+        /*
+         * getting the form data to be sent to mailchimp presents a bit of a problem
+         * this method only knows the contact id, the campaign id, and the status id
+         * and everything else must be extrapolated from that
+         * what we can do is load the fields related to the pages with the same
+         * form and campaign, then check the user's conversions for that page
+         * this should give us the conversion data, including the fields
+         */
+
+        $app = JFactory::getApplication();
+        $db  = JFactory::getDbo();
+
+        // get form field params from db first
+        $campaignFields = $db->setQuery(
+            $db->getQuery(true)
+                ->select(
+                    array(
+                        'Field.name',
+                        'Field.params',
+                        'Page.id AS page_id',
+                        'Page.campaign'
+                    )
+                )
+                ->from('#__jinbound_fields AS Field')
+                ->leftJoin('#__jinbound_form_fields AS FormField ON FormField.field_id = Field.id')
+                ->leftJoin('#__jinbound_pages AS Page ON Page.formid = FormField.form_id')
+                ->leftJoin('#__jinbound_contacts_campaigns AS ContactCampaign ON ContactCampaign.campaign_id = Page.campaign')
+                ->where(
+                    array(
+                        'Page.id IS NOT NULL',
+                        'Page.campaign = ' . (int)$campaign->id
+                    )
+                )
+                ->group('Field.id')
+        )
+            ->loadObjectList();
+
+        if (JDEBUG) {
+            $app->enqueueMessage(
+                sprintf(
+                    '<h3>[%s] Field Data</h3><pre>%s</pre>',
+                    __METHOD__,
+                    htmlspecialchars(print_r($campaignFields, 1), ENT_QUOTES, 'UTF-8')
+                )
+            );
         }
 
-        $levels          = array();//$model->getList(true);
-        $addgroupsKey    = strtolower($this->name) . '_addgroups';
-        $removegroupsKey = strtolower($this->name) . '_removegroups';
-        if (!empty($levels)) {
-            foreach ($levels as $level) {
-                $save = false;
-                if (is_string($level->params)) {
-                    $level->params = @json_decode($level->params);
-                    if (empty($level->params)) {
-                        $level->params = new stdClass();
+        $mergeValues = array(
+            'FNAME' => $contact->first_name,
+            'LNAME' => $contact->last_name
+        );
+
+        /*
+         * NOTE: during contact save, this ends up triggering BEFORE the conversion
+         * is saved, so having no conversions at all means that it's likely
+         * that this is a new contact - in order to make this work correctly,
+         * we have to also check the post data with this request
+         * so what we'll do is loop through the fields first, set initial data
+         * from the conversions, then override using post data
+         */
+        $contactConversions = JInboundHelperContact::getContactConversions($contact->id);
+
+        if ($token = $app->input->getCmd('token')) {
+            $rawPostParam = preg_replace('/^(.*?)\.(.*?)\.(.*?)$/', '${1}_${3}', $token);
+
+        } else {
+            $rawPostParam = 'jform';
+        }
+        $rawPostData = $app->input->post->get($rawPostParam, array(), 'array');
+
+        $filter = JFilterInput::getInstance();
+        foreach ($campaignFields as $campaignField) {
+            $params       = new Registry($campaignField->params);
+            $mappedFields = (array)$params->get('mailchimp.mapped_field', array());
+
+            if ($mappedFields) {
+                foreach ($contactConversions as $contactConversion) {
+                    if ($campaignField->page_id == $contactConversion->page_id) {
+                        $value = empty($contactConversion->formdata['lead'][$campaignField->name])
+                            ? null
+                            : $contactConversion->formdata['lead'][$campaignField->name];
+
+                        if ($value) {
+                            foreach ($mappedFields as $mappedField) {
+                                $mergeValues[$mappedField] = $value;
+                            }
+                        }
                     }
-                } elseif (empty($level->params)) {
-                    $level->params = new stdClass();
                 }
-                if (array_key_exists($level->akeebasubs_level_id, $this->addGroups)) {
-                    if (empty($level->params->$addgroupsKey)) {
-                        $level->params->$addgroupsKey = $this->addGroups[$level->akeebasubs_level_id];
-                        $save                         = true;
+
+                // now override using post data
+                if (!empty($rawPostData['lead'][$campaignField->name])) {
+                    $postValue = $filter->clean($rawPostData['lead'][$campaignField->name]);
+
+                    if ($postValue) {
+                        foreach ($mappedFields as $mappedField) {
+                            $mergeValues[$mappedField] = $postValue;
+                        }
                     }
-                }
-                if (array_key_exists($level->akeebasubs_level_id, $this->removeGroups)) {
-                    if (empty($level->params->$removegroupsKey)) {
-                        $level->params->$removegroupsKey = $this->removeGroups[$level->akeebasubs_level_id];
-                        $save                            = true;
-                    }
-                }
-                if ($save) {
-                    $level->params = json_encode($level->params);
-                    $result        = $model->setId($level->akeebasubs_level_id)->save($level);
                 }
             }
         }
 
-        // Remove the plugin parameters
-        if (isset($config['params'])) {
-            $configParams = @json_decode($config['params']);
-            unset($configParams->addlists);
-            unset($configParams->removelists);
-            $param_string = @json_encode($configParams);
+        return $mergeValues;
+    }
 
-            $db    = JFactory::getDbo();
-            $query = $db->getQuery(true)
-                ->update($db->qn('#__extensions'))
-                ->where($db->qn('type') . '=' . $db->q('plugin'))
-                ->where($db->qn('element') . '=' . $db->q(strtolower($this->name)))
-                ->where($db->qn('folder') . '=' . $db->q('akeebasubs'))
-                ->set($db->qn('params') . ' = ' . $db->q($param_string));
-            $db->setQuery($query);
-            $db->execute();
+    /**
+     * @param string|string[] $groups
+     *
+     * @return string[][]
+     * @throws Exception
+     */
+    protected function verifyGroups(array $groups, $value)
+    {
+        $result = array();
+        if ($groups = $this->getGroups($groups)) {
+            foreach ($groups as $groupId => $group) {
+                $listId = $group->list_id;
+                if (!isset($result[$listId])) {
+                    $result[$listId] = array();
+                }
+                $result[$group->list_id][$groupId] = $value;
+            }
         }
+
+        return $result;
     }
 }
