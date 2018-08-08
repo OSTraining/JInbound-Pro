@@ -220,7 +220,8 @@ class MCAPI
      */
     public function getFields($listId)
     {
-        $response = $this->callServer("lists/{$listId}/merge-fields");
+        // A bit of a punt here. But surely no one has created as many as 50 merge fields?!
+        $response = $this->callServer("lists/{$listId}/merge-fields", array('count' => 50));
 
         return empty($response->merge_fields) ? array() : $response->merge_fields;
     }
