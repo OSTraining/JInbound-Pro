@@ -46,11 +46,22 @@ class JFormFieldJinboundMailchimpfields extends JFormFieldGroupedList
             foreach ($listFields as $listId => $fields) {
                 $listName = $fields->list->name;
 
-                static::$fields[$listName] = array(
-                    JHtml::_('select.option', 'email', JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAIL'))
-                );
                 foreach ($fields->fields as $field) {
-                    static::$fields[$listName][] = JHtml::_('select.option', $field->tag, $field->name);
+                    if ($subTags = $helper->getSubTags($field->type)) {
+                        foreach ($subTags as $subTag) {
+                            static::$fields[$listName][] = JHtml::_(
+                                'select.option',
+                                $field->tag . ':' . $subTag,
+                                JText::sprintf(
+                                    sprintf('PLG_SYSTEM_JINBOUNDMAILCHIMP_SUBFIELD_%s_%s', $field->type, $subTag),
+                                    $field->name
+                                )
+                            );
+                        }
+
+                    } else {
+                        static::$fields[$listName][] = JHtml::_('select.option', $field->tag, $field->name);
+                    }
                 }
             }
         }

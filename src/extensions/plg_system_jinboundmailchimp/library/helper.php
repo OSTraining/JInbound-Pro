@@ -51,6 +51,10 @@ class JinboundMailchimp
      */
     protected static $fields = null;
 
+    protected $fieldSubTags = array(
+        'address' => array('addr1', 'addr2', 'city', 'state', 'zip', 'country')
+    );
+
     /**
      * @var object[]
      */
@@ -355,9 +359,31 @@ class JinboundMailchimp
 
                 foreach ($lists as $list) {
                     try {
+                        $fields = $this->mcApi->getFields($list->id);
+
+                        // Fabricate the required email field that isn't returned otherwise
+                        $fields[] = (object)array(
+                            'merge_id'      => 0,
+                            'tag'           => 'EMAIL',
+                            'name'          => JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_EMAIL'),
+                            'type'          => 'text',
+                            'required'      => true,
+                            'default_value' => '',
+                            'public'        => false,
+                            'display_order' => 1,
+                            'options'       => (object)array(),
+                            'help_text'     => '',
+                            'list_id'       => $list->id,
+                            '_links'        => array()
+                        );
+
+                        uasort($fields, function ($a, $b) {
+                            return $a->display_order - $b->display_order;
+                        });
+
                         static::$fields[$list->id] = (object)array(
                             'list'   => $list,
-                            'fields' => $this->mcApi->getFields($list->id)
+                            'fields' => $fields
                         );
 
                     } catch (Exception $e) {
@@ -503,11 +529,12 @@ class JinboundMailchimp
 
         $filter = JFilterInput::getInstance();
         foreach ($campaignFields as $campaignField) {
-            $params            = new Registry($campaignField->params);
-            $mappedFields      = (array)$params->get('mailchimp.mapped_field', array());
-            $campaignFieldName = $campaignField->name;
+            $params = new Registry($campaignField->params);
 
+            $mappedFields = (array)$params->get('mailchimp.mapped_field', array());
             if ($mappedFields) {
+                $campaignFieldName = $campaignField->name;
+
                 foreach ($contactConversions as $contactConversion) {
                     if ($campaignField->page_id == $contactConversion->page_id) {
                         $value = empty($contactConversion->formdata['lead']->$campaignFieldName)
@@ -515,9 +542,7 @@ class JinboundMailchimp
                             : $contactConversion->formdata['lead']->$campaignFieldName;
 
                         if ($value) {
-                            foreach ($mappedFields as $mappedField) {
-                                $mergeValues[$mappedField] = $value;
-                            }
+                            $this->updateMergeValue($mergeValues, $mappedFields, $value);
                         }
                     }
                 }
@@ -527,9 +552,7 @@ class JinboundMailchimp
                     $postValue = $filter->clean($rawPostData['lead'][$campaignFieldName]);
 
                     if ($postValue) {
-                        foreach ($mappedFields as $mappedField) {
-                            $mergeValues[$mappedField] = $postValue;
-                        }
+                        $this->updateMergeValue($mergeValues, $mappedFields, $postValue);
                     }
                 }
             }
@@ -560,5 +583,44 @@ class JinboundMailchimp
         }
 
         return $result;
+    }
+
+    /**
+     * Returns Mailchimp subfields for compound fields like addresses
+     *
+     * @param string $type
+     *
+     * @return string[]
+     */
+    public function getSubTags($type)
+    {
+        $type = strtolower($type);
+
+        return empty($this->fieldSubTags[$type]) ? null : $this->fieldSubTags[$type];
+    }
+
+    /**
+     * Add/Update mapped field values array from the list of fieldnames
+     *
+     * @param string[] $values
+     * @param string[] $fieldNames
+     * @param mixed    $value
+     *
+     * @return void
+     */
+    protected function updateMergeValue(array &$values, array $fieldNames, $value)
+    {
+        foreach ($fieldNames as $fieldName) {
+            if (strpos($fieldName, ':')) {
+                list($baseName, $subField) = explode(':', $fieldName, 2);
+                if (!isset($values[$baseName])) {
+                    $values[$baseName] = array();
+                }
+                $values[$baseName][$subField] = $value;
+
+            } else {
+                $values[$fieldName] = $value;
+            }
+        }
     }
 }
