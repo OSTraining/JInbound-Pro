@@ -166,22 +166,6 @@ class JinboundAcymailing
         return implode("\n", $html);
     }
 
-    public function getEmailListDetails($email)
-    {
-        if (empty($email)) {
-            return array();
-        }
-        return $this->db->setQuery($this->db->getQuery(true)
-            ->select('List.name')
-            ->select('ListSub.status')
-            ->from('#__acymailing_list AS List')
-            ->leftJoin('#__acymailing_listsub AS ListSub ON ListSub.listid = List.listid')
-            ->leftJoin('#__acymailing_subscriber AS Sub ON Sub.subid = ListSub.subid')
-            ->where('Sub.email = ' . $this->db->quote($email))
-            ->group('List.listid')
-        )->loadObjectList();
-    }
-
     private function updateListSub($list, $sub, $subdate = false, $unsubdate = false, $status = 1)
     {
         $query = $this->db->getQuery(true)

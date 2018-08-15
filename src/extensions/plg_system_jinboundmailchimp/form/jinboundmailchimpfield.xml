@@ -2,13 +2,15 @@
 <form>
     <fields name="params">
         <fields name="mailchimp">
-            <fieldset name="mailchimp" label="testing">
+            <fieldset name="mailchimp" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_TAB_TITLE">
                 <field name="mapped_field"
                        type="jinboundmailchimpfields"
                        label="PLG_SYSTEM_JINBOUNDMAILCHIMP_MAPPED_FIELD_TITLE"
                        description="PLG_SYSTEM_JINBOUNDMAILCHIMP_MAPPED_FIELD_DESC"
                        multiple="true"
-                       size="8"/>
+                       size="40">
+                    <option value="">PLG_SYSTEM_JINBOUNDMAILCHIMP_NONE</option>
+                </field>
             </fieldset>
         </fields>
     </fields>

@@ -19,18 +19,25 @@ defined('JPATH_PLATFORM') or die;
 
 class plgSystemJinboundmailchimpInstallerScript
 {
+    /**
+     * @param string            $type
+     * @param JInstallerAdapter $parent
+     *
+     * @throws Exception
+     */
     public function postflight($type, $parent)
     {
         $app = JFactory::getApplication();
         $db  = JFactory::getDbo();
 
         // find this plugin in the database, if possible...
-        $db->setQuery($db->getQuery(true)
-            ->select('extension_id')
-            ->from('#__extensions')
-            ->where($db->quoteName('element') . ' = ' . $db->quote('jinboundmailchimp'))
-            ->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
-            ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
+        $db->setQuery(
+            $db->getQuery(true)
+                ->select('extension_id')
+                ->from('#__extensions')
+                ->where($db->quoteName('element') . ' = ' . $db->quote('jinboundmailchimp'))
+                ->where($db->quoteName('folder') . ' = ' . $db->quote('system'))
+                ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
         );
 
         try {
@@ -46,20 +53,20 @@ class plgSystemJinboundmailchimpInstallerScript
         }
 
         // force-enable this plugin
-        $db->setQuery($db->getQuery(true)
-            ->update('#__extensions')
-            ->set($db->quoteName('enabled') . ' = 1')
-            ->where($db->quoteName('extension_id') . ' = ' . (int)$eid)
+        $db->setQuery(
+            $db->getQuery(true)
+                ->update('#__extensions')
+                ->set($db->quoteName('enabled') . ' = 1')
+                ->where($db->quoteName('extension_id') . ' = ' . (int)$eid)
         );
 
         try {
-            $db->query();
+            $db->execute();
+
         } catch (Exception $e) {
             if (defined('JDEBUG') && JDEBUG) {
                 $app->enqueueMessage(htmlspecialchars($e->getMessage()));
             }
-            return;
         }
-
     }
 }

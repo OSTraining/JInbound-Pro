@@ -19,52 +19,61 @@ defined('_JEXEC') or die;
 
 class JFormFieldJinboundmailchimpcontactinfo extends JFormField
 {
-    protected function getInput()
+    /**
+     * @var string
+     */
+    protected $layout = 'jinbound.field.mailchimp.contactinfo';
+
+    /**
+     * @var JFormField
+     */
+    protected $emailField = null;
+
+    public function setup(\SimpleXMLElement $element, $value, $group = null)
     {
-        $email = $this->form->getValue('email');
-        if (empty($email)) {
-            return JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_CONTACT_NO_EMAIL');
-        }
-        $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
-        require_once realpath(dirname(__FILE__) . '/../library/helper.php');
-        $helper = new JinboundMailchimp(array('params' => $plugin->params));
-        $lists  = $helper->getEmailListDetails($email);
-        if (empty($lists)) {
-            return JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_CONTACT_NO_LISTS');
-        }
-        $filter = JFilterInput::getInstance();
-        $html   = array();
-        $html[] = '<table class="table table-striped">';
-        $html[] = '<thead><tr>';
-        $html[] = '<th>' . JText::_('COM_JINBOUND_NAME') . '</th>';
-        $html[] = '<th>' . JText::_('PLG_SYSTEM_JINBOUNDMAILCHIMP_GROUPS') . '</th>';
-        $html[] = '<th>' . JText::_('JSTATUS') . '</th>';
-        $html[] = '</tr></thead>';
-        $html[] = '<tbody>';
-        foreach ($lists as $id => $list) {
-            foreach ($list['data'] as $data) {
-                $html[] = '<tr>';
-                $html[] = '<td><h3>' . $filter->clean($data['list_name']) . '</h3></td>';
-                $html[] = '<td>';
-                if (array_key_exists('merges', $data)
-                    && is_array($data['merges'])
-                    && array_key_exists('GROUPINGS', $data['merges'])
-                    && is_array($data['merges']['GROUPINGS'])
-                    && !empty($data['merges']['GROUPINGS'])) {
-                    $html[] = '<ul>';
-                    foreach ($data['merges']['GROUPINGS'] as $group) {
-                        $html[] = '<li>' . $filter->clean($group['groups']) . '</li>';
-                    }
-                    $html[] = '</ul>';
-                }
-                $html[] = '</td>';
-                $html[] = '<td>' . $filter->clean($data['status']) . '</td>';
-                $html[] = '</tr>';
+        if (parent::setup($element, $value, $group)) {
+            if ($emailField = (string)$element['emailfield']) {
+                $this->emailField = $this->form->getField($emailField, $group);
             }
+
+            return $this->emailField instanceof JFormField;
         }
-        $html[] = '</tbody>';
-        $html[] = '</table>';
-        return implode("\n", $html);
+
+        return false;
+    }
+
+    protected function getRenderer($layoutId = 'default')
+    {
+        $renderer = parent::getRenderer($layoutId);
+
+        if ($layoutId == $this->layout) {
+            $renderer->addIncludePath(JPATH_PLUGINS . '/system/jinboundmailchimp/layouts');
+        }
+
+        return $renderer;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    protected function getLayoutData()
+    {
+        $email = $this->emailField ? $this->emailField->value : '';
+        if ($email) {
+            $plugin = JPluginHelper::getPlugin('system', 'jinboundmailchimp');
+            require_once realpath(__DIR__ . '/../library/helper.php');
+            $helper = new JinboundMailchimp(array('params' => $plugin->params));
+
+            $memberships = $helper->getMemberships($email);
+        }
+
+        $fieldData = array(
+            'email'   => $email,
+            'memberships' => empty($memberships) ? array() : $memberships
+        );
+
+        return array_merge(parent::getLayoutData(), $fieldData);
     }
 
     protected function getLabel()

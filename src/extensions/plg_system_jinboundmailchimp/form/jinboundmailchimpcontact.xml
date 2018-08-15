@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-    <fieldset name="mailchimp">
+    <fieldset name="mailchimp" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_TAB_TITLE">
         <field name="mailchimp"
-               type="jinboundmailchimpcontactinfo"/>
+               type="jinboundmailchimpcontactinfo"
+               emailfield="email"/>
     </fieldset>
 </form>
