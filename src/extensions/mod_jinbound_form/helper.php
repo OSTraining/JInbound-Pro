@@ -121,6 +121,7 @@ abstract class modJinboundFormHelper
         if (empty($form_id) || empty($campaign_id)) {
             return false;
         }
+
         return (object)array(
             'campaign_id'         => $campaign_id,
             'form_id'             => $form_id,
@@ -136,7 +137,9 @@ abstract class modJinboundFormHelper
 
     public static function getForm(&$module, &$params)
     {
-        return JInboundHelperForm::getJinboundForm((int)$params->get('formid', 0),
-            array('control' => 'mod_jinbound_form_' . $module->id));
+        return JInboundHelperForm::getJinboundForm(
+            (int)$params->get('formid', 0),
+            array('control' => 'mod_jinbound_form_' . $module->id)
+        );
     }
 }
