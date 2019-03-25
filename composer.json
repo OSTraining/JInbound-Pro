@@ -10,7 +10,7 @@
         "name"           : "jInbound",
         "client"         : "administrator",
         "package-license": "pro",
-        "target-platform": "3.[78]"
+        "target-platform": "3.*"
     },
     "authors"          : [
         {
