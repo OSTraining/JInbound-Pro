@@ -10,7 +10,8 @@
         "name"           : "jInbound",
         "client"         : "administrator",
         "package-license": "pro",
-        "target-platform": "3.*"
+        "target-platform": "3.*",
+        "infourl"        : "/changelog/jinbound-pro/"
     },
     "authors"          : [
         {
