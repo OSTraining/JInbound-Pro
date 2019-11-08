@@ -139,7 +139,7 @@ class PlgSystemJinboundleadmap extends JPlugin
                     array(
                         'client_id = 1',
                         'parent_id = ' . (int)$parentId,
-                        'title = ' . $db->quote('COM_JINBOUND_LEADS')
+                        'title = ' . $db->quote('COM_JINBOUND_LEADS_MANAGER')
                     )
                 )
         )
@@ -279,7 +279,7 @@ class PlgSystemJinboundleadmap extends JPlugin
             $newSidebar = array();
             foreach ($view->sidebarItems as $sidebarItem) {
                 $newSidebar[] = $sidebarItem;
-                if (JText::_('COM_JINBOUND_LEADS') === $sidebarItem[0]) {
+                if (JText::_('COM_JINBOUND_LEADS_MANAGER') === $sidebarItem[0]) {
                     $newSidebar[] = array($label, $url, $active);
                 }
             }
