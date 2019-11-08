@@ -87,7 +87,7 @@ class plgSystemJinboundleadmapInstallerScript
             $leads->load(
                 array(
                     'component_id' => $jinbound->id,
-                    'title'        => 'COM_JINBOUND_LEADS',
+                    'title'        => 'COM_JINBOUND_LEADS_MANAGER',
                     'level'        => 2,
                     'client_id'    => 1
                 )
