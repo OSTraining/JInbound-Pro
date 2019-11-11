@@ -1,7 +1,3 @@
-/**
- * popup.js
- */
-
 var JInboundPopupIntervals = {};
 
 (function($) {

@@ -1,7 +1,3 @@
-/**
- * popup.legacy.js
- */
-
 var JInboundPopupIntervals = {};
 
 (function() {
