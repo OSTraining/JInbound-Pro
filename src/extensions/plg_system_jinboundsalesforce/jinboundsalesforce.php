@@ -273,9 +273,12 @@ class plgSystemJInboundsalesforce extends JPlugin
             $this->execTaskUpload();
             return;
         }
+        
+        $app = JFactory::getApplication();
+        
         $view = $this->getFieldView();
         $view->setLayout('close');
-        $view->field = $this->app->input->get('field', '', 'string');
+        $view->field = $app->input->get('field', '', 'string');
         $view->file  = $file;
         echo $view->display();
     }
@@ -311,9 +314,12 @@ class plgSystemJInboundsalesforce extends JPlugin
         if ($token) {
             JFactory::getSession()->checkToken('get') or die(JText::_('JINVALID_TOKEN'));
         }
+        
+        $app = JFactory::getApplication();
+        
         $view         = $this->getFieldView();
         $view->errors = $this->errors;
-        $view->field  = $this->app->input->get('field', '', 'string');
+        $view->field  = $app->input->get('field', '', 'string');
         echo $view->display();
     }
 
