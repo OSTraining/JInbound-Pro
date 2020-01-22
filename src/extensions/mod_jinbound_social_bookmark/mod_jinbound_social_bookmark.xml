@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" position="jinbound_social" client="site" method="upgrade" version="3.7">
     <name>JInbound Social Bookmark</name>
-    <creationDate>November 11 2019</creationDate>
+    <creationDate>January 22 2020</creationDate>
     <author>Joomlashack</author>
     <authorEmail>help@joomlashack.com</authorEmail>
     <authorUrl>http://joomlashack.com</authorUrl>
     <copyright>Copyright 2016-2020 Joomlashack.com</copyright>
     <license>GNU/GPL</license>
-    <version>3.0.8</version>
+    <version>3.0.9</version>
     <description>JInbound Social Bookmark - module based on Nice Social Bookmark 3.0 - Joomla 3.0 module for displaying
         links to most common social sites.
     </description>

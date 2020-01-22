@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" position="default" client="site" method="upgrade" version="3.7">
     <name>jInbound Form Pro</name>
-    <creationDate>November 11 2019</creationDate>
+    <creationDate>January 22 2020</creationDate>
     <author>Joomlashack</author>
     <authorEmail>help@joomlashack.com</authorEmail>
     <authorUrl>http://joomlashack.com</authorUrl>
     <copyright>Copyright 2016-2020 Joomlashack.com</copyright>
     <license>GNU/GPL</license>
-    <version>3.0.8</version>
+    <version>3.0.9</version>
     <description>MOD_JINBOUND_FORM_DESCRIPTION</description>
 
     <files>
