@@ -22,11 +22,21 @@
  * along with jInbound-Pro.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-defined('JPATH_PLATFORM') or die;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Filesystem\File;
 
-class plgSystemJInboundsalesforce extends JPlugin
+defined('_JEXEC') or die;
+
+class plgSystemJInboundsalesforce extends CMSPlugin
 {
-    protected static $client = null;
+    /**
+     * @var SforcePartnerClient
+     */
+    protected $client = null;
 
     /**
      * @var array
@@ -39,8 +49,11 @@ class plgSystemJInboundsalesforce extends JPlugin
     protected $enabled = false;
 
     /**
-     * Constructor
-     *
+     * @var CMSApplication
+     */
+    protected $app = null;
+
+    /**
      * @param JEventDispatcher $subject
      * @param array            $config
      */
@@ -59,27 +72,26 @@ class plgSystemJInboundsalesforce extends JPlugin
      */
     public function onAfterInitialise()
     {
-        $app = JFactory::getApplication();
-
-        if ($app->isClient('site') || !$this->enabled) {
+        if ($this->app->isClient('site') || !$this->enabled) {
             return;
         }
 
-        $option = $app->input->getCmd('option');
+        $option = $this->app->input->getCmd('option');
         if ($option != 'plg_system_jinboundsalesforce') {
             return;
         }
 
-        $view   = $app->input->getCmd('view');
+        $view   = $this->app->input->getCmd('view');
         $method = 'execTask' . ucwords($view);
         if (method_exists($this, $method)) {
             $this->$method();
         }
+
         jexit();
     }
 
     /**
-     * @param JForm $form
+     * @param Form $form
      *
      * @return bool
      */
@@ -89,151 +101,178 @@ class plgSystemJInboundsalesforce extends JPlugin
             return true;
         }
 
-        if (!$form instanceof JForm) {
+        if (!$form instanceof Form) {
             $this->_subject->setError('JERROR_NOT_A_FORM');
+
             return false;
         }
 
+        $result = true;
         if ($form->getName() == 'com_jinbound.field') {
             $file = 'jinboundsalesforce';
 
-            JForm::addFormPath(dirname(__FILE__) . '/form');
-            JForm::addFieldPath(dirname(__FILE__) . '/field');
+            Form::addFormPath(__DIR__ . '/form');
+            Form::addFieldPath(__DIR__ . '/field');
 
             $result = $form->loadFile($file, false);
-
-            return $result;
         }
 
-        return true;
+        return $result;
     }
 
+    /**
+     * @param string $context
+     * @param object $conversion
+     * @param bool   $isNew
+     *
+     * @return void
+     */
     public function onContentAfterSave($context, $conversion, $isNew)
     {
-        $app = JFactory::getApplication();
-        $db  = JFactory::getDbo();
-        // only operate on jinbound conversion contexts
-        if ('com_jinbound.conversion' !== $context || !PLG_SYSTEM_JINBOUNDSALESFORCE) {
+        if ($context != 'com_jinbound.conversion') {
             return;
         }
-        // get fields
+
         $fields = $this->getFieldsByPage($conversion->page_id);
         if (empty($fields)) {
             return;
         }
-        // store the object's fields in an array
-        $objectfields = array();
-        // decode data
-        $formdata = json_decode($conversion->formdata);
-        // loop fields
+
+        $objectFields = array();
+        $formData     = json_decode($conversion->formdata);
         foreach ($fields as $name => $field) {
-            // decode params
             $params = json_decode($field->params);
-            // check that params is an object
-            if (!(is_object($params) && property_exists($params, 'salesforce')
-                && is_object($params->salesforce) && property_exists($params->salesforce, 'mapped_field'))) {
+            if (!(
+                is_object($params) && property_exists($params, 'salesforce')
+                && is_object($params->salesforce)
+                && property_exists($params->salesforce, 'mapped_field')
+            )
+            ) {
                 continue;
             }
-            // add mapped field
+
             if (!empty($params->salesforce->mapped_field)) {
-                $objectfields[$params->salesforce->mapped_field] = $formdata->lead->$name;
+                $objectFields[$params->salesforce->mapped_field] = $formData->lead->$name;
             }
         }
-        if (empty($objectfields)) {
+
+        if (empty($objectFields)) {
             return;
         }
+
         $client = $this->getClient();
         if ($client) {
-            // create a new SObject
             $object         = new SObject();
             $object->type   = 'Contact';
-            $object->fields = $objectfields;
-            // check response
+            $object->fields = $objectFields;
             try {
-                $response = $client->create(array($object));
+                // @TODO save response ids?
+                $client->create(array($object));
+
             } catch (Exception $e) {
-                // TODO
             }
         }
-        // TODO save response ids?
     }
 
-    protected function getFieldsByPage($page_id)
+    /**
+     * @param int $pageId
+     *
+     * @return object[]
+     */
+    protected function getFieldsByPage($pageId)
     {
-        $db     = JFactory::getDbo();
-        $rows   = $db->setQuery($db->getQuery(true)
+        $db    = Factory::getDbo();
+        $query = $db->getQuery(true)
             ->select('Field.*')
             ->from('#__jinbound_fields AS Field')
             ->leftJoin('#__jinbound_form_fields AS FormFields ON FormFields.field_id = Field.id')
-            ->leftJoin('#__jinbound_pages AS Page ON FormFields.form_id = Page.formid AND Page.id = ' . (int)$page_id)
+            ->leftJoin('#__jinbound_pages AS Page ON FormFields.form_id = Page.formid AND Page.id = ' . (int)$pageId)
             ->where('Field.published = 1')
-            ->group('Field.id')
-        )->loadObjectList();
+            ->group('Field.id');
+
+        $rows = $db->setQuery($query)->loadObjectList();
+
         $result = array();
         foreach ($rows as $row) {
             $result[$row->name] = $row;
         }
+
         return $result;
     }
 
+    /**
+     * @return SforcePartnerClient
+     */
     public function getClient()
     {
-        if (empty($this->client)) {
-            require_once dirname(__FILE__) . '/library/force/SforcePartnerClient.php';
+        if ($this->client === null) {
+            require_once __DIR__ . '/library/force/SforcePartnerClient.php';
+
             $this->startClient();
         }
+
         return $this->client;
     }
 
-    private function startClient()
+    /**
+     * @return void
+     */
+    protected function startClient()
     {
-        // check session for client info
-        $session       = JFactory::getSession();
-        $sess_wsdl     = $session->get('jinboundsalesforce.wsdl', '');
-        $sess_location = $session->get('jinboundsalesforce.location', '');
-        $sess_id       = $session->get('jinboundsalesforce.id', '');
-        // confirm session info first
-        if (!empty($sess_wsdl) && !empty($sess_location) && !empty($sess_id)) {
-            // if this works, it's all done
+        $session         = Factory::getSession();
+        $sessionWsdl     = $session->get('jinboundsalesforce.wsdl', '');
+        $sessionLocation = $session->get('jinboundsalesforce.location', '');
+        $sessionId       = $session->get('jinboundsalesforce.id', '');
+
+        if (!empty($sessionWsdl) && !empty($sessionLocation) && !empty($sessionId)) {
             try {
                 $this->client = new SforcePartnerClient();
-                $this->client->createConnection($sess_wsdl);
-                $this->client->setEndpoint($sess_location);
-                $this->client->setSessionHeader($sess_id);
+                $this->client->createConnection($sessionWsdl);
+                $this->client->setEndpoint($sessionLocation);
+                $this->client->setSessionHeader($sessionId);
+
                 return;
-            } // failure - kill the session data and continue connecting fresh
-            catch (Exception $e) {
+
+            } catch (Exception $e) {
+                // Kill the session data and continue connecting fresh
                 $session->set('jinboundsalesforce.wsdl', null);
                 $session->set('jinboundsalesforce.location', null);
                 $session->set('jinboundsalesforce.id', null);
             }
         }
-        // get config from plugin params
+
         $wsdl     = $this->params->get('wsdl', '');
         $username = $this->params->get('username', '');
         $password = $this->params->get('password', '');
         $token    = $this->params->get('security_token', '');
-        $usetoken = (int)$this->params->get('use_token', 1);
-        $wsdlfile = dirname(__FILE__) . '/wsdl/' . $wsdl;
+        $useToken = (int)$this->params->get('use_token', 1);
+        $wsdlFile = __DIR__ . '/wsdl/' . $wsdl;
+
         // confirm that required settings are available
-        if (empty($wsdl) || !file_exists($wsdlfile) || !preg_match('/\.xml$/i', $wsdlfile)
-            || empty($username) || empty($password) || (empty($token) && $usetoken)) {
+        if (empty($wsdl)
+            || !file_exists($wsdlFile)
+            || !preg_match('/\.xml$/i', $wsdlFile)
+            || empty($username)
+            || empty($password)
+            || (empty($token) && $useToken)
+        ) {
             return;
         }
-        // attempt to connect to salesforce
+
         try {
+            // attempt to connect to salesforce
             $this->client = new SforcePartnerClient();
-            $this->client->createConnection($wsdlfile);
-            $this->client->login($username, $password . ($usetoken ? $token : ''));
-        } // could not connect, bail
-        catch (Exception $e) {
+            $this->client->createConnection($wsdlFile);
+            $this->client->login($username, $password . ($useToken ? $token : ''));
+
+            // set data into session for reuse later
+            $session->set('jinboundsalesforce.wsdl', $wsdlFile);
+            $session->set('jinboundsalesforce.location', $this->client->getLocation());
+            $session->set('jinboundsalesforce.id', $this->client->getSessionId());
+
+        } catch (Exception $e) {
             $this->client = null;
-            return;
         }
-        // set data into session for reuse later
-        $session->set('jinboundsalesforce.wsdl', $wsdlfile);
-        $session->set('jinboundsalesforce.location', $this->client->getLocation());
-        $session->set('jinboundsalesforce.id', $this->client->getSessionId());
     }
 
     /**
@@ -248,11 +287,13 @@ class plgSystemJInboundsalesforce extends JPlugin
         $options = array();
         $client  = $this->getClient();
 
-        if (is_object($client) && method_exists($client, 'describeSObject')) {
+        if ($client && method_exists($client, 'describeSObject')) {
             $contact = $client->describeSObject('Contact');
 
-            if (is_object($contact) && property_exists($contact, 'fields')
-                && is_array($contact->fields) && !empty($contact->fields)
+            if (is_object($contact)
+                && property_exists($contact, 'fields')
+                && is_array($contact->fields)
+                && !empty($contact->fields)
             ) {
                 foreach ($contact->fields as $field) {
                     // only show fields that can be created
@@ -267,53 +308,81 @@ class plgSystemJInboundsalesforce extends JPlugin
         return $options;
     }
 
-    private function execTaskClose($file = null)
+    /**
+     * @param string $file
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function execTaskClose($file = null)
     {
         if (is_null($file)) {
             $this->execTaskUpload();
-            return;
+
+        } else {
+            $view = $this->getFieldView();
+            $view->setLayout('close');
+            $view->field = $this->app->input->getString('field');
+            $view->file  = $file;
+
+            echo $view->display();
         }
-        $view = $this->getFieldView();
-        $view->setLayout('close');
-        $view->field = $this->app->input->get('field', '', 'string');
-        $view->file  = $file;
-        echo $view->display();
     }
 
-    private function execTaskUpload()
+    /**
+     * @return void
+     * @throws Exception
+     */
+    protected function execTaskUpload()
     {
-        JFactory::getSession()->checkToken() or die(JText::_('JINVALID_TOKEN'));
-        $file = JFactory::getApplication()->input->files->get('wsdl');
+        Factory::getSession()->checkToken() or die(Text::_('JINVALID_TOKEN'));
+
+        $file = $this->app->input->files->get('wsdl');
         if (empty($file) || !is_array($file)) {
-            $this->errors[] = JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_NO_UPLOAD_FILE');
+            $this->errors[] = Text::_('PLG_SYSTEM_JINBOUNDSALESFORCE_NO_UPLOAD_FILE');
             $this->execTaskForm(false);
+
             return;
         }
-        $filename = JFile::makeSafe($file['name']);
-        $ext      = JFile::getExt($filename);
-        $src      = $file['tmp_name'];
-        $dest     = dirname(__FILE__) . "/wsdl/" . $filename;
+
+        $filename = File::makeSafe($file['name']);
+        $ext      = File::getExt($filename);
+
+        $src  = $file['tmp_name'];
+        $dest = __DIR__ . '/wsdl/' . $filename;
         if (strtolower($ext) !== 'xml') {
-            $this->errors[] = JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_FILE_MUST_BE_XML');
+            $this->errors[] = Text::_('PLG_SYSTEM_JINBOUNDSALESFORCE_FILE_MUST_BE_XML');
             $this->execTaskForm(false);
+
             return;
         }
-        if (!JFile::upload($src, $dest)) {
-            $this->errors[] = JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_COULD_NOT_MOVE_FILE');
+
+        if (!File::upload($src, $dest)) {
+            $this->errors[] = Text::_('PLG_SYSTEM_JINBOUNDSALESFORCE_COULD_NOT_MOVE_FILE');
             $this->execTaskForm(false);
+
             return;
         }
+
         $this->execTaskClose($filename);
     }
 
-    private function execTaskForm($token = true)
+    /**
+     * @param bool $token
+     *
+     * @return void
+     * @throws Exception
+     */
+    protected function execTaskForm($token = true)
     {
         if ($token) {
-            JFactory::getSession()->checkToken('get') or die(JText::_('JINVALID_TOKEN'));
+            Factory::getSession()->checkToken('get') or die(Text::_('JINVALID_TOKEN'));
         }
+
         $view         = $this->getFieldView();
         $view->errors = $this->errors;
-        $view->field  = $this->app->input->get('field', '', 'string');
+        $view->field  = $this->app->input->getString('field');
+
         echo $view->display();
     }
 
@@ -321,11 +390,13 @@ class plgSystemJInboundsalesforce extends JPlugin
      * gets a new instance of the base field view
      *
      * @return JInboundFieldView
+     * @throws Exception
      */
     protected function getFieldView()
     {
-        $viewConfig = array('template_path' => dirname(__FILE__) . '/field/wsdl');
+        $viewConfig = array('template_path' => __DIR__ . '/field/wsdl');
         $view       = new JInboundFieldView($viewConfig);
+
         return $view;
     }
 }
