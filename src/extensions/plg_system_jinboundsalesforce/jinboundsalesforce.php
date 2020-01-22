@@ -39,8 +39,11 @@ class plgSystemJInboundsalesforce extends JPlugin
     protected $enabled = false;
 
     /**
-     * Constructor
-     *
+     * @var CMSApplication
+     */
+    protected $app = null;
+
+    /**
      * @param JEventDispatcher $subject
      * @param array            $config
      */
@@ -59,18 +62,16 @@ class plgSystemJInboundsalesforce extends JPlugin
      */
     public function onAfterInitialise()
     {
-        $app = JFactory::getApplication();
-
-        if ($app->isClient('site') || !$this->enabled) {
+        if ($this->app->isClient('site') || !$this->enabled) {
             return;
         }
 
-        $option = $app->input->getCmd('option');
+        $option = $this->app->input->getCmd('option');
         if ($option != 'plg_system_jinboundsalesforce') {
             return;
         }
 
-        $view   = $app->input->getCmd('view');
+        $view   = $this->app->input->getCmd('view');
         $method = 'execTask' . ucwords($view);
         if (method_exists($this, $method)) {
             $this->$method();
@@ -110,7 +111,6 @@ class plgSystemJInboundsalesforce extends JPlugin
 
     public function onContentAfterSave($context, $conversion, $isNew)
     {
-        $app = JFactory::getApplication();
         $db  = JFactory::getDbo();
         // only operate on jinbound conversion contexts
         if ('com_jinbound.conversion' !== $context || !PLG_SYSTEM_JINBOUNDSALESFORCE) {
@@ -286,7 +286,7 @@ class plgSystemJInboundsalesforce extends JPlugin
     private function execTaskUpload()
     {
         JFactory::getSession()->checkToken() or die(JText::_('JINVALID_TOKEN'));
-        $file = JFactory::getApplication()->input->files->get('wsdl');
+        $file = $this->app->input->files->get('wsdl');
         if (empty($file) || !is_array($file)) {
             $this->errors[] = JText::_('PLG_SYSTEM_JINBOUNDSALESFORCE_NO_UPLOAD_FILE');
             $this->execTaskForm(false);
@@ -314,12 +314,11 @@ class plgSystemJInboundsalesforce extends JPlugin
         if ($token) {
             JFactory::getSession()->checkToken('get') or die(JText::_('JINVALID_TOKEN'));
         }
-        
-        $app = JFactory::getApplication();
-        
+
         $view         = $this->getFieldView();
         $view->errors = $this->errors;
-        $view->field  = $app->input->get('field', '', 'string');
+        $view->field  = $this->app->input->getString('field');
+
         echo $view->display();
     }
 
