@@ -22,7 +22,9 @@
  * along with jInbound-Pro.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Joomla\Registry\Registry;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Uri\Uri;
 
 defined('_JEXEC') or die;
 
@@ -96,7 +98,7 @@ abstract class ModJInboundCTAHelper
             }
         }
 
-        $url = JURI::root(false) . 'index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json';
+        $url = Uri::root(false) . 'index.php?option=com_ajax&module=jinbound_cta&method=getField&format=json';
 
         $data = array();
         // TODO read from jform or something, this is gross
@@ -254,10 +256,10 @@ abstract class ModJInboundCTAHelper
      */
     public static function getFieldAjax($variables = array())
     {
-        JForm::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/fields');
-        JFactory::getLanguage()->load('mod_jinbound_cta.sys', JPATH_SITE . '/modules/mod_jinbound_cta');
+        Form::addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jinbound/models/fields');
+        Factory::getLanguage()->load('mod_jinbound_cta.sys', JPATH_SITE . '/modules/mod_jinbound_cta');
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $variables = array_merge(
             array(
@@ -283,7 +285,7 @@ abstract class ModJInboundCTAHelper
             throw new LogicException('Field name required', 500);
         }
 
-        $form = JForm::getInstance(
+        $form = Form::getInstance(
             'jinbound_form_module',
             '<form><!-- --></form>',
             array('control' => $variables['control'])
@@ -346,7 +348,7 @@ abstract class ModJInboundCTAHelper
      */
     public static function getAdapter(JRegistry $params, $cached = true)
     {
-        $app    = JFactory::getApplication();
+        $app    = Factory::getApplication();
         $filter = JFilterInput::getInstance();
 
         /*
@@ -396,7 +398,7 @@ abstract class ModJInboundCTAHelper
      */
     protected static function findAdapterType(JRegistry $params)
     {
-        $app  = JFactory::getApplication();
+        $app  = Factory::getApplication();
         $pfxs = array('c1_', 'c2_', 'c3_');
         $data = static::loadContactData();
         $type = '';
@@ -443,7 +445,7 @@ abstract class ModJInboundCTAHelper
     protected static function getContactId()
     {
         $cookie = plgSystemJInbound::getCookieValue();
-        $db     = JFactory::getDbo();
+        $db     = Factory::getDbo();
         return (int)$db->setQuery($db->getQuery(true)
             ->select($db->quoteName('id'))->from('#__jinbound_contacts')
             ->where($db->quoteName('cookie') . ' = ' . $db->quote($cookie))
@@ -453,7 +455,7 @@ abstract class ModJInboundCTAHelper
     protected static function checkData($data, JRegistry $params, $pfx)
     {
         // init
-        $app     = JFactory::getApplication();
+        $app     = Factory::getApplication();
         $enabled = (int)$params->get($pfx . 'enabled', ModJInboundCTAHelper::CONDITION_ANY);
         if (!$enabled) {
             if (JDEBUG) {
