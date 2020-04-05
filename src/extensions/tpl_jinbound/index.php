@@ -52,6 +52,7 @@ HTMLHelper::_('stylesheet', 'jinbound.css', array('relative' => true));
 HTMLHelper::_('stylesheet', 'system/system.css', array('relative' => true));
 HTMLHelper::_('stylesheet', 'jinbound/bootstrap/bootstrap.min.css', array('relative' => true));
 HTMLHelper::_('stylesheet', 'jinbound/bootstrap/bootstrap-responsive.min.css', array('relative' => true));
+HTMLHelper::_('stylesheet', 'custom.css', array('relative' => true));
 
 ?><!DOCTYPE html>
 <html>
