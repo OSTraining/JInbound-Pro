@@ -22,17 +22,16 @@
  * along with jInbound-Pro.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-defined('JPATH_PLATFORM') or die;
+use Joomla\CMS\Document\HtmlDocument;
 
-$app = JFactory::getApplication();
+defined('_JEXEC') or die();
 
-jimport('joomla.filesystem.file');
-
-// allow an override here
-$template_override = dirname(__FILE__) . '/override.php';
-if (JFile::exists($template_override)) {
-    include $template_override;
-}
+/**
+ * @var HtmlDocument $this
+ * @var string       $directory
+ * @var string       $filename
+ * @var string       $contents
+ */
 
 if (!defined('JINB_LOADED')) {
     $path = JPATH_ADMINISTRATOR . '/components/com_jinbound/include.php';
@@ -48,6 +47,10 @@ $document->addStyleSheet(JUri::root() . 'templates/jinbound/css/jinbound.css');
 $document->addStyleSheet(JUri::root() . 'media/system/css/system.css');
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
 $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
+$templateOverride = __DIR__ . '/override.php';
+if (is_file($templateOverride)) {
+    include $templateOverride;
+}
 
 ?><!DOCTYPE html>
 <html>
@@ -59,7 +62,6 @@ $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-
 <div class="container" id="jinbound_component">
     <div class="row-fluid">
         <div class="span10 offset1">
-
             <div class="row">
                 <div class="span12">
                     <jdoc:include type="message"/>
@@ -83,15 +85,15 @@ $document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-
                         <jdoc:include type="modules" name="jinbound-footer"/>
                     </div>
                 </div>
-            <?php endif; ?>
-            <?php if ($this->countModules('debug')) : ?>
+            <?php endif;
+
+            if ($this->countModules('debug')) : ?>
                 <div class="row">
                     <div class="span12">
                         <jdoc:include type="modules" name="debug"/>
                     </div>
                 </div>
             <?php endif; ?>
-
         </div>
     </div>
 </div>
