@@ -23,6 +23,7 @@
  */
 
 use Joomla\CMS\Document\HtmlDocument;
+use Joomla\CMS\Factory;use Joomla\CMS\HTML\HTMLHelper;
 
 defined('_JEXEC') or die();
 
@@ -42,15 +43,15 @@ if (!defined('JINB_LOADED')) {
     }
 }
 
-$document = JFactory::getDocument();
-$document->addStyleSheet(JUri::root() . 'templates/jinbound/css/jinbound.css');
-$document->addStyleSheet(JUri::root() . 'media/system/css/system.css');
-$document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap.css');
-$document->addStyleSheet(JInboundHelperUrl::media() . '/bootstrap/css/bootstrap-responsive.css');
 $templateOverride = __DIR__ . '/override.php';
 if (is_file($templateOverride)) {
     include $templateOverride;
 }
+
+HTMLHelper::_('stylesheet', 'jinbound.css', array('relative' => true));
+HTMLHelper::_('stylesheet', 'system/system.css', array('relative' => true));
+HTMLHelper::_('stylesheet', 'jinbound/bootstrap/bootstrap.min.css', array('relative' => true));
+HTMLHelper::_('stylesheet', 'jinbound/bootstrap/bootstrap-responsive.min.css', array('relative' => true));
 
 ?><!DOCTYPE html>
 <html>
