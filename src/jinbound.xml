@@ -182,13 +182,6 @@
                        uninstall="true"
                        element="jinboundmailchimp">plg_system_jinboundmailchimp</extension>
 
-            <!-- @TODO: Fix plugin issues -->
-            <!--extension type="plugin"
-                       group="system"
-                       publish="true"
-                       uninstall="true"
-                       element="jinboundsalesforce">plg_system_jinboundsalesforce</extension-->
-
             <extension type="plugin"
                        group="user"
                        publish="true"
