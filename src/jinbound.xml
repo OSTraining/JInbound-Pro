@@ -203,6 +203,7 @@
             <folder>administrator/components/com_jinbound/views/stages</folder>
             <folder>media/jinbound/bootstrap</folder>
             <folder>media/jinbound/ui</folder>
+            <folder>plugins/system/jinboundmailchimp/layouts/jinbound/field/mailchimp</folder>
 
             <file>administrator/components/com_jinbound/helpers/access.php</file>
             <file>administrator/components/com_jinbound/models/fields/jinboundpublished.php</file>
@@ -229,6 +230,7 @@
             <file>administrator/language/en-GB/en-GB.plg_user_jinbound.sys.ini</file>
             <file>administrator/manifests/packages/pkg_jinbound.xml</file>
             <file>media/jinbound/js/formbuilder.js</file>
+            <file>plugins/system/jinboundmailchimp/field/jinboundmailchimpcontactinfo.php</file>
         </obsolete>
     </alledia>
 

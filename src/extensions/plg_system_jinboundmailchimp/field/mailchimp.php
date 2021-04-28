@@ -22,21 +22,26 @@
  * along with jInbound-Pro.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Joomla\CMS\Form\FormField;
+
 defined('_JEXEC') or die;
 
-class JFormFieldJinboundmailchimpcontactinfo extends JFormField
+class JinboundFormFieldMailchimp extends FormField
 {
     /**
      * @var string
      */
-    protected $layout = 'jinbound.field.mailchimp.contactinfo';
+    protected $layout = 'jinbound.field.mailchimp';
 
     /**
-     * @var JFormField
+     * @var FormField
      */
     protected $emailField = null;
 
-    public function setup(\SimpleXMLElement $element, $value, $group = null)
+    /**
+     * @inheritDoc
+     */
+    public function setup(SimpleXMLElement $element, $value, $group = null)
     {
         if (parent::setup($element, $value, $group)) {
             if ($emailField = (string)$element['emailfield']) {
@@ -49,6 +54,9 @@ class JFormFieldJinboundmailchimpcontactinfo extends JFormField
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getRenderer($layoutId = 'default')
     {
         $renderer = parent::getRenderer($layoutId);
@@ -61,7 +69,7 @@ class JFormFieldJinboundmailchimpcontactinfo extends JFormField
     }
 
     /**
-     * @return array
+     * @inheritDoc
      * @throws Exception
      */
     protected function getLayoutData()
@@ -83,6 +91,9 @@ class JFormFieldJinboundmailchimpcontactinfo extends JFormField
         return array_merge(parent::getLayoutData(), $fieldData);
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function getLabel()
     {
         return '';

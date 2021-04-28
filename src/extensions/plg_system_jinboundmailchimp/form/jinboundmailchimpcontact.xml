@@ -2,7 +2,7 @@
 <form>
     <fieldset name="mailchimp" label="PLG_SYSTEM_JINBOUNDMAILCHIMP_TAB_TITLE">
         <field name="mailchimp"
-               type="jinboundmailchimpcontactinfo"
+               type="jinbound.mailchimp"
                emailfield="email"/>
     </fieldset>
 </form>
